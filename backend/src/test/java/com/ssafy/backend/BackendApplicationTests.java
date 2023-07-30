@@ -8,7 +8,7 @@ class BackendApplicationTests {
 
 	@Test
 	void contextLoads() {
-		//ci/cd 테스트
+
 	}
 
 }
