@@ -36,13 +36,19 @@ function RoomInfo(){
         };
     }, [totalTime, speechTime]);
 
+    useEffect( () => {
+        if(speechTime === 0 && totalTime > 0){
+            setSpeechTime(60);
+        }
+    }, [speechTime, totalTime]);
+
     return(
         <>
             <Row className={style.roomInfo}>
-                <Col id="option1" className={[style.option, style.option2].join(" ")}>
+                <Col id="option1" className={`${style.opinion} ${style.opinion1}`}>
                     <span>title1</span>
                 </Col>
-                <Col id="option2" className={`${style.option} ${style.option2}`}>
+                <Col id="option2" className={`${style.opinion} ${style.opinion2}`}>
                     <span>title2</span>
                 </Col>
             </Row>
@@ -60,14 +66,14 @@ function RoomInfo(){
             <Row>
                 <Col>
                     <Button>Ready</Button>
-                    <ProgressBar id="user1HP" now={user1HP} label={`${user1HP}%`} />
+                    <ProgressBar className={style.user1HP} now={user1HP} label={`${user1HP}%`} />
                 </Col>
                 <Col xs={2}>
                     {formatTime(speechTime)}
                 </Col>
                 <Col>
                     <Button>Ready</Button>
-                    <ProgressBar id="user2HP" now={user2HP} label={`${user2HP}%`} />
+                    <ProgressBar className="user2HP" now={user2HP} label={`${user2HP}%`} />
                 </Col>
             </Row>
         </>

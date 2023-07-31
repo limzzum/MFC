@@ -29,7 +29,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 10px 20px;
+    /* padding: 10px 20px; */
     border-bottom: 3px solid var(--blue-600);
     margin-bottom: var(--spacing-3);
     }
@@ -57,20 +57,20 @@
     }
 
     .opinion {
-    color: var(--white);
+    color: #FFF;
     font-size: var(--text-size-2xl);
     text-align: center;
     }
 
     .opinion1 {
-    background-color: red;
+    background-color: var(--red-500);
     }
 
-    .roomInfo #opinion2 {
+    .opinion2 {
     background-color: var(--blue-700);
     }
 
-    #user1HP {
+    .user1HP {
     direction: rtl;
     }
 
