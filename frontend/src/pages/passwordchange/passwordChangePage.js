@@ -1,5 +1,5 @@
 import { useState } from "react";
-import styles from './PasswordChange.module.css';
+import styles from './passwordChange.module.css';
 import "bootstrap/dist/css/bootstrap.min.css";
 import { Container, Button, Row } from "react-bootstrap";
 

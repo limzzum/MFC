@@ -1,22 +1,32 @@
+import React from 'react';
 import './App.css';
+import {BrowserRouter, Route, Routes, Link} from 'react-router-dom';
+import LoginPage from './pages/login/loginPage';
+import PasswordChangePage from './pages/passwordchange/passwordChangePage';
+
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <BrowserRouter>
+      <div className='App'>
+        <nav>
+          <ul className='horizontal-list'>
+            <li>
+              <Link to='/pages/login/loginPage'>loginPage</Link>
+            </li>
+            <li>
+              <Link to='/pages/passwordchange/passwordChangePage'>passwordChange</Link>
+            </li>
+          </ul>
+        </nav>
+        <Routes>
+          <Route path='/pages/login/loginPage' element={<LoginPage/>}>
+          </Route>
+          <Route path='/pages/passwordchange/passwordChangePage' element={<PasswordChangePage/>}>
+          </Route>
+        </Routes>
+      </div>  
+    </BrowserRouter> 
   );
 }
 
