@@ -1,23 +1,16 @@
 package com.ssafy.backend.entity;
 
 import java.time.LocalDateTime;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import org.hibernate.annotations.DynamicInsert;
+import javax.persistence.*;
+
+import lombok.*;
 
 @Entity
 @Table(name = "talkroom")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Getter
+@Builder
 public class TalkRoom {
 
   @Id
@@ -40,8 +33,8 @@ public class TalkRoom {
   @Column(name = "overtime_count", nullable = false)
   private int overtimeCount;
 
-  @Column(name = "status", nullable = false, length = 10)
-  private String status;
+  @Enumerated(EnumType.STRING)
+  private Status status;
 
   @Column(name = "a_topic", nullable = false, length = 20)
   private String aTopic;
@@ -52,7 +45,8 @@ public class TalkRoom {
   @Column(name = "start_time")
   private LocalDateTime startTime;
 
-  @Column(name = "category_id", nullable = false)
-  private Long categoryId;
+  @ManyToOne(fetch = FetchType.LAZY )
+  @JoinColumn(name = "category_id")
+  private Category category;
 
 }
