@@ -1,5 +1,8 @@
 import React, {useState, useEffect, useRef} from "react";
 import { Button, ProgressBar } from "react-bootstrap";
+import style from '../debatePage.module.css';
+import leftVector from '../../../images/leftVector.png';
+import rightVector from '../../../images/rightVector.png';
 
 function Spectator() {
     const value1 = 0;
@@ -40,38 +43,38 @@ function Spectator() {
     }, [userVideoStream]);
 
     return (
-        <div className="Spectator">
-            <div className="voteResult">
+        <div className={style.Spectator}>
+            <div className={style.voteResult}>
                 <ProgressBar>
                     <ProgressBar variant="success" label={value1} now={ratio1} key={1} />
                     <ProgressBar variant="danger" label={value2} now={ratio2} key={2} />
                 </ProgressBar>
             </div>
-            <div className="spectatorList">
-                <Button><img src="/icons/leftVector.png"/></Button>
+            <div className={style.spectatorList}>
+                <Button><img src={leftVector} alt="leftVector"/></Button>
                 <div>
                     {/* <label className="user">asdasd</label> */}
-                    <video className="user" ref={userVideoRef} autoPlay muted />
+                    <video className={style.user} ref={userVideoRef} autoPlay muted />
                 </div>
                 <div>
-                    <label className="user">asdasd</label>
+                    <label className={style.user}>asdasd</label>
                 </div>
                 <div>
-                    <label className="user">asdasd</label>
+                    <label className={style.user}>asdasd</label>
                 </div>
                 <div>
-                    <label className="user">asdasd</label>
+                    <label className={style.user}>asdasd</label>
                 </div>
                 <div>
-                    <label className="user">asdasd</label>
+                    <label className={style.user}>asdasd</label>
                 </div>
                 <div>
-                    <label className="user">asdasd</label>
+                    <label className={style.user}>asdasd</label>
                 </div>
                 <div>
-                    <label className="user">asdasd</label>
+                    <label className={style.user}>asdasd</label>
                 </div>
-                <Button><img src="/icons/rightVector.png"/></Button>
+                <Button><img src={rightVector} alt="rightVector"/></Button>
             </div>
         </div>
     );
