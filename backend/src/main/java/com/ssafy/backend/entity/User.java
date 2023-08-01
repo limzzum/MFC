@@ -32,7 +32,6 @@ public class User {
     @ColumnDefault("false")
     boolean isDeleted;
 
-    @Column(name = "item_code_id")
     @ManyToOne
     @JoinColumn(name = "item_code_id")
     ItemCode colorItem;
