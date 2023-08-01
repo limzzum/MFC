@@ -4,9 +4,16 @@ server:
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://i9a605.p.ssafy.io:3306/ssafy
+    url: jdbc:mysql://i9a605.p.ssafy.io:3306/MFC
     username: ssafy
     password: a605_ssafy_db
   jpa:
     hibernate:
       ddl-auto: create
+      properties:
+        hibernate:
+          format_sql: true
+
+logging:
+  level:
+    org.hibernate.SQL: debug
