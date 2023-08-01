@@ -1,6 +1,6 @@
 // import { useState, useEffect } from "react";
 import styles from './myProfile.module.css'
-import profileImage from './img.jpg'
+import profileImage from '../../images/img.jpg'
 import "bootstrap/dist/css/bootstrap.min.css";
 import { Button, Row } from "react-bootstrap";
 
