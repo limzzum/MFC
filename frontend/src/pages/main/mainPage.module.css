@@ -1,0 +1,81 @@
+/* mainPage.module.css */
+@import url(../../colorSelector.css);
+
+.horizontalline {
+  height: 1.5px; /* 가로 줄의 세로 크기를 1픽셀로 설정 */
+  background-color: black; /* 가로 줄의 색상을 검은색으로 설정 */
+}
+
+.title {
+  font-size: larger;
+  align-items: center;    
+}
+
+.titlebox {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.createroombuttoncontainer {
+  display: flex;
+  align-items: center;    
+}
+
+.createroombutton {
+  font-size: 24px;
+  /* Set the button width to match the card width */
+  width: 18rem;
+}
+
+.createroombuttonicon {
+  font-size: 28px;
+  color: var(--blue-900);
+}
+
+.card {
+    width: 18rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    border-radius: 10px; /* 박스의 모서리를 둥글게 만드는 속성 */
+    overflow: hidden; 
+}
+
+.cardbody {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* 가로 방향 가운데 정렬 */
+    align-items: center; /* 세로 방향 가운데 정렬 */
+}
+
+.cardtitle {
+  font-size: 14px;
+  font-weight: bolder;
+  margin-bottom: 10px;
+}
+
+.timeicon {
+  font-size: 28px;
+  margin-right: 10px;
+}
+
+.joinbutton {
+  width: 18rem;
+  height: 40px;
+  background-color: var(--blue-700);
+  border-radius: 10px;
+  color: white;
+  font-weight: bold;
+}
+
+/* 추가한 스타일 */
+.joinbuttoncontainer {
+    display: flex;
+    justify-content: center;
+  }
+
+/* .imgbox {
+    height: 50px;
+} */
