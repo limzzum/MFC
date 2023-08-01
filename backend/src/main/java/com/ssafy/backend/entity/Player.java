@@ -15,13 +15,11 @@ public class Player {
     @GeneratedValue
     private int id;
 
-    @Column(name = "talkroom_id")
     @NotNull
     @ManyToOne
     @JoinColumn(name = "talkroom_id")
     private TalkRoom talkroom;
 
-    @Column(name = "user_id")
     @NotNull
     @ManyToOne
     @JoinColumn(name = "user_id")
