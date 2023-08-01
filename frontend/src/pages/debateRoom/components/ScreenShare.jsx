@@ -14,7 +14,7 @@ function ScreenShare(){
             setScreenStream(stream);
         }catch(e){
             console.log("화면 공유 중 에러 발생: ", e);
-        }
+        } 
     };
 
     const stopScreenShare = () => {
