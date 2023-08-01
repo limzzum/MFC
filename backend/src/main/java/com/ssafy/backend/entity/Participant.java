@@ -48,8 +48,9 @@ public class Participant {
   @Column(name = "enter_time", nullable = false)
   private LocalDateTime enterTime;
 
-  @OneToMany(mappedBy = "Participant")
-  private List<User> users = new ArrayList<>();
+  @ManyToOne
+  @JoinColumn(name = "user_id")
+  private User user;
 
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "talkroom_id")
