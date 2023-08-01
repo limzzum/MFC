@@ -1,4 +1,9 @@
 package com.ssafy.backend.dto;
 
-public class ResponseDto {
+import lombok.*;
+
+@Data
+@AllArgsConstructor
+public class ResponseDto<T> {
+    private T data;
 }
