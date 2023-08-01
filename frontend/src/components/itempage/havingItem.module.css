@@ -1,0 +1,44 @@
+.flexBox {
+    display: flex;
+    width: 1000px;
+    margin: auto;
+}
+.itemBox {
+    width: 150px;
+    text-align: center;
+    font-size: 24px;
+    border: 1px solid rgb(153, 153, 153);
+    margin-bottom: 50px;
+    padding-top:10px;
+}
+.emptyBox{
+    width: 1000px;
+    margin: auto;
+}
+.titleBox {
+    width: 1000px;
+    font-size: 32px;
+    display: flex;
+    margin: auto;
+    height: 60px;
+}
+img {
+    width: 100%;
+    height: auto;
+}
+div {
+    font-family: Pretendard;
+}
+.imgCoin {
+    width: 50px;
+    height: 50px;
+    margin: 0 auto;
+}
+.title {
+    font-size: 32px;
+    width: 800px;
+}
+.textCoin {
+    text-align: right;
+    width: 150px;
+}

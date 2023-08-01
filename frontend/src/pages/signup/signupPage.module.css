@@ -1,0 +1,59 @@
+@import url(../../colorSelector.css);
+
+.SignupPageWrapper {
+    line-height: 24px;
+    width: 500px;
+    margin: 100px auto;
+    padding-top: 30px;
+    border: 1px solid #dadada;
+    background: var(--white);
+  }
+  .SignupPageInnerContent {
+    width: 300px;
+    height: 500px;
+    font-family: Pretendard;
+    padding-left: 100px;
+    text-align: left;
+    font-size: 18px;
+    margin-left: 50px;
+    line-height: 25px;
+  }
+  .SignupPageContentWrap {
+    width: 150px;
+  }
+  .SignupPageLogoImage {
+    height: 81px;
+    width: 200px;
+  }
+  .SignupPageMFC {
+    color: var(--blue-300);
+    width: 351px;
+    margin-top: 10px;
+    font-family: Pretendard;
+    text-align: left;
+    font-size: 14px;
+    letter-spacing: 0;
+  }
+  .SignupPageInput {
+    border-color: var(--blue-200);
+    width: 120px;
+    font-size: xx-small;
+  
+  }
+  .SignupPageInputTitle {
+    font-size: x-small;
+    font-weight: 700;
+    color: var(--blue-800);
+  }
+  
+  
+  .SignupPageInputWrap {
+      width: 200px;
+  }
+  
+  
+  .SignupPageBottomBtn {
+    text-align: center;
+    margin-top: 10px;
+  }
+  
