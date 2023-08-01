@@ -5,6 +5,7 @@ import LoginPage from './pages/login/loginPage';
 import PasswordChangePage from './pages/passwordchange/passwordChangePage';
 import DebatePage from './pages/debateRoom/DebatePage';
 import SignupPage from './pages/signup/signupPage';
+import MyProfilePage from './pages/myprofile/myProfile';
 
 
 function App() {
@@ -26,6 +27,9 @@ function App() {
               <Link to='/pages/signup/signupPage'>signupPage</Link>
 
             </li>
+            <li>
+              <Link to='/pages/myprofile/myProfile'>myProfilePage</Link>
+            </li>
           </ul>
         </nav>
         <Routes>
@@ -36,6 +40,8 @@ function App() {
           <Route path='/pages/debateRoom/debatePage.jsx' element={<DebatePage/>}>
           </Route>  
           <Route path='/pages/signup/signupPage' element={<SignupPage/>}>
+          </Route>
+          <Route path='/pages/myprofile/myProfile' element={<MyProfilePage/>}>
           </Route>
         </Routes>
       </div>  
