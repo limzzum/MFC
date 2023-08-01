@@ -1,15 +1,22 @@
 package com.ssafy.backend.entity;
 
-import javax.persistence.*;
+import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.validation.constraints.*;
-import lombok.*;
-import org.hibernate.annotations.*;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.validation.constraints.NotNull;
+
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
+import org.hibernate.annotations.ColumnDefault;
 
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
 public class Player {
+
 
     @Id
     @GeneratedValue
@@ -17,8 +24,8 @@ public class Player {
 
     @NotNull
     @ManyToOne
-    @JoinColumn(name = "talkroom_id")
-    private TalkRoom talkroom;
+    @JoinColumn(name = "room_id")
+    private Room room;
 
     @NotNull
     @ManyToOne

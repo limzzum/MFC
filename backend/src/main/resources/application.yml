@@ -9,7 +9,7 @@ spring:
     password: a605_ssafy_db
   jpa:
     hibernate:
-      ddl-auto: create
+      ddl-auto: update
       properties:
         hibernate:
           format_sql: true

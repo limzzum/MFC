@@ -3,26 +3,32 @@ package com.ssafy.backend.entity;
 import java.time.LocalDateTime;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.DynamicInsert;
 
 @Entity
-@Table(name = "talkroom")
+@Table(name = "room")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Getter
-public class TalkRoom {
+@Builder
+public class Room {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  @Column(name = "talkroom_id", updatable = false)
+  @Column(name = "room_id", updatable = false)
   private Long id;
 
   @Column(name = "total_time", nullable = false)
@@ -40,8 +46,8 @@ public class TalkRoom {
   @Column(name = "overtime_count", nullable = false)
   private int overtimeCount;
 
-  @Column(name = "status", nullable = false, length = 10)
-  private String status;
+  @Enumerated(EnumType.STRING)
+  private Status status;
 
   @Column(name = "a_topic", nullable = false, length = 20)
   private String aTopic;
@@ -52,7 +58,8 @@ public class TalkRoom {
   @Column(name = "start_time")
   private LocalDateTime startTime;
 
-  @Column(name = "category_id", nullable = false)
-  private Long categoryId;
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "category_id")
+  private Category category;
 
 }
