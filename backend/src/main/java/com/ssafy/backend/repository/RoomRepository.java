@@ -6,9 +6,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.awt.print.Pageable;
 import java.util.List;
 
-public interface TalkRoomRepository extends JpaRepository<TalkRoom, Long> {
+public interface RoomRepository extends JpaRepository<TalkRoom, Long> {
 
-    List<TalkRoom> findByStatus(Status status, Pageable pageable);
+//    List<TalkRoom> findByStatus(Status status, Pageable pageable);
 
 
 }
