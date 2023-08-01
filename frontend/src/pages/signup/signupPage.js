@@ -1,3 +1,4 @@
+// signupPage.js
 import React, { useState, useEffect } from 'react';
 import logoImage from '../../images/logo.png';
 import style from './signupPage.module.css';
@@ -51,7 +52,7 @@ function SignupPage() {
 
         <div className={style.SignupPageContentWrap}>
           <div className={style.SignupPageInputTitle}>인증메일 전송</div>
-          <div className={style.SignupPageInputWrap} style={{ display: 'flex', alignItems: 'center' }}>
+          <div className={style.SignupPageInputWrap}>
             <input
               className={`${style.SignupPageInput} form-control`}
               style={{ fontSize: '12px', width: '137px' }}
@@ -60,24 +61,41 @@ function SignupPage() {
             />
             <button
               className={`btn btn-outline-secondary ${style.SignupPageBtn}`}
-              style={{ fontSize: '8px', color: 'white', backgroundColor: emailValid ? '#354c6fff' : 'grey' }}
+              style={{
+                fontSize: '8px',
+                color: 'white',
+                backgroundColor: emailValid ? '#354c6fff' : 'grey',
+                borderRadius: '10px',
+                border: 'none',
+              }}
               onClick={handleSendEmailClick}
               disabled={!emailValid}
             >
-              메일 전송
+              메일전송
             </button>
           </div>
 
           {/* 인증번호 입력 */}
           <div>
             <span className={style.SignupPageInputTitle}>인증번호 입력</span>
-            {isActive && <span style={{ fontSize: '12px', marginLeft: '10px', color: 'red' }}>{formatTime()}</span>}
+            {isActive && (
+              <span style={{ fontSize: '12px', marginLeft: '10px', color: 'red' }}>{formatTime()}</span>
+            )}
           </div>
-          <div className={style.SignupPageInputWrap} style={{ display: 'flex', alignItems: 'center' }}>
-            <input className={`SignupPageInput form-control ${style.SignupPageInput}`} style={{ fontSize: '12px', width: '137px' }} />
+          <div className={style.SignupPageInputWrap}>
+            <input
+              className={`SignupPageInput form-control ${style.SignupPageInput}`}
+              style={{ fontSize: '12px', width: '137px' }}
+            />
             <button
               className={`btn btn-outline-secondary ${style.SignupPageBtn}`}
-              style={{ fontSize: '8px', color: 'white', backgroundColor: '#354c6fff' }}
+              style={{
+                fontSize: '8px',
+                color: 'white',
+                backgroundColor: '#354c6fff',
+                borderRadius: '10px',
+                border: 'none',
+              }}
             >
               인증하기
             </button>
@@ -85,24 +103,51 @@ function SignupPage() {
 
           {/* 닉네임 */}
           <div className={style.SignupPageInputTitle}>닉네임</div>
-          <div className={style.SignupPageInputWrap} style={{ display: 'flex', alignItems: 'center' }}>
-            <input className={`SignupPageInput form-control ${style.SignupPageInput}`} style={{ fontSize: '12px', width: '137px' }} />
-            <button className={`btn btn-outline-secondary ${style.SignupPageBtn}`} style={{ fontSize: '5px', color: 'white', backgroundColor: '#354c6fff' }}>
+          <div className={style.SignupPageInputWrap}>
+            <input
+              className={`SignupPageInput form-control ${style.SignupPageInput}`}
+              style={{ fontSize: '12px', width: '137px' }}
+            />
+            <button
+              className={`btn btn-outline-secondary ${style.SignupPageBtn}`}
+              style={{
+                fontSize: '5px',
+                color: 'white',
+                backgroundColor: '#354c6fff',
+                borderRadius: '10px',
+                border: 'none',
+              }}
+            >
               중복검사
             </button>
           </div>
 
           {/* 비밀번호 */}
           <div className={style.SignupPageInputTitle}>비밀번호</div>
-          <input className={`SignupPageInput form-control ${style.SignupPageInput}`} style={{ fontSize: '12px', width: '200px' }} />
+          <input
+            className={`SignupPageInput form-control ${style.SignupPageInput}`}
+            style={{ fontSize: '12px', width: '200px' }}
+          />
 
           {/* 비밀번호 확인 */}
           <div className={style.SignupPageInputTitle}>비밀번호 확인</div>
-          <input className={`SignupPageInput form-control ${style.SignupPageInput}`} style={{ fontSize: '12px', width: '200px' }} />
+          <input
+            className={`SignupPageInput form-control ${style.SignupPageInput}`}
+            style={{ fontSize: '12px', width: '200px' }}
+          />
         </div>
 
         <div className={style.SignupPageBottomBtn}>
-          <button className={`btn btn-outline-secondary ${style.SignupPageBtn}`} style={{ fontSize: '15px', color: 'white', backgroundColor: '#354c6fff' }}>
+          <button
+            className={`btn btn-outline-secondary ${style.SignupPageBtn}`}
+            style={{
+              fontSize: '18px',
+              color: 'white',
+              backgroundColor: '#354c6fff',
+              borderRadius: '10px',
+              border: 'none',
+              width: '100%',
+            }}>
             가입하기
           </button>
         </div>
