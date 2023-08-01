@@ -3,8 +3,11 @@ import './App.css';
 import { BrowserRouter, Route, Routes, Link } from 'react-router-dom';
 import LoginPage from './pages/login/loginPage';
 import PasswordChangePage from './pages/passwordchange/passwordChangePage';
+import DebatePage from './pages/debateRoom/DebatePage';
 import SignupPage from './pages/signup/signupPage';
 import MainPage from './pages/main/mainPage';
+import MyProfilePage from './pages/myprofile/myProfile';
+import RankingPage from './pages/ranking/ranking';
 
 function App() {
   return (
@@ -19,7 +22,16 @@ function App() {
               <Link to='/pages/passwordchange/passwordChangePage'>passwordChange</Link>
             </li>
             <li>
+              <Link to='/pages/debateRoom/debatePage.jsx'>debatePage</Link>
+            </li>
+            <li>
               <Link to='/pages/signup/signupPage'>signupPage</Link>
+            </li>
+            <li>
+              <Link to='/pages/myprofile/myProfile'>myProfilePage</Link>
+            </li>
+            <li>
+              <Link to='/pages/ranking/ranking'>rankingPage</Link>
             </li>
             <li>
               <Link to='/pages/main/mainPage'>mainPage</Link>
@@ -31,6 +43,18 @@ function App() {
           <Route path='/pages/passwordchange/passwordChangePage' element={<PasswordChangePage />} />
           <Route path='/pages/signup/signupPage' element={<SignupPage />} />
           <Route path='/pages/main/mainPage' element={<MainPage />} />
+          <Route path='/pages/login/loginPage' element={<LoginPage/>}>
+          </Route>
+          <Route path='/pages/passwordchange/passwordChangePage' element={<PasswordChangePage/>}>
+          </Route>
+          <Route path='/pages/debateRoom/debatePage.jsx' element={<DebatePage/>}>
+          </Route>  
+          <Route path='/pages/signup/signupPage' element={<SignupPage/>}>
+          </Route>
+          <Route path='/pages/myprofile/myProfile' element={<MyProfilePage/>}>
+          </Route>
+          <Route path='/pages/ranking/ranking' element={<RankingPage/>}>
+          </Route>
         </Routes>
       </div>
     </BrowserRouter>

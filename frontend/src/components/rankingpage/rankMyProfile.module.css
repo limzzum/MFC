@@ -1,0 +1,35 @@
+.boxProfile { 
+    line-height: 14px;
+    width: 300px;
+    margin: 100px auto;
+    padding-top: 30px;
+    border: 1px solid #dadada;
+    background: #fff;
+}
+.profileImage{
+    height:50px;
+    width:50px;
+    position:relative;
+    display:flex;
+}
+.radiusImg {
+    border-radius: 50%;
+}
+
+.rankingMyprofileText {
+    text-align: center;
+    font-size: 18px;
+    font-family: Pretendard;
+    margin-top:30px;
+}
+.rankProfileImage {
+    height: 100px;
+    width: 100px;
+}
+img {
+    height: auto;
+    width: 100%;
+}
+div {
+    text-align: center;
+}
