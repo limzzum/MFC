@@ -32,4 +32,14 @@ public class UserController {
         return new ResponseDto(loginId, HttpStatus.OK);
     }
 
+    @PostMapping
+    public ResponseDto regist(@RequestBody @Valid UserRegistDto user, BindingResult result){
+        if(result.hasErrors()){
+            return new ResponseDto("입력값이 올바르지 않습니다.", HttpStatus.BAD_REQUEST);
+        }
+
+        Long savedId = service.regist(user);
+        return new ResponseDto(savedId, HttpStatus.OK);
+    }
+
 }
