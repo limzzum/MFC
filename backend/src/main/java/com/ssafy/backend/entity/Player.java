@@ -7,6 +7,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
+
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
@@ -16,34 +17,35 @@ import org.hibernate.annotations.ColumnDefault;
 @AllArgsConstructor
 public class Player {
 
-  @Id
-  @GeneratedValue
-  private int id;
 
-  @NotNull
-  @ManyToOne
-  @JoinColumn(name = "room_id")
-  private Room room;
+    @Id
+    @GeneratedValue
+    private Long id;
 
-  @NotNull
-  @ManyToOne
-  @JoinColumn(name = "user_id")
-  private User user;
+    @NotNull
+    @ManyToOne
+    @JoinColumn(name = "room_id")
+    private Room room;
 
-  @Column(name = "remain_overtime_count")
-  @NotNull
-  private int remainOverTimeCount;
+    @NotNull
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
 
-  @Column(name = "heart_point")
-  @ColumnDefault("100")
-  private int heartPoint;
+    @Column(name = "remain_overtime_count")
+    @NotNull
+    private int remainOverTimeCount;
 
-  @Column(name = "is_ready")
-  @ColumnDefault("false")
-  private boolean isReady;
+    @Column(name = "heart_point")
+    @ColumnDefault("100")
+    private int heartPoint;
 
-  @Column(name = "is_topic_type_a")
-  @ColumnDefault("false")
-  private boolean isTopicTypeA;
+    @Column(name = "is_ready")
+    @ColumnDefault("false")
+    private boolean isReady;
+
+    @Column(name = "is_topic_type_a")
+    @ColumnDefault("false")
+    private boolean isTopicTypeA;
 
 }

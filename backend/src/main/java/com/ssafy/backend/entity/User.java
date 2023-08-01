@@ -10,11 +10,12 @@ import org.hibernate.annotations.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
+@Builder
 public class User {
 
     @Id
     @GeneratedValue
-    int id;
+    Long id;
 
     @NotNull
     String email;
