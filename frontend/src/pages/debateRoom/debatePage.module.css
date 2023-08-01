@@ -1,151 +1,179 @@
-    /* debatePage.css */
-    @import '../../colorSelector.css';
+/* debatePage.css */
+@import '../../colorSelector.css';
 
-    * {
+* {
     box-sizing: border-box;
     margin: 0;
     padding: 0;
     font-size: var(--text-size-xl);
     font-family: Pretendard;
-    }
+}
 
-    ul {
+ul {
     list-style: none;
-    }
+}
 
-    .col {
+.col {
     border: 1px solid black;
     text-align: center;
-    }
+}
 
-    .col-2 {
+.col-2 {
     text-align: center;
-    }
+}
 
-    .debatePage {
+.debatePage {
     padding: 0 var(--spacing-3);
-    }
+}
 
-    .header {
+.header {
     display: flex;
     justify-content: space-between;
     align-items: center;
     /* padding: 10px 20px; */
     border-bottom: 3px solid var(--blue-600);
     margin-bottom: var(--spacing-3);
-    }
+}
 
-    .header img {
+.header img {
     width: 8%;
-    }
+}
 
-    .header ul {
+.header ul {
     display: flex;
     list-style: none;
-    }
+}
 
-    .header ul li {
+.header ul li {
     margin-right: 15px;
-    }
+}
 
-    .header ul li:last-child {
+.header ul li:last-child {
     margin-right: 0;
-    }
+}
 
-    .debatePart {
+.debatePart {
     margin-left: var(--spacing-3);
     margin-right: var(--spacing-3);
-    }
+}
 
-    .opinion {
+.opinion {
     color: #FFF;
     font-size: var(--text-size-2xl);
     text-align: center;
-    }
+}
 
-    .opinion1 {
+.opinion1 {
     background-color: var(--red-500);
-    }
+}
 
-    .opinion2 {
+.opinion2 {
     background-color: var(--blue-700);
-    }
+}
 
-    .user1HP {
+.user1HP {
     direction: rtl;
-    }
+}
 
-    .screenShare {
+.screenShare {
     background-color: var(--blue-200);
     width: auto;
     height: 250px;
     display: flex;
     align-items: center;
     justify-content: center;
-    }
+}
 
-    .shareVideo {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-    }
+.shareVideo {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
 
-    
-    .video {
-        width: 100%;
-        height: 400px;
-        background-color: var(--blue-200);
-        border: 1px solid black;
-    }
 
-    .ChatArea {
+.video {
+    width: 100%;
+    height: 400px;
+    background-color: var(--blue-200);
+    border: 1px solid black;
+}
+
+.ChatArea {
     background-color: var(--blue-200);
     width: auto;
-    height: 300px;
-    }
+    height: 270px;
+    overflow-y: auto;
+}
 
-    .Btns {
+.messageContainer {
+    display: flex;
+    align-items: center;
+    margin-bottom: var(--spacing-2);
+}
+
+.sender{
+    font-size: var(--text-size-sm);
+    margin-left: var(--spacing-2);
+}
+
+.messageBubble{
+    padding: var(--spacing-2);
+    border-radius: var(--radius-md);
+    max-width: 70%;
+}
+
+.userMessage{
+    background-color: var(--blue-50);
+    justify-content: flex-end;
+}
+
+.otherMessage{
+    background-color: var(--blue-400);
+    justify-content: flex-start;
+}
+
+.Btns {
     border: 1px solid black;
-    }
+}
 
-    .items {
+.items {
     display: flex;
     flex-wrap: wrap;
     justify-content: flex-start;
-    }
+}
 
-    .items button {
+.items button {
     margin: var(--spacing-1) var(--spacing-2);
-    }
+}
 
-    .onOff {
+.onOff {
     display: flex;
     flex-wrap: wrap;
     justify-content: flex-end;
-    }
+}
 
-    .onOff button {
+.onOff button {
     margin: var(--spacing-1) var(--spacing-2);
-    }
+}
 
-    .spectatorList {
+.spectatorList {
     display: flex;
     align-items: center;
-    }
+}
 
-    .spectatorList > button {
+.spectatorList > button {
     margin-right: auto;
     margin-left: auto;
-    }
+}
 
-    .spectatorList div {
+.spectatorList div {
     margin: 0 var(--spacing-3);
-    }
+}
 
-    .user {
+.user {
     background-color: var(--blue-200);
     border: 1px solid var(--black);
     width: 200px;
     height: 150px;
     margin: var(--spacing-2);
-    }
+}
