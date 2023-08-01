@@ -9,8 +9,8 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class TalkRoomCreateDto {
+public class RoomCreateDto {
 
-  private totalTime
+  private int totalTime;
 
 }

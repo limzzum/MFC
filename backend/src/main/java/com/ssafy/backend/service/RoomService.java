@@ -8,5 +8,5 @@ import javax.transaction.Transactional;
 @Transactional
 @RequiredArgsConstructor
 @Service
-public class TalkRoomService {
+public class RoomService {
 }

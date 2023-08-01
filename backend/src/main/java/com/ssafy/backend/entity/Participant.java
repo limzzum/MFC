@@ -1,9 +1,6 @@
 package com.ssafy.backend.entity;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import javax.naming.Name;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -12,14 +9,12 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.DynamicInsert;
 
 @Entity
 @Table(name = "participant")
@@ -39,7 +34,7 @@ public class Participant {
   @Column(name = "is_vote_type_a")
   private Boolean isVoteTypeA;
 
-  @Column(name = "is_host", nullable = false, columnDefinition = "BOOLEAN default false" )
+  @Column(name = "is_host", nullable = false, columnDefinition = "BOOLEAN default false")
   private boolean isHost;
 
   @Column(name = "vote_time")
@@ -53,8 +48,8 @@ public class Participant {
   private User users;
 
   @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "talkroom_id")
-  private TalkRoom talkroom;
+  @JoinColumn(name = "room_id")
+  private Room room;
 
   @OneToOne
   @JoinColumn(name = "role_code_id")
