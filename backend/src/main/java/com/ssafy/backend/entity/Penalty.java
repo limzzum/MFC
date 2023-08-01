@@ -1,6 +1,6 @@
 package com.ssafy.backend.entity;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -13,6 +13,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -20,6 +21,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
+@Builder
 public class Penalty {
 
   @Id
@@ -29,14 +31,27 @@ public class Penalty {
 
   @Column(name = "penalty_time", nullable = false)
   @Temporal(TemporalType.TIMESTAMP)
-  private Date penaltyTime;
+  private LocalDateTime penaltyTime;
 
   @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "penalty_code_id")
+  @JoinColumn(name = "penalty_code_id", insertable = false, updatable = false)
   private PenaltyCode penaltyCode;
 
   @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "user_id")
+  @JoinColumn(name = "room_id", insertable = false, updatable = false)
+  private Room room;
+
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "user_id", insertable = false, updatable = false)
   private User user;
+
+  @Column(name = "penalty_code_id")
+  private Long penaltyCodeId;
+
+  @Column(name = "room_id")
+  private Long talkRoomId;
+
+  @Column(name = "user_id")
+  private Long userId;
 
 }
