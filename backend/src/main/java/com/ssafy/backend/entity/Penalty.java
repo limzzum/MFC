@@ -9,8 +9,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -32,25 +30,20 @@ public class Penalty {
   @Column(name = "penalty_time", nullable = false)
   private LocalDateTime penaltyTime;
 
-//  @ManyToOne(fetch = FetchType.LAZY)
-//  @JoinColumn(name = "penalty_code_id")
-//  private PenaltyCode penaltyCode;
+  @ManyToOne(targetEntity = PenaltyCode.class, fetch = FetchType.LAZY)
+  @JoinColumn(name = "penalty_code_id", insertable = false, updatable = false)
+  private PenaltyCode penaltyCode;
+
+  @ManyToOne(targetEntity = User.class, fetch = FetchType.LAZY)
+  @JoinColumn(name = "user_id", insertable = false, updatable = false)
+  private User user;
+
+//  @Column(name = "user_id")
+//  private Long userId;
 //
-//  @ManyToOne(fetch = FetchType.LAZY)
-//  @JoinColumn(name = "room_id")
-//  private Room room;
+//  @Column(name = "penalty_code_id")
+//  private Long penaltyCodeId;
 //
-//  @ManyToOne(fetch = FetchType.LAZY)
-//  @JoinColumn(name = "user_id")
-//  private User user;
-
-  @Column(name = "penalty_code_id")
-  private Long penaltyCodeId;
-
-  @Column(name = "room_id")
-  private Long talkRoomId;
-
-  @Column(name = "user_id")
-  private Long userId;
-
+//  @Column(name = "room_id")
+//  private Long roomId;
 }
