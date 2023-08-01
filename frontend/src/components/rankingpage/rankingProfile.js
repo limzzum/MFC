@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import styles from './RankingProfile.module.css'
+import styles from './rankingProfile.module.css'
 import "bootstrap/dist/css/bootstrap.min.css";
 import { Container, Row, Col } from "react-bootstrap";
 import profileImage from '../../images/img.jpg'

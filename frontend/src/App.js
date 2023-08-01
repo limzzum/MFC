@@ -6,6 +6,7 @@ import PasswordChangePage from './pages/passwordchange/passwordChangePage';
 import DebatePage from './pages/debateRoom/DebatePage';
 import SignupPage from './pages/signup/signupPage';
 import MyProfilePage from './pages/myprofile/myProfile';
+import RankingPage from './pages/ranking/ranking';
 
 
 function App() {
@@ -30,6 +31,9 @@ function App() {
             <li>
               <Link to='/pages/myprofile/myProfile'>myProfilePage</Link>
             </li>
+            <li>
+              <Link to='/pages/ranking/ranking'>rankingPage</Link>
+            </li>
           </ul>
         </nav>
         <Routes>
@@ -42,6 +46,8 @@ function App() {
           <Route path='/pages/signup/signupPage' element={<SignupPage/>}>
           </Route>
           <Route path='/pages/myprofile/myProfile' element={<MyProfilePage/>}>
+          </Route>
+          <Route path='/pages/ranking/ranking' element={<RankingPage/>}>
           </Route>
         </Routes>
       </div>  

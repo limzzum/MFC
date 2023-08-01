@@ -1,6 +1,6 @@
-import RankingProfile from '../components/rankingProfile.js'
-import RankMyProfile from '../components/rankMyProfile.js'
-import RankingSearchBar from '../components/rankingSearchBar.js'
+import RankingProfile from '../../components/rankingpage/rankingProfile.js'
+import RankMyProfile from '../../components/rankingpage/rankMyProfile.js'
+import RankingSearchBar from '../../components/rankingpage/rankingSearchBar.js'
 
 import "bootstrap/dist/css/bootstrap.min.css";
 import { Container, Row, Col } from 'react-bootstrap';
