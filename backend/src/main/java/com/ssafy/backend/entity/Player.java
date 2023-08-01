@@ -13,7 +13,7 @@ public class Player {
 
     @Id
     @GeneratedValue
-    private int id;
+    private Long id;
 
     @NotNull
     @ManyToOne
