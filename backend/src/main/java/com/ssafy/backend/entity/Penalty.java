@@ -30,7 +30,6 @@ public class Penalty {
   private Long id;
 
   @Column(name = "penalty_time", nullable = false)
-  @Temporal(TemporalType.TIMESTAMP)
   private LocalDateTime penaltyTime;
 
   @ManyToOne(fetch = FetchType.LAZY)
