@@ -4,6 +4,7 @@ import {BrowserRouter, Route, Routes, Link} from 'react-router-dom';
 import LoginPage from './pages/login/loginPage';
 import PasswordChangePage from './pages/passwordchange/passwordChangePage';
 import SignupPage from './pages/signup/signupPage';
+import MyProfilePage from './pages/myprofile/myProfile';
 
 function App() {
   return (
@@ -20,6 +21,9 @@ function App() {
             <li>
               <Link to='/pages/signup/signupPage'>signupPage</Link>
             </li>
+            <li>
+              <Link to='/pages/myprofile/myProfile'>myProfilePage</Link>
+            </li>
           </ul>
         </nav>
         <Routes>
@@ -28,6 +32,8 @@ function App() {
           <Route path='/pages/passwordchange/passwordChangePage' element={<PasswordChangePage/>}>
           </Route>
           <Route path='/pages/signup/signupPage' element={<SignupPage/>}>
+          </Route>
+          <Route path='/pages/myprofile/myProfile' element={<MyProfilePage/>}>
           </Route>
         </Routes>
       </div>  
