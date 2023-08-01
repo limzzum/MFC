@@ -11,6 +11,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class RoomCreateDto {
 
-//  private totalTime
+  private int totalTime;
 
 }
