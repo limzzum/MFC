@@ -11,35 +11,23 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class TalkRoomListDto {
+public class RoomListDto {
 
     private Long talkRoomId;
-
     private int totalTime;
-
     private int talkTime;
-
     private int maxPeople;
-
     private int curPeople;
-
     private int overtimeCount;
-
     public enum Status {
-      ONGOING, DONE, WAITING
+        ONGOING, DONE, WAITING
     }
 
     private Status status;
-
     private String aTopic;
-
     private String bTopic;
-
     private LocalDateTime startTime;
-
-    private String atopicUrl;
-
-    private String btopicUrl;
-
+    private String aTopicUserUrl;
+    private String bTopicUserUrl;
     private Long categoryId;
 }
