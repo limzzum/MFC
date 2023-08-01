@@ -32,17 +32,17 @@ public class Penalty {
   @Column(name = "penalty_time", nullable = false)
   private LocalDateTime penaltyTime;
 
-  @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "penalty_code_id", insertable = false, updatable = false)
-  private PenaltyCode penaltyCode;
-
-  @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "room_id", insertable = false, updatable = false)
-  private Room room;
-
-  @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "user_id", insertable = false, updatable = false)
-  private User user;
+//  @ManyToOne(fetch = FetchType.LAZY)
+//  @JoinColumn(name = "penalty_code_id")
+//  private PenaltyCode penaltyCode;
+//
+//  @ManyToOne(fetch = FetchType.LAZY)
+//  @JoinColumn(name = "room_id")
+//  private Room room;
+//
+//  @ManyToOne(fetch = FetchType.LAZY)
+//  @JoinColumn(name = "user_id")
+//  private User user;
 
   @Column(name = "penalty_code_id")
   private Long penaltyCodeId;
