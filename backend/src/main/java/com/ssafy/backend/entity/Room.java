@@ -19,7 +19,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "room")
+@Table(name = "talkroom")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Getter
@@ -28,7 +28,7 @@ public class Room {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  @Column(name = "room_id", updatable = false)
+  @Column(name = "talkroom_id", updatable = false)
   private Long id;
 
   @Column(name = "total_time", nullable = false)
