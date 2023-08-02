@@ -55,23 +55,21 @@ function SignupPage() {
           <div className={style.SignupPageInputWrap}>
             <input
               className={`${style.SignupPageInput} form-control`}
-              style={{ fontSize: '12px', width: '137px' }}
+              style={{ fontSize: '12px', width: '145px' }}
               value={email}
-              onChange={handleEmail}
-            />
+              onChange={handleEmail}/>
             <button
               className={`btn btn-outline-secondary ${style.SignupPageBtn}`}
               style={{
-                fontSize: '8px',
+                fontSize: '14px',
                 color: 'white',
                 backgroundColor: emailValid ? '#354c6fff' : 'grey',
                 borderRadius: '10px',
                 border: 'none',
               }}
               onClick={handleSendEmailClick}
-              disabled={!emailValid}
-            >
-              메일전송
+              disabled={!emailValid}>
+              전송
             </button>
           </div>
 
@@ -85,19 +83,17 @@ function SignupPage() {
           <div className={style.SignupPageInputWrap}>
             <input
               className={`SignupPageInput form-control ${style.SignupPageInput}`}
-              style={{ fontSize: '12px', width: '137px' }}
+              style={{ fontSize: '12px', width: '145px' }}
             />
             <button
               className={`btn btn-outline-secondary ${style.SignupPageBtn}`}
               style={{
-                fontSize: '8px',
+                fontSize: '14px',
                 color: 'white',
                 backgroundColor: '#354c6fff',
                 borderRadius: '10px',
                 border: 'none',
-              }}
-            >
-              인증하기
+              }}>인증
             </button>
           </div>
 
@@ -106,19 +102,18 @@ function SignupPage() {
           <div className={style.SignupPageInputWrap}>
             <input
               className={`SignupPageInput form-control ${style.SignupPageInput}`}
-              style={{ fontSize: '12px', width: '137px' }}
+              style={{ fontSize: '12px', width: '145px' }}
             />
             <button
               className={`btn btn-outline-secondary ${style.SignupPageBtn}`}
               style={{
-                fontSize: '5px',
+                fontSize: '14px',
                 color: 'white',
                 backgroundColor: '#354c6fff',
                 borderRadius: '10px',
                 border: 'none',
-              }}
-            >
-              중복검사
+              }}>
+              확인
             </button>
           </div>
 
@@ -126,15 +121,13 @@ function SignupPage() {
           <div className={style.SignupPageInputTitle}>비밀번호</div>
           <input
             className={`SignupPageInput form-control ${style.SignupPageInput}`}
-            style={{ fontSize: '12px', width: '200px' }}
-          />
+            style={{ fontSize: '12px', width: '200px' }}/>
 
           {/* 비밀번호 확인 */}
           <div className={style.SignupPageInputTitle}>비밀번호 확인</div>
           <input
             className={`SignupPageInput form-control ${style.SignupPageInput}`}
-            style={{ fontSize: '12px', width: '200px' }}
-          />
+            style={{ fontSize: '12px', width: '200px' }}/>
         </div>
 
         <div className={style.SignupPageBottomBtn}>

@@ -79,7 +79,7 @@ function Loginpage() {
           </div>
         </div>
       </div>
-        <div className={style.loginbuttondiv}>
+        <div>
           <button disabled={notAllow}
           class="btn btn-outline-secondary"
           className={style.loginbtn}>
