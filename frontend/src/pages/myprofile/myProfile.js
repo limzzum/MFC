@@ -4,6 +4,7 @@ import profileImage from '../../images/img.jpg';
 import settingIcon from '../../images/settingIcon.png';
 import "bootstrap/dist/css/bootstrap.min.css";
 import { Button, Row } from "react-bootstrap";
+import { Link } from 'react-router-dom';
 
 function MyProfile() {
   const [selectedImage, setSelectedImage] = useState(null);
@@ -65,8 +66,13 @@ function MyProfile() {
                     <button className="btn btn-outline-secondary" type="button">
                       중복확인
                     </button>
-                  </div>
+                  </div>                 
                 </div>
+                <div>
+                  <Link to="/pages/passwordchange/passwordChangePage/:userId" className={`${styles.pwText}`}>
+            비밀번호변경
+                </Link>
+                </div> 
               </li>
             </ul>
           </div>
