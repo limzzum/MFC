@@ -19,7 +19,7 @@ function ItemStore() {
         <div className={`${styles.itemBox} mx-auto`}>
         <FontAwesomeIcon icon={faHeartCirclePlus} size="3x" color="red" />
           <div className="pt-4">포션</div>
-          <div>
+          <div className="my-1">
           <FontAwesomeIcon icon={faCoins} color="orange" />
            145</div>
           <Button className="btn btn-primary">구입하기</Button>

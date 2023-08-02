@@ -8,6 +8,7 @@ import SignupPage from './pages/signup/signupPage';
 import MainPage from './pages/main/mainPage';
 import MyProfilePage from './pages/myprofile/myProfile';
 import RankingPage from './pages/ranking/ranking';
+import ItemPage from './pages/item/itemPage';
 
 function App() {
   return (
@@ -36,6 +37,9 @@ function App() {
             <li>
               <Link to='/pages/main/mainPage'>mainPage</Link>
             </li>
+            <li>
+              <Link to='/pages/item/itempage'>itemPage</Link>
+            </li>
           </ul>
         </nav>
         <Routes>
@@ -54,6 +58,8 @@ function App() {
           <Route path='/pages/myprofile/myProfile' element={<MyProfilePage/>}>
           </Route>
           <Route path='/pages/ranking/ranking' element={<RankingPage/>}>
+          </Route>
+          <Route path='/pages/item/itempage' element={<ItemPage/>}>
           </Route>
         </Routes>
       </div>
