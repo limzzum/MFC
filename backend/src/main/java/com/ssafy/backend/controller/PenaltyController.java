@@ -2,6 +2,7 @@ package com.ssafy.backend.controller;
 
 import com.ssafy.backend.dto.Message;
 import com.ssafy.backend.dto.request.AddPenaltyDto;
+import com.ssafy.backend.dto.response.PenaltyDto;
 import com.ssafy.backend.entity.Penalty;
 import com.ssafy.backend.entity.PenaltyCode;
 import com.ssafy.backend.entity.User;
@@ -11,11 +12,9 @@ import com.ssafy.backend.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/penalty")
@@ -29,19 +28,10 @@ public class PenaltyController {
 
   @PostMapping
   public ResponseEntity<Message> addPenalty(@RequestBody AddPenaltyDto request) {
-    System.out.println(request.getUserId());
-    System.out.println(request.getPenaltyTime());
-    System.out.println(request.getRoomId());
-    System.out.println(request.getPenaltyCodeId());
-    System.out.println(ResponseEntity.ok().toString());
-
     User user = userService.findById(request.getUserId()); // User 조회
-    System.out.println(user.getNickname());
     PenaltyCode penaltyCode = penaltyCodeService.findByCode(
         request.getPenaltyCodeId()); // PenaltyCode 조회
-    System.out.println(penaltyCode.getName());
 
-    System.out.println(penaltyCode);
     Penalty penalty = Penalty.builder()
         .penaltyCode(penaltyCode)
         .user(user)
@@ -49,17 +39,25 @@ public class PenaltyController {
         .build();
     penaltyService.save(penalty);
 
-    Message message = new Message(HttpStatus.CREATED, "penalty 등록 완료", request);
+    Message message = new Message(HttpStatus.CREATED, "패널티 등록 완료", request);
     return ResponseEntity.ok(message);
   }
 
   @GetMapping
   public ResponseEntity<Message> getPenaltyCode() {
-    System.out.println(penaltyService.findAllPenalty());
+    Message message = new Message(HttpStatus.OK, "패널티 코드 조회 완료", penaltyCodeService.findAll());
+    return ResponseEntity.ok(message);
+  }
 
-    Message message = new Message(HttpStatus.OK, "penaltycode 조회 완료",
-        penaltyService.findAllPenalty());
-//    Message message = new Message(HttpStatus.OK, "penaltycode 조회 완료", penaltyCodeService.findAll());
+  @GetMapping("/list/{roomId}/{userId}")
+  public ResponseEntity<Message> getPenaltyListById(@PathVariable Long roomId, @PathVariable Long userId) {
+    List<PenaltyDto> penaltyDtoList = penaltyService.findAllPenalty(userId);
+    Message message = new Message(HttpStatus.OK, "패널티 조회 성공",
+            penaltyDtoList);
+    if(penaltyDtoList.isEmpty()){
+      message.setMessage("조회된 패널티가 없습니다.");
+      return ResponseEntity.ok(message);
+    }
     return ResponseEntity.ok(message);
   }
 
