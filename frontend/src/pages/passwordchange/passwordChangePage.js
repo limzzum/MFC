@@ -1,6 +1,7 @@
 import { useState } from "react";
-import styles from './passwordChange.module.css';
+import style from './passwordChange.module.css';
 import "bootstrap/dist/css/bootstrap.min.css";
+import logoImage from "../../images/logo.png"
 import { Container, Button, Row } from "react-bootstrap";
 
 function PasswordChangePage() {
@@ -26,52 +27,65 @@ function PasswordChangePage() {
   };
 
   return (
-    <div className={styles.container}>
-      <p className={`px-3 ${styles.title}`}>비밀번호 변경</p>
+    <div className={style.wrapper}>
+      <div className={style.innerContent}>
+        <img className={style.logoImage} src={logoImage} alt='none'></img>
+        <p className={style.MFC}>Mouth Fighting Championship</p>
+      </div>
       <div>
         <hr />
+        <p className={`px-3 ${style.title}`}>비밀번호 변경</p>
+        <hr />
+        <div className={`${style.contentWrap}`}>
         <form onSubmit={passwordSubmit}>
-          <div className={styles.profileText}>
-              <li>
+          <div className={style.profileText}>
+            <div className={style.inputtitle}>현재비밀번호</div>
+              <div className={style.inputWrap}>  
                 <input
-                  className="form-control"
+                  className="input form-control w-50"
                   type="password"
                   placeholder="현재 비밀번호"
                   value={currentPassword}
+                  style={{ fontSize: '12px'}}
                   onChange={(e) => setCurrentPassword(e.target.value)}
                 />
-              </li>
-              <li>
+              </div>
+              <div className={style.inputtitle}>변경 비밀번호</div>
+                <div className={style.inputWrap}></div>
                 <input
-                  className="form-control"
+                  className="input form-control w-50"
                   type="password"
                   placeholder="변경할 비밀번호"
                   value={newPassword}
+                  style={{ fontSize: '12px'}}
                   onChange={(e) => setNewPassword(e.target.value)}
                 />
+                <div className={style.inputtitle}>비밀번호 확인</div>
+                <div className={style.inputWrap}></div>
                 <input
-                  className="form-control"
+                  className="input form-control w-50"
                   type="password"
                   placeholder="비밀번호 확인"
                   value={confirmPassword}
+                  style={{ fontSize: '12px'}}
                   onChange={(e) => setConfirmPassword(e.target.value)}
                 />
-              </li>
-          </div>
-          <Container>
-            <Row>
-              <div className="col-4  mx-auto">
-                <Button
-                  className="w-100 mb-4"
-                  variant="primary"
-                  type="submit"
-                >
-                  변경
-                </Button>
-              </div>
-            </Row>
-          </Container>
-        </form>
+            </div>
+            <Container>
+              <Row>
+                <div className="col-4 mx-auto">
+                  <Button
+                    className="w-100 mb-4"
+                    variant="primary"
+                    type="submit"
+                  >
+                    변경
+                  </Button>
+                </div>
+              </Row>
+            </Container>
+          </form>
+        </div>
       </div>
     </div>
   );

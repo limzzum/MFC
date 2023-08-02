@@ -10,11 +10,12 @@ import org.hibernate.annotations.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
+@Builder
 public class User {
 
     @Id
     @GeneratedValue
-    int id;
+    Long id;
 
     @NotNull
     String email;
@@ -32,7 +33,6 @@ public class User {
     @ColumnDefault("false")
     boolean isDeleted;
 
-    @Column(name = "item_code_id")
     @ManyToOne
     @JoinColumn(name = "item_code_id")
     ItemCode colorItem;
