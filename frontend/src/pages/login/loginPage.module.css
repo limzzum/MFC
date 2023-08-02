@@ -38,12 +38,18 @@
 .errorMessageWrap {
   font-size: 5px;
   color: red;
+  
+}
+.errorMessageWrap div {
+  text-align: inherit;
+  font-size: inherit;
 }
 .inputtitle {
-  font-size: x-small;
+  font-size: 18px;
   font-weight: 700;
   color: var(--blue-800);
 }
+
 .loginbtn {
   width: 50%;
   height: 30px;
@@ -63,12 +69,14 @@
   color: var(--blue-800);
   font-weight: 800;
   margin-right: 20%;
+  font-size: 12px;
 }
 .signup {
   border: 0;
   background: 0;
   color: var(--blue-800);
-  font-weight: 800;
+  font-weight: 800;  
+  font-size: 12px;
 }
 
 .horizontal-list {
