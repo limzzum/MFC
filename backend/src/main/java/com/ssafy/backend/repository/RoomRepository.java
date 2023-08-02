@@ -10,7 +10,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface RoomRepository extends JpaRepository<Room, Long> {
-    Page<Room> findByStatus(Status status, Pageable pageable);
+    Page<Room> findByIdLessThanAndStatusOrderByIdDesc(Long minRoomId, Status status, Pageable pageable);
 
 
 
