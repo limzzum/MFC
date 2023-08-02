@@ -8,6 +8,7 @@ import { Link } from 'react-router-dom';
 
 function MyProfile() {
   const [selectedImage, setSelectedImage] = useState(null);
+  // const { userId } = useParams();
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
