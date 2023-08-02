@@ -1,11 +1,15 @@
 package com.ssafy.backend.service;
 
+import com.ssafy.backend.dto.request.RoomInfoRuquestDto;
+import com.ssafy.backend.dto.response.RoomInfoResponseDto;
 import com.ssafy.backend.dto.response.RoomListDto;
-import com.ssafy.backend.entity.Player;
-import com.ssafy.backend.entity.Room;
-import com.ssafy.backend.entity.Status;
+import com.ssafy.backend.entity.*;
+import com.ssafy.backend.repository.CategoryCodeRepository;
+import com.ssafy.backend.repository.ParticipantRepository;
 import com.ssafy.backend.repository.PlayerRepository;
 import com.ssafy.backend.repository.RoomRepository;
+
+import java.util.ArrayList;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -23,15 +27,22 @@ public class RoomService {
 
     private final RoomRepository roomRepository;
     private final PlayerRepository playerRepository;
+    private final CategoryCodeRepository categoryCodeRepository;
+    private final ParticipantRepository participantRepository;
 
     public List<RoomListDto> ongoingRoomList(Long minRoomId, int size) {
         Pageable pageable = PageRequest.of(0,size);
         Page<Room> ongoingRooms = roomRepository.findByIdLessThanAndStatusOrderByIdDesc(minRoomId,
             Status.ONGOING, pageable);
 
-        List<RoomListDto> rooms = ongoingRooms.stream()
-                .map(this::convertToRoomListDto)
-                .collect(Collectors.toList());
+        List<RoomListDto> rooms;
+        if (ongoingRooms != null) {
+            rooms = ongoingRooms.stream()
+                    .map(this::convertToRoomListDto)
+                    .collect(Collectors.toList());
+        } else {
+            rooms = new ArrayList<>(); // 빈 리스트 반환
+        }
         return rooms;
     }
 
@@ -46,12 +57,28 @@ public class RoomService {
         return rooms;
     }
 
+    public List<RoomListDto> searchRoomsByKeyword(String keyword, Long minRoomId, int size) {
+        List<Room> rooms = roomRepository.searchRoomsByKeyword(keyword, minRoomId, PageRequest.of(0, size));
+        return rooms.stream()
+                .map(this::convertToRoomListDto)
+                .collect(Collectors.toList());
+    }
+
     private RoomListDto convertToRoomListDto(Room room) {
         // 여기서 각 토론방의 플레이어 정보를 가져와서 프로필 사진 URL 설정
         // 플레이어 repository에서 a토픽, b토픽 유저의 url 가져오기...
 
-        Player playerA = playerRepository.findFirstByRoomIdAndIsTopicTypeATrue(room.getId()).orElse(null);
-        Player playerB = playerRepository.findFirstByRoomIdAndIsTopicTypeAFalse(room.getId()).orElse(null);
+        List<Player> players = playerRepository.findAllByRoomId(room.getId());
+
+        Player playerA = players.stream()
+                .filter(Player::isTopicTypeA)
+                .findFirst()
+                .orElse(null);
+
+        Player playerB = players.stream()
+                .filter(player -> !player.isTopicTypeA())
+                .findFirst()
+                .orElse(null);
 
         String aTopicUserUrladdress = null;
         String bTopicUserUrladdress = null;
@@ -80,7 +107,7 @@ public class RoomService {
                 .talkTime(room.getTalkTime())
                 .maxPeople(room.getMaxPeople())
                 .curPeople(room.getCurPeople())
-                .overtimeCount(room.getOvertimeCount())
+                .overtimeCount(room.getOverTimeCount())
                 .status(roomStatus)
                 .aTopic(room.getATopic())
                 .bTopic(room.getBTopic())
@@ -89,6 +116,50 @@ public class RoomService {
                 .bTopicUserUrl(bTopicUserUrladdress) // 플레이어 B의 프로필 사진 URL
                 .categoryId(room.getCategoryCode().getId())
                 .build();
+    }
+
+    public Long createRoom(RoomInfoRuquestDto roomInfoRuquestDto) {
+        CategoryCode categoryCode = categoryCodeRepository.findById(1L).orElse(null);
+        Room room = Room.builder()
+                .totalTime(roomInfoRuquestDto.getTotalTime())
+                .talkTime(roomInfoRuquestDto.getTalkTime())
+                .maxPeople(roomInfoRuquestDto.getMaxPeople())
+                .overTimeCount(roomInfoRuquestDto.getOverTimeCount())
+                .aTopic(roomInfoRuquestDto.getATopic())
+                .bTopic(roomInfoRuquestDto.getBTopic())
+                .status(Status.WAITING)
+                .categoryCode(categoryCode)
+                .build();
+
+        roomRepository.save(room);
+        // Room 엔티티를 저장하고, 저장된 엔티티를 반환합니다.
+        return room.getId();
+    }
+
+    public RoomInfoResponseDto updateRoom(Long roomId, RoomInfoRuquestDto roomInfoRuquestDto) {
+        Room existingRoom = roomRepository.findById(roomId).orElse(null);
+
+        if (existingRoom == null) {
+            return null;
+        }
+
+        existingRoom.setTotalTime(roomInfoRuquestDto.getTotalTime());
+        existingRoom.setTalkTime(roomInfoRuquestDto.getTalkTime());
+        existingRoom.setMaxPeople(roomInfoRuquestDto.getMaxPeople());
+        existingRoom.setOverTimeCount(roomInfoRuquestDto.getOverTimeCount());
+        existingRoom.setATopic(roomInfoRuquestDto.getATopic());
+        existingRoom.setBTopic(roomInfoRuquestDto.getBTopic());
+
+        RoomInfoResponseDto roomInfoResponseDto = new RoomInfoResponseDto(existingRoom);
+        return roomInfoResponseDto;
+    }
+
+    public RoomInfoResponseDto getRoomInfoById(Long roomId) {
+        Room room = roomRepository.findById(roomId).orElse(null);
+        if (room == null) {
+            return null;
+        }
+        return new RoomInfoResponseDto(room);
     }
 
 
