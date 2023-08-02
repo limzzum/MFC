@@ -60,6 +60,6 @@ public class Room {
 
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "category_id")
-  private Category category;
+  private CategoryCode categoryCode;
 
 }
