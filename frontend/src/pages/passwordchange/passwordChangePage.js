@@ -2,7 +2,7 @@ import { useState } from "react";
 import style from './passwordChange.module.css';
 import "bootstrap/dist/css/bootstrap.min.css";
 import logoImage from "../../images/logo.png"
-import { Container, Button, Row } from "react-bootstrap";
+import { Button } from "react-bootstrap";
 
 function PasswordChangePage() {
   const [currentPassword, setCurrentPassword] = useState("");
@@ -34,46 +34,44 @@ function PasswordChangePage() {
       </div>
       <div>
         <hr />
-        <p className={`px-3 ${style.title}`}>비밀번호 변경</p>
+        <p className={`mx-3 ${style.title} mt-2`}>비밀번호 변경</p>
         <hr />
         <div className={`${style.contentWrap}`}>
         <form onSubmit={passwordSubmit}>
           <div className={style.profileText}>
             <div className={style.inputtitle}>현재비밀번호</div>
-              <div className={style.inputWrap}>  
+              <div className={style.inputWrap}>
                 <input
-                  className="input form-control w-50"
+                  className="input form-control w-100"
                   type="password"
                   placeholder="현재 비밀번호"
                   value={currentPassword}
-                  style={{ fontSize: '12px'}}
+                  style={{ fontSize: '18px'}}
                   onChange={(e) => setCurrentPassword(e.target.value)}
                 />
               </div>
               <div className={style.inputtitle}>변경 비밀번호</div>
                 <div className={style.inputWrap}></div>
                 <input
-                  className="input form-control w-50"
+                  className="input form-control w-100"
                   type="password"
                   placeholder="변경할 비밀번호"
                   value={newPassword}
-                  style={{ fontSize: '12px'}}
+                  style={{ fontSize: '18px'}}
                   onChange={(e) => setNewPassword(e.target.value)}
                 />
                 <div className={style.inputtitle}>비밀번호 확인</div>
                 <div className={style.inputWrap}></div>
                 <input
-                  className="input form-control w-50"
+                  className="input form-control w-100"
                   type="password"
                   placeholder="비밀번호 확인"
                   value={confirmPassword}
-                  style={{ fontSize: '12px'}}
+                  style={{ fontSize: '18px'}}
                   onChange={(e) => setConfirmPassword(e.target.value)}
                 />
             </div>
-            <Container>
-              <Row>
-                <div className="col-4 mx-auto">
+                <div className="mx-auto">
                   <Button
                     className="w-100 mb-4"
                     variant="primary"
@@ -82,8 +80,6 @@ function PasswordChangePage() {
                     변경
                   </Button>
                 </div>
-              </Row>
-            </Container>
           </form>
         </div>
       </div>
