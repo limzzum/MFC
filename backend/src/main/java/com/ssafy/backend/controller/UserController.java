@@ -1,6 +1,8 @@
 package com.ssafy.backend.controller;
 
 import com.ssafy.backend.dto.*;
+import com.ssafy.backend.dto.response.*;
+import com.ssafy.backend.security.*;
 import javax.validation.*;
 
 import com.ssafy.backend.dto.request.UserRegistDto;
@@ -17,19 +19,21 @@ import org.springframework.web.bind.annotation.*;
 @Slf4j
 public class UserController {
 
-    private final UserService service;
+    private final UserService userService;
+    private final SecurityService securityService;
 
     @PostMapping("/login")
-    public ResponseDto login(@RequestBody @Valid LoginForm loginForm, BindingResult result){
+    public Message login(@RequestBody @Valid LoginForm loginForm, BindingResult result){
         if(result.hasErrors()){
-            return new ResponseDto("로그인 형식이 올바르지 않습니다.", HttpStatus.BAD_REQUEST);
+            return new Message(HttpStatus.BAD_REQUEST, "로그인 형식이 올바르지 않습니다.", null);
         }
 
-        Long loginId = service.login(loginForm);
+        Long loginId = userService.login(loginForm);
         if(loginId == null){
-            return new ResponseDto("일치하는 사용자가 없습니다.", HttpStatus.OK);
+            return new Message(HttpStatus.OK, "일치하는 사용자가 없습니다.", null);
         }
-        return new ResponseDto(loginId, HttpStatus.OK);
+        String jwtToken = securityService.createJwtToken(String.valueOf(loginId));
+        return new Message(HttpStatus.OK, "일치하는 사용자가 없습니다.", new LoginResultDto(loginId,jwtToken));
     }
 
     @PostMapping
@@ -38,7 +42,7 @@ public class UserController {
             return new ResponseDto("입력값이 올바르지 않습니다.", HttpStatus.BAD_REQUEST);
         }
 
-        Long savedId = service.regist(user);
+        Long savedId = userService.regist(user);
         return new ResponseDto(savedId, HttpStatus.OK);
     }
 
