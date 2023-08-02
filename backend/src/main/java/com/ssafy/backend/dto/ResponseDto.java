@@ -4,6 +4,7 @@ import lombok.*;
 
 @Data
 @AllArgsConstructor
-public class ResponseDto<T> {
+public class ResponseDto<T,HttpStatus> {
     private T data;
+    private HttpStatus status;
 }

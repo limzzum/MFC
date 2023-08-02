@@ -1,38 +1,43 @@
 package com.ssafy.backend.service;
 
 import com.ssafy.backend.dto.*;
+import com.ssafy.backend.dto.request.UserRegistDto;
 import com.ssafy.backend.entity.*;
-import com.ssafy.backend.repository.*;
-import java.util.*;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.boot.test.context.*;
+import org.springframework.transaction.annotation.Transactional;
 
 @SpringBootTest
+@Transactional
 class UserServiceTest {
 
     private final UserService service;
 
     @Autowired
-
     UserServiceTest(UserService service) {
         this.service = service;
     }
 
+    @BeforeEach
+    void before(){
+
+    }
+
     @Test
     void regist() {
-        User user = User.builder().email("ssafy@samsung.com").nickname("ssafy").password("alalala").profile(null).isDeleted(false).colorItem(null).build();
+        UserRegistDto user = UserRegistDto.builder().email("ssafy@samsung.com").nickname("ssafy").password("alalala").profile(null).build();
 
-        System.out.println(user);
         Long savedId = service.regist(user);
+        User findUser = service.findUser(savedId);
 
-        Assertions.assertEquals(service.findUser(savedId).getId(), user.getId());
-        Assertions.assertEquals(service.findUser(savedId).getEmail(), user.getEmail());
+        Assertions.assertEquals(findUser.getPassword(), user.getPassword());
+        Assertions.assertEquals(findUser.getEmail(), user.getEmail());
     }
 
     @Test
     void login() {
-        User user = User.builder().email("ssafy@samsung.com").nickname("ssafy").password("alalala").profile(null).isDeleted(false).colorItem(null).build();
+        UserRegistDto user = UserRegistDto.builder().email("ssafy@samsung.com").nickname("ssafy").password("alalala").profile(null).build();
         Long savedId = service.regist(user);
 
         LoginForm success_loginForm = new LoginForm("ssafy@samsung.com", "alalala");
