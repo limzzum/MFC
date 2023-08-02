@@ -2,15 +2,16 @@ import React, { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom';
 import logoImage from "../../images/logo.png"
 import style from "./loginPage.module.css"
-
+import axios from 'axios'
 
 function Loginpage() {
   const [email, setEmail] = useState('') 
   const [pw, setPw] = useState('')
-
   const [emailValid, setEmailValid] = useState(false)
   const [pwValid, setPwValid] = useState(false)
   const [notAllow, setNotAllow] = useState(true)
+  const [token, setToken] = useState('');
+
 
   useEffect(() => {
     if(emailValid && pwValid) {
@@ -40,6 +41,18 @@ function Loginpage() {
     setPwValid(false);
   }
   }
+
+  const handleLogin = async () => {
+    try {
+      const response = await axios.post('/api/login', { email, pw }); // 실제 서버 주소 및 API 경로에 맞게 수정
+      const { token } = response.data;
+      setToken(token);
+      localStorage.setItem('token', token); // 토큰을 로컬 스토리지에 저장
+      alert('로그인이 성공적으로 완료되었습니다.');
+    } catch (error) {
+      alert('아이디와 비밀번호를 확인해주세요.');
+    }
+  };
 
   return (
     <div className={style.wrapper}>
@@ -82,7 +95,8 @@ function Loginpage() {
         <div>
           <button disabled={notAllow}
           class="btn btn-outline-secondary"
-          className={style.loginbtn}>
+          className={style.loginbtn}
+          onClick={handleLogin}>
             로그인
          </button>
         </div>

@@ -44,7 +44,7 @@ function App() {
         </nav>
         <Routes>
           <Route path='/pages/login/loginPage' element={<LoginPage />} />
-          <Route path='/pages/passwordchange/passwordChangePage' element={<PasswordChangePage />} />
+          <Route path='/pages/passwordchange/passwordChangePage/:userId' element={<PasswordChangePage />} />
           <Route path='/pages/signup/signupPage' element={<SignupPage />} />
           <Route path='/pages/main/mainPage' element={<MainPage />} />
           <Route path='/pages/login/loginPage' element={<LoginPage/>}>
