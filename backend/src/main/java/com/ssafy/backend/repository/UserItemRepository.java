@@ -9,5 +9,5 @@ import java.util.List;
 
 public interface UserItemRepository extends JpaRepository<UserItem, Long> {
     @Query("select u from UserItem u join fetch u.itemCode WHERE u.user.id =:userId")
-    public List<UserItem> findAllUserItem(Long userId);
+    List<UserItem> findAllUserItem(Long userId);
 }
