@@ -2,8 +2,10 @@ package com.ssafy.backend.entity;
 
 import java.time.LocalDateTime;
 import javax.persistence.Column;
+import javax.persistence.ConstraintMode;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -31,11 +33,11 @@ public class Penalty {
   private LocalDateTime penaltyTime;
 
   @ManyToOne(targetEntity = PenaltyCode.class, fetch = FetchType.LAZY)
-  @JoinColumn(name = "penalty_code_id", insertable = false, updatable = false)
+  @JoinColumn(name = "penalty_code_id", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
   private PenaltyCode penaltyCode;
 
   @ManyToOne(targetEntity = User.class, fetch = FetchType.LAZY)
-  @JoinColumn(name = "user_id", insertable = false, updatable = false)
+  @JoinColumn(name = "user_id", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
   private User user;
 
 //  @Column(name = "user_id")

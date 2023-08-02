@@ -2,8 +2,10 @@ package com.ssafy.backend.entity;
 
 import java.time.LocalDateTime;
 import javax.persistence.Column;
+import javax.persistence.ConstraintMode;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -44,15 +46,15 @@ public class Participant {
   private LocalDateTime enterTime;
 
   @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "user_id")
+  @JoinColumn(name = "user_id", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
   private User users;
 
   @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "room_id")
+  @JoinColumn(name = "room_id", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
   private Room room;
 
   @OneToOne
-  @JoinColumn(name = "role_code_id")
+  @JoinColumn(name = "role_code_id", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
   private RoleCode roleCode;
 
 }
