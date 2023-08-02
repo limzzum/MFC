@@ -24,6 +24,6 @@ public class CategoryCode {
   private Long id;
 
   @Column(nullable = false, length = 10)
-  private int name;
+  private String name;
 
 }
