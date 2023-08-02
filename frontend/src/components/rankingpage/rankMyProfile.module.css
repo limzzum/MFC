@@ -1,10 +1,17 @@
+.historyBox {
+    display:flex;
+    width:350px;
+    height:200px;
+    text-align: center;
+    margin: 0 auto;
+}
 .boxProfile { 
     line-height: 14px;
-    width: 300px;
+    width: 400px;
     margin: 100px auto;
     padding-top: 30px;
-    border: 1px solid #dadada;
-    background: #fff;
+    border: 3px solid #dadada;
+    background: #E9EDF5FF;
 }
 .profileImage{
     height:50px;
@@ -18,15 +25,23 @@
 
 .rankingMyprofileText {
     text-align: center;
-    font-size: 18px;
+    font-size: 24px;
     font-family: Pretendard;
     margin-top:30px;
 }
 .rankProfileImage {
-    height: 100px;
-    width: 100px;
+    height: 150px;
+    width: 150px;
 }
 img {
     height: auto;
     width: 100%;
+}
+.historyText {
+    font-size: 0.8rem;
+    padding-top: 15px;
+}
+.historyItemBox {
+    width: 100px;
+    margin:0 auto;
 }
