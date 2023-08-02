@@ -37,8 +37,8 @@ function TextChatting(){
 
     return(
         <>
-            <div className={style.ChatArea} ref={chatAreaRef}>
-                <div className={style.chatMessages}>
+            <div className={style.ChatArea} >
+                <div className={style.chatMessages} ref={chatAreaRef}>
                     {chatMessages.map((message, index) => (
                         <div key={index} className={`${style.messageContainer} ${message.sender === "user" ? style.userMessage : style.otherMessage}`}>
                             <p className={style.sender}>
@@ -57,8 +57,9 @@ function TextChatting(){
                 placeholder="메시지를 입력하세요"
                 value={inputText}
                 onChange={handleInputChange}
+                className={style.inputChat}
                 />
-                <button onClick={handleSendMessage}>Send</button>
+                <button className={style.button} onClick={handleSendMessage}>전송</button>
                 <button onClick={handleReceiveMessage}>Receive Test</button>
             </div>
         </>
