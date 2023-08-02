@@ -14,11 +14,8 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+
+import lombok.*;
 
 @Entity
 @Table(name = "talkroom")
@@ -26,6 +23,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Getter
 @Builder
+@Setter
 public class Room {
 
   @Id
@@ -46,7 +44,7 @@ public class Room {
   private int curPeople;
 
   @Column(name = "overtime_count", nullable = false)
-  private int overtimeCount;
+  private int overTimeCount;
 
   @Enumerated(EnumType.STRING)
   private Status status;
