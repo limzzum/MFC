@@ -4,9 +4,12 @@ import profileImage from '../../images/img.jpg';
 import settingIcon from '../../images/settingIcon.png';
 import "bootstrap/dist/css/bootstrap.min.css";
 import { Button, Row } from "react-bootstrap";
+// import { useParams } from "react-router-dom";
+
 
 function MyProfile() {
   const [selectedImage, setSelectedImage] = useState(null);
+  // const { userId } = useParams();
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
