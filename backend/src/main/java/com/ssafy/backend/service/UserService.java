@@ -7,6 +7,8 @@ import com.ssafy.backend.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
+
 @Service
 @RequiredArgsConstructor
 public class UserService {
@@ -41,7 +43,10 @@ public class UserService {
   }
 
   public User findById(Long id) {
-    return repository.findById(id).get();
+    if(repository.findById(id).isEmpty())
+      return null;
+    else
+      return repository.findById(id).get();
   }
 
 }
