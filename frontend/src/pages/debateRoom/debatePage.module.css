@@ -16,10 +16,12 @@ ul {
 .col {
     border: 1px solid black;
     text-align: center;
+    align-items: center;
 }
 
 .col-2 {
     text-align: center;
+    align-items: center;
 }
 
 .debatePage {
@@ -102,13 +104,35 @@ ul {
     background-color: var(--blue-200);
     width: auto;
     height: 270px;
+    overflow-y: hidden;
+}
+
+.chatMessages{
+    max-height: 270px;
     overflow-y: auto;
+    scroll-behavior: smooth;
+}
+
+.chatMessages::-webkit-scrollbar {
+    width: 6px;
+}
+
+.chatMessages::-webkit-scrollbar-track {
+    background-color: var(--blue-200);
+}
+
+.chatMessages::-webkit-scrollbar-thumb {
+    background-color: var(--blue-500);
+    border-radius: var(--radius-md);
 }
 
 .messageContainer {
     display: flex;
     align-items: center;
     margin-bottom: var(--spacing-2);
+    width: 90%;
+    border-radius: var(--radius-md);
+
 }
 
 .sender{
@@ -125,11 +149,13 @@ ul {
 .userMessage{
     background-color: var(--blue-50);
     justify-content: flex-end;
+    margin-left: auto;
 }
 
 .otherMessage{
     background-color: var(--blue-400);
     justify-content: flex-start;
+    margin-right: auto;
 }
 
 .Btns {
@@ -176,4 +202,19 @@ ul {
     width: 200px;
     height: 150px;
     margin: var(--spacing-2);
+}
+
+.button {
+    background-color: var(--blue-700);
+    width: 70px;
+    height: 50px;
+    border-radius: var(--radius-md);
+    color: var(--white);
+    font-size: var(--text-size-md);
+}
+
+.inputChat {
+    width: 375px;
+    height: 50px;
+    border-radius: var(--radius-md);
 }
