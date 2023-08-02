@@ -51,12 +51,13 @@
 }
 
 .loginbtn {
+  background-color: var(--blue-800);
+  color: white;
   width: 50%;
   height: 30px;
   margin-top: 5px;
-  background-color: var(--blue-800);
+  margin-bottom: 10px;
   margin-left: 25%;
-  color: white;
   border-radius: 10px;
 }
 .bottomBtn {
