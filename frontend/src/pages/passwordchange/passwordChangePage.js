@@ -9,6 +9,8 @@ function PasswordChangePage() {
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
+  const regex = /^(?=.*[a-zA-z])(?=.*[0-9])(?=.*[$`~!@$!%*#^?&\\(\\)\-_=+])(?!.*[^a-zA-z0-9$`~!@$!%*#^?&\\(\\)\-_=+]).{8,20}$/;
+
   // 비밀번호 오류 처리
   const passwordSubmit = (event) => {
     event.preventDefault();
@@ -20,6 +22,10 @@ function PasswordChangePage() {
       alert("변경할 비밀번호와 비밀번호 확인이 일치하지 않습니다.");
       setNewPassword("")
       setConfirmPassword("")
+    } else if (!regex.test(newPassword)) {
+      alert("비밀번호는 영문자, 숫자, 특수문자를 포함하여 8자 이상 20자 이하여야 합니다.");
+      setNewPassword("");
+      setConfirmPassword("");
     } else {
       // 모든 조건이 만족 될때 구현 해야함
       console.log("Passwords match. Submitting form...");
