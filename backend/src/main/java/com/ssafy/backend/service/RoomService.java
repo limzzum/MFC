@@ -4,7 +4,7 @@ import com.ssafy.backend.dto.response.RoomListDto;
 import com.ssafy.backend.entity.Player;
 import com.ssafy.backend.entity.Room;
 import com.ssafy.backend.entity.Status;
-`import com.ssafy.backend.repository.PlayerRepository;
+import com.ssafy.backend.repository.PlayerRepository;
 import com.ssafy.backend.repository.RoomRepository;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
