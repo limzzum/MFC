@@ -2,7 +2,7 @@ import React, {useState, useEffect} from "react";
 import { Row, Col, Button, ProgressBar } from "react-bootstrap";
 import style from '../debatePage.module.css';
 
-function RoomInfo(){
+function RoomInfo({status, role, onStatusChange, onRoleChange}){
     const user1HP = 70;
     const user2HP = 100;
 

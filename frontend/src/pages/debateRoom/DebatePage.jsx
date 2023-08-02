@@ -1,4 +1,5 @@
 import React, {useState} from 'react';
+import {useStatus, useRole} from '../../recoil/debateStateAtom';
 import { Row, Col, Stack, Modal, Button} from 'react-bootstrap';
 import Header from './components/Header';
 import ScreenShare from './components/ScreenShare';
@@ -11,6 +12,18 @@ import RoomInfo from './components/RoomInfo';
 import style from './debatePage.module.css';
 
 function DebatePage() {
+
+  // recoil 상태를 사용하는 훅
+  const [status, setStatus] = useStatus();
+  const [role, setRole] = useRole();
+
+  const handleStatusChange = (newStatus) => {
+    setStatus(newStatus);
+  };
+
+  const handleRoleChange = (newRole) => {
+    setRole(newRole);
+  };
 
   const [showResultModal, setShowResultModal] = useState(false);
   const goToMainPage = () => {
@@ -27,18 +40,28 @@ function DebatePage() {
       </Row>
       <Row className='debatePart'>
         <Col xs={9}>
-          <RoomInfo/>
-          <Participate/>
+          <RoomInfo
+            status={status}
+            role={role}
+            onStatusChange={handleStatusChange}
+            onRoleChange={handleRoleChange}
+          />
+          <Participate role={role}/>
         </Col>
         <Col xs={3}>
           <Stack gap={1}>
-            <ScreenShare/>
+            <ScreenShare status={status} role={role} />
             <TextChatting/>
           </Stack>
         </Col>
       </Row>
       <Row>
-        <DebateBtns/>
+        <DebateBtns 
+          status={status}
+          role={role}
+          onStatusChange={handleStatusChange}
+          onRoleChange={handleRoleChange}
+        />
       </Row>
       <Row>
         <Spectator/>
