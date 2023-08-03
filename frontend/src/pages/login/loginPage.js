@@ -1,18 +1,18 @@
 import React, { useState, useEffect } from 'react'
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import logoImage from "../../images/logo.png"
 import style from "./loginPage.module.css"
 import axios from 'axios'
 
 function Loginpage() {
   const [email, setEmail] = useState('') 
-  const [pw, setPw] = useState('')
+  const [password, setPw] = useState('')
   const [emailValid, setEmailValid] = useState(false)
   const [pwValid, setPwValid] = useState(false)
   const [notAllow, setNotAllow] = useState(true)
   const [token, setToken] = useState('');
-
-
+  const navigate = useNavigate();
+  //이메일과 비밀번호 형식 확인하는 부분
   useEffect(() => {
     if(emailValid && pwValid) {
       setNotAllow(false);
@@ -42,13 +42,22 @@ function Loginpage() {
   }
   }
 
+  // 서버에 로그인 요청을 보내는 부분
+  
+  const serverAddress = 'http://i9a605.p.ssafy.io:8081/api/user/login'
   const handleLogin = async () => {
     try {
-      const response = await axios.post('/api/login', { email, pw }); // 실제 서버 주소 및 API 경로에 맞게 수정
-      const { token } = response.data;
-      setToken(token);
-      localStorage.setItem('token', token); // 토큰을 로컬 스토리지에 저장
-      alert('로그인이 성공적으로 완료되었습니다.');
+      const response = await axios.post(`${serverAddress}`, { email, password }); // 실제 서버 주소 및 API 경로에 맞게 수정
+      const token = response.data.data.accessToken;
+      if (token) {
+        setToken(token);
+        localStorage.setItem('token', token);
+        alert('로그인이 성공적으로 완료되었습니다.');
+        navigate('/pages/main/mainPage'); // 메인 페이지로 이동
+      } else {
+        alert('로그인에 실패하였습니다.');
+      }
+      localStorage.setItem('token', token);
     } catch (error) {
       alert('아이디와 비밀번호를 확인해주세요.');
     }
@@ -81,12 +90,12 @@ function Loginpage() {
             <input className={`${style.input} form-control w-50`}
             type='password' 
             placeholder='영문, 숫자, 특수문자 포함 8자 이상' 
-            value={pw}
+            value={password}
             onChange={handlePassword}
             style={{ fontSize: '12px' }}/>
           </div>
           <div className={style.errorMessageWrap}>
-            {!pwValid && pw.length > 0 && (
+            {!pwValid && password.length > 0 && (
               <div>영문, 숫자, 특수문자 포함 8자 이상 입력해주세요.</div>
             )}
           </div>
@@ -102,10 +111,10 @@ function Loginpage() {
         </div>
         
         <div className={style.bottomBtn}>
-          <Link to = '/FindPWPage'>
+          <Link to = ''>
             <button className={style.findPW} >비밀번호 찾기</button>
           </Link>
-          <Link to = '/SignupPage'>
+          <Link to = '/pages/signup/signupPage'>
             <button className={style.signup} >회원가입</button>
           </Link>
         </div>
