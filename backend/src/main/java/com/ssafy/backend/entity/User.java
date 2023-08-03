@@ -1,5 +1,6 @@
 package com.ssafy.backend.entity;
 
+import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.ConstraintMode;
 import javax.persistence.Entity;
@@ -14,6 +15,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
 
 @Entity(name = "user")
@@ -21,6 +23,7 @@ import org.hibernate.annotations.ColumnDefault;
 @AllArgsConstructor
 @Getter
 @Builder
+@Setter
 public class User {
 
   @Id
