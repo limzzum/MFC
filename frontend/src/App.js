@@ -1,6 +1,7 @@
 import React from 'react';
 import './App.css';
-import { BrowserRouter, Route, Routes, Link } from 'react-router-dom';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import NavBar from './components/navBar/navBar';
 import LoginPage from './pages/login/loginPage';
 import PasswordChangePage from './pages/passwordchange/passwordChangePage';
 import DebatePage from './pages/debateRoom/DebatePage';
@@ -14,7 +15,7 @@ function App() {
   return (
     <BrowserRouter>
       <div className='App'>
-        <nav>
+        {/* <nav>
           <ul className='horizontal-align'>
             <li>
               <Link to='/pages/login/loginPage'>loginPage</Link>
@@ -41,25 +42,22 @@ function App() {
               <Link to='/pages/item/itempage/:userId'>itemPage</Link>
             </li>
           </ul>
-        </nav>
+        </nav> */}
+        <NavBar />
         <Routes>
-          <Route path='/pages/login/loginPage' element={<LoginPage />} />
-          <Route path='/pages/passwordchange/passwordChangePage/:userId' element={<PasswordChangePage />} />
-          <Route path='/pages/signup/signupPage' element={<SignupPage />} />
-          <Route path='/pages/main/mainPage' element={<MainPage />} />
-          <Route path='/pages/login/loginPage' element={<LoginPage/>}>
-          </Route>
-          <Route path='/pages/passwordchange/passwordChangePage' element={<PasswordChangePage/>}>
-          </Route>
-          <Route path='/pages/debateRoom/debatePage.jsx' element={<DebatePage/>}>
+          <Route path='/login' element={<LoginPage />} />
+          <Route path='/pwChange/:userId' element={<PasswordChangePage />} />
+          <Route path='/signup' element={<SignupPage />} />
+          <Route path='/' element={<MainPage />} />
+          <Route path='/debateRoom' element={<DebatePage/>}>
           </Route>  
-          <Route path='/pages/signup/signupPage' element={<SignupPage/>}>
+          <Route path='/signup' element={<SignupPage/>}>
           </Route>
-          <Route path='/pages/myprofile/myProfile/:userId' element={<MyProfilePage/>}>
+          <Route path='/profile' element={<MyProfilePage/>}>
           </Route>
-          <Route path='/pages/ranking/ranking' element={<RankingPage/>}>
+          <Route path='/ranking' element={<RankingPage/>}>
           </Route>
-          <Route path='/pages/item/itempage/:userId' element={<ItemPage/>}>
+          <Route path='/item' element={<ItemPage/>}>
           </Route>
         </Routes>
       </div>
