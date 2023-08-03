@@ -13,4 +13,6 @@ public interface ParticipantRepository extends JpaRepository<Participant, Long> 
 
   Participant findAllByUserIdAndRoomId(Long userId, Long roomId);
 
+  Long countByIsVoteTypeAAndRoomIdAndRoleCodeIdNot(Boolean result, Long roomId, Long roleCodeId);
+
 }
