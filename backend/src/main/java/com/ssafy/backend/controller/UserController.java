@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @RequestMapping("/api/user")
 @Slf4j
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 public class UserController {
 
     private final UserService userService;
@@ -33,17 +34,18 @@ public class UserController {
             return new Message(HttpStatus.OK, "일치하는 사용자가 없습니다.", null);
         }
         String jwtToken = securityService.createJwtToken(String.valueOf(loginId));
-        return new Message(HttpStatus.OK, "일치하는 사용자가 없습니다.", new LoginResultDto(loginId,jwtToken));
+        return new Message(HttpStatus.OK, "로그인 성공", new LoginResultDto(loginId,jwtToken));
     }
 
     @PostMapping
-    public ResponseDto regist(@RequestBody @Valid UserRegistDto user, BindingResult result){
+    public Message regist(@RequestBody @Valid UserRegistDto user, BindingResult result){
         if(result.hasErrors()){
-            return new ResponseDto("입력값이 올바르지 않습니다.", HttpStatus.BAD_REQUEST);
+            return new Message( HttpStatus.BAD_REQUEST, "입력값이 올바르지 않습니다.", null);
         }
 
         Long savedId = userService.regist(user);
-        return new ResponseDto(savedId, HttpStatus.OK);
+        return new Message( HttpStatus.OK, "회원가입 성공", savedId);
     }
+
 
 }
