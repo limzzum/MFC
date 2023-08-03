@@ -23,6 +23,21 @@ spring:
     port: 6379
     host: 127.0.0.1
 
+  mail:
+    host: smtp.naver.com
+    port: 465
+    username: chfhddl1234@naver.com
+    password: SYXVKVH2LE8P
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+            required: true
+          ssl:
+            enable: true
+
 logging:
   level:
     org.hibernate.SQL: debug
