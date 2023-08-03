@@ -8,9 +8,9 @@ import { faCoins, faSprayCan, faCross, faHeartCirclePlus, faUserClock, faVolumeX
 function ItemStore() {
 
   return (
-    <div>
+    <div className="mt-4">
       <div className={styles.titleBox}>
-        <p>상점</p>
+        상점
       </div>
       <div className={styles.emptyBox}>
         <hr />
