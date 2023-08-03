@@ -1,49 +1,26 @@
+.profileBox {
+    font-family: Pretendard;
+    font-size: 15px;
+    text-align: center;
+    width: 100%;
+    margin: 5px auto;
+    display: flex;
+    padding: 5px 0;
+    background: #E9EDF5FF;
+    border-radius: 15px;
+
+}
+.contentBox {
+    width: 200px;
+    margin: auto 0;    
+}
 .rankText {
     font-family:Pretendard;
     font-size:14px;
     text-align: center;
     width: 500px;
-}
-
-.rankingImage{
-    height:50px;
-    width:50px;
-    position:relative;
-
-    margin-left:20px;
+    
 }
 .radiusImg {
     border-radius: 50%;
-}
-.wrapper {
-    width:1000px;
-    padding-top:15px
-}
-.rankProfile {
-    display: flex;
-}
-	
-.profileImage{
-    height:50px;
-    width:50px;
-    float:left;
-    position:relative;
-    display:flex;
-    margin-left:20px;
-}
-.radiusImg {
-    border-radius: 50%;
-}
-.rankProfileImg {
-  height:50px;
-  width:50px;
-  float: left;
-}
-.rankNick {
-    float: right;
-}
-.ranking {
-    text-align: center;
-    padding-top: 15px;
-    font-family: Pretendard;
 }
