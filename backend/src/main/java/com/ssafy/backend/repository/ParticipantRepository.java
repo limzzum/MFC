@@ -1,6 +1,7 @@
 package com.ssafy.backend.repository;
 
 import com.ssafy.backend.entity.Participant;
+import com.ssafy.backend.entity.Player;
 import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 
