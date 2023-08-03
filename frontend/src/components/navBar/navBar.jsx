@@ -36,7 +36,7 @@ function NavBar() {
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
                     />
-                    <button>
+                    <button className={style.btn}>
                         <img className={style.icon} src={searchIcon} alt='검색'/>
                     </button>
                 </form>
