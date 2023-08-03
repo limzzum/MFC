@@ -93,4 +93,10 @@ public class UserService {
     return message;
   }
 
+//  public User findByNickname(String nickname) {
+//    if(repository.findById(nickname).isEmpty())
+//      return null;
+//    else
+//      return repository.findById(id).get();
+//  }
 }
