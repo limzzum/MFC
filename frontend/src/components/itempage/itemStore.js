@@ -3,14 +3,14 @@ import { Button } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
 import styles from "./itemStore.module.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCoins, faSprayCan, faCross, faHeartCirclePlus, faUserClock, faVolumeXmark, faHand, faAngleDoubleUp } from "@fortawesome/free-solid-svg-icons";
+import { faCoins, faSprayCan, faCross, faHeartCirclePlus, faUserClock, faVolumeXmark, faHand } from "@fortawesome/free-solid-svg-icons";
 
 function ItemStore() {
 
   return (
-    <div>
+    <div className="mt-4">
       <div className={styles.titleBox}>
-        <p>상점</p>
+        상점
       </div>
       <div className={styles.emptyBox}>
         <hr />

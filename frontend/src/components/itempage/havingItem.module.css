@@ -6,10 +6,9 @@
 .itemBox {
     width: 150px;
     text-align: center;
+    padding-top:50px;
+    padding-bottom: 10px;
     font-size: 24px;
-    border: 1px solid rgb(153, 153, 153);
-    margin-bottom: 50px;
-    padding-top:10px;
 }
 .emptyBox{
     width: 1000px;
@@ -41,4 +40,6 @@ div {
 .textCoin {
     text-align: right;
     width: 150px;
+    font-size: 24px;
+    margin: auto 0;
 }

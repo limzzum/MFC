@@ -38,7 +38,7 @@ function App() {
               <Link to='/pages/main/mainPage'>mainPage</Link>
             </li>
             <li>
-              <Link to='/pages/item/itempage'>itemPage</Link>
+              <Link to='/pages/item/itempage/:userId'>itemPage</Link>
             </li>
           </ul>
         </nav>
@@ -59,7 +59,7 @@ function App() {
           </Route>
           <Route path='/pages/ranking/ranking' element={<RankingPage/>}>
           </Route>
-          <Route path='/pages/item/itempage' element={<ItemPage/>}>
+          <Route path='/pages/item/itempage/:userId' element={<ItemPage/>}>
           </Route>
         </Routes>
       </div>
