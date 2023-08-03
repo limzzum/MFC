@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {useStatus, useRole} from '../../recoil/debateStateAtom';
 import { Row, Col, Stack, Modal, Button} from 'react-bootstrap';
 import Header from './components/Header';
@@ -31,7 +31,13 @@ function DebatePage() {
     console.log('go to main page');
   };
 
-  // const state = 'waiting';
+  useEffect(() => {
+    if(status === 'done'){
+      setShowResultModal(true);
+    } else{
+      setShowResultModal(false);
+    }
+  }, [status]);
 
   return (
     <div className={style.debatePage}>
