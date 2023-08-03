@@ -4,10 +4,11 @@ import com.ssafy.backend.dto.*;
 import com.ssafy.backend.dto.response.*;
 import com.ssafy.backend.entity.*;
 import com.ssafy.backend.security.*;
+import com.ssafy.backend.service.*;
+import java.util.*;
 import javax.validation.*;
 
 import com.ssafy.backend.dto.request.UserRegistDto;
-import com.ssafy.backend.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.*;
 import org.springframework.http.*;
@@ -23,6 +24,7 @@ public class UserController {
 
     private final UserService userService;
     private final SecurityService securityService;
+    private final EmailService emailService;
 
     @PostMapping("/login")
     public Message login(@RequestBody @Valid LoginForm loginForm, BindingResult result){
@@ -67,4 +69,23 @@ public class UserController {
         return ResponseEntity.ok(new Message(HttpStatus.OK, "success", user));
     }
 
+    @DeleteMapping
+    public ResponseEntity<Message> delete(@RequestHeader("Authorization") String token){
+        Long userId = Long.valueOf(securityService.getSubject(token));
+        User user = userService.findUser(userId);
+
+        return ResponseEntity.ok(new Message(HttpStatus.OK, "success", user));
+    }
+
+    @GetMapping("/email")
+    public ResponseEntity<Message> signup(@RequestParam String email) {
+        System.out.println("email "+email);
+        // 회원 가입 로직...
+        String token = UUID.randomUUID().toString();
+        // 토큰 저장 로직...
+        String message = "Please click the following link to verify your email: " +
+            "<a href='http://your-domain.com/verify?token=" + token + "'>Verify</a>";
+        emailService.sendMail(email, "Please verify your email", message);
+        return ResponseEntity.ok(new Message(HttpStatus.ACCEPTED, "이메일 인증번호를 발송하였습니다.",null));
+    }
 }
