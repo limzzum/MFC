@@ -62,4 +62,10 @@ public class ViewerController {
     }
     return ResponseEntity.ok(message);
   }
+
+  @GetMapping("/vote/{roomId}")
+  public ResponseEntity<Message> voteResult(@PathVariable Long roomId){
+    Message message = new Message(HttpStatus.OK, "투표 결과 조회 성공", viewerService.voteResult(roomId));
+    return ResponseEntity.ok(message);
+  }
 }

@@ -1,5 +1,6 @@
 package com.ssafy.backend.service;
 
+import com.ssafy.backend.dto.response.voteResultDto;
 import com.ssafy.backend.entity.Participant;
 import com.ssafy.backend.entity.RoleCode;
 import com.ssafy.backend.entity.Room;
@@ -8,6 +9,8 @@ import com.ssafy.backend.repository.ParticipantRepository;
 import com.ssafy.backend.repository.RoomRepository;
 import com.ssafy.backend.repository.UserRepository;
 import java.time.LocalDateTime;
+import java.util.List;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -53,6 +56,17 @@ public class ViewerService {
       return false;
     }
     return true;
+  }
+
+
+  /*
+  * 플레이어를 제외한 참여자의 투표 결과를 출력
+  * */
+  public voteResultDto voteResult(Long roomId){
+    return new voteResultDto(
+            participantRepository.countByIsVoteTypeAAndRoomIdAndRoleCodeIdNot(true,roomId, 2L),
+            participantRepository.countByIsVoteTypeAAndRoomIdAndRoleCodeIdNot(false,roomId, 2L)
+    );
   }
 
   public boolean vote(Long userId, Long roomId, String result) {
