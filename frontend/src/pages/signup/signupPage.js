@@ -17,6 +17,7 @@ function SignupPage() {
   const [passwordValid, setPasswordValid] = useState(false);
   const [passwordMismatch, setPasswordMismatch] = useState(false);
 
+  // 이메일 형식 검사하는 부분
   const handleEmail = (e) => {
     setEmail(e.target.value);
     const regex = /^(([^<>()\[\].,;:\s@"]+(\.[^<>()\[\].,;:\s@"]+)*)|(".+"))@(([^<>()[\].,;:\s@"]+\.)+[^<>()[\].,;:\s@"]{2,})$/i;
@@ -27,6 +28,18 @@ function SignupPage() {
     }
   };
 
+  // 비밀번호 형식 검사하는 부분
+  const handlePassword = (e) => {
+    setPassword(e.target.value);
+    const regex = /^(?=.*[a-zA-z])(?=.*[0-9])(?=.*[$`~!@$!%*#^?&\\(\\)\-_=+])(?!.*[^a-zA-z0-9$`~!@$!%*#^?&\\(\\)\-_=+]).{8,20}$/;
+    if (regex.test(e.target.value)) {
+      setPasswordValid(true);
+    } else {
+      setPasswordValid(false);
+    }
+  };
+
+  // 인증 이메일 보내면 타이머가 작동하는 부분
   const handleSendEmailClick = () => {
     if (emailValid) {
       setTimer(180);
@@ -45,13 +58,25 @@ function SignupPage() {
     }
     return () => clearInterval(interval);
   }, [isActive, timer]);
-
   const formatTime = () => {
     const minutes = Math.floor(timer / 60);
     const seconds = timer % 60;
     return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
   };
+  
+  // 비밀번호 일치 확인하는 부분
+  useEffect(() => {
+    if (passwordConfirm !== password && passwordConfirm.length > 0) {
+      setPasswordMismatch(true);
+    } else {
+      setPasswordMismatch(false);
+    }
+  }, [passwordConfirm, password]);
 
+  //----------------------------------------------------------------------------------------------------------------
+  // 서버에 요청하는 부분
+
+  // 이메일 인증코드 전송하는 부분
   const handleAuthButtonClick = () => {
     axios
       .post('', { email, authCode }) // 실제 서버 주소에 맞게 수정
@@ -65,6 +90,7 @@ function SignupPage() {
       });
   };
 
+  // 닉네임 중복검사 하는 부분
   const handleNicknameButtonClick = () => {
     axios
       .post('/api/checkNickname', { nickname }) // 실제 서버 주소 및 API 경로에 맞게 수정
@@ -82,24 +108,7 @@ function SignupPage() {
       });
   };
 
-  const handlePassword = (e) => {
-    setPassword(e.target.value);
-    const regex = /^(?=.*[a-zA-z])(?=.*[0-9])(?=.*[$`~!@$!%*#^?&\\(\\)\-_=+])(?!.*[^a-zA-z0-9$`~!@$!%*#^?&\\(\\)\-_=+]).{8,20}$/;
-    if (regex.test(e.target.value)) {
-      setPasswordValid(true);
-    } else {
-      setPasswordValid(false);
-    }
-  };
-
-  useEffect(() => {
-    if (passwordConfirm !== password && passwordConfirm.length > 0) {
-      setPasswordMismatch(true);
-    } else {
-      setPasswordMismatch(false);
-    }
-  }, [passwordConfirm, password]);
-
+  // 회원가입 요청 보내는 부분  
   const handleSignupButtonClick = () => {
     if (!emailValid || !passwordValid || passwordMismatch || !nicknameAvailable || !authCodeValid) {
       // authCodeValid도 검사에 추가
