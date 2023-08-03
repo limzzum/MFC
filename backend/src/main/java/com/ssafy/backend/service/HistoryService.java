@@ -2,6 +2,7 @@ package com.ssafy.backend.service;
 
 import com.ssafy.backend.dto.request.HistoryReqDto;
 import com.ssafy.backend.dto.response.HistoryResDto;
+import com.ssafy.backend.dto.response.RoomFinToPlayerDto;
 import com.ssafy.backend.entity.History;
 import com.ssafy.backend.repository.HistoryRepository;
 import java.util.List;
@@ -32,6 +33,23 @@ public class HistoryService {
     }
   }
 
+  public void roomFin(RoomFinToPlayerDto roomFinToPlayerDto,Long userId) {
+    History orgHistory = historyRepository.findHistoryByUserId(userId);
+    if(orgHistory != null) {
+      int coin = orgHistory.getCoin() + roomFinToPlayerDto.getUserGetCoin();
+      int exp = orgHistory.getExperience() + roomFinToPlayerDto.getUserGetExp();
+      orgHistory.setCoin(coin);
+      orgHistory.setExperience(exp);
+      if(roomFinToPlayerDto.getResult() == "win") {
+        orgHistory.setWinCount(orgHistory.getWinCount() + 1);
+      }else if(roomFinToPlayerDto.getResult() == "lose"){
+        orgHistory.setLoseCount(orgHistory.getLoseCount() + 1);
+      }else {
+        orgHistory.setDrawCount(orgHistory.getDrawCount() + 1);
+      }
+      historyRepository.save(orgHistory);
+    }
+  }
   /*
    * 승리 카운트 메서드
    * */

@@ -1,8 +1,12 @@
 package com.ssafy.backend.controller;
 import com.ssafy.backend.dto.Message;
 import com.ssafy.backend.dto.request.RoomInfoRuquestDto;
+import com.ssafy.backend.dto.response.RoomFinToPlayerDto;
 import com.ssafy.backend.dto.response.RoomInfoResponseDto;
 import com.ssafy.backend.dto.response.RoomListDto;
+import com.ssafy.backend.entity.Participant;
+import com.ssafy.backend.entity.Room;
+import com.ssafy.backend.service.HistoryService;
 import com.ssafy.backend.service.ParticipantService;
 import com.ssafy.backend.service.RoomService;
 import java.util.List;
@@ -18,6 +22,7 @@ public class RoomController {
 
     private final RoomService roomService;
     private final ParticipantService participantService;
+    private final HistoryService historyService;
 
     @GetMapping("/list/ongoing")
     public ResponseEntity<?> ongoingRoomList(@RequestParam Long minRoomId,@RequestParam int size) {
@@ -78,6 +83,15 @@ public class RoomController {
         if(message.getStatus() == HttpStatus.OK) {
             participantService.resetParticipants(roomId);
             message.setMessage("토론방 관련 정보 리셋 성공");
+        }
+        return ResponseEntity.ok(message);
+    }
+
+    @GetMapping("result/{roomId}/{userId}")
+    public ResponseEntity<?> roomFinInfo(@PathVariable Long roomId, @PathVariable  Long userId) {
+        Message message = roomService.roomFin(userId,roomId);
+        if(message.getMessage().equals("플레이어에게 토론 결과 보내기 성공")) {
+            historyService.roomFin((RoomFinToPlayerDto) message.getData(),userId);
         }
         return ResponseEntity.ok(message);
     }
