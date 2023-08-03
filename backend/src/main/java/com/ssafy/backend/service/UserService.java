@@ -27,7 +27,7 @@ public class UserService {
   public Long regist(UserRegistDto user) {
     User registUser = User.builder().email(user.getEmail()).nickname(user.getNickname())
         .password(user.getPassword())
-        .profile(user.getProfile()).build();
+        .isDeleted(false).colorItem(null).profile(user.getProfile()).build();
     User saved = repository.save(registUser);
     return saved.getId();
   }
