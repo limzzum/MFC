@@ -8,6 +8,7 @@ import com.ssafy.backend.entity.ItemCode;
 import com.ssafy.backend.entity.User;
 import com.ssafy.backend.repository.HistoryRepository;
 import com.ssafy.backend.repository.UserRepository;
+
 import java.util.Optional;
 
 import lombok.RequiredArgsConstructor;
@@ -97,8 +98,14 @@ public class UserService {
             return true;
         }
         return false;
+    }
 
-
+    public boolean isUsedNickname(String nickname) {
+        Optional<User> user = repository.findByNickname(nickname);
+        if (user.isPresent()) {
+            return true;
+        }
+        return false;
     }
 
 
