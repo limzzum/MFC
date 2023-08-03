@@ -9,10 +9,7 @@ import com.ssafy.backend.service.ViewerService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/viewer")
@@ -56,5 +53,13 @@ public class ViewerController {
     return ResponseEntity.ok(message);
   }
 
-
+  @PatchMapping("/vote/{roomId}/{userId}")
+  public ResponseEntity<Message> voteTopic(@PathVariable Long roomId, @PathVariable Long userId, @RequestParam(name = "vote") String selectedTopic){
+    Message message = new Message(HttpStatus.OK, "투표 성공", null);
+    if(!viewerService.vote(userId,roomId,selectedTopic)){
+      message.setStatus(HttpStatus.BAD_REQUEST);
+      message.setMessage("일정 시간 후 재투표가 가능합니다.");
+    }
+    return ResponseEntity.ok(message);
+  }
 }
