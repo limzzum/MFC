@@ -4,7 +4,7 @@ import styles from "./havingItem.module.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCoins, faCross, faHeartCirclePlus, faUserClock, faVolumeXmark, faHand, faAngleDoubleUp } from "@fortawesome/free-solid-svg-icons";
 
-function HavingItem({ userItems }) {
+function HavingItem({ userItems, userCoin }) {
 
   const potionItem = userItems.find(item => item.data.name === "포션");
   const potionCount = potionItem ? potionItem.data.count : 0;
@@ -28,7 +28,7 @@ function HavingItem({ userItems }) {
         <div className="my-auto">
         <FontAwesomeIcon icon={faCoins} color="orange"/>
         </div>
-        <div className={styles.textCoin}>456 Coin</div>
+        <div className={styles.textCoin}>{userCoin} Coin</div>
       </div>
       <div className={styles.emptyBox}>
         <hr />

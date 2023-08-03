@@ -15,4 +15,6 @@ public interface HistoryRepository extends JpaRepository<History, Long> {
   
   @Query("SELECT h FROM history h WHERE h.user.nickname LIKE %:keyword% ORDER BY h.experience DESC")
   Page<History> searchHistoryByKeyword(String keyword, Pageable pageable);
+
+  History findTopByUserId(Long userId);
 }
