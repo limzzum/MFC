@@ -3,7 +3,7 @@ import { Button } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
 import styles from "./itemStore.module.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCoins, faSprayCan, faCross, faHeartCirclePlus, faUserClock, faVolumeXmark, faHand, faAngleDoubleUp } from "@fortawesome/free-solid-svg-icons";
+import { faCoins, faSprayCan, faCross, faHeartCirclePlus, faUserClock, faVolumeXmark, faHand } from "@fortawesome/free-solid-svg-icons";
 
 function ItemStore() {
 

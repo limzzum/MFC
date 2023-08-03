@@ -3,13 +3,14 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import styles from "./havingItem.module.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCoins, faSprayCan, faCross, faHeartCirclePlus, faUserClock, faVolumeXmark, faHand, faAngleDoubleUp } from "@fortawesome/free-solid-svg-icons";
+import { Button } from "react-bootstrap";
 
 function HavingItem() {
   return (
     <div>
       <div className={styles.titleBox}>
         <div className={styles.title}>보유중인 아이템</div>
-        <div>
+        <div className="my-auto">
         <FontAwesomeIcon icon={faCoins} color="orange"/>
         </div>
         <div className={styles.textCoin}>456 Coin</div>
@@ -46,7 +47,8 @@ function HavingItem() {
         <div className={`${styles.itemBox} mx-auto`}>
           <FontAwesomeIcon icon={faSprayCan} size="3x" />
           <div className="pt-4">스프레이</div>
-          <div>145 Coin</div>
+          <div className="mb-2">145 Coin</div>
+          <Button>사용하기</Button>
         </div>
       </div>
     </div>
