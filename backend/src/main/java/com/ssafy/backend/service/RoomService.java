@@ -1,16 +1,22 @@
 package com.ssafy.backend.service;
 
+import com.ssafy.backend.dto.Message;
 import com.ssafy.backend.dto.request.RoomInfoRuquestDto;
 import com.ssafy.backend.dto.response.RoomInfoResponseDto;
 import com.ssafy.backend.dto.response.RoomListDto;
 import com.ssafy.backend.entity.CategoryCode;
+import com.ssafy.backend.entity.Participant;
 import com.ssafy.backend.entity.Player;
+import com.ssafy.backend.entity.RoleCode;
 import com.ssafy.backend.entity.Room;
 import com.ssafy.backend.entity.Status;
+import com.ssafy.backend.entity.User;
 import com.ssafy.backend.repository.CategoryCodeRepository;
 import com.ssafy.backend.repository.ParticipantRepository;
 import com.ssafy.backend.repository.PlayerRepository;
+import com.ssafy.backend.repository.RoleCodeRepository;
 import com.ssafy.backend.repository.RoomRepository;
+import com.ssafy.backend.repository.UserRepository;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -19,6 +25,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 @Transactional
@@ -30,6 +37,8 @@ public class RoomService {
   private final PlayerRepository playerRepository;
   private final CategoryCodeRepository categoryCodeRepository;
   private final ParticipantRepository participantRepository;
+  private final UserRepository userRepository;
+  private final RoleCodeRepository roleCodeRepository;
 
   public List<RoomListDto> ongoingRoomList(Long minRoomId, int size) {
     Pageable pageable = PageRequest.of(0, size);
@@ -120,7 +129,7 @@ public class RoomService {
         .build();
   }
 
-  public Long createRoom(RoomInfoRuquestDto roomInfoRuquestDto) {
+  public Long createRoom(Long userId, RoomInfoRuquestDto roomInfoRuquestDto) {
     CategoryCode categoryCode = categoryCodeRepository.findById(1L).orElse(null);
     Room room = Room.builder()
         .totalTime(roomInfoRuquestDto.getTotalTime())
@@ -132,11 +141,22 @@ public class RoomService {
         .status(Status.WAITING)
         .categoryCode(categoryCode)
         .build();
+    User user = userRepository.findById(userId).orElse(null);
+    RoleCode roleCode = roleCodeRepository.findById(3L).orElse(null);
+    // user 예외처리하기
+    Participant participant = Participant.builder()
+        .nickName(user.getNickname())
+        .isHost(true)
+        .user(user)
+        .room(room)
+        .roleCode(roleCode)
+        .build();
 
     roomRepository.save(room);
-    // Room 엔티티를 저장하고, 저장된 엔티티를 반환합니다.
+    participantRepository.save(participant);
     return room.getId();
   }
+
 
   public RoomInfoResponseDto updateRoom(Long roomId, RoomInfoRuquestDto roomInfoRuquestDto) {
     Room existingRoom = roomRepository.findById(roomId).orElse(null);
@@ -155,7 +175,6 @@ public class RoomService {
     RoomInfoResponseDto roomInfoResponseDto = new RoomInfoResponseDto(existingRoom);
     return roomInfoResponseDto;
   }
-
   public RoomInfoResponseDto getRoomInfoById(Long roomId) {
     Room room = roomRepository.findById(roomId).orElse(null);
     if (room == null) {
@@ -164,12 +183,28 @@ public class RoomService {
     return new RoomInfoResponseDto(room);
   }
 
+
   public void incrementRoomCurrentCount(Long roomId) {
     Room room = roomRepository.findById(roomId).orElse(null);
     if (room != null) {
       room.setCurPeople(room.getCurPeople() + 1);
       roomRepository.save(room);
     }
+  }
+
+  public Message roomReset(Long roomId) {
+    Room room = roomRepository.findById(roomId).orElse(null);
+    Message message = new Message();
+    if(room == null) {
+      message.setStatus(HttpStatus.BAD_REQUEST);
+      message.setMessage("해당 방을 찾을 수 없습니다.");
+    }else {
+      room.setStatus(Status.WAITING); // 이거 수정해야함 토론 결과 보여주는 메서드로
+      room.setStartTime(null);
+      roomRepository.save(room);
+      message.setStatus(HttpStatus.OK);
+    }
+    return message;
   }
 
 
