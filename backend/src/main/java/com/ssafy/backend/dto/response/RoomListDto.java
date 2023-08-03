@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class RoomListDto {
 
-    private Long talkRoomId;
+    private Long roomId;
     private int totalTime;
     private int talkTime;
     private int maxPeople;

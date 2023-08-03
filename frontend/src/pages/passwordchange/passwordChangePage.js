@@ -1,34 +1,70 @@
-import { useState } from "react";
+import React, { useState, useEffect } from "react";
 import style from './passwordChange.module.css';
 import "bootstrap/dist/css/bootstrap.min.css";
 import logoImage from "../../images/logo.png"
 import { Button } from "react-bootstrap";
+import { useParams } from "react-router-dom";
+import axios from "axios";
 
 function PasswordChangePage() {
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [validPassword, setValidPassword] = useState("")
+  const { userId } = useParams();
 
   const regex = /^(?=.*[a-zA-z])(?=.*[0-9])(?=.*[$`~!@$!%*#^?&\\(\\)\-_=+])(?!.*[^a-zA-z0-9$`~!@$!%*#^?&\\(\\)\-_=+]).{8,20}$/;
+
+  useEffect(() => {
+    fetchUserInfo();
+  }, []);
+
+  const fetchUserInfo = () => {
+    axios.get(`api/user/info/${userId}`)
+      .then(response => {
+        setValidPassword(response.data.password);
+      })
+      .catch(error => {
+        console.error("사용자 정보 가져오기 오류:", error);
+      });
+  };
+
+  const updatePassword = () => {
+    const updatedUser = {
+      password: newPassword,
+    };
+
+    axios.patch(`api/user/${userId}`, updatedUser)
+      .then(response => {
+        console.log(response);
+      })
+      .catch(error => {
+        console.error("비밀번호 업데이트 오류:", error);
+      });
+  };
+
 
   // 비밀번호 오류 처리
   const passwordSubmit = (event) => {
     event.preventDefault();
-    // 모든 칸이 채워지지 않았을 때
-    if (currentPassword.trim() === "" || newPassword.trim() === "" || confirmPassword.trim() === "") {
-      alert("모든 비밀번호 입력란을 채워주세요.");
-      // 바꿀 비밀번호가 확인 비밀번호와 같지 않을 때
-    } else if (newPassword !== confirmPassword) {
-      alert("변경할 비밀번호와 비밀번호 확인이 일치하지 않습니다.");
-      setNewPassword("")
-      setConfirmPassword("")
-    } else if (!regex.test(newPassword)) {
-      alert("비밀번호는 영문자, 숫자, 특수문자를 포함하여 8자 이상 20자 이하여야 합니다.");
-      setNewPassword("");
-      setConfirmPassword("");
+    
+    if (currentPassword.trim() == validPassword && newPassword === confirmPassword && regex.test(newPassword)) {
+      updatePassword();
     } else {
-      // 모든 조건이 만족 될때 구현 해야함
-      console.log("Passwords match. Submitting form...");
+    // 모든 칸이 채워지지 않았을 때
+      if (currentPassword.trim() === "" || newPassword.trim() === "" || confirmPassword.trim() === "") {
+        alert("모든 비밀번호 입력란을 채워주세요.");
+        // 바꿀 비밀번호가 확인 비밀번호와 같지 않을 때
+      } else if (newPassword !== confirmPassword) {
+        alert("변경할 비밀번호와 비밀번호 확인이 일치하지 않습니다.");
+        setNewPassword("")
+        setConfirmPassword("")
+        // 비밀번호의 조건
+      } else if (!regex.test(newPassword)) {
+        alert("비밀번호는 영문자, 숫자, 특수문자를 포함하여 8자 이상 20자 이하여야 합니다.");
+        setNewPassword("");
+        setConfirmPassword("");
+      } 
     }
   };
 

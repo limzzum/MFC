@@ -32,11 +32,11 @@ public class Penalty {
   @Column(name = "penalty_time", nullable = false)
   private LocalDateTime penaltyTime;
 
-  @ManyToOne(targetEntity = PenaltyCode.class, fetch = FetchType.LAZY)
+  @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "penalty_code_id", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
   private PenaltyCode penaltyCode;
 
-  @ManyToOne(targetEntity = User.class, fetch = FetchType.LAZY)
+  @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "user_id", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
   private User user;
 

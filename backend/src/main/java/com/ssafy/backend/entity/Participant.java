@@ -36,13 +36,13 @@ public class Participant {
   @Column(name = "is_vote_type_a")
   private Boolean isVoteTypeA;
 
-  @Column(name = "is_host", nullable = false, columnDefinition = "BOOLEAN default false")
+  @Column(name = "is_host", columnDefinition = "BOOLEAN default false")
   private boolean isHost;
 
   @Column(name = "vote_time")
   private LocalDateTime voteTime;
 
-  @Column(name = "enter_time", nullable = false)
+  @Column(name = "enter_time")
   private LocalDateTime enterTime;
 
   @ManyToOne(fetch = FetchType.LAZY)
@@ -50,7 +50,7 @@ public class Participant {
   private User users;
 
   @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "room_id", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
+  @JoinColumn(name = "talkroom_id", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
   private Room room;
 
   @OneToOne

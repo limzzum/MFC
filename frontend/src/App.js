@@ -29,7 +29,7 @@ function App() {
               <Link to='/pages/signup/signupPage'>signupPage</Link>
             </li>
             <li>
-              <Link to='/pages/myprofile/myProfile'>myProfilePage</Link>
+              <Link to='/pages/myprofile/myProfile/:userId'>myProfilePage</Link>
             </li>
             <li>
               <Link to='/pages/ranking/ranking'>rankingPage</Link>
@@ -44,7 +44,7 @@ function App() {
         </nav>
         <Routes>
           <Route path='/pages/login/loginPage' element={<LoginPage />} />
-          <Route path='/pages/passwordchange/passwordChangePage' element={<PasswordChangePage />} />
+          <Route path='/pages/passwordchange/passwordChangePage/:userId' element={<PasswordChangePage />} />
           <Route path='/pages/signup/signupPage' element={<SignupPage />} />
           <Route path='/pages/main/mainPage' element={<MainPage />} />
           <Route path='/pages/login/loginPage' element={<LoginPage/>}>
@@ -55,7 +55,7 @@ function App() {
           </Route>  
           <Route path='/pages/signup/signupPage' element={<SignupPage/>}>
           </Route>
-          <Route path='/pages/myprofile/myProfile' element={<MyProfilePage/>}>
+          <Route path='/pages/myprofile/myProfile/:userId' element={<MyProfilePage/>}>
           </Route>
           <Route path='/pages/ranking/ranking' element={<RankingPage/>}>
           </Route>

@@ -1,16 +1,19 @@
 package com.ssafy.backend.dto.request;
 
+
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Getter
-@Builder
-@NoArgsConstructor
+@Setter
 @AllArgsConstructor
-public class RoomCreateDto {
+@NoArgsConstructor
+public class HistoryReqDto {
 
-  private int totalTime;
+    private Long userId;
+    private int coin;
+    private int exp;
 
 }
