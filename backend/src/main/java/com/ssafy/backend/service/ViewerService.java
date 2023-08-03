@@ -26,11 +26,11 @@ public class ViewerService {
     User user = userRepository.findById(userId).get();
 //    RoleCode roleCode = roleCodeRepository.findById(Long.valueOf(3)).get();
     Participant participant = Participant.builder()
-        .nickName(user.getNickname())
-        .room(new Room(roomId))
-        .user(user)
-        .roleCode(new RoleCode(3L, ""))
-        .build();
+            .nickName(user.getNickname())
+            .room(new Room(roomId))
+            .user(user)
+            .roleCode(new RoleCode(3L, ""))
+            .build();
     participantRepository.save(participant);
     return participant;
   }
@@ -55,5 +55,28 @@ public class ViewerService {
     return true;
   }
 
+  public boolean vote(Long userId, Long roomId, String result) {
+    boolean isSelectedA = result.equals("A") ? true : false;
+    Participant participant = participantRepository.findAllByUserIdAndRoomId(userId, roomId);
 
+    if (participant != null) {
+      if (participant.getVoteTime() == null) {
+        participant.setVoteTime(LocalDateTime.now());
+        participant.setIsVoteTypeA(isSelectedA);
+      } else {
+        Room room = roomRepository.findById(roomId).get();
+        LocalDateTime newDateTime = participant.getVoteTime().plusMinutes(room.getTalkTime() * 2);
+        LocalDateTime nowDateTime = LocalDateTime.now();
+        if(nowDateTime.compareTo(newDateTime) > 0){ //마지막 투표 시간이 발언시간 *2가 넘은 경우
+          participant.setVoteTime(LocalDateTime.now());
+          participant.setIsVoteTypeA(isSelectedA);
+        }
+        else{
+          return false;
+        }
+      }
+      participantRepository.save(participant);
+    }
+    return true;
+  }
 }
