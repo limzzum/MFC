@@ -5,7 +5,7 @@ import { Button } from "react-bootstrap";
 import styles from "./itemStore.module.css";
 import axios from "axios";
 
-function Item({ icon, name, price, userCoin }) {
+function Item({ iconName, name, price, userCoin }) {
   const [purchasing, setPurchasing] = useState(false);
 
   const handlePurchase = () => {
@@ -29,8 +29,8 @@ function Item({ icon, name, price, userCoin }) {
 
   return (
     <div className={`${styles.itemBox} mx-auto`}>
-      <FontAwesomeIcon icon={icon} size="3x" />
-      
+      <FontAwesomeIcon icon={iconName} size="3x" />
+
       <div className="pt-4">{name}</div>
       <div className="my-1">
         <FontAwesomeIcon icon={faCoins} color="orange" />

@@ -13,7 +13,7 @@ function ItemStore({ allItems, userCoin }) {
         {allItems.map(item => (
           <Item
             key={item.name}
-            icon={item.icon}
+            iconName={item.iconName}
             name={item.name}
             price={item.price}
             userCoin = {userCoin}
