@@ -72,15 +72,15 @@ public class RoomController {
         return ResponseEntity.ok(message);
     }
 
-//    @PatchMapping("reset/{roomId}")
-//    public ResponseEntity<?> roomReset(@PathVariable Long roomId) {
-//        Message message = roomService.roomReset(roomId);
-//        if(message.getStatus() == HttpStatus.OK) {
-//            participantService.resetParticipants(roomId);
-//
-//        }
-//
-//    }
+    @PatchMapping("reset/{roomId}")
+    public ResponseEntity<?> roomReset(@PathVariable Long roomId) {
+        Message message = roomService.roomReset(roomId);
+        if(message.getStatus() == HttpStatus.OK) {
+            participantService.resetParticipants(roomId);
+            message.setMessage("토론방 관련 정보 리셋 성공");
+        }
+        return ResponseEntity.ok(message);
+    }
 
 
 }
