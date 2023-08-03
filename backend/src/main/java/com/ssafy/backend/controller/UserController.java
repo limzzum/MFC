@@ -58,5 +58,13 @@ public class UserController {
         return new Message( HttpStatus.OK, "회원가입 성공", savedId);
     }
 
+    @GetMapping
+    public ResponseEntity<Message> info(@RequestHeader("Authorization") String token){
+        System.out.println(securityService.getSubject(token));
+        Long userId = Long.valueOf(securityService.getSubject(token));
+        User user = userService.findUser(userId);
+
+        return ResponseEntity.ok(new Message(HttpStatus.OK, "success", user));
+    }
 
 }
