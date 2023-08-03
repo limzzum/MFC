@@ -22,7 +22,7 @@ public class LoginCheckInterCeptor implements HandlerInterceptor {
         if (HttpMethod.OPTIONS.matches(request.getMethod())) {
             return true;
         }
-        String accessToken = request.getHeader("access-token");
+        String accessToken = request.getHeader("Authorization");
 
         if(accessToken == null){
             log.info("미인증 사용자 요청");
