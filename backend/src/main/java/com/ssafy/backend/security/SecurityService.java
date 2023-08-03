@@ -25,13 +25,19 @@ public class SecurityService {
     @Value("${jwt.key}")
     private String SECRET_KEY;
 
-    public String createRefreshToken(int userNo){
+    public String createRefreshToken(Long userNo){
         String refreshToken = create(String.valueOf(userNo), expireMin*1000*60 * 5);
         redisUtil.set(String.valueOf(userNo), refreshToken, (int) (expireMin*5));
         return refreshToken;
     }
     public String createJwtToken(String subject){
         return create(String.valueOf(subject), expireMin*1000*60);
+    }
+
+    public void logout(Long userNo, String accessToken){
+        accessToken = accessToken.substring(7);
+        redisUtil.delete(String.valueOf(userNo));
+        redisUtil.setExcludeList(accessToken,"accessToken");
     }
 
     public String reCreateJwtToken(String refreshToken){
@@ -47,7 +53,7 @@ public class SecurityService {
         return null;
     }
 
-    public void deleteUserToken(int userNo){
+    public void deleteUserToken(Long userNo){
         redisUtil.delete(String.valueOf(userNo));
     }
 
@@ -68,6 +74,7 @@ public class SecurityService {
     }
 
     public String getSubject(String token){
+        token = token.substring(7);
         if(redisUtil.hasKeyExcludeList(token)){
             System.out.println("로그아웃함");
             throw new RuntimeException("이미 로그아웃하였습니다");
