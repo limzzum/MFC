@@ -1,13 +1,19 @@
 package com.ssafy.backend.service;
 
-import org.springframework.beans.factory.annotation.*;
-import org.springframework.mail.javamail.*;
-import org.springframework.stereotype.*;
+import com.ssafy.backend.dto.request.UserRegistDto;
+import com.ssafy.backend.util.RedisUtil;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.mail.javamail.MimeMessagePreparator;
+import org.springframework.stereotype.Service;
+
 
 @Service
 public class EmailService {
 
     private final JavaMailSender mailSender;
+    private RedisUtil redisUtil;
 
     @Autowired
     public EmailService(JavaMailSender mailSender) {
@@ -24,4 +30,18 @@ public class EmailService {
         };
         mailSender.send(messagePreparator);
     }
+
+    public void saveToken(String email, String token, UserRegistDto user){
+        redisUtil.setEmailTokenTemplate(email, token, 5);
+        redisUtil.setRegistUserTemplate(token, user, 5);
+    }
+
+    public String getEmailToken(String email){
+        return (String) redisUtil.getTokenByEmail(email);
+    }
+
+    public UserRegistDto getRegistUserInfo(String token){
+        return (UserRegistDto) redisUtil.getRegistUserInfo(token);
+    }
+
 }
