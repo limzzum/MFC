@@ -7,11 +7,12 @@ CREATE TABLE user (
     email VARCHAR(30) NOT NULL UNIQUE,
     password VARCHAR(100) NOT NULL,
     nick_name VARCHAR(24) NOT NULL UNIQUE,
-    proflie VARCHAR(100),
+    profile VARCHAR(100),
     is_deleted BOOLEAN NOT NULL DEFAULT false,
     regist_date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    item_code_id BIGINT NOT NULL
+    item_code_id BIGINT DEFAULT 1
 );
+
 
 CREATE TABLE talkroom (
 	talkroom_id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
