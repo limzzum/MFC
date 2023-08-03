@@ -7,10 +7,14 @@ function Participate(){
         <div>
             <Row>
                 <Col>
-                    <label className={style.video}></label>
+                    <label className={style.Participant}>
+                        <button className={style.button}>참가하기</button>
+                    </label>
                 </Col>
                 <Col>
-                    <label className={style.video}></label>
+                    <label className={style.Participant}>
+                        <button className={style.button}>참가하기</button>
+                    </label>
                 </Col>
             </Row>
         </div>
