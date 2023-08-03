@@ -19,4 +19,6 @@ public interface RoomRepository extends JpaRepository<Room, Long> {
             "AND r.id < :minRoomId " +
             "ORDER BY r.id DESC")
     List<Room> searchRoomsByKeyword(@Param("keyword") String keyword, @Param("minRoomId") Long minRoomId, Pageable pageable);
+
+
 }

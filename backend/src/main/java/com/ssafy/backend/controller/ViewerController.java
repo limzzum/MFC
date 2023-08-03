@@ -2,6 +2,8 @@ package com.ssafy.backend.controller;
 
 
 import com.ssafy.backend.dto.Message;
+import com.ssafy.backend.dto.response.RoomInfoResponseDto;
+import com.ssafy.backend.dto.response.RoomPeopleCountDto;
 import com.ssafy.backend.service.RoomService;
 import com.ssafy.backend.service.ViewerService;
 import lombok.RequiredArgsConstructor;
@@ -33,6 +35,24 @@ public class ViewerController {
     }
     //토론방 현재 인원 수 +1
     roomService.incrementRoomCurrentCount(roomId);
+    return ResponseEntity.ok(message);
+  }
+
+  @GetMapping("/{roomId}")
+  public ResponseEntity<Message> currentViewer(@PathVariable Long roomId){
+    Message message = new Message(HttpStatus.OK, "테스트", null);
+    RoomInfoResponseDto response = roomService.getRoomInfoById(roomId);
+    if(response == null) {
+      message.setStatus(HttpStatus.BAD_REQUEST);
+      message.setMessage("토론방이 없습니다.");
+    }
+    else {
+      RoomPeopleCountDto roomPeopleCountDto = new RoomPeopleCountDto();
+      roomPeopleCountDto.setValidCount(response.getMaxPeople());
+      roomPeopleCountDto.setCurrentCount(response.getCurPeople());
+      message.setMessage("토론방 인원 정보 조회 완료");
+      message.setData(roomPeopleCountDto);
+    }
     return ResponseEntity.ok(message);
   }
 
