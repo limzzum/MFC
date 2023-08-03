@@ -2,7 +2,7 @@ import React, {useState, useEffect} from "react";
 import {Row, Col, Button, Modal, Form} from "react-bootstrap";
 import style from '../debatePage.module.css';
 
-function DebateBtns({status, role, onRoleChange}){
+function DebateBtns(){
     const [showModal, setShowModal] = useState(false);
     const [selectedTopic, setSelectedTopics] = useState([]);
     const [isVotingEnabled, setVotingEnabled] = useState(true);
@@ -44,43 +44,29 @@ useEffect(() => {
         <div className={style.Btns}>
             <Row>
                 <Col xs={{span: 5}}>
-                    { role === 'participant' && 
-                        <Button variant="outline-primary">연장하기</Button>
-                    }
+                    <Button variant="outline-primary">연장하기</Button>
                 </Col>
                 <Col xs={{span: 5}}>
-                    { role === 'participant' &&
-                        <>
-                            <Button variant="outline-primary">연장하기</Button>
-                            <Button variant="outline-primary">항복하기</Button>
-                        </>
-                    }
+                    <Button variant="outline-primary">연장하기</Button>
+                    <Button variant="outline-primary">항복하기</Button>
                 </Col>
                 <Col xs={2}>
-                    { role === 'participant' && 
-                        <Button variant="outline-primary" onClick={() => onRoleChange('spectator')}>관전자로 돌아가기</Button>
-                    }
+                    <Button variant="outline-primary">관전자로 돌아가기</Button>
                 </Col>
             </Row>
             <Row>
                 <Col className={style.items}>
-                    { role === 'participant' && 
-                        <>  
-                            <Button variant="outline-primary">포션</Button>
-                            <Button variant="outline-primary">수호천사</Button>
-                            <Button variant="outline-primary">연장</Button>
-                            <Button variant="outline-primary">마이크</Button>
-                            <Button variant="outline-primary">끼어들기</Button>
-                            <Button variant="outline-primary">음성변조</Button>
-                        </>
-                    }
+                    <Button variant="outline-primary">포션</Button>
+                    <Button variant="outline-primary">수호천사</Button>
+                    <Button variant="outline-primary">연장</Button>
+                    <Button variant="outline-primary">마이크</Button>
+                    <Button variant="outline-primary">끼어들기</Button>
+                    <Button variant="outline-primary">음성변조</Button>
                 </Col>
                 <Col className={style.onOff}>
-                    { role === 'spectator' && status === 'ongoing' && 
-                        <Button variant="primary" onClick={() => setShowModal(true)}>투표하기</Button>
-                    }
+                    <Button variant="primary" onClick={() => setShowModal(true)}>투표하기</Button>
                     <Button variant="primary">캠 OFF</Button>
-                    { role === 'participant' && <Button variant="primary">마이크 OFF</Button>}
+                    <Button variant="primary">마이크 OFF</Button>
                 </Col>
             </Row>
 

@@ -54,25 +54,25 @@ function Spectator() {
                 <Button><img src={leftVector} alt="leftVector"/></Button>
                 <div>
                     {/* <label className="user">asdasd</label> */}
-                    <video className={style.spectator} ref={userVideoRef} autoPlay muted />
+                    <video className={style.user} ref={userVideoRef} autoPlay muted />
                 </div>
                 <div>
-                    <label className={style.spectator}>asdasd</label>
+                    <label className={style.user}>asdasd</label>
                 </div>
                 <div>
-                    <label className={style.spectator}>asdasd</label>
+                    <label className={style.user}>asdasd</label>
                 </div>
                 <div>
-                    <label className={style.spectator}>asdasd</label>
+                    <label className={style.user}>asdasd</label>
                 </div>
                 <div>
-                    <label className={style.spectator}>asdasd</label>
+                    <label className={style.user}>asdasd</label>
                 </div>
                 <div>
-                    <label className={style.spectator}>asdasd</label>
+                    <label className={style.user}>asdasd</label>
                 </div>
                 <div>
-                    <label className={style.spectator}>asdasd</label>
+                    <label className={style.user}>asdasd</label>
                 </div>
                 <Button><img src={rightVector} alt="rightVector"/></Button>
             </div>

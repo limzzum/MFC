@@ -1,14 +1,9 @@
 package com.ssafy.backend.controller;
 
-import com.ssafy.backend.dto.Message;
 import com.ssafy.backend.dto.request.UsedItemCreateDto;
 import com.ssafy.backend.dto.response.UserItemListDto;
-import com.ssafy.backend.entity.ItemCode;
-import com.ssafy.backend.entity.User;
 import com.ssafy.backend.service.ItemService;
-import com.ssafy.backend.service.UserService;
-import java.util.Optional;
-import lombok.RequiredArgsConstructor;
+    import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -21,12 +16,10 @@ import java.util.List;
 public class ItemController {
 
   private final ItemService itemService;
-  private final UserService userService;
   @GetMapping("/list")
   public ResponseEntity<?> itemCodeList() {
     //try { 회원하면 예외처리하기
-    Message message = new Message(HttpStatus.OK,"아이템 코드 조회 성공",itemService.findAll());
-    return ResponseEntity.ok(message);
+    return ResponseEntity.ok(itemService.findAll());
     //} catch ()
   }
 
@@ -34,12 +27,11 @@ public class ItemController {
     public ResponseEntity<?> userItemList(@PathVariable Long userId) {
         //try { 회원하면 예외처리하기
         // 빈 리스트일 때 예외 처리 하기!
-      List<UserItemListDto> userItemslist = itemService.userItemfindAll(userId);
-      Message message = new Message(HttpStatus.OK,"사용자 보유 아이템 조회 성공",userItemslist);
+        List<UserItemListDto> userItemslist = itemService.userItemfindAll(userId);
         if (userItemslist.isEmpty()) {
-          message.setMessage("사용자 보유 아이템이 없습니다.");
+            return ResponseEntity.ok("보유 아이템이 없습니다."); // 데이터가 없을 경우 메시지를 담은 응답
         }
-        return ResponseEntity.ok(message);
+        return ResponseEntity.ok(userItemslist);
         //} catch ()
     }
 
@@ -62,33 +54,12 @@ public class ItemController {
 //
 //    }
 
-    @PostMapping("/purchase/{userId}")
-    public ResponseEntity<?> userItemBuy(@PathVariable Long userId, @RequestParam String itemName) {
-    // itemCode조회
-      Optional<ItemCode> itemCode = itemService.findColorItemCode(itemName);
-      Message message = new Message();
-      if(itemCode.isPresent()) {
-        if(itemName.contains("스프레이") && itemCode.get().getRgb() != null) {
-          return ResponseEntity.ok(userService.userItemCodeUpdate(userId,itemCode.get()));
-        }else {
-          return ResponseEntity.ok(itemService.buyItem(userId,itemCode.get()));
-        }
-      } else {
-        message.setStatus(HttpStatus.BAD_REQUEST);
-        message.setMessage("해당하는 아이템이 없습니다.");
-        return ResponseEntity.ok(message);
-      }
-    // 스프레이면 userId로 조회 => 중복이라면 message 날리기
-    // 스프레이 아니면 userItem 조회
-    // userItem 테이블에 있다면 count 수 증가
-    // 아니라면 count 수 감소
-
-
-
-
-      // 닉네임 커스텀 확인하기
-      // 확인하고 맞으면 회원정보와 구매 정보 변경!
-//         userId와 itemId로 조회해서 있을 경우 count 수 증가 없다면 생성해주기!
-    }
+//    @PostMapping("/purchase/{userId}/{itemId}")
+//    public ResponseEntity<?> userItemBuy(@PathVariable Long userId, @PathVariable Long itemId) {
+//
+//      // 닉네임 커스텀 확인하기
+//      // 확인하고 맞으면 회원정보와 구매 정보 변경!
+        // userId와 itemId로 조회해서 있을 경우 count 수 증가 없다면 생성해주기!
+//    }
 
 }

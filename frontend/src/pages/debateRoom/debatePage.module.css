@@ -13,6 +13,17 @@ ul {
     list-style: none;
 }
 
+.col {
+    border: 1px solid black;
+    text-align: center;
+    align-items: center;
+}
+
+.col-2 {
+    text-align: center;
+    align-items: center;
+}
+
 .debatePage {
     padding: 0 var(--spacing-3);
 }
@@ -49,7 +60,7 @@ ul {
 }
 
 .opinion {
-    color: var(--white);
+    color: #FFF;
     font-size: var(--text-size-2xl);
     text-align: center;
 }
@@ -60,23 +71,6 @@ ul {
 
 .opinion2 {
     background-color: var(--blue-700);
-}
-
-.userInfo{
-    text-align: center;
-    align-items: center;
-    font-size: var(--text-size-2xl);
-    font-weight: normal;
-}
-
-.timer{
-    display: flex;
-    text-align: center;
-    justify-content: center;
-    align-items: center;
-    font-size: var(--text-size-2xl);
-    font-weight: bolder;
-    vertical-align: middle;
 }
 
 .user1HP {
@@ -99,11 +93,7 @@ ul {
 }
 
 
-.Participant {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
+.video {
     width: 100%;
     height: 400px;
     background-color: var(--blue-200);
@@ -139,7 +129,6 @@ ul {
 .messageContainer {
     display: flex;
     align-items: center;
-    margin-top: var(--spacing-2);
     margin-bottom: var(--spacing-2);
     width: 90%;
     border-radius: var(--radius-md);
@@ -207,7 +196,7 @@ ul {
     margin: 0 var(--spacing-3);
 }
 
-.spectator {
+.user {
     background-color: var(--blue-200);
     border: 1px solid var(--black);
     width: 200px;
@@ -217,10 +206,8 @@ ul {
 
 .button {
     background-color: var(--blue-700);
-    width: fit-content;
+    width: 70px;
     height: 50px;
-    padding: var(--spacing-2);
-
     border-radius: var(--radius-md);
     color: var(--white);
     font-size: var(--text-size-md);

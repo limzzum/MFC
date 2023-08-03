@@ -2,23 +2,15 @@ import React from "react";
 import {  Row, Col } from "react-bootstrap";
 import style from '../debatePage.module.css';
 
-function Participate({role, onRoleChange}){
+function Participate(){
     return (
         <div>
             <Row>
                 <Col>
-                    <label className={style.Participant}>
-                        { role === 'spectator' &&
-                            <button className={style.button} onClick={() => onRoleChange('participant')}>참가하기</button>
-                        }
-                    </label>
+                    <label className={style.video}></label>
                 </Col>
                 <Col>
-                    <label className={style.Participant}>
-                        { role === 'spectator' &&
-                            <button className={style.button} onClick={() => onRoleChange('participant')}>참가하기</button>
-                        }
-                    </label>
+                    <label className={style.video}></label>
                 </Col>
             </Row>
         </div>

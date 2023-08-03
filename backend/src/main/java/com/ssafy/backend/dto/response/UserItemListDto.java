@@ -15,7 +15,6 @@ public class UserItemListDto {
     private int count;
     private String comment;
     private Long itemCodeId;
-    private String iconName;
     private String name;
     private String rgb;
 

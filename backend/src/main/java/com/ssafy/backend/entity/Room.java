@@ -14,12 +14,8 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+
+import lombok.*;
 
 @Entity
 @Table(name = "talkroom")
@@ -65,9 +61,5 @@ public class Room {
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "category_id", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
   private CategoryCode categoryCode;
-
-  public Room(Long roomId) {
-    this.id = roomId;
-  }
 
 }

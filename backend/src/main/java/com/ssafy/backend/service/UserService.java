@@ -8,14 +8,10 @@ import com.ssafy.backend.entity.ItemCode;
 import com.ssafy.backend.entity.User;
 import com.ssafy.backend.repository.HistoryRepository;
 import com.ssafy.backend.repository.UserRepository;
-import java.util.HashMap;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
-
-import java.util.Collections;
 
 @Service
 @RequiredArgsConstructor
@@ -27,7 +23,7 @@ public class UserService {
   public Long regist(UserRegistDto user) {
     User registUser = User.builder().email(user.getEmail()).nickname(user.getNickname())
         .password(user.getPassword())
-        .isDeleted(false).colorItem(null).profile(user.getProfile()).build();
+        .profile(user.getProfile()).build();
     User saved = repository.save(registUser);
     return saved.getId();
   }
@@ -93,4 +89,10 @@ public class UserService {
     return message;
   }
 
+//  public User findByNickname(String nickname) {
+//    if(repository.findById(nickname).isEmpty())
+//      return null;
+//    else
+//      return repository.findById(id).get();
+//  }
 }

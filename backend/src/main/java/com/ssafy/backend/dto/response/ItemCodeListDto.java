@@ -14,7 +14,6 @@ public class ItemCodeListDto {
 
   private Long itemCodeId;
   private String name;
-  private String iconName;
   private String comment;
   private int price;
   private String rgb;

@@ -1,6 +1,5 @@
 package com.ssafy.backend.entity;
 
-import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -27,9 +26,6 @@ public class ItemCode {
   @Column(nullable = false, length = 10)
   private String name;
 
-  @Column(name="icon_name")
-  private String iconName;
-
   @Column(nullable = false, length = 100)
   private String comment;
 
@@ -38,16 +34,4 @@ public class ItemCode {
 
   @Column(length = 10)
   private String rgb;
-
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) {
-      return true;
-    }
-    if (o == null || getClass() != o.getClass()) {
-      return false;
-    }
-    ItemCode itemCode = (ItemCode) o;
-    return Objects.equals(id, itemCode.getId());
-  }
 }

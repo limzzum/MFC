@@ -1,5 +1,4 @@
-import React, {useEffect, useState} from 'react';
-import {useStatus, useRole} from '../../recoil/debateStateAtom';
+import React, {useState} from 'react';
 import { Row, Col, Stack, Modal, Button} from 'react-bootstrap';
 import Header from './components/Header';
 import ScreenShare from './components/ScreenShare';
@@ -13,64 +12,33 @@ import style from './debatePage.module.css';
 
 function DebatePage() {
 
-  // recoil 상태를 사용하는 훅
-  const [status, setStatus] = useStatus();
-  const [role, setRole] = useRole();
-
-  const handleStatusChange = (newStatus) => {
-    setStatus(newStatus);
-  };
-
-  const handleRoleChange = (newRole) => {
-    setRole(newRole);
-  };
-
   const [showResultModal, setShowResultModal] = useState(false);
   const goToMainPage = () => {
     setShowResultModal(false);
     console.log('go to main page');
   };
 
-  useEffect(() => {
-    if(status === 'done'){
-      setShowResultModal(true);
-    } else{
-      setShowResultModal(false);
-    }
-  }, [status]);
+  // const state = 'waiting';
 
   return (
     <div className={style.debatePage}>
       <Row>
         <Header/>
-        <Button onClick={() => handleStatusChange('waiting')}>wating</Button>
-        <Button onClick={() => handleStatusChange('ongoing')} >ongoing</Button>
-        <Button onClick={() => handleStatusChange('done')}>done</Button>
       </Row>
       <Row className='debatePart'>
         <Col xs={9}>
-          <RoomInfo
-            status={status}
-            role={role}
-            onStatusChange={handleStatusChange}
-            onRoleChange={handleRoleChange}
-          />
-          <Participate role={role} onRoleChange={handleRoleChange}/>
+          <RoomInfo/>
+          <Participate/>
         </Col>
         <Col xs={3}>
           <Stack gap={1}>
-            <ScreenShare status={status} role={role} />
+            <ScreenShare/>
             <TextChatting/>
           </Stack>
         </Col>
       </Row>
       <Row>
-        <DebateBtns 
-          status={status}
-          role={role}
-          onStatusChange={handleStatusChange}
-          onRoleChange={handleRoleChange}
-        />
+        <DebateBtns/>
       </Row>
       <Row>
         <Spectator/>

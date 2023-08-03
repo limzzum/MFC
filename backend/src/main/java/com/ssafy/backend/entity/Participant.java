@@ -11,22 +11,18 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
-import org.hibernate.annotations.CreationTimestamp;
 
 @Entity
 @Table(name = "participant")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Getter
-@Setter
-@Builder
 public class Participant {
 
   @Id
@@ -46,19 +42,18 @@ public class Participant {
   @Column(name = "vote_time")
   private LocalDateTime voteTime;
 
-  @CreationTimestamp
   @Column(name = "enter_time")
   private LocalDateTime enterTime;
 
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "user_id", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
-  private User user;
+  private User users;
 
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "talkroom_id", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
   private Room room;
 
-  @ManyToOne(fetch = FetchType.LAZY)
+  @OneToOne
   @JoinColumn(name = "role_code_id", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
   private RoleCode roleCode;
 
