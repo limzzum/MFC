@@ -26,7 +26,7 @@ class UserServiceTest {
 
     @Test
     void regist() {
-        UserRegistDto user = UserRegistDto.builder().email("ssafy@samsung.com").nickname("ssafy").password("alalala").profile(null).build();
+        UserRegistDto user = UserRegistDto.builder().email("test@samsung.com").nickname("testUser").password("Ssafy123!").profile(null).build();
 
         Long savedId = service.regist(user);
         User findUser = service.findUser(savedId);
@@ -37,11 +37,11 @@ class UserServiceTest {
 
     @Test
     void login() {
-        UserRegistDto user = UserRegistDto.builder().email("ssafy@samsung.com").nickname("ssafy").password("alalala").profile(null).build();
+        UserRegistDto user = UserRegistDto.builder().email("test@samsung.com").nickname("testUser").password("Ssafy123!").profile(null).build();
         Long savedId = service.regist(user);
 
-        LoginForm success_loginForm = new LoginForm("ssafy@samsung.com", "alalala");
-        LoginForm fail_loginForm = new LoginForm("ssafy@samsung.com", "aaa");
+        LoginForm success_loginForm = new LoginForm("test@samsung.com", "Ssafy123!");
+        LoginForm fail_loginForm = new LoginForm("test@samsung.com", "aaa");
         Long successId = service.login(success_loginForm);
         Long failId = service.login(fail_loginForm);
 
