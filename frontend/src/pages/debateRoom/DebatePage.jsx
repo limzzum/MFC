@@ -55,7 +55,7 @@ function DebatePage() {
             onStatusChange={handleStatusChange}
             onRoleChange={handleRoleChange}
           />
-          <Participate role={role}/>
+          <Participate role={role} onRoleChange={handleRoleChange}/>
         </Col>
         <Col xs={3}>
           <Stack gap={1}>

@@ -2,7 +2,7 @@ import React, {useState, useEffect} from "react";
 import {Row, Col, Button, Modal, Form} from "react-bootstrap";
 import style from '../debatePage.module.css';
 
-function DebateBtns({status, role, onStatusChange, onRoleChange}){
+function DebateBtns({status, role, onRoleChange}){
     const [showModal, setShowModal] = useState(false);
     const [selectedTopic, setSelectedTopics] = useState([]);
     const [isVotingEnabled, setVotingEnabled] = useState(true);
