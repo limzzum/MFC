@@ -14,14 +14,17 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
 
 @Entity
 @Table(name = "used_item")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Getter
+@Builder
 public class UsedItem {
 
   @Id
@@ -29,6 +32,7 @@ public class UsedItem {
   @Column(name = "used_item_id", updatable = false)
   private Long id;
 
+  @CreationTimestamp
   @Column(name = "used_time")
   private LocalDateTime usedTime;
 

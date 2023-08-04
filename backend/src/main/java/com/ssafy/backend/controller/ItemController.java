@@ -43,23 +43,36 @@ public class ItemController {
         return ResponseEntity.ok(message);
         //} catch ()
     }
-//    @PostMapping("/use")
-//    public ResponseEntity<?> usedItemCreate(@RequestBody UsedItemCreateDto usedItemCreateDto) {
-//
-//        Long userId = usedItemCreateDto.getUserId();
-//        Long itemId = usedItemCreateDto.getItemId();
-//        Long roomId = usedItemCreateDto.getRoomId();
-//
-//        // 플레이어의 아이템이 사용 가능한지 확인
-//        // 1. userId와 roomId로 playerId 조회
-//        // 2. playerId, itemId로 사용 가능한지 여부 조회
-//        // 3. 사용한 적이 있다면 => body에 message 작성해서 보내기
-//        // 4. 사용한 적이 없다면 =>
-//        // 4.1 userId로 userItem count 수 차감
-//        // 4.2 playerId, itemId로 아이템 등록해줌
-//        // 4.3 허가메시지 보내주기 ( + playerId, itemcodeId 보내주기 )
-//
-//    }
+    @PostMapping("/use")
+    public ResponseEntity<?> usedItemCreate(@RequestBody UsedItemCreateDto usedItemCreateDto) {
+
+        Long userId = usedItemCreateDto.getUserId();
+        Long itemId = usedItemCreateDto.getItemId();
+        Long roomId = usedItemCreateDto.getRoomId();
+        Boolean status = true;
+        Message message = new Message();
+        String m = itemService.getUsedItem(userId,roomId,itemId);
+        if(m.equals("아이템 사용 가능")) {
+          message.setStatus(HttpStatus.OK);
+          message.setMessage(m);
+          message.setData(status);
+        }else {
+          message.setStatus(HttpStatus.BAD_REQUEST);
+          message.setMessage(m);
+          status = false;
+          message.setData(status);
+        }
+        return ResponseEntity.ok(message);
+        // 플레이어의 아이템이 사용 가능한지 확인
+        // 1. userId와 roomId로 playerId 조회
+        // 2. playerId, itemId로 사용 가능한지 여부 조회
+        // 3. 사용한 적이 있다면 => body에 message 작성해서 보내기 Boolean allowUse = false로 보내기
+        // 4. 사용한 적이 없다면 =>
+        // 4.1 userId로 userItem count 수 차감
+        // 4.2 playerId, itemId로 아이템 등록해줌
+        // 4.3 허가메시지 보내주기 ( + playerId, itemcodeId 보내주기 )
+
+    }
 
     @PostMapping("/purchase/{userId}")
     public ResponseEntity<?> userItemBuy(@PathVariable Long userId, @RequestParam String itemName) {

@@ -5,11 +5,15 @@ import com.ssafy.backend.dto.response.ItemCodeListDto;
 import com.ssafy.backend.dto.response.UserItemListDto;
 import com.ssafy.backend.entity.History;
 import com.ssafy.backend.entity.ItemCode;
+import com.ssafy.backend.entity.Player;
+import com.ssafy.backend.entity.UsedItem;
 import com.ssafy.backend.entity.User;
 import com.ssafy.backend.entity.UserItem;
 import com.ssafy.backend.repository.HistoryRepository;
 import com.ssafy.backend.repository.ItemCodeRepository;
 
+import com.ssafy.backend.repository.PlayerRepository;
+import com.ssafy.backend.repository.UsedItemRepository;
 import com.ssafy.backend.repository.UserRepository;
 import java.util.Collections;
 import java.util.List;
@@ -33,6 +37,8 @@ public class ItemService {
   private final UserItemRepository userItemRepository;
   private final HistoryRepository historyRepository;
   private final UserRepository userRepository;
+  private final PlayerRepository playerRepository;
+  private final UsedItemRepository usedItemRepository;
 
   public List<ItemCodeListDto> findAll() {
     List<ItemCode> itemCodes = itemCodeRepository.findAll(Sort.by(Direction.DESC, "id"));
@@ -114,4 +120,30 @@ public class ItemService {
     }
     return message;
   }
+  public String getUsedItem(Long userId, Long roomId, Long itemId) {
+    Player player = playerRepository.findTopByRoomIdAndUserId(roomId,userId).orElse(null);
+    if(player != null) {
+      Optional<UsedItem> usedItem = usedItemRepository.findTopByPlayerIdAndItemcodeId(player.getId(),itemId);
+      if(usedItem.isPresent()) {
+        return "해당 토론방에서 이미 사용한 아이템입니다.";
+      }else {
+        UserItem userItem = userItemRepository.findByUserIdAndItemCodeId(userId,itemId);
+        if(userItem == null || userItem.getCount() == 0) {
+          return "사용자가 해당 아이템을 가지고 있지 않습니다.";
+        }else {
+          userItem.setCount(userItem.getCount() - 1);
+          userItemRepository.save(userItem);
+        }
+        ItemCode itemcode = itemCodeRepository.getOne(itemId);
+        UsedItem itemCreate = UsedItem.builder()
+            .itemcode(itemcode)
+            .player(player)
+            .build();
+        usedItemRepository.save(itemCreate);
+        return "아이템 사용 가능";
+      }}else {
+      return "해당 플레이어를 찾을 수 없습니다.";
+    }
+  }
+
 }
