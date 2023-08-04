@@ -19,7 +19,7 @@ function ItemPage() {
     }, [userId]);
     
     const fetchUserItems = (userId) => {
-        axios.get(`api/item/list/${userId}`)
+        axios.get(`http://i9a605.p.ssafy.io:8081/api/item/list/${userId}`)
             .then(response => {
                 setUserItems(response.data);
             })
@@ -29,7 +29,7 @@ function ItemPage() {
         };
 
     const fetchUserCoin = (userId) => { 
-        axios.get(`api/record/${userId}`)
+        axios.get(`http://i9a605.p.ssafy.io:8081/api/record/${userId}`)
             .then(response => {
                 setUserCoin(response.data.coin);
             })
@@ -39,9 +39,10 @@ function ItemPage() {
     };
     
     const fetchAllItems = () => { 
-        axios.get(`api/item/list`)
+        axios.get(`http://i9a605.p.ssafy.io:8081/api/item/list`)
             .then(response => {
-                setAllItems(response.data);
+                console.log(response)
+                setAllItems(response.data.data);
             })
             .catch(error => {
                 console.error("아이템 정보 가져오기 오류:", error);

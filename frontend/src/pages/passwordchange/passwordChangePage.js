@@ -20,7 +20,7 @@ function PasswordChangePage() {
   }, []);
 
   const fetchUserInfo = () => {
-    axios.get(`api/user/info/${userId}`)
+    axios.get(`http://i9a605.p.ssafy.io:8081/api/user/info/${userId}`)
       .then(response => {
         setValidPassword(response.data.password);
       })
@@ -48,7 +48,7 @@ function PasswordChangePage() {
   const passwordSubmit = (event) => {
     event.preventDefault();
     
-    if (currentPassword.trim() == validPassword && newPassword === confirmPassword && regex.test(newPassword)) {
+    if (currentPassword.trim() === validPassword && newPassword === confirmPassword && regex.test(newPassword)) {
       updatePassword();
     } else {
     // 모든 칸이 채워지지 않았을 때
