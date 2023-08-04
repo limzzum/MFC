@@ -5,6 +5,7 @@ import RankMyProfile from "../../components/rankingpage/rankMyProfile.js";
 import RankingSearchBar from "../../components/rankingpage/rankingSearchBar.js";
 import style from "./ranking.module.css";
 import "bootstrap/dist/css/bootstrap.min.css";
+import { Button } from "react-bootstrap";
 
 function Ranking() {
     const [rankUsers, setRankUsers] = useState([]);
@@ -12,23 +13,31 @@ function Ranking() {
 
     useEffect(() => {
         fetchData();
-    }, []);
-    const fetchData = async () => {
-        axios.get(`http://i9a605.p.ssafy.io:8081/api/record/list/?page=${page}&perPage=10&keyword=`)
-            .then(response => {
-                setRankUsers(response.data.data.result);
-        })
-        .catch(error => {
+    }, [page]);
+
+    const fetchData = async (keyword = "") => {
+        try {
+            const response = await axios.get(`http://i9a605.p.ssafy.io:8081/api/record/list/?page=${page}&perPage=10&keyword=${keyword}`);
+            setRankUsers(response.data.data.result);
+        } catch (error) {
             console.error("랭크유저 정보 가져오기 오류:", error);
-        });
+        }
     };
 
+    const handlePageChange = newPage => {
+        setPage(newPage);
+    };
+
+    const handleSearch = keyword => {
+        setPage(0);
+        fetchData(keyword);
+    };
 
     return (
         <div className={style.wrapper}>
             <RankMyProfile />
             <div className={style.nextBox}> 
-                <RankingSearchBar />
+                <RankingSearchBar onSearch={handleSearch} />
                 <div className={style.rankTitleBox}>
                     <div className={style.rankTitle}>랭킹</div>
                     <div className={style.rankTitle}></div>
@@ -38,8 +47,17 @@ function Ranking() {
                 </div>
                 <div className="mx-auto">
                     {rankUsers.map((userData, index) => (
-                        <RankingProfile key={index} userData={userData} />
+                        <RankingProfile key={index} rank={page * 10 + index + 1} userData={userData} />
                     ))}
+                </div>
+                <div>
+                    {page > 0 && (
+                        <Button onClick={() => handlePageChange(page - 1)}>이전</Button>
+                    )}
+                    <span>{page + 1}</span>
+                    {rankUsers.length >= 10 && (
+                        <Button onClick={() => handlePageChange(page + 1)} disabled={rankUsers.length < 10}>다음</Button>
+                    )}
                 </div>
             </div>
         </div>
