@@ -5,6 +5,7 @@ import RankMyProfile from "../../components/rankingpage/rankMyProfile.js";
 import RankingSearchBar from "../../components/rankingpage/rankingSearchBar.js";
 import style from "./ranking.module.css";
 import "bootstrap/dist/css/bootstrap.min.css";
+import { Button } from "react-bootstrap";
 
 function Ranking() {
     const [rankUsers, setRankUsers] = useState([]);
@@ -12,17 +13,20 @@ function Ranking() {
 
     useEffect(() => {
         fetchData();
-    }, []);
+    }, [page]);
+
     const fetchData = async () => {
-        axios.get(`http://i9a605.p.ssafy.io:8081/api/record/list/?page=${page}&perPage=10&keyword=`)
-            .then(response => {
-                setRankUsers(response.data.data.result);
-        })
-        .catch(error => {
+        try {
+            const response = await axios.get(`http://i9a605.p.ssafy.io:8081/api/record/list/?page=${page}&perPage=10&keyword=`);
+            setRankUsers(response.data.data.result);
+        } catch (error) {
             console.error("랭크유저 정보 가져오기 오류:", error);
-        });
+        }
     };
 
+    const handlePageChange = newPage => {
+        setPage(newPage);
+    };
 
     return (
         <div className={style.wrapper}>
@@ -40,6 +44,15 @@ function Ranking() {
                     {rankUsers.map((userData, index) => (
                         <RankingProfile key={index} userData={userData} />
                     ))}
+                </div>
+                <div className={style.pagination}>
+                    {page > 0 && (
+                        <Button onClick={() => handlePageChange(page - 1)}>이전</Button>
+                    )}
+                    <span>{page + 1}</span>
+                    {rankUsers.length >= 10 && (
+                        <Button onClick={() => handlePageChange(page + 1)} disabled={rankUsers.length < 10}>다음</Button>
+                    )}
                 </div>
             </div>
         </div>
