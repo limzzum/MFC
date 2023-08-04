@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from 'react';
-import {useStatus, useRole} from '../../recoil/debateStateAtom';
-import { Row, Col, Stack, Modal, Button} from 'react-bootstrap';
+import {useRecoilValue} from 'recoil';
+import {useStatus, useRole, getDebateRoomState} from '../../recoil/debateStateAtom';
+import { Row, Col, Stack, Modal, Button, ProgressBar} from 'react-bootstrap';
 import Header from './components/Header';
 import ScreenShare from './components/ScreenShare';
 import Participate from './components/Participate';
@@ -11,7 +12,41 @@ import RoomInfo from './components/RoomInfo';
 
 import style from './debatePage.module.css';
 
+// tempImg
+import winnerImg from '../../images/img.jpg';
+
 function DebatePage() {
+
+  // 토론방 상태 호출
+  const debateRoomInfo = useRecoilValue(getDebateRoomState);
+
+  console.log('debateRoomInfo: ', debateRoomInfo);
+
+  const result = {
+    status: "OK",
+    message: "관전자에게 토론 결과 보내기 성공",
+    data: {
+      winner: "user1",
+      winnerImg: "",
+      a: {
+        vote: 3,
+        hp: 85,
+        coin: 302,
+        exp: 55,
+      },
+      b: {
+        vote: 7,
+        hp: 55,
+        coin: 200,
+        exp: 96,
+      },
+      isSurrender: false,
+      isExit: false,
+    },
+  };
+
+  const totalVote = result.data.a.vote + result.data.b.vote;
+  
 
   // recoil 상태를 사용하는 훅
   const [status, setStatus] = useStatus();
@@ -24,6 +59,7 @@ function DebatePage() {
   const handleRoleChange = (newRole) => {
     setRole(newRole);
   };
+
 
   const [showResultModal, setShowResultModal] = useState(false);
   const goToMainPage = () => {
@@ -54,6 +90,7 @@ function DebatePage() {
             role={role}
             onStatusChange={handleStatusChange}
             onRoleChange={handleRoleChange}
+            debateRoomInfo={debateRoomInfo.data}
           />
           <Participate role={role} onRoleChange={handleRoleChange}/>
         </Col>
@@ -73,7 +110,9 @@ function DebatePage() {
         />
       </Row>
       <Row>
-        <Spectator/>
+        <Spectator
+          debateRoomInfo={debateRoomInfo.data}
+        />
       </Row>
 
       {/* 토론 결과 Modal*/}
@@ -82,9 +121,28 @@ function DebatePage() {
           <Modal.Title>토론 결과</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <p>토론 결과</p>
-          <p>포인트: 전체 포인트(+획득 포인트)</p>
-          <p>경험치: 전체 경험치(+획득 경험치)</p>
+          {result ? (
+            <>
+              <p>{result.data.winner} 승리</p>
+              <img src={winnerImg} alt='승자 프로필'/>
+            </>
+          ) : (
+            <p>무승부</p>
+          )}
+
+          <p>투표 결과</p>
+            <ProgressBar>
+                <ProgressBar variant="success" label={result.data.a.vote} now={(result.data.a.vote / totalVote) * 100} key={1} />
+                <ProgressBar variant="danger" label={result.data.b.vote} now={(result.data.b.vote / totalVote) * 100} key={2} />
+            </ProgressBar>
+          <p>잔여 HP</p>
+            <ProgressBar>
+                  <ProgressBar variant="success" label={result.data.a.hp} now={(result.data.a.hp / 200) * 100} key={1} />
+                  <ProgressBar variant="danger" label={result.data.b.hp} now={(result.data.a.hp / 200) * 100} key={2} />
+              </ProgressBar>
+          <hr/>
+          <p>얻은 경험치: {result.data.a.exp} (+10)</p>
+          <p>얻은 코인: {result.data.a.coin} (+15)</p>
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={goToMainPage}>

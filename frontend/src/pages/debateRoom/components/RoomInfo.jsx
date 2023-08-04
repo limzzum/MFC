@@ -2,12 +2,15 @@ import React, {useState, useEffect} from "react";
 import { Row, Col, Button, ProgressBar } from "react-bootstrap";
 import style from '../debatePage.module.css';
 
-function RoomInfo({status, role, onStatusChange, onRoleChange}){
+function RoomInfo({status, role, onStatusChange, onRoleChange, debateRoomInfo}){
     const user1HP = 70;
     const user2HP = 100;
 
-    const [totalTime, setTotalTime] = useState(30);
-    const [speechTime, setSpeechTime] = useState(10);
+    const total = debateRoomInfo.totalTime * 60;
+    const talk = debateRoomInfo.talkTime * 60;
+
+    const [totalTime, setTotalTime] = useState(total);
+    const [speechTime, setSpeechTime] = useState(talk);
 
     const [userReady, setUserReady] = useState([false, false]);
 
@@ -35,19 +38,16 @@ function RoomInfo({status, role, onStatusChange, onRoleChange}){
                 } 
             }, 1000);
 
+            if(speechTime === 0 && totalTime > 0){
+                setSpeechTime(talk);
+            }
+
             return () => {
                 clearInterval(totalTimer);
                 clearInterval(speechTimer);
             };
         }
-    }, [status, onStatusChange, totalTime, speechTime]);
-
-    
-    useEffect( () => {
-        if(speechTime === 0 && totalTime > 0){
-            setSpeechTime(10);
-        }
-    }, [speechTime, totalTime]);
+    }, [status, onStatusChange, totalTime, speechTime, talk]);
     
     //두 참가자가 모두 준비가 되면 토론 시작
     useEffect( () => {
@@ -60,10 +60,10 @@ function RoomInfo({status, role, onStatusChange, onRoleChange}){
         <>
             <Row className={style.roomInfo}>
                 <Col id="option1" className={`${style.opinion} ${style.opinion1}`}>
-                    <span>title1</span>
+                    <span>{debateRoomInfo.atopic}</span>
                 </Col>
                 <Col id="option2" className={`${style.opinion} ${style.opinion2}`}>
-                    <span>title2</span>
+                    <span>{debateRoomInfo.btopic}</span>
                 </Col>
             </Row>
             <Row>
