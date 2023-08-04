@@ -5,7 +5,7 @@ import { Button } from "react-bootstrap";
 import styles from "./itemStore.module.css";
 import axios from "axios";
 
-function Item({ iconName, name, price, userCoin }) {
+function Item({ iconName, name, price, userCoin, color }) {
   const [purchasing, setPurchasing] = useState(false);
 
   const handlePurchase = () => {
@@ -27,9 +27,21 @@ function Item({ iconName, name, price, userCoin }) {
     }
   };
 
+  const iconMap = {
+    "faHeartCirclePlus" : faHeartCirclePlus,
+    "faUserClock" : faUserClock,
+    "faVolumeXmark" : faVolumeXmark,
+    "faHand" : faHand,
+    "faCross" : faCross,
+    "faSprayCan" : faSprayCan,
+    faCoins
+    // 추가적인 아이콘들도 이곳에 추가해주세요
+  };
+  const iconComponent = iconMap[iconName]; 
+
   return (
-    <div className={`${styles.itemBox} mx-auto`}>
-      <FontAwesomeIcon icon={iconName} size="3x" />
+    <div className={`${styles.itemBox}`}>
+      <FontAwesomeIcon icon={iconComponent} size="3x" color={color}/>
 
       <div className="pt-4">{name}</div>
       <div className="my-1">
