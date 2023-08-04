@@ -1,5 +1,6 @@
 package com.ssafy.backend.util;
 
+import com.ssafy.backend.dto.request.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -61,6 +62,7 @@ public class RedisUtil {
     }
 
     public Object getTokenByEmail(String key) {
+        emailTokenTemplate.setValueSerializer(new Jackson2JsonRedisSerializer(String.class));
         return emailTokenTemplate.opsForValue().get(key);
     }
 
@@ -73,8 +75,9 @@ public class RedisUtil {
         registUserTemplate.opsForValue().set(key, o, minutes, TimeUnit.MINUTES);
     }
 
-    public Object getRegistUserInfo(String key) {
-        return registUserTemplate.opsForValue().get(key);
+    public UserRegistDto getRegistUserInfo(String key) {
+        registUserTemplate.setValueSerializer(new Jackson2JsonRedisSerializer<>(UserRegistDto.class));
+        return (UserRegistDto) registUserTemplate.opsForValue().get(key);
     }
 
 }

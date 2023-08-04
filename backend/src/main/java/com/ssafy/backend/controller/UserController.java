@@ -65,8 +65,9 @@ public class UserController {
 
     @GetMapping("/verify")
     public ResponseEntity<Message> email_verify(@RequestParam String email, @RequestParam String token) {
-        if(emailService.getEmailToken(email).equals(token)){
-            UserRegistDto user = emailService.getRegistUserInfo(token);
+        String emailToken = emailService.getEmailToken(email);
+        if(emailToken.equals(token)){
+            UserRegistDto user = emailService.getRegistUserInfo(emailToken);
             Long savedId = userService.regist(user);
             return ResponseEntity.ok( new Message( HttpStatus.OK, "회원가입 성공", savedId));
         }

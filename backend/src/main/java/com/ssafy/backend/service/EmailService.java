@@ -13,11 +13,12 @@ import org.springframework.stereotype.Service;
 public class EmailService {
 
     private final JavaMailSender mailSender;
-    private RedisUtil redisUtil;
+    private final RedisUtil redisUtil;
 
     @Autowired
-    public EmailService(JavaMailSender mailSender) {
+    public EmailService(JavaMailSender mailSender, RedisUtil redisUtil) {
         this.mailSender = mailSender;
+        this.redisUtil = redisUtil;
     }
 
     public void sendMail(String to, String subject, String content) {
@@ -41,7 +42,7 @@ public class EmailService {
     }
 
     public UserRegistDto getRegistUserInfo(String token){
-        return (UserRegistDto) redisUtil.getRegistUserInfo(token);
+        return redisUtil.getRegistUserInfo(token);
     }
 
 }
