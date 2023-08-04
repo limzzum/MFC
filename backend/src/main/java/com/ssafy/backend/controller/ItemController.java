@@ -18,6 +18,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/item")
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 public class ItemController {
 
   private final ItemService itemService;
@@ -42,9 +43,7 @@ public class ItemController {
         return ResponseEntity.ok(message);
         //} catch ()
     }
-
-    // 시간되면 수정할 것
-//    @PostMapping("")
+//    @PostMapping("/use")
 //    public ResponseEntity<?> usedItemCreate(@RequestBody UsedItemCreateDto usedItemCreateDto) {
 //
 //        Long userId = usedItemCreateDto.getUserId();
@@ -78,17 +77,6 @@ public class ItemController {
         message.setMessage("해당하는 아이템이 없습니다.");
         return ResponseEntity.ok(message);
       }
-    // 스프레이면 userId로 조회 => 중복이라면 message 날리기
-    // 스프레이 아니면 userItem 조회
-    // userItem 테이블에 있다면 count 수 증가
-    // 아니라면 count 수 감소
-
-
-
-
-      // 닉네임 커스텀 확인하기
-      // 확인하고 맞으면 회원정보와 구매 정보 변경!
-//         userId와 itemId로 조회해서 있을 경우 count 수 증가 없다면 생성해주기!
     }
 
 }
