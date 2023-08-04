@@ -1,0 +1,44 @@
+@import url(../../colorSelector.css);
+
+.navbar{
+    height: 80px;
+    display: flex;
+    align-items: center;
+    font-family: pretender, sans-serif;
+    padding: 10px;
+    border-bottom: 3px solid var(--blue-600);
+
+    justify-content: space-between;
+}   
+
+.navbarMenu{
+    margin: var(--spacing-4);
+    text-decoration: none;
+    color: var(--black);
+}
+
+.logo{
+    width: 40%;
+    margin: 10px;
+}
+
+.icon {
+    width: 30px;
+    height: auto;
+}
+
+.btn {
+    background-color: var(--blue-700);
+    width: fit-content;
+    height: fit-content;
+    padding: var(--spacing-2);
+
+    border-radius: var(--radius-md);
+    color: var(--white);
+    font-size: var(--text-size-md);
+}
+
+input {
+    height: 50px;
+    border-radius: var(--radius-md);
+}
