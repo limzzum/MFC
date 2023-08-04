@@ -13,8 +13,13 @@ import com.ssafy.backend.entity.RoleCode;
 import com.ssafy.backend.entity.Room;
 import com.ssafy.backend.entity.Status;
 import com.ssafy.backend.entity.User;
-import com.ssafy.backend.repository.*;
-
+import com.ssafy.backend.repository.CategoryCodeRepository;
+import com.ssafy.backend.repository.HistoryRepository;
+import com.ssafy.backend.repository.ParticipantRepository;
+import com.ssafy.backend.repository.PlayerRepository;
+import com.ssafy.backend.repository.RoleCodeRepository;
+import com.ssafy.backend.repository.RoomRepository;
+import com.ssafy.backend.repository.UserRepository;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -175,6 +180,7 @@ public class RoomService {
     RoomInfoResponseDto roomInfoResponseDto = new RoomInfoResponseDto(existingRoom);
     return roomInfoResponseDto;
   }
+
   public RoomInfoResponseDto getRoomInfoById(Long roomId) {
     Room room = roomRepository.findById(roomId).orElse(null);
     if (room == null) {
@@ -184,20 +190,22 @@ public class RoomService {
   }
 
 
-  public void incrementRoomCurrentCount(Long roomId) {
+  public int incrementRoomCurrentCount(Long roomId) {
     Room room = roomRepository.findById(roomId).orElse(null);
     if (room != null) {
       room.setCurPeople(room.getCurPeople() + 1);
       roomRepository.save(room);
     }
+    return room.getCurPeople();
   }
+
   public Message roomReset(Long roomId) {
     Room room = roomRepository.findById(roomId).orElse(null);
     Message message = new Message();
-    if(room == null) {
+    if (room == null) {
       message.setStatus(HttpStatus.BAD_REQUEST);
       message.setMessage("해당 방을 찾을 수 없습니다.");
-    }else {
+    } else {
       room.setStartTime(null);
       roomRepository.save(room);
       message.setStatus(HttpStatus.OK);
@@ -227,7 +235,8 @@ public class RoomService {
 
         List<Player> playerEntities = new ArrayList<>();
         for (Participant player : players) {
-          Player playerEntity = playerRepository.findTopByRoomIdAndUserId(roomId, player.getUser().getId()).orElse(null);
+          Player playerEntity = playerRepository.findTopByRoomIdAndUserId(roomId,
+              player.getUser().getId()).orElse(null);
           if (playerEntity != null) {
             playerEntities.add(playerEntity);
           }
@@ -244,12 +253,12 @@ public class RoomService {
         }
 
         int totalVoteCount = (int) participants.stream()
-                .filter(p -> p.getIsVoteTypeA() != null)
-                .count();
+            .filter(p -> p.getIsVoteTypeA() != null)
+            .count();
 
         int aVoteCount = (int) participants.stream()
-                .filter(p -> Boolean.TRUE.equals(p.getIsVoteTypeA()))
-                .count();
+            .filter(p -> Boolean.TRUE.equals(p.getIsVoteTypeA()))
+            .count();
 
         String aResult = "";
         String bResult = "";
@@ -315,59 +324,59 @@ public class RoomService {
             coin = getcoin(result, hp);
           }
           RoomFinToPlayerDto roomFinToPlayerDto = RoomFinToPlayerDto.builder()
-                  .result(result)
-                  .userVoteCount(playerVoteCount)
-                  .voteTotal(totalVoteCount)
-                  .userGetCoin(coin)
-                  .userGetExp(exp)
-                  .hp(hp)
-                  .build();
+              .result(result)
+              .userVoteCount(playerVoteCount)
+              .voteTotal(totalVoteCount)
+              .userGetCoin(coin)
+              .userGetExp(exp)
+              .hp(hp)
+              .build();
           message.setStatus(HttpStatus.OK);
           message.setMessage("플레이어에게 토론 결과 보내기 성공");
           message.setData(roomFinToPlayerDto);
           return message;
         } else {
           RoomFinToParticipantDto roomFinToParticipantDto = RoomFinToParticipantDto.builder()
-                  .aTopic(participant.getRoom().getATopic())
-                  .bTopic(participant.getRoom().getBTopic())
-                  .aResult(aResult)
-                  .bResult(bResult)
-                  .aVoteCount(aVoteCount)
-                  .bVoteCount(totalVoteCount - aVoteCount)
-                  .aHp(playerA.getHeartPoint())
-                  .bHp(playerB.getHeartPoint())
-                  .build();
+              .aTopic(participant.getRoom().getATopic())
+              .bTopic(participant.getRoom().getBTopic())
+              .aResult(aResult)
+              .bResult(bResult)
+              .aVoteCount(aVoteCount)
+              .bVoteCount(totalVoteCount - aVoteCount)
+              .aHp(playerA.getHeartPoint())
+              .bHp(playerB.getHeartPoint())
+              .build();
           message.setStatus(HttpStatus.OK);
           message.setMessage("관전자에게 토론 결과 보내기 성공");
           message.setData(roomFinToParticipantDto);
           return message;
         }
       }
-    }else {
-        message.setStatus(HttpStatus.BAD_REQUEST);
-        message.setMessage("토론방에서 해당 유저를 조회할 수 없습니다.");
-      }
-    return message;
+    } else {
+      message.setStatus(HttpStatus.BAD_REQUEST);
+      message.setMessage("토론방에서 해당 유저를 조회할 수 없습니다.");
     }
+    return message;
+  }
 
-  public int getexp(String aResult,String bResult,String p) {
-    if(aResult == "win" && bResult == "lose" && p == "a") {
+  public int getexp(String aResult, String bResult, String p) {
+    if (aResult == "win" && bResult == "lose" && p == "a") {
       return 5;
-    }else if(aResult == "lose" && bResult == "win" && p == "a") {
+    } else if (aResult == "lose" && bResult == "win" && p == "a") {
       return 1;
-    }else if(aResult == "win" && bResult == "lose" && p == "b") {
+    } else if (aResult == "win" && bResult == "lose" && p == "b") {
       return 1;
-    }else if(aResult == "lose" && bResult == "win" && p == "b"){
+    } else if (aResult == "lose" && bResult == "win" && p == "b") {
       return 5;
-    }else {
+    } else {
       return 3;
     }
   }
 
-  public int getcoin(String result,int hp) {
-    if(result == "win") {
+  public int getcoin(String result, int hp) {
+    if (result == "win") {
       return hp + hp / 2;
-    }else {
+    } else {
       return hp;
     }
   }
