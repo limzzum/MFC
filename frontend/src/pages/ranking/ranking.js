@@ -15,9 +15,9 @@ function Ranking() {
         fetchData();
     }, [page]);
 
-    const fetchData = async () => {
+    const fetchData = async (keyword = "") => {
         try {
-            const response = await axios.get(`http://i9a605.p.ssafy.io:8081/api/record/list/?page=${page}&perPage=10&keyword=`);
+            const response = await axios.get(`http://i9a605.p.ssafy.io:8081/api/record/list/?page=${page}&perPage=10&keyword=${keyword}`);
             setRankUsers(response.data.data.result);
         } catch (error) {
             console.error("랭크유저 정보 가져오기 오류:", error);
@@ -28,11 +28,16 @@ function Ranking() {
         setPage(newPage);
     };
 
+    const handleSearch = keyword => {
+        setPage(0);
+        fetchData(keyword);
+    };
+
     return (
         <div className={style.wrapper}>
             <RankMyProfile />
             <div className={style.nextBox}> 
-                <RankingSearchBar />
+                <RankingSearchBar onSearch={handleSearch} />
                 <div className={style.rankTitleBox}>
                     <div className={style.rankTitle}>랭킹</div>
                     <div className={style.rankTitle}></div>
@@ -45,7 +50,7 @@ function Ranking() {
                         <RankingProfile key={index} rank={page * 10 + index + 1} userData={userData} />
                     ))}
                 </div>
-                <div className={style.pagination}>
+                <div>
                     {page > 0 && (
                         <Button onClick={() => handlePageChange(page - 1)}>이전</Button>
                     )}
