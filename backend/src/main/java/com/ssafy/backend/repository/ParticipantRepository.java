@@ -1,7 +1,6 @@
 package com.ssafy.backend.repository;
 
 import com.ssafy.backend.entity.Participant;
-import com.ssafy.backend.entity.Player;
 import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 
@@ -14,5 +13,9 @@ public interface ParticipantRepository extends JpaRepository<Participant, Long> 
   Participant findAllByUserIdAndRoomId(Long userId, Long roomId);
 
   Long countByIsVoteTypeAAndRoomIdAndRoleCodeIdNot(Boolean result, Long roomId, Long roleCodeId);
+
+  Participant findTop1ByRoomIdAndRoleCodeIdNotAndIsHostOrderByEnterTimeAsc(Long roomId,
+      Long roleCodeId,
+      Boolean isHost);
 
 }

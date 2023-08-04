@@ -2,5 +2,5 @@ package com.ssafy.backend.entity;
 
 
 public enum Status {
-    ONGOING,DONE,WAITING
+  ONGOING, DONE, WAITING
 }

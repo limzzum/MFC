@@ -2,6 +2,7 @@ package com.ssafy.backend.controller;
 
 
 import com.ssafy.backend.dto.Message;
+import com.ssafy.backend.dto.MethodResultDto;
 import com.ssafy.backend.dto.response.RoomInfoResponseDto;
 import com.ssafy.backend.dto.response.RoomPeopleCountDto;
 import com.ssafy.backend.service.RoomService;
@@ -9,7 +10,14 @@ import com.ssafy.backend.service.ViewerService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/viewer")
@@ -37,14 +45,13 @@ public class ViewerController {
   }
 
   @GetMapping("/{roomId}")
-  public ResponseEntity<Message> currentViewer(@PathVariable Long roomId){
+  public ResponseEntity<Message> currentViewer(@PathVariable Long roomId) {
     Message message = new Message(HttpStatus.OK, "테스트", null);
     RoomInfoResponseDto response = roomService.getRoomInfoById(roomId);
-    if(response == null) {
+    if (response == null) {
       message.setStatus(HttpStatus.BAD_REQUEST);
       message.setMessage("토론방이 없습니다.");
-    }
-    else {
+    } else {
       RoomPeopleCountDto roomPeopleCountDto = new RoomPeopleCountDto();
       roomPeopleCountDto.setValidCount(response.getMaxPeople());
       roomPeopleCountDto.setCurrentCount(response.getCurPeople());
@@ -55,9 +62,10 @@ public class ViewerController {
   }
 
   @PatchMapping("/vote/{roomId}/{userId}")
-  public ResponseEntity<Message> voteTopic(@PathVariable Long roomId, @PathVariable Long userId, @RequestParam(name = "vote") String selectedTopic){
+  public ResponseEntity<Message> voteTopic(@PathVariable Long roomId, @PathVariable Long userId,
+      @RequestParam(name = "vote") String selectedTopic) {
     Message message = new Message(HttpStatus.OK, "투표 성공", null);
-    if(!viewerService.vote(userId,roomId,selectedTopic)){
+    if (!viewerService.vote(userId, roomId, selectedTopic)) {
       message.setStatus(HttpStatus.BAD_REQUEST);
       message.setMessage("일정 시간 후 재투표가 가능합니다.");
     }
@@ -65,8 +73,34 @@ public class ViewerController {
   }
 
   @GetMapping("/vote/{roomId}")
-  public ResponseEntity<Message> voteResult(@PathVariable Long roomId){
+  public ResponseEntity<Message> voteResult(@PathVariable Long roomId) {
     Message message = new Message(HttpStatus.OK, "투표 결과 조회 성공", viewerService.voteResult(roomId));
     return ResponseEntity.ok(message);
   }
+
+  @DeleteMapping("/{roomId}/{userId}")
+  public ResponseEntity<Message> exitRoom(@PathVariable Long roomId, @PathVariable Long userId) {
+    Message message = new Message(HttpStatus.OK, "", null);
+
+    MethodResultDto result = viewerService.exit(userId, roomId);
+    message.setMessage(result.getData().toString());
+    if (!result.isResult()) {
+      message.setStatus(HttpStatus.BAD_REQUEST);
+    }
+    return ResponseEntity.ok(message);
+  }
+
+//  @GetMapping("/test/{roomId}")
+//  public ResponseEntity<Message> test(@PathVariable Long roomId) {
+//    MethodResultDto result = viewerService.test(roomId);
+//    Message message = new Message(HttpStatus.OK, "", null);
+//    if (!result.isResult()) {
+//      message.setStatus(HttpStatus.BAD_REQUEST);
+//      message.setMessage(result.getData().toString());
+//    } else {
+//      message.setMessage("방장은 얘로 바꾼다.");
+//      message.setData(result.getData());
+//    }
+//    return ResponseEntity.ok(message);
+//  }
 }
