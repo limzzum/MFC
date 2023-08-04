@@ -42,7 +42,7 @@ function Ranking() {
                 </div>
                 <div className="mx-auto">
                     {rankUsers.map((userData, index) => (
-                        <RankingProfile key={index} userData={userData} />
+                        <RankingProfile key={index} rank={page * 10 + index + 1} userData={userData} />
                     ))}
                 </div>
                 <div className={style.pagination}>
