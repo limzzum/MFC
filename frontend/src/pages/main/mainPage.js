@@ -1,7 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import style from './mainPage.module.css';
 import { BsPlusSquare } from 'react-icons/bs';
 import DebateRoomCard from '../../components/mainpage/debateRoomCard';
+import { useRecoilState } from 'recoil';
+import { minRoomIdState, minWaitingRoomIdState } from '../../recoil/mainPageRoomId';
 
 function MainPage() {
   const [showModal, setShowModal] = useState(false);
@@ -11,6 +14,10 @@ function MainPage() {
   const [speechTime, setSpeechTime] = useState('');
   const [spectatorCount, setSpectatorCount] = useState('');
   const [extensionCount, setExtensionCount] = useState('');
+  const [minTalkRoomId, setMinTalkRoomId] = useState(null);
+  const [ongoingDebateRooms, setOngoingDebateRooms] = useState([]);
+  const [waitingDebateRooms, setWaitingDebateRooms] = useState([]);
+  const [minWaitingRoomId, setMinWaitingRoomId] = useRecoilState(minWaitingRoomIdState);
 
   const openModal = () => {
     setShowModal(true);
@@ -40,13 +47,68 @@ function MainPage() {
     closeModal();
   };
 
+  // 최초 페이지 로드 시 서버에서 데이터 가져오기
+  const [minRoomId, setMinRoomId] = useRecoilState(minRoomIdState);
+
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        let apiUrl = 'http://i9a605.p.ssafy.io:8081/api/debate/list/ongoing';
+        if (minRoomId !== null) {
+          apiUrl += `?minRoomId=${minRoomId}&size=12`;
+        } else {
+          apiUrl += '?minRoomId=10000&size=12';
+        }
+
+        const response = await axios.get(apiUrl);
+        const data = response.data.data;
+        
+        console.log(data)
+
+        if (data.length > 0) {
+          const newMinRoomId = Math.min(...data.map(room => room.roomId));
+          setMinRoomId(newMinRoomId);
+          setOngoingDebateRooms(data);
+        }        
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    }
+
+    fetchData();
+  }, [minRoomId]);
+
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        let apiUrl = 'http://i9a605.p.ssafy.io:8081/api/debate/list/waiting';
+        if (minWaitingRoomId !== null) {
+          apiUrl += `?minRoomId=${minWaitingRoomId}&size=12`;
+        } else {
+          apiUrl += '?minRoomId=10000&size=12';
+        }
+
+        const response = await axios.get(apiUrl);
+        const data = response.data.data;
+
+        if (data.length > 0) {
+          const newMinRoomId = Math.min(...data.map(room => room.roomId));
+          setMinWaitingRoomId(newMinRoomId);
+          setWaitingDebateRooms(data);
+        }        
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    }
+
+    fetchData();
+  }, [minWaitingRoomId]);
+
   return (
     <div className='container'>
       <div className='innercontents'>
-        <div className={style.titlebox}>
-          <span className={style.title}>참여 가능한 토론방</span>
-          <div className={style.createroombuttoncontainer}>
-          <button
+          <div className={`${style.createroombuttoncontainer} justify-content-end`}> {/* Add this */}
+            <button
               className={`btn ${style.createroombutton}`}
               onClick={openModal}
               style={{ width: 'fit-content', padding: '0.5rem' }}
@@ -54,12 +116,21 @@ function MainPage() {
               <BsPlusSquare className={style.createroombuttonicon} style={{ fontSize: '1.5rem' }} />
             </button>
           </div>
-        </div>
 
         <hr className={style.horizontalline} />
-
-        <div>
-          <DebateRoomCard />
+        <div className={style.titlebox}>
+          <span className={style.title}>참여 가능한 토론방</span>
+        </div>
+        <div className={style.debateRoomContainer}>
+          {waitingDebateRooms.map(room => (
+            <DebateRoomCard
+              key={room.roomId}
+              title1={room.atopic}
+              title2={room.btopic}
+              debateTime={room.totalTime}
+              speechTime={room.talkTime}
+            />
+          ))}
         </div>
 
         <hr className={style.horizontalline} />
@@ -67,9 +138,20 @@ function MainPage() {
         <div className={style.titlebox}>
           <span className={style.title}>진행 중인 토론방</span>
         </div>
-
-        {/* 팝업 모달 */}
-        <div className={`modal ${showModal ? 'show d-block' : ''}`} tabIndex="-1" role="dialog">
+        
+        <div className={style.debateRoomContainer}>
+          {ongoingDebateRooms.map(room => (
+            <DebateRoomCard
+              key={room.roomId}
+              title1={room.atopic}
+              title2={room.btopic}
+              debateTime={room.totalTime}
+              speechTime={room.talkTime}
+            />
+          ))}
+        </div>
+        </div>
+        <div className={`modal ${showModal ? 'show d-block' : ''}`} tabIndex='-1' role='dialog'>
           <div className="modal-dialog" role="document">
             <div className="modal-content">
               <div className="modal-header">
@@ -129,7 +211,6 @@ function MainPage() {
           </div>
         </div>
       </div>
-    </div>
   );
 }
 

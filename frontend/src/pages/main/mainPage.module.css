@@ -1,9 +1,8 @@
-/* mainPage.module.css */
 @import url(../../colorSelector.css);
 
-.horizontalline {
-  height: 1.5px; /* 가로 줄의 세로 크기를 1픽셀로 설정 */
-  background-color: black; /* 가로 줄의 색상을 검은색으로 설정 */
+.horizontalLine {
+  height: 1.5px;
+  background-color: black;
 }
 
 .title {
@@ -11,24 +10,24 @@
   align-items: center;    
 }
 
-.titlebox {
+.titleBox {
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
 
-.createroombuttoncontainer {
+.createRoomButtonContainer {
   display: flex;
-  align-items: center;    
+  align-items: center;  
 }
 
-.createroombutton {
+.createRoomButton {
   font-size: 24px;
-  /* Set the button width to match the card width */
   width: 18rem;
+  margin-left: auto; /* Add this */
 }
 
-.createroombuttonicon {
+.createRoomButtonIcon {
   font-size: 28px;
   color: var(--blue-900);
 }
@@ -36,4 +35,15 @@
 .contentTitle {
   font-weight: bolder;
   margin-top: 3px;
+}
+
+.debateRoomContainer {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: start ; /* Add this */
+  gap: 20px;
+}
+
+.debateRoomCard {
+  width: calc((100% - 60px) / 4); /* Add this */
 }
