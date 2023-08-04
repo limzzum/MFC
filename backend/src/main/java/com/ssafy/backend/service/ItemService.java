@@ -123,7 +123,7 @@ public class ItemService {
   public String getUsedItem(Long userId, Long roomId, Long itemId) {
     Player player = playerRepository.findTopByRoomIdAndUserId(roomId,userId).orElse(null);
     if(player != null) {
-      Optional<UsedItem> usedItem = usedItemRepository.findTopByPlayerIdAndItemcodeId(player.getId(),itemId);
+      Optional<UsedItem> usedItem = usedItemRepository.findTopByPlayerIdAndItemcodeIdAndUsedTimeGreaterThan(player.getId(),itemId,player.getRoom().getStartTime());
       if(usedItem.isPresent()) {
         return "해당 토론방에서 이미 사용한 아이템입니다.";
       }else {
