@@ -77,25 +77,4 @@ public class RoomController {
         }
         return ResponseEntity.ok(message);
     }
-
-    @PatchMapping("reset/{roomId}")
-    public ResponseEntity<?> roomReset(@PathVariable Long roomId) {
-        Message message = roomService.roomReset(roomId);
-        if(message.getStatus() == HttpStatus.OK) {
-            participantService.resetParticipants(roomId);
-            message.setMessage("토론방 관련 정보 리셋 성공");
-        }
-        return ResponseEntity.ok(message);
-    }
-
-    @GetMapping("result/{roomId}/{userId}")
-    public ResponseEntity<?> roomFinInfo(@PathVariable Long roomId, @PathVariable  Long userId) {
-        Message message = roomService.roomFin(userId,roomId);
-        if(message.getMessage().equals("플레이어에게 토론 결과 보내기 성공")) {
-            historyService.roomFin((RoomFinToPlayerDto) message.getData(),userId);
-        }
-        return ResponseEntity.ok(message);
-    }
-
-
 }
