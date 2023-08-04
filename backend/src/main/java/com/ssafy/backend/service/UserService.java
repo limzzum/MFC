@@ -2,7 +2,7 @@ package com.ssafy.backend.service;
 
 import com.ssafy.backend.dto.LoginForm;
 import com.ssafy.backend.dto.Message;
-import com.ssafy.backend.dto.request.UserRegistDto;
+import com.ssafy.backend.dto.request.*;
 import com.ssafy.backend.entity.History;
 import com.ssafy.backend.entity.ItemCode;
 import com.ssafy.backend.entity.User;
@@ -44,6 +44,21 @@ public class UserService {
 
     public void logout(Long userId) {
 
+    }
+    public void modify(Long id, UserUpdateDto userUpdateDto) {
+        User findUser = findById(id);
+        if(findUser == null){
+            return;
+        }
+        findUser.updateInfo(userUpdateDto);
+    }
+
+    public void delete(Long id) {
+        User findUser = findById(id);
+        if(findUser == null){
+            return;
+        }
+        findUser.signout();
     }
 
     public User findUser(Long id) {
