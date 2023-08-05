@@ -7,6 +7,8 @@ import com.ssafy.backend.entity.*;
 import com.ssafy.backend.security.*;
 import com.ssafy.backend.service.*;
 import java.util.*;
+
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.*;
 
 import lombok.RequiredArgsConstructor;
@@ -109,5 +111,14 @@ public class UserController {
             return ResponseEntity.ok(new Message(HttpStatus.BAD_REQUEST, "이미 사용중인 이메일입니다.", null));
         }
         return ResponseEntity.ok(new Message(HttpStatus.ACCEPTED, "사용가능한 이메일 입니다.", null));
+    }
+
+
+    @GetMapping("/nickname")
+    public ResponseEntity<Message> nickname_check(@RequestParam String nickname) {
+        if(userService.isUsedNickname(nickname)){
+            return ResponseEntity.ok(new Message(HttpStatus.BAD_REQUEST, "이미 사용중인 닉네임입니다.",null));
+        }
+        return ResponseEntity.ok(new Message(HttpStatus.ACCEPTED, "사용가능한 닉네임 입니다.",null));
     }
 }
