@@ -21,7 +21,9 @@ spring:
         max-idle: 8
         max-active: 8
     port: 6379
-    host: 127.0.0.1
+    host: goldenteam.site
+    password: ssafy_a605_redis
+
 
   mail:
     host: smtp.naver.com
@@ -41,7 +43,7 @@ spring:
 logging:
   level:
     org.hibernate.SQL: debug
-
+    org.springframework.data.redis: DEBUG
 jwt:
   expmin: 60
   key: "wfaijelwfwwfajelwwlfjaleifajldcmsaqpoifejeliajwlfqpopoppoeimac"
