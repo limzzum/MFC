@@ -6,6 +6,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import { Button, Row } from "react-bootstrap";
 import { Link } from 'react-router-dom';
 import axios from "axios";
+import UserDeleteModal from "../../components/myprofile/userdeletemodal";
 
 function MyProfile() {
   const [ selectedImage, setSelectedImage ] = useState(null);
@@ -13,6 +14,8 @@ function MyProfile() {
   const [ changeNickname , setChangeNickname ] = useState(""); 
   const userToken = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxIiwiZXhwIjoxNzAxOTUxMDE0fQ.A7avo0u5nleIbTRaiYqw6kcSjNFzgYN5_PKoZgf5GtU"; 
   const [ finalChangeNickname, setFinalChangeNickname ] = useState("")
+  const [showModal, setShowModal] = useState(false); // 모달 상태 추가
+
 
   useEffect(() => {
     getUserInfo();
@@ -63,6 +66,14 @@ function MyProfile() {
     .catch((error) => {
       alert('닉네임 확인에 실패하였습니다.');
     });
+  };
+
+  const handleWithdrawButtonClick = () => {
+    setShowModal(true); // 모달 열기
+  };
+
+  const handleModalClose = () => {
+    setShowModal(false); // 모달 닫기
   };
 
   return (
@@ -140,9 +151,24 @@ function MyProfile() {
           <Button className="col-4 btn btn-primary w-150px m-auto" type="submit">
             변경
           </Button>
-          <Button className="col-4 btn btn-danger w-150px m-auto">탈퇴</Button>
+          <Button 
+            className="col-4 btn btn-danger w-150px m-auto"
+            onClick={handleWithdrawButtonClick}
+            >
+              탈퇴
+          </Button>
         </Row>
       </div>
+      <UserDeleteModal
+        show={showModal}
+        onClose={handleModalClose}
+        onConfirm={() => {
+          // 여기에 탈퇴 처리 로직을 구현하면 됩니다.
+          // 탈퇴 처리 완료 후 필요한 동작을 수행할 수 있습니다.
+          // 예: 로그아웃, 페이지 이동 등
+          handleModalClose(); // 모달 닫기
+        }}
+      />
     </div>
   );
 }
