@@ -1,20 +1,42 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import styles from './myProfile.module.css';
 import profileImage from '../../images/img.jpg';
 import settingIcon from '../../images/settingIcon.png';
 import "bootstrap/dist/css/bootstrap.min.css";
 import { Button, Row } from "react-bootstrap";
 import { Link } from 'react-router-dom';
+import axios from "axios";
 
 function MyProfile() {
-  const [selectedImage, setSelectedImage] = useState(null);
-  // const { userId } = useParams();
+  const [ selectedImage, setSelectedImage ] = useState(null);
+  const [ userInfo, setUserInfo ] = useState({});
+  const userToken = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxIiwiZXhwIjoxNzAxOTUxMDE0fQ.A7avo0u5nleIbTRaiYqw6kcSjNFzgYN5_PKoZgf5GtU"; 
+
+  useEffect(() => {
+    getUserInfo();
+  }, []);
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
-    // 선택된 파일(file)을 상태(selectedImage)에 저장
     setSelectedImage(file);
   };
+
+  const getUserInfo = () => {
+    const config = {
+      headers: {
+        Authorization: `Bearer ${userToken}`
+      }
+    };
+    console.log(config)
+    axios.get(`https://5b07-2001-2d8-f023-6bdd-f198-a7bb-9d7f-e3ac.ngrok-free.app/api/user`, config)
+      .then(response => {
+        console.log(response.data);
+        setUserInfo(response.data); // Use response.data instead of response
+      })
+      .catch(error => {
+        console.error("사용자 정보 가져오기 오류", error);
+      });
+  }
 
   return (
     <div className={styles.wrapper}>
@@ -26,7 +48,7 @@ function MyProfile() {
             {selectedImage ? (
               <img
                 className={`${styles.radiusImg}`}
-                src={URL.createObjectURL(selectedImage)}
+                src={profileImage}
                 alt="profileImage"
               />
             ) : (
@@ -49,7 +71,7 @@ function MyProfile() {
                 <label htmlFor="이메일" className="mb-2">
                   이메일
                 </label>
-                <input className="form-control w-75" type="text" placeholder="email"></input>
+                <input className="form-control w-75" type="text" value={userInfo.email} readOnly />
               </li>
               <li>
                 <label htmlFor="Nickname" className="mb-2">
@@ -59,7 +81,7 @@ function MyProfile() {
                   <input
                     type="text"
                     className="form-control"
-                    placeholder="닉네임 적어줘"
+                    value={userInfo.nickName}
                     aria-label="Nickname"
                     aria-describedby="basic-addon2"
                   />
@@ -71,8 +93,8 @@ function MyProfile() {
                 </div>
                 <div>
                   <Link to="/pages/passwordchange/passwordChangePage/:userId" className={`${styles.pwText}`}>
-            비밀번호변경
-                </Link>
+                    비밀번호변경
+                  </Link>
                 </div> 
               </li>
             </ul>
