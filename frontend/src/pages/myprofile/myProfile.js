@@ -27,7 +27,7 @@ function MyProfile() {
         Authorization: `Bearer ${userToken}`
       }
     };
-    axios.get(`http://i9a605.p.ssafy.io:8081`, config)
+    axios.get(`http://i9a605.p.ssafy.io:8081/api/user`, config)
       .then(response => {
         setUserInfo(response.data.data); // Use response.data instead of response
       })
