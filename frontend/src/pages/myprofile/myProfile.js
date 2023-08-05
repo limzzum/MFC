@@ -11,8 +11,8 @@ function MyProfile() {
   const [ selectedImage, setSelectedImage ] = useState(null);
   const [ userInfo, setUserInfo ] = useState({});
   const [ changeNickname , setChangeNickname ] = useState(""); 
-  const [ nicknameAvailable, setNicknameAvailable ] = useState(false);
   const userToken = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxIiwiZXhwIjoxNzAxOTUxMDE0fQ.A7avo0u5nleIbTRaiYqw6kcSjNFzgYN5_PKoZgf5GtU"; 
+  const [ finalChangeNickname, setFinalChangeNickname ] = useState("")
 
   useEffect(() => {
     getUserInfo();
@@ -24,41 +24,45 @@ function MyProfile() {
   };
   
   // User정보 가져오기
-  const getUserInfo = () => {
+  const getUserInfo = async () => {
     const config = {
       headers: {
         Authorization: `Bearer ${userToken}`
       }
     };
-    axios.get(`http://i9a605.p.ssafy.io:8081/api/user`, config)
-      .then(response => {
-        setUserInfo(response.data.data); 
-      })
-      .catch(error => {
-        console.error("사용자 정보 가져오기 오류", error);
-      });
-  }
+  
+    try {
+      const response = await axios.get(`http://i9a605.p.ssafy.io:8081/api/user`, config);
+      await setUserInfo(response.data.data);
+      setFinalChangeNickname(response.data.data.nickname); // 바로 nickname을 업데이트하도록 수정
+    } catch (error) {
+      console.error("사용자 정보 가져오기 오류", error);
+    }
+  };
+  
 
   // User닉네임 중복 체크
+
   const handleNicknameButtonClick = () => {
     const requestData = {
         nickname: `${changeNickname}`
       };
   
     axios.get('http://i9a605.p.ssafy.io:8081/api/user/nickname', { params: requestData }) 
-      .then((response) => {
-        console.log(response.data)
-        if (response.data.status === 'ACCEPTED') {
-          alert('확인되었습니다!');
-          setNicknameAvailable(true);
-        } else {
-          alert('이미 사용 중인 닉네임입니다.');
-          setNicknameAvailable(false);
-        }
-      })
-      .catch((error) => {
-        alert('닉네임 확인에 실패하였습니다.');
-      });
+    .then((response) => {
+      console.log(response.data)
+      if (response.data.status === 'ACCEPTED') {
+        alert('확인되었습니다!');
+        setFinalChangeNickname(changeNickname);
+      } else {
+        alert('이미 사용 중인 닉네임입니다.');
+        setFinalChangeNickname(`${userInfo.nickname}`);
+      }
+      console.log(finalChangeNickname); // 업데이트 이후의 값 출력
+    })
+    .catch((error) => {
+      alert('닉네임 확인에 실패하였습니다.');
+    });
   };
 
   return (
@@ -107,7 +111,6 @@ function MyProfile() {
                     value={changeNickname}
                     onChange={(e) => {
                       setChangeNickname(e.target.value);
-                      setNicknameAvailable(false); 
                     }}
                     placeholder={userInfo.nickname}
                     aria-label="Nickname"
