@@ -27,11 +27,9 @@ function MyProfile() {
         Authorization: `Bearer ${userToken}`
       }
     };
-    console.log(config)
-    axios.get(`https://5b07-2001-2d8-f023-6bdd-f198-a7bb-9d7f-e3ac.ngrok-free.app/api/user`, config)
+    axios.get(`http://i9a605.p.ssafy.io:8081`, config)
       .then(response => {
-        console.log(response.data);
-        setUserInfo(response.data); // Use response.data instead of response
+        setUserInfo(response.data.data); // Use response.data instead of response
       })
       .catch(error => {
         console.error("사용자 정보 가져오기 오류", error);
@@ -81,7 +79,7 @@ function MyProfile() {
                   <input
                     type="text"
                     className="form-control"
-                    value={userInfo.nickName}
+                    placeholder={userInfo.nickname}
                     aria-label="Nickname"
                     aria-describedby="basic-addon2"
                   />
