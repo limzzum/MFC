@@ -10,6 +10,8 @@ import axios from "axios";
 function MyProfile() {
   const [ selectedImage, setSelectedImage ] = useState(null);
   const [ userInfo, setUserInfo ] = useState({});
+  const [ changeNickname , setChangeNickname ] = useState(""); 
+  const [ nicknameAvailable, setNicknameAvailable ] = useState(false);
   const userToken = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxIiwiZXhwIjoxNzAxOTUxMDE0fQ.A7avo0u5nleIbTRaiYqw6kcSjNFzgYN5_PKoZgf5GtU"; 
 
   useEffect(() => {
@@ -20,7 +22,8 @@ function MyProfile() {
     const file = e.target.files[0];
     setSelectedImage(file);
   };
-
+  
+  // User정보 가져오기
   const getUserInfo = () => {
     const config = {
       headers: {
@@ -29,12 +32,34 @@ function MyProfile() {
     };
     axios.get(`http://i9a605.p.ssafy.io:8081/api/user`, config)
       .then(response => {
-        setUserInfo(response.data.data); // Use response.data instead of response
+        setUserInfo(response.data.data); 
       })
       .catch(error => {
         console.error("사용자 정보 가져오기 오류", error);
       });
   }
+
+  // User닉네임 중복 체크
+  const handleNicknameButtonClick = () => {
+    const requestData = {
+        nickname: `${changeNickname}`
+      };
+  
+    axios.get('http://i9a605.p.ssafy.io:8081/api/user/nickname', { params: requestData }) 
+      .then((response) => {
+        console.log(response.data)
+        if (response.data.status === 'ACCEPTED') {
+          alert('확인되었습니다!');
+          setNicknameAvailable(true);
+        } else {
+          alert('이미 사용 중인 닉네임입니다.');
+          setNicknameAvailable(false);
+        }
+      })
+      .catch((error) => {
+        alert('닉네임 확인에 실패하였습니다.');
+      });
+  };
 
   return (
     <div className={styles.wrapper}>
@@ -69,7 +94,7 @@ function MyProfile() {
                 <label htmlFor="이메일" className="mb-2">
                   이메일
                 </label>
-                <input className="form-control w-75" type="text" value={userInfo.email} readOnly />
+                <input className="form-control w-75" type="text" placeholder={userInfo.email} readOnly />
               </li>
               <li>
                 <label htmlFor="Nickname" className="mb-2">
@@ -79,12 +104,20 @@ function MyProfile() {
                   <input
                     type="text"
                     className="form-control"
+                    value={changeNickname}
+                    onChange={(e) => {
+                      setChangeNickname(e.target.value);
+                      setNicknameAvailable(false); 
+                    }}
                     placeholder={userInfo.nickname}
                     aria-label="Nickname"
                     aria-describedby="basic-addon2"
                   />
                   <div className="input-group-append">
-                    <button className="btn btn-outline-secondary" type="button">
+                    <button 
+                      className="btn btn-outline-secondary" 
+                      type="button"
+                      onClick={handleNicknameButtonClick}>
                       중복확인
                     </button>
                   </div>                 
