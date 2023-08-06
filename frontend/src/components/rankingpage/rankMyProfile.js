@@ -6,26 +6,26 @@ import { faCrown, faCoins, faHandPeace } from "@fortawesome/free-solid-svg-icons
 
 import profileImage from '../../images/img.jpg'
 
-function RankingMyProfile() {
+function RankingMyProfile({ myData }) {
 
     return (
         <div className={styles.boxProfile}>
-          <div class={`${styles.rankProfileImage} mx-auto`}>
+          <div className={`${styles.rankProfileImage} mx-auto`}>
                 <img className={`${styles.radiusImg} ${styles.imgCenter}`} src={profileImage} alt="profileImage" />
             </div>
-            <div className={`${styles.rankingMyprofileText} mb-5`}>테스트 님</div>
+            <div className={`${styles.rankingMyprofileText} mb-5`}>{myData.nickName} 님</div>
               <div className={styles.historyBox}>
                 <div className={styles.historyItemBox}>
                   <FontAwesomeIcon icon={faCrown} size="4x" color="orange"/>
-                  <div className={styles.historyText}>145p</div>
+                  <div className={styles.historyText}>{myData.exp}</div>
                 </div>
                 <div className={styles.historyItemBox}>
                   <FontAwesomeIcon icon={faCoins} size="4x" color="orange"/>
-                  <div className={styles.historyText}>4568</div>
+                  <div className={styles.historyText}>{myData.coin}</div>
                 </div>
                 <div className={styles.historyItemBox}>
                   <FontAwesomeIcon icon={faHandPeace} size="4x" color="white"/>
-                  <div className={styles.historyText}>56.78%</div>
+                  <div className={styles.historyText}>{myData.winRate.toFixed(2)} %</div>
                 </div>
                 </div>
               </div>
