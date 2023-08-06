@@ -4,6 +4,9 @@ import logoImage from "../../images/logo.png"
 import style from "./loginPage.module.css"
 import axios from 'axios'
 
+import { useRecoilState } from 'recoil';
+import { userState } from '../../recoil/token'
+
 function Loginpage() {
   const [email, setEmail] = useState('') 
   const [password, setPw] = useState('')
@@ -12,6 +15,9 @@ function Loginpage() {
   const [notAllow, setNotAllow] = useState(true)
   const [token, setToken] = useState('');
   const navigate = useNavigate();
+
+  const [user, setUser] = useRecoilState(userState);
+
   //이메일과 비밀번호 형식 확인하는 부분
   useEffect(() => {
     if(emailValid && pwValid) {
@@ -51,9 +57,12 @@ function Loginpage() {
       const token = response.data.data.accessToken;
       if (token) {
         setToken(token);
+        setUser({token}); // 여기에서 Recoil 상태에 토큰 저장
+
         localStorage.setItem('token', token);
+
         alert('로그인이 성공적으로 완료되었습니다.');
-        navigate('/pages/main/mainPage'); // 메인 페이지로 이동
+        navigate('/');
       } else {
         alert('로그인에 실패하였습니다.');
       }
