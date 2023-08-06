@@ -2,7 +2,6 @@ import styles from './rankingProfile.module.css';
 import profileImage from '../../images/img.jpg';
 
 function RankingProfile({ rank, userData }) {
-    console.log(userData)
     return (
         <div className={styles.profileBox}>
             <div className={styles.contentBox}>
