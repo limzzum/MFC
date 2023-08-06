@@ -79,9 +79,6 @@ function DebatePage() {
     <div className={style.debatePage}>
       <Row>
         <Header/>
-        <Button onClick={() => handleStatusChange('waiting')}>wating</Button>
-        <Button onClick={() => handleStatusChange('ongoing')} >ongoing</Button>
-        <Button onClick={() => handleStatusChange('done')}>done</Button>
       </Row>
       <Row className='debatePart'>
         <Col xs={9}>
