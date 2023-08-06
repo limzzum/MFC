@@ -60,7 +60,7 @@ function TextChatting(){
                 className={style.inputChat}
                 />
                 <button className={style.button} onClick={handleSendMessage}>전송</button>
-                <button onClick={handleReceiveMessage}>Receive Test</button>
+                {/* <button onClick={handleReceiveMessage}>Receive Test</button> */}
             </div>
         </>
     );
