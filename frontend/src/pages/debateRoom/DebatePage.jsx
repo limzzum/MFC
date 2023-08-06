@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {useRecoilValue} from 'recoil';
-import {useStatus, useRole, getDebateRoomState} from '../../recoil/debateStateAtom';
+import {useStatus, useRole, getDebateRoomState, voteResultState} from '../../recoil/debateStateAtom';
 import { Row, Col, Stack, Modal, Button, ProgressBar} from 'react-bootstrap';
 import Header from './components/Header';
 import ScreenShare from './components/ScreenShare';
@@ -19,8 +19,10 @@ function DebatePage() {
 
   // 토론방 상태 호출
   const debateRoomInfo = useRecoilValue(getDebateRoomState);
+  // const voteResult = useRecoilValue(voteResultState);
 
   console.log('debateRoomInfo: ', debateRoomInfo);
+  // console.log('voteResult: ', voteResult);
 
   const result = {
     status: "OK",
@@ -104,11 +106,14 @@ function DebatePage() {
           role={role}
           onStatusChange={handleStatusChange}
           onRoleChange={handleRoleChange}
+          debateRoomInfo={debateRoomInfo.data}
+          // voteResult={voteResult.data}
         />
       </Row>
       <Row>
         <Spectator
           debateRoomInfo={debateRoomInfo.data}
+          // voteResult={voteResult.data}
         />
       </Row>
 
