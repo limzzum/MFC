@@ -61,11 +61,8 @@ function Loginpage() {
 
         localStorage.setItem('token', token);
 
-        console.log(user.token); // console에 토큰 출력
-
-
         alert('로그인이 성공적으로 완료되었습니다.');
-        navigate('/mainpage'); // 메인 페이지로 이동
+        navigate('/');
       } else {
         alert('로그인에 실패하였습니다.');
       }
