@@ -22,6 +22,7 @@ import java.util.stream.Collectors;
 import javax.transaction.Transactional;
 
 import com.ssafy.backend.repository.UserItemRepository;
+import io.swagger.models.auth.In;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
@@ -39,6 +40,10 @@ public class ItemService {
   private final UserRepository userRepository;
   private final PlayerRepository playerRepository;
   private final UsedItemRepository usedItemRepository;
+
+  public ItemCode findById(Long id){
+    return itemCodeRepository.findById(id).orElse(null);
+  }
 
   public List<ItemCodeListDto> findAll() {
     List<ItemCode> itemCodes = itemCodeRepository.findAll(Sort.by(Direction.DESC, "id"));
