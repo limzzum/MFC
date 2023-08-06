@@ -20,4 +20,11 @@ public class DebateFinInfoDto {
   private Boolean isSurrender;
   private Boolean isExit;
 
+  public DebateFinInfoDto(DebateFinPlayerDto playerA, DebateFinPlayerDto playerB, Boolean isSurrender,Boolean isExit){
+    this.playerA = playerA;
+    this.playerB = playerB;
+    this.isSurrender = isSurrender;
+    this.isExit = isExit;
+  }
+
 }

@@ -1,18 +1,10 @@
 package com.ssafy.backend.service;
 
 import com.ssafy.backend.dto.Message;
+import com.ssafy.backend.dto.MethodResultDto;
 import com.ssafy.backend.dto.request.RoomInfoRuquestDto;
-import com.ssafy.backend.dto.response.RoomFinToParticipantDto;
-import com.ssafy.backend.dto.response.RoomFinToPlayerDto;
-import com.ssafy.backend.dto.response.RoomInfoResponseDto;
-import com.ssafy.backend.dto.response.RoomListDto;
-import com.ssafy.backend.entity.CategoryCode;
-import com.ssafy.backend.entity.Participant;
-import com.ssafy.backend.entity.Player;
-import com.ssafy.backend.entity.RoleCode;
-import com.ssafy.backend.entity.Room;
-import com.ssafy.backend.entity.Status;
-import com.ssafy.backend.entity.User;
+import com.ssafy.backend.dto.response.*;
+import com.ssafy.backend.entity.*;
 import com.ssafy.backend.repository.CategoryCodeRepository;
 import com.ssafy.backend.repository.HistoryRepository;
 import com.ssafy.backend.repository.ParticipantRepository;
@@ -21,10 +13,13 @@ import com.ssafy.backend.repository.RoleCodeRepository;
 import com.ssafy.backend.repository.RoomRepository;
 import com.ssafy.backend.repository.UserRepository;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import javax.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.aspectj.bridge.IMessage;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -39,15 +34,23 @@ public class RoomResultService {
   private final RoomRepository roomRepository;
   private final PlayerRepository playerRepository;
   private final ParticipantRepository participantRepository;
+  private final HistoryRepository historyRepository;
   private static final int MAX_LIFE_GAUGE = 100;
+  private static final int WIN_PLAYER_EXP = 5;
+  private static final int DRAW_PLAYER_EXP = 3;
+  private static final int LOSE_PLAYER_EXP = 5;
+  private static final float WIN_PLAYER_COIN = 1.5f;
+  private static final int DRAW_LOSE_PLAYER_COIN = 1;
+  private static final int PLAYER_OUT_POINT = 5;
+
 
   public Message roomReset(Long roomId) {
     Room room = roomRepository.findById(roomId).orElse(null);
     Message message = new Message();
-    if(room == null) {
+    if (room == null) {
       message.setStatus(HttpStatus.BAD_REQUEST);
       message.setMessage("해당 방을 찾을 수 없습니다.");
-    }else {
+    } else {
       room.setStartTime(null);
       roomRepository.save(room);
       message.setStatus(HttpStatus.OK);
@@ -55,171 +58,201 @@ public class RoomResultService {
     return message;
   }
 
-  public Message roomResult(Long userId, Long roomId) {
-    Message message = new Message();
+  // 종료 결과
+  // 1. 시간 종료, 생명게이지 0 => roomId, userId => 플레이어라면 전적 증가 => socket 필요 없음
+  // 2. 플레이어 항복 => roomId, userId => 해당 플레이어 lose => 토론 결과 ( 전적 수정 - 메서드 따로  ) => 토론 결과 socket 전송
+  // 3. 플레이어 나가기 => roomId, userId => 해당 플레이어 lose => 토론 결과 ( 전적 수정 ), +  ( 패널티 부과 ) => 토론 결과 seocket 전송
+  // 3.1 이후 플레이어 상태 변경 api 프론트에서 서버로 전송하기
+
+  // 시간초과나 생명게이지 감소로 API보내는 경우 플레이어가 아닌 관전자일 경우
+  public MethodResultDto roomResult(Boolean isSurrender, Boolean isExit, Long userId,Long roomId) {
+    MethodResultDto methodResultDto = new MethodResultDto();
+    DebateFinInfoDto debateFinInfoDto;
+
     Room room = roomRepository.findById(roomId).orElse(null);
-    room.setStatus(Status.WAITING);
-    roomRepository.save(room);
-    Participant participant = participantRepository.findAllByUserIdAndRoomId(userId, roomId);
-    if (participant != null) {
-      if (participant.getRoleCode().getId() == 1) {
-        message.setStatus(HttpStatus.BAD_REQUEST);
-        message.setMessage("토론방에서 나간 유저입니다.");
+    if (room == null) {
+      methodResultDto.setResult(false);
+      methodResultDto.setData("해당 방을 찾을 수 없습니다.");
+    } else {
+      room.setStatus(Status.WAITING);
+      roomRepository.save(room);
+      List<Participant> participants = participantRepository.findAllByRoomId(roomId);
+      List<Participant> players = new ArrayList<>();
+
+      for (Participant p : participants) {
+        if (p.getRoleCode().getId() == 2) {
+          players.add(p);
+        }
+      }
+
+      List<Player> playerEntities = new ArrayList<>();
+      for (Participant player : players) {
+        Player playerEntity = playerRepository.findTopByRoomIdAndUserId(roomId, player.getUser().getId()).orElse(null);
+        if (playerEntity != null) {
+          playerEntities.add(playerEntity);
+        }
+      }
+
+      Player playerA = null;
+      Player playerB = null;
+
+      for (Player p : playerEntities) {
+        if (p.isTopicTypeA()) {
+          playerA = p;
+        } else {
+          playerB = p;
+        }
+      }
+
+      int bVoteCount = (int) participants.stream()
+              .filter(p -> Boolean.FALSE.equals(p.getIsVoteTypeA()))
+              .count();
+
+      int aVoteCount = (int) participants.stream()
+              .filter(p -> Boolean.TRUE.equals(p.getIsVoteTypeA()))
+              .count();
+
+      DebateFinPlayerDto playerADto = new DebateFinPlayerDto(aVoteCount, playerA.getHeartPoint());
+      DebateFinPlayerDto playerBDto = new DebateFinPlayerDto(bVoteCount, playerB.getHeartPoint());
+
+      if(isSurrender || isExit) {
+        if(playerA.getUser().getId() == userId) {
+          if(isSurrender) {
+            playerADto = playerHistoryGet(playerADto, playerA.getUser().getId(),"lose");
+            playerHistoryUpdate(playerADto, playerA.getUser().getId(),"lose");
+          } else if(isExit) {
+            playerADto = playerHistoryGet(playerADto, playerA.getUser().getId(),"out");
+            playerHistoryUpdate(playerADto, playerA.getUser().getId(),"out");
+          }
+          playerBDto = playerHistoryGet(playerBDto, playerB.getUser().getId(),"win");
+          playerHistoryUpdate(playerBDto, playerB.getUser().getId(),"win");
+          debateFinInfoDto = new DebateFinInfoDto(playerB.getUser().getProfile(),playerB.getUser().getId(),playerADto,playerBDto,isSurrender,isExit);
+        }else  {
+          if(isSurrender) {
+            playerBDto = playerHistoryGet(playerBDto, playerB.getUser().getId(),"lose");
+            playerHistoryUpdate(playerBDto, playerB.getUser().getId(),"lose");
+          } else if(isExit) {
+            playerBDto = playerHistoryGet(playerBDto, playerB.getUser().getId(),"out");
+            playerHistoryUpdate(playerBDto, playerB.getUser().getId(),"out");
+          }
+          playerADto = playerHistoryGet(playerADto, playerA.getUser().getId(),"win");
+          playerHistoryUpdate(playerADto, playerA.getUser().getId(),"win");
+          debateFinInfoDto = new DebateFinInfoDto(playerA.getUser().getProfile(),playerA.getUser().getId(),playerADto,playerBDto,isSurrender,isExit);
+        }
+        methodResultDto.setResult(true);
+        methodResultDto.setData(debateFinInfoDto);
+      }else {
+        String isPlayerAStatus = isPlayerAwin(aVoteCount,bVoteCount,playerA.getHeartPoint(),playerB.getHeartPoint());
+        if(isPlayerAStatus == "win") {
+          playerADto = playerHistoryGet(playerADto, playerA.getUser().getId(),"win");
+          playerBDto = playerHistoryGet(playerBDto, playerB.getUser().getId(),"lose");
+          if(playerA.getUser().getId() == userId) {
+            playerHistoryUpdate(playerADto, playerA.getUser().getId(),"win");
+          }else if(playerB.getUser().getId() == userId){
+            playerHistoryUpdate(playerBDto, playerB.getUser().getId(),"lose");
+          }
+          debateFinInfoDto = new DebateFinInfoDto(playerA.getUser().getProfile(),playerA.getUser().getId(),playerADto,playerBDto,isSurrender,isExit);
+        }else if(isPlayerAStatus == "draw") {
+          playerADto = playerHistoryGet(playerADto, playerA.getUser().getId(),"draw");
+          playerBDto = playerHistoryGet(playerBDto, playerB.getUser().getId(),"draw");
+          if(playerA.getUser().getId() == userId) {
+            playerHistoryUpdate(playerADto, playerA.getUser().getId(),"draw");
+          }else if(playerB.getUser().getId() == userId){
+            playerHistoryUpdate(playerBDto, playerB.getUser().getId(),"draw");
+          }
+          debateFinInfoDto = new DebateFinInfoDto(playerADto,playerBDto,isSurrender,isExit);
+        }else {
+          playerADto = playerHistoryGet(playerADto, playerA.getUser().getId(),"lose");
+          playerBDto = playerHistoryGet(playerBDto, playerB.getUser().getId(),"win");
+          if(playerA.getUser().getId() == userId) {
+            playerHistoryUpdate(playerADto, playerA.getUser().getId(),"lose");
+          }else if(playerB.getUser().getId() == userId){
+            playerHistoryUpdate(playerBDto, playerB.getUser().getId(),"win");
+          }
+          debateFinInfoDto = new DebateFinInfoDto(playerB.getUser().getProfile(),playerB.getUser().getId(),playerADto,playerBDto,isSurrender,isExit);
+        }
+
+        methodResultDto.setResult(true);
+        methodResultDto.setData(debateFinInfoDto);
+      }
+    }
+    return methodResultDto;
+  }
+  public DebateFinPlayerDto playerHistoryGet(DebateFinPlayerDto playerDto,Long userId,String status) {
+    History orgHistory = historyRepository.findHistoryByUserId(userId);
+    int getCoin = 0;
+    int getExp = 0;
+    int totalCoin = 0;
+    int totalExp = 0;
+    if(orgHistory != null) {
+      if (status == "win") {
+        getExp = WIN_PLAYER_EXP;
+        getCoin = Math.round(playerDto.getHp() * WIN_PLAYER_COIN);
+      } else if (status == "draw") {
+        getExp = DRAW_PLAYER_EXP;
+        getCoin = playerDto.getHp() * DRAW_LOSE_PLAYER_COIN;
       } else {
-        List<Participant> participants = participantRepository.findAllByRoomId(roomId);
-        List<Participant> players = new ArrayList<>();
-
-        for (Participant p : participants) {
-          if (p.getRoleCode().getId() == 2) {
-            players.add(p);
-          }
-        }
-
-        List<Player> playerEntities = new ArrayList<>();
-        for (Participant player : players) {
-          Player playerEntity = playerRepository.findTopByRoomIdAndUserId(roomId, player.getUser().getId()).orElse(null);
-          if (playerEntity != null) {
-            playerEntities.add(playerEntity);
-          }
-        }
-        Player playerA = null;
-        Player playerB = null;
-
-        for (Player p : playerEntities) {
-          if (p.isTopicTypeA()) {
-            playerA = p;
-          } else {
-            playerB = p;
-          }
-        }
-
-        int totalVoteCount = (int) participants.stream()
-                .filter(p -> p.getIsVoteTypeA() != null)
-                .count();
-
-        int aVoteCount = (int) participants.stream()
-                .filter(p -> Boolean.TRUE.equals(p.getIsVoteTypeA()))
-                .count();
-
-        String aResult = "";
-        String bResult = "";
-
-        if (playerA.getHeartPoint() == 0) {
-          bResult = "win";
-          aResult = "lose";
-        } else if (playerB.getHeartPoint() == 0) {
-          aResult = "win";
-          bResult = "lose";
-        } else if (totalVoteCount == 0) {
-          if (playerA.getHeartPoint() > playerB.getHeartPoint()) {
-            aResult = "win";
-            bResult = "lose";
-          } else if (playerA.getHeartPoint() < playerB.getHeartPoint()) {
-            bResult = "win";
-            aResult = "lose";
-          } else {
-            aResult = "draw";
-            bResult = "draw";
-          }
+        if (status == "out") { // 나간 플레이어에게 coin 부과..?
+          getExp = -PLAYER_OUT_POINT;
         } else {
-          double playerAHpRate = (double) playerA.getHeartPoint() / MAX_LIFE_GAUGE;
-          double playerBHpRate = (double) playerB.getHeartPoint() / MAX_LIFE_GAUGE;
-
-          double playerAVoteRate = (double) aVoteCount / totalVoteCount;
-          double playerBVoteRate = (double) ((totalVoteCount - aVoteCount) / totalVoteCount);
-
-          double finalPlayerAWinRate = (playerAHpRate * 0.5) + (playerAVoteRate * 0.5);
-          double finalPlayerBWinRate = (playerBHpRate * 0.5) + (playerBVoteRate * 0.5);
-
-          System.out.println(finalPlayerAWinRate);
-          System.out.println(finalPlayerBWinRate);
-
-          if (finalPlayerAWinRate > finalPlayerBWinRate) {
-            aResult = "win";
-            bResult = "lose";
-          } else if (finalPlayerAWinRate < finalPlayerBWinRate) {
-            bResult = "win";
-            aResult = "lose";
-          } else {
-            aResult = "draw";
-            bResult = "draw";
-          }
+          getExp = LOSE_PLAYER_EXP;
         }
-
-        if (participant.getRoleCode().getId() == 2) { // 관전자 없는 경우도 체크해줘야 함...
-          int playerVoteCount = aVoteCount;
-          String result = "";
-          int exp = 0;
-          int hp = 0;
-          int coin = 0;
-          if (playerB.getUser().getId() == userId) {
-            playerVoteCount = totalVoteCount - aVoteCount;
-            result = bResult;
-            exp = getexp(aResult, bResult, "b");
-            hp = playerB.getHeartPoint();
-            coin = getcoin(result, hp);
-          } else {
-            result = aResult;
-            exp = getexp(aResult, bResult, "a");
-            hp = playerA.getHeartPoint();
-            coin = getcoin(result, hp);
-          }
-          RoomFinToPlayerDto roomFinToPlayerDto = RoomFinToPlayerDto.builder()
-                  .result(result)
-                  .userVoteCount(playerVoteCount)
-                  .voteTotal(totalVoteCount)
-                  .userGetCoin(coin)
-                  .userGetExp(exp)
-                  .hp(hp)
-                  .build();
-          message.setStatus(HttpStatus.OK);
-          message.setMessage("플레이어에게 토론 결과 보내기 성공");
-          message.setData(roomFinToPlayerDto);
-          return message;
-        } else {
-          RoomFinToParticipantDto roomFinToParticipantDto = RoomFinToParticipantDto.builder()
-//                  .aTopic(participant.getRoom().getATopic())
-//                  .bTopic(participant.getRoom().getBTopic())
-                  .aResult(aResult)
-                  .bResult(bResult)
-                  .aVoteCount(aVoteCount)
-                  .bVoteCount(totalVoteCount - aVoteCount)
-                  .aHp(playerA.getHeartPoint())
-                  .bHp(playerB.getHeartPoint())
-                  .build();
-          message.setStatus(HttpStatus.OK);
-          message.setMessage("관전자에게 토론 결과 보내기 성공");
-          message.setData(roomFinToParticipantDto);
-          return message;
-        }
+        getCoin = playerDto.getHp() * DRAW_LOSE_PLAYER_COIN;
       }
+    }
+    totalExp = orgHistory.getExperience() + getExp;
+    totalCoin = orgHistory.getCoin() + getCoin;
+    playerDto.insertDto(totalCoin,getCoin, totalExp, getExp);
+    return playerDto;
+  }
+  public void playerHistoryUpdate(DebateFinPlayerDto playerDto,Long userId,String status) {
+    History orgHistory = historyRepository.findHistoryByUserId(userId);
+    orgHistory.setCoin(playerDto.getCoin());
+    orgHistory.setExperience(playerDto.getExp());
+    if(status == "win") {
+      orgHistory.setWinCount(orgHistory.getWinCount() + 1);
+    }else if(status == "lose"){
+      orgHistory.setLoseCount(orgHistory.getLoseCount() + 1);
     }else {
-        message.setStatus(HttpStatus.BAD_REQUEST);
-        message.setMessage("토론방에서 해당 유저를 조회할 수 없습니다.");
+      orgHistory.setDrawCount(orgHistory.getDrawCount() + 1);
+    }
+    historyRepository.save(orgHistory);
+  }
+  public String isPlayerAwin (int playerAVoteCount, int playerBVoteCount, int playerAHpCount, int playerBHpCount){
+    String playerAResult = "";
+
+    int totalVoteCount = playerAVoteCount + playerBVoteCount;
+
+    if (playerAHpCount == 0) {
+      playerAResult = "lose";
+    } else if (playerBHpCount == 0) {
+      playerAResult = "win";
+    } else if (totalVoteCount == 0) {
+      if (playerAHpCount > playerBHpCount) {
+        playerAResult = "win";
+      } else if (playerAHpCount < playerBHpCount) {
+        playerAResult = "lose";
+      } else {
+        playerAResult = "draw";
       }
-    return message;
-    }
+    } else {
+      double playerAHpRate = (double) playerAHpCount / MAX_LIFE_GAUGE;
+      double playerBHpRate = (double) playerBHpCount / MAX_LIFE_GAUGE;
 
-  public int getexp(String aResult,String bResult,String p) {
-    if(aResult == "win" && bResult == "lose" && p == "a") {
-      return 5;
-    }else if(aResult == "lose" && bResult == "win" && p == "a") {
-      return 1;
-    }else if(aResult == "win" && bResult == "lose" && p == "b") {
-      return 1;
-    }else if(aResult == "lose" && bResult == "win" && p == "b"){
-      return 5;
-    }else {
-      return 3;
+      double playerAVoteRate = (double) playerAVoteCount / totalVoteCount;
+      double playerBVoteRate = (double) playerBVoteCount / totalVoteCount;
+
+      double finalPlayerAWinRate = (playerAHpRate * 0.5) + (playerAVoteRate * 0.5);
+      double finalPlayerBWinRate = (playerBHpRate * 0.5) + (playerBVoteRate * 0.5);
+
+      if (finalPlayerAWinRate > finalPlayerBWinRate) {
+        playerAResult = "win";
+      } else if (finalPlayerAWinRate < finalPlayerBWinRate) {
+        playerAResult = "lose";
+      } else {
+        playerAResult = "draw";
+      }
     }
+    return playerAResult;
   }
-
-  public int getcoin(String result,int hp) {
-    if(result == "win") {
-      return hp + hp / 2;
-    }else {
-      return hp;
-    }
-  }
-
 }

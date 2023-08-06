@@ -8,6 +8,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
 
+import java.util.Objects;
+
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
