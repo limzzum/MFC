@@ -70,7 +70,7 @@ function RoomInfo({status, role, onStatusChange, onRoleChange, debateRoomInfo}){
                 <Col className={style.userInfo}>
                     사용자1 정보
                 </Col>
-                <Col xs={2} className={style.timer}>
+                <Col xs={1} className={style.timer}>
                     {formatTime(totalTime)}
                 </Col>
                 <Col className={style.userInfo}>
@@ -86,7 +86,7 @@ function RoomInfo({status, role, onStatusChange, onRoleChange, debateRoomInfo}){
                     )}
                     {status === 'ongoing' && <ProgressBar className={style.user1HP} now={user1HP} label={`${user1HP}%`} />}
                 </Col>
-                <Col xs={2} className={style.timer} >
+                <Col xs={1} className={style.timer} >
                     {formatTime(speechTime)}
                 </Col>
                 <Col className={style.userInfo}>
