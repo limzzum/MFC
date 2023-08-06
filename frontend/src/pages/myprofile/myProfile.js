@@ -37,14 +37,13 @@ function MyProfile() {
   
     try {
       const response = await axios.get(`http://i9a605.p.ssafy.io:8081/api/user`, config);
-      await setUserInfo(response.data.data);
+      setUserInfo(response.data.data);
       setFinalChangeNickname(response.data.data.nickname); // 바로 nickname을 업데이트하도록 수정
     } catch (error) {
       console.error("사용자 정보 가져오기 오류", error);
     }
   };
   
-
   // User닉네임 중복 체크
 
   const handleNicknameButtonClick = () => {
