@@ -52,7 +52,7 @@ function ItemPage() {
     return (
         <div>
             <HavingItem userItems={userItems} userCoin={userCoin}/>
-            <ItemStore allItems={allItems} userCoin={userCoin}/>
+            <ItemStore allItems={allItems} userCoin={userCoin} userId={userId}/>
         </div>
     );
 
