@@ -137,7 +137,7 @@ function MyProfile() {
                   </div>                 
                 </div>
                 <div>
-                  <Link to="/pages/passwordchange/passwordChangePage/:userId" className={`${styles.pwText}`}>
+                  <Link to="/pwchange" className={`${styles.pwText}`}>
                     비밀번호변경
                   </Link>
                 </div> 

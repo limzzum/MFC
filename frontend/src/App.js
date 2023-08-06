@@ -32,7 +32,7 @@ function App() {
         <NavBarWrapper />
         <Routes>
           <Route path='/login' element={<LoginPage />} />
-          <Route path='/pwChange/:userId' element={<PasswordChangePage />} />
+          <Route path='/pwchange' element={<PasswordChangePage />} />
           <Route path='/signup' element={<SignupPage />} />
           <Route path='/' element={<MainPage />} />
           <Route path='/debateRoom' element={<DebatePage/>} />
