@@ -2,14 +2,12 @@ import React, {useState, useEffect} from "react";
 import {Row, Col, Button, Modal, Form} from "react-bootstrap";
 import style from '../debatePage.module.css';
 
-function DebateBtns({status, role, onRoleChange}){
+function DebateBtns({status, role, onRoleChange, debateRoomInfo}){
     const [showModal, setShowModal] = useState(false);
     const [selectedTopic, setSelectedTopics] = useState([]);
     const [isVotingEnabled, setVotingEnabled] = useState(true);
-    const votingCooldown = 30;
+    const votingCooldown = debateRoomInfo.talkTime * 120;
     const [remainingTime, setRemainingTime] = useState(votingCooldown);
-
-    const topics = ['topic A', 'topic B'];
 
     const handleVote = () => {
         // 투표 로직 구현
@@ -36,7 +34,7 @@ useEffect(() => {
             clearTimeout(timer);
         };
     }
-}, [isVotingEnabled]);
+}, [isVotingEnabled, votingCooldown]);
 
 
 
@@ -90,18 +88,27 @@ useEffect(() => {
                 </Modal.Header>
                 <Modal.Body>
                 <Form>
-                    {topics.map((topic) => (
                     <Form.Check
-                        key={topic}
-                        type="radio"
-                        label={topic}
-                        id={topic}
-                        checked={selectedTopic === topic}
-                        onChange={() => setSelectedTopics(topic)}
-                        disabled={!isVotingEnabled}
-                    />
-                    ))}
-                </Form>
+                            key="topicA"
+                            type="radio"
+                            label={debateRoomInfo.atopic}
+                            id="topicA"
+                            value="topicA"
+                            checked={selectedTopic === "topicA"}
+                            onChange={() => setSelectedTopics("topicA")}
+                            disabled={!isVotingEnabled}
+                        />
+                        <Form.Check
+                            key="topicB"
+                            type="radio"
+                            label={debateRoomInfo.btopic}
+                            id="topicB"
+                            value="topicB"
+                            checked={selectedTopic === "topicB"}
+                            onChange={() => setSelectedTopics("topicB")}
+                            disabled={!isVotingEnabled}
+                        />
+                    </Form>
                 {!isVotingEnabled && (
                     <p>{remainingTime}초 뒤에 재투표가 가능합니다.</p>
                 )}
