@@ -15,7 +15,6 @@ function Loginpage() {
   const [notAllow, setNotAllow] = useState(true)
   const [token, setToken] = useState('');
   const navigate = useNavigate();
-
   const [user, setUser] = useRecoilState(userState);
 
   //이메일과 비밀번호 형식 확인하는 부분
