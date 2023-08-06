@@ -42,8 +42,17 @@ function SignupPage() {
   // 인증 이메일 보내면 타이머가 작동하는 부분
   const handleSendEmailClick = () => {
     if (emailValid) {
-      setTimer(180);
-      setIsActive(true);
+      // Email 보내기 요청 보내는 API 호출
+      axios
+        .post('http://i9a605.p.ssafy.io:8081/api/user/email', { email }) // 실제 서버 주소에 맞게 수정
+        .then((response) => {
+          alert('인증메일이 전송되었습니다!');
+          setTimer(180);
+          setIsActive(true);
+        })
+        .catch((error) => {
+          alert('인증메일 전송에 실패하였습니다.');
+        });
     }
   };
 
@@ -79,7 +88,7 @@ function SignupPage() {
   // 이메일 인증코드 전송하는 부분
   const handleAuthButtonClick = () => {
     axios
-      .post('', { email, authCode }) // 실제 서버 주소에 맞게 수정
+      .post('http://i9a605.p.ssafy.io:8081/api/user/email', { email, authCode }) // 실제 서버 주소에 맞게 수정
       .then((response) => {
         alert('인증이 완료되었습니다!');
         setEmailValid(true);
@@ -93,8 +102,9 @@ function SignupPage() {
   // 닉네임 중복검사 하는 부분
   const handleNicknameButtonClick = () => {
     axios
-      .post('/api/checkNickname', { nickname }) // 실제 서버 주소 및 API 경로에 맞게 수정
+      .post('http://i9a605.p.ssafy.io:8081/api/user/nickname', { nickname }) // 실제 서버 주소 및 API 경로에 맞게 수정
       .then((response) => {
+        // ----------이 부분 서버 열리고 수정-----------
         if (response.data.isAvailable) {
           alert('확인되었습니다!');
           setNicknameAvailable(true);
@@ -115,7 +125,7 @@ function SignupPage() {
       alert('입력한 정보를 다시 확인해주세요.');
     } else {
       axios
-        .post('/api/signup', { email, authCode, nickname, password }) // 실제 서버 주소 및 API 경로에 맞게 수정
+        .post('/api/signup', { email, nickname, password }) // 실제 서버 주소 및 API 경로에 맞게 수정
         .then((response) => {
           alert('회원가입이 완료되었습니다!');
         })
@@ -139,6 +149,7 @@ function SignupPage() {
               style={{ fontSize: '12px', width: '145px' }}
               value={email}
               onChange={handleEmail}
+              disabled={emailValid && authCodeValid}
             />
             <button
               className={`btn btn-outline-secondary ${style.SignupPageBtn}`}
@@ -197,8 +208,8 @@ function SignupPage() {
                 setNickname(e.target.value);
                 setNicknameAvailable(false); // Reset nickname availability when input changes
               }}
-              disabled={emailValid || !authCodeValid}
-            />
+              disabled={!(emailValid && authCodeValid) || nicknameAvailable}
+              />
             <button
               className={`btn btn-outline-secondary ${style.SignupPageBtn}`}
               style={{
