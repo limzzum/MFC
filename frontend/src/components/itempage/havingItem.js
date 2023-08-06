@@ -51,12 +51,12 @@ function HavingItem({ userItems, userCoin }) {
         <div className={`${styles.itemBox} mx-auto`}>
           <FontAwesomeIcon icon={faHand} size="3x" />
           <div className="pt-4">끼어들기</div>
-          <div>X {angelCount}</div>
+          <div>X {cutinCount}</div>
         </div>
         <div className={`${styles.itemBox} mx-auto`}>
           <FontAwesomeIcon icon={faCross} size="3x" />
           <div className="pt-4">수호천사</div>
-          <div>X {cutinCount}</div>
+          <div>X {angelCount}</div>
         </div>
       </div>
     </div>

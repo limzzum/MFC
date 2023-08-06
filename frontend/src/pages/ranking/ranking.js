@@ -10,10 +10,22 @@ import { Button } from "react-bootstrap";
 function Ranking() {
     const [rankUsers, setRankUsers] = useState([]);
     const [page, setPage] = useState(0);
-
+    // const userId = 1;
     useEffect(() => {
         fetchData();
+        // getMyRecord();
     }, [page]);
+
+    // const getMyRecord = () => {
+    //     axios.get(`http://i9a605.p.ssafy.io:8081/api/record/list/${userId}`)
+    //     .then(response => {
+    //         console.log(response)
+    //     })
+    //     .catch(error => {
+    //         console
+    //     })
+
+    // }
 
     const fetchData = async (keyword = "") => {
         try {
