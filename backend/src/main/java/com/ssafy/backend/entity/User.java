@@ -1,7 +1,6 @@
 package com.ssafy.backend.entity;
 
 import com.ssafy.backend.dto.request.*;
-import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.ConstraintMode;
 import javax.persistence.Entity;
@@ -53,7 +52,7 @@ public class User {
   ItemCode colorItem;
 
 
-  public void updateInfo(UserUpdateDto userUpdateDto){
+  public void updateInfo(UserUpdateDto userUpdateDto, ItemCode itemCode){
     if(userUpdateDto.getNickname()!=null){
       this.nickname = userUpdateDto.getNickname();
     }
@@ -63,13 +62,17 @@ public class User {
     if(userUpdateDto.getProfile()!=null){
       this.profile = userUpdateDto.getProfile();
     }
-    if(userUpdateDto.getNameColor()!=null){
-      this.colorItem = userUpdateDto.getNameColor();
+    if(userUpdateDto.getNameColorId()!=null){
+      this.colorItem = itemCode;
     }
   }
 
   public void signout(){
     isDeleted = true;
+  }
+
+  public User(Long userId){
+    this.id = userId;
   }
 }
 

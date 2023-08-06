@@ -14,8 +14,10 @@ import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class UserService {
 
@@ -45,12 +47,13 @@ public class UserService {
     public void logout(Long userId) {
 
     }
-    public void modify(Long id, UserUpdateDto userUpdateDto) {
+    public void modify(Long id, UserUpdateDto userUpdateDto, Long itemCodeId) {
         User findUser = findById(id);
         if(findUser == null){
             return;
         }
-        findUser.updateInfo(userUpdateDto);
+        ItemCode itemCode = new ItemCode(itemCodeId);
+        findUser.updateInfo(userUpdateDto,itemCode);
     }
 
     public void delete(Long id) {
