@@ -1,6 +1,7 @@
 package com.ssafy.backend.controller;
 
 import com.ssafy.backend.dto.Message;
+import com.ssafy.backend.dto.MethodResultDto;
 import com.ssafy.backend.dto.request.RoomInfoRuquestDto;
 import com.ssafy.backend.dto.response.RoomFinToPlayerDto;
 import com.ssafy.backend.dto.response.RoomInfoResponseDto;
@@ -33,7 +34,7 @@ public class RoomResultController {
     private final ParticipantService participantService;
     private final HistoryService historyService;
     @PatchMapping("reset/{roomId}")
-    public ResponseEntity<?> roomReset(@PathVariable Long roomId) {
+    public ResponseEntity<?> roomReset(@PathVariable Long roomId) { // 이것도 중복처리되면 안됨 모든 방에 있는 클라이언트가 보내면 중복으로 처리 x
         Message message = roomResultService.roomReset(roomId);
         if(message.getStatus() == HttpStatus.OK) {
             participantService.resetParticipants(roomId);
@@ -42,14 +43,48 @@ public class RoomResultController {
         return ResponseEntity.ok(message);
     }
 
-    @GetMapping("result/{roomId}/{userId}")
-    public ResponseEntity<?> roomFinInfo(@PathVariable Long roomId, @PathVariable Long userId) {
-        Message message = roomResultService.roomResult(userId,roomId);
-        if(message.getMessage().equals("플레이어에게 토론 결과 보내기 성공")) {
-            historyService.roomFin((RoomFinToPlayerDto) message.getData(),userId);
+    @GetMapping("{roomId}/{userId}") // 시간 종료, 생명게이지 0일 때 방에 있는 모든 클라이언트가 각각 보냄
+    public ResponseEntity<?> roomResult(@PathVariable Long roomId, @PathVariable Long userId) {
+        MethodResultDto methodResultDto = roomResultService.roomResult(false,false,userId,roomId);
+        Message message = new Message(HttpStatus.OK, "", null);
+        if(!methodResultDto.isResult()){
+            message.setStatus(HttpStatus.BAD_REQUEST);
+            message.setMessage(methodResultDto.getData().toString());
+        }else {
+            message.setMessage("토론 결과 조회 성공");
+            message.setData(methodResultDto.getData());
         }
         return ResponseEntity.ok(message);
     }
+
+    @GetMapping("surrender/{roomId}/{userId}")
+    public ResponseEntity<?> playerSurrenderResult(@PathVariable Long roomId, @PathVariable Long userId) {
+        MethodResultDto methodResultDto = roomResultService.roomResult(true,false,userId,roomId);
+        Message message = new Message(HttpStatus.OK, "", null);
+        if(!methodResultDto.isResult()){
+            message.setStatus(HttpStatus.BAD_REQUEST);
+            message.setMessage(methodResultDto.getData().toString());
+        }else {
+            message.setMessage("토론 결과 조회 성공");
+            message.setData(methodResultDto.getData());
+        }
+        return ResponseEntity.ok(message);
+    }
+
+    @GetMapping("out/{roomId}/{userId}")
+    public ResponseEntity<?> playerOutResult(@PathVariable Long roomId, @PathVariable Long userId) {
+        MethodResultDto methodResultDto = roomResultService.roomResult(false,true,userId,roomId);
+        Message message = new Message(HttpStatus.OK, "", null);
+        if(!methodResultDto.isResult()){
+            message.setStatus(HttpStatus.BAD_REQUEST);
+            message.setMessage(methodResultDto.getData().toString());
+        }else {
+            message.setMessage("토론 결과 조회 성공");
+            message.setData(methodResultDto.getData());
+        }
+        return ResponseEntity.ok(message);
+    }
+
 
 
 }

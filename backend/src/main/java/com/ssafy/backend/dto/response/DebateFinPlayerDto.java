@@ -20,6 +20,16 @@ public class DebateFinPlayerDto {
   private int exp;
   private int getExp;
 
+  public DebateFinPlayerDto(int vote, int hp) {
+    this.vote = vote;
+    this.hp = hp;
+  }
 
+  public void insertDto(int coin, int getCoin, int exp, int getExp) {
+    this.coin = coin;
+    this.getCoin = getCoin;
+    this.exp = exp;
+    this.getExp = getExp;
+  }
 
 }
