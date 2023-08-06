@@ -5,7 +5,7 @@ import { Button } from "react-bootstrap";
 import styles from "./itemStore.module.css";
 import axios from "axios";
 
-function Item({ iconName, name, price, userCoin, color, userId }) {
+function Item({ iconName, name, price, userCoin, color, userId, updateUserInfo }) {
   const [purchasing, setPurchasing] = useState(false);
 
   const handlePurchase = () => {
@@ -15,6 +15,7 @@ function Item({ iconName, name, price, userCoin, color, userId }) {
         .then(response => {
           console.log(response)
           console.log(`Item ${name} purchased successfully!`);
+          updateUserInfo()
         })
         .catch(error => {
           console.error("Error purchasing item:", error);

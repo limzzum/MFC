@@ -1,7 +1,7 @@
 import styles from "./itemStore.module.css";
 import Item from "./item";
 
-function ItemStore({ allItems, userCoin, userId }) {
+function ItemStore({ allItems, userCoin, userId, updateUserInfo }) {
   const itemRows = [];
   for (let i = 0; i < allItems.length; i += 5) {
     itemRows.push(allItems.slice(i, i + 5));
@@ -24,6 +24,7 @@ function ItemStore({ allItems, userCoin, userId }) {
               userCoin={userCoin}
               color={item.rgb}
               userId = {userId}
+              updateUserInfo = {updateUserInfo}
             />
           ))}
         </div>

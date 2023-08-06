@@ -49,10 +49,15 @@ function ItemPage() {
             });
     };
 
+    const updateUserInfo = () => {
+        fetchUserItems(userId);
+        fetchUserCoin(userId);
+    }
+
     return (
         <div>
             <HavingItem userItems={userItems} userCoin={userCoin}/>
-            <ItemStore allItems={allItems} userCoin={userCoin} userId={userId}/>
+            <ItemStore allItems={allItems} userCoin={userCoin} userId={userId} updateUserInfo={updateUserInfo}/>
         </div>
     );
 
