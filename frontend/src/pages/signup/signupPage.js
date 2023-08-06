@@ -125,7 +125,7 @@ function SignupPage() {
       alert('입력한 정보를 다시 확인해주세요.');
     } else {
       axios
-        .post('/api/signup', { email, authCode, nickname, password }) // 실제 서버 주소 및 API 경로에 맞게 수정
+        .post('/api/signup', { email, nickname, password }) // 실제 서버 주소 및 API 경로에 맞게 수정
         .then((response) => {
           alert('회원가입이 완료되었습니다!');
         })
