@@ -1,7 +1,5 @@
-import React from "react";
 import styles from "./itemStore.module.css";
 import Item from "./item";
-import { faHeartCirclePlus, faUserClock, faVolumeXmark, faHand, faCross, faSprayCan, faCoins } from "@fortawesome/free-solid-svg-icons";
 
 function ItemStore({ allItems, userCoin }) {
   const itemRows = [];

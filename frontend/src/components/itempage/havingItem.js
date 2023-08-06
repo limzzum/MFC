@@ -1,8 +1,7 @@
-import React from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import styles from "./havingItem.module.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCoins, faCross, faHeartCirclePlus, faUserClock, faVolumeXmark, faHand, faAngleDoubleUp } from "@fortawesome/free-solid-svg-icons";
+import { faCoins, faCross, faHeartCirclePlus, faUserClock, faVolumeXmark, faHand } from "@fortawesome/free-solid-svg-icons";
 
 function HavingItem({ userItems, userCoin }) {
 

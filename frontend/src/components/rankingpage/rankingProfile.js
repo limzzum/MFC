@@ -1,4 +1,3 @@
-import React from "react";
 import styles from './rankingProfile.module.css';
 import profileImage from '../../images/img.jpg';
 
