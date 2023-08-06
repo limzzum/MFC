@@ -5,15 +5,15 @@ import { Button } from "react-bootstrap";
 import styles from "./itemStore.module.css";
 import axios from "axios";
 
-function Item({ iconName, name, price, userCoin, color }) {
+function Item({ iconName, name, price, userCoin, color, userId }) {
   const [purchasing, setPurchasing] = useState(false);
 
   const handlePurchase = () => {
     if (userCoin >= price) {
       setPurchasing(true);
-      axios
-        .post(`api/item/purchase/{userId}/itemname=${name}`)
+      axios.post(`http://i9a605.p.ssafy.io:8081/api/item/purchase/${userId}?itemName=${name}`)
         .then(response => {
+          console.log(response)
           console.log(`Item ${name} purchased successfully!`);
         })
         .catch(error => {
