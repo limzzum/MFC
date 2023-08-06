@@ -23,5 +23,9 @@ public class MVCConfig implements WebMvcConfigurer {
         return new LoginCheckInterCeptor();
     }
 
+    @Override
+    public void addViewControllers(ViewControllerRegistry registry) {
+        registry.addViewController("/").setViewName("redirect:/swagger-ui/index.html");
+    }
 
 }
