@@ -8,9 +8,10 @@ import com.ssafy.backend.security.*;
 import com.ssafy.backend.service.*;
 import java.util.*;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.*;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.*;
 import org.springframework.http.*;
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @RequestMapping("/api/user")
 @Slf4j
+@Api(tags = "USER REST API")
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 public class UserController {
 
@@ -28,6 +30,7 @@ public class UserController {
     private final SecurityService securityService;
     private final EmailService emailService;
 
+    @ApiOperation(value = "로그인 요청", notes = "로그인에 성공하면 jwt토큰을 발급, 실패하면 실패메시지 반환",response = Map.class)
     @PostMapping("/login")
     public Message login(@RequestBody @Valid LoginForm loginForm, BindingResult result) {
         if (result.hasErrors()) {
