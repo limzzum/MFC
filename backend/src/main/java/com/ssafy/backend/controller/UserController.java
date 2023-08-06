@@ -29,6 +29,7 @@ public class UserController {
     private final UserService userService;
     private final SecurityService securityService;
     private final EmailService emailService;
+    private final ItemService itemService;
 
     @ApiOperation(value = "로그인 요청", notes = "로그인에 성공하면 jwt토큰을 발급, 실패하면 실패메시지 반환",response = Map.class)
     @PostMapping("/login")
@@ -96,7 +97,7 @@ public class UserController {
     public ResponseEntity<Message> modify(@RequestHeader("Authorization") String token,
                                           @RequestBody UserUpdateDto userUpdateDto) {
         Long userId = Long.valueOf(securityService.getSubject(token));
-        userService.modify(userId, userUpdateDto);
+        userService.modify(userId, userUpdateDto, userUpdateDto.getNameColorId());
         return ResponseEntity.ok(new Message(HttpStatus.OK, "수정 완료", null));
     }
 
