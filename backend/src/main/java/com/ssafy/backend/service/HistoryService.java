@@ -32,58 +32,6 @@ public class HistoryService {
       historyRepository.save(orgHistory);
     }
   }
-
-  public void roomFin(RoomFinToPlayerDto roomFinToPlayerDto,Long userId) {
-    History orgHistory = historyRepository.findHistoryByUserId(userId);
-    if(orgHistory != null) {
-      int coin = orgHistory.getCoin() + roomFinToPlayerDto.getUserGetCoin();
-      int exp = orgHistory.getExperience() + roomFinToPlayerDto.getUserGetExp();
-      orgHistory.setCoin(coin);
-      orgHistory.setExperience(exp);
-      if(roomFinToPlayerDto.getResult() == "win") {
-        orgHistory.setWinCount(orgHistory.getWinCount() + 1);
-      }else if(roomFinToPlayerDto.getResult() == "lose"){
-        orgHistory.setLoseCount(orgHistory.getLoseCount() + 1);
-      }else {
-        orgHistory.setDrawCount(orgHistory.getDrawCount() + 1);
-      }
-      historyRepository.save(orgHistory);
-    }
-  }
-  /*
-   * 승리 카운트 메서드
-   * */
-  public void incrementWinCount(Long userId) {
-    History history = historyRepository.findHistoryByUserId(userId);
-    if (history != null) {
-      history.setWinCount(history.getWinCount() + 1);
-      historyRepository.save(history);
-    }
-  }
-
-  /*
-   * 패배 카운트 메서드
-   * */
-  public void incrementLoseCount(Long userId) {
-    History history = historyRepository.findHistoryByUserId(userId);
-    if (history != null) {
-      history.setLoseCount(history.getLoseCount() + 1);
-      historyRepository.save(history);
-    }
-  }
-
-  /*
-   * 무승부 카운트 메서드
-   * */
-  public void incrementDrawCount(Long userId) {
-    History history = historyRepository.findHistoryByUserId(userId);
-    if (history != null) {
-      history.setDrawCount(history.getDrawCount() + 1);
-      historyRepository.save(history);
-    }
-  }
-
-
   /*
    * 유저 전적 조회 메서드
    * */
@@ -149,5 +97,7 @@ public class HistoryService {
       return historyRepository.searchHistoryByKeyword(keyword, pageable).getTotalPages();
     }
   }
+
+  // 결과에 따른 userId로 전적 갱신!!!
 
 }
