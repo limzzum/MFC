@@ -1,3 +1,4 @@
+import React from "react";
 import { Button, Modal } from "react-bootstrap";
 
 const UserDeleteModal = ({ show, onClose, onConfirm }) => {
@@ -14,8 +15,8 @@ const UserDeleteModal = ({ show, onClose, onConfirm }) => {
           취소
         </Button>
         <Button variant="danger" onClick={() => {
-          onConfirm(); // 탈퇴 처리 로직 호출
-          onClose(); // 모달 닫기
+          onConfirm(); 
+          onClose(); 
         }}>
           탈퇴
         </Button>
