@@ -1,5 +1,6 @@
 package com.ssafy.backend.entity;
 
+import com.ssafy.backend.dto.request.*;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 
@@ -51,5 +52,16 @@ public class Player {
   public void changeStatus(boolean status){
     this.isReady = status;
   }
+  public void updateInfo(PlayerUpdateDto playerUpdateDto){
+    this.heartPoint = playerUpdateDto.getHeartPoint();
+  }
+  public boolean removeOverTimeCnt(){
+    if(this.remainOverTimeCount == 0){
+      return false;
+    }
+    this.remainOverTimeCount -= 1;
+    return true;
+  }
+
 
 }
