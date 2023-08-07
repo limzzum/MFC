@@ -2,7 +2,6 @@ package com.ssafy.backend.service;
 
 import com.ssafy.backend.dto.request.HistoryReqDto;
 import com.ssafy.backend.dto.response.HistoryResDto;
-import com.ssafy.backend.dto.response.RoomFinToPlayerDto;
 import com.ssafy.backend.entity.History;
 import com.ssafy.backend.repository.HistoryRepository;
 import java.util.List;

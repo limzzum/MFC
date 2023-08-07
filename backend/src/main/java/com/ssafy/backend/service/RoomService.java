@@ -1,9 +1,6 @@
 package com.ssafy.backend.service;
 
-import com.ssafy.backend.dto.Message;
 import com.ssafy.backend.dto.request.RoomInfoRuquestDto;
-import com.ssafy.backend.dto.response.RoomFinToParticipantDto;
-import com.ssafy.backend.dto.response.RoomFinToPlayerDto;
 import com.ssafy.backend.dto.response.RoomInfoResponseDto;
 import com.ssafy.backend.dto.response.RoomListDto;
 import com.ssafy.backend.entity.CategoryCode;
@@ -28,7 +25,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 @Transactional
