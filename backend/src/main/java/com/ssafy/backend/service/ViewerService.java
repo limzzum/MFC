@@ -3,7 +3,6 @@ package com.ssafy.backend.service;
 import com.ssafy.backend.dto.MethodResultDto;
 import com.ssafy.backend.dto.response.voteResultDto;
 import com.ssafy.backend.entity.Participant;
-import com.ssafy.backend.entity.Player;
 import com.ssafy.backend.entity.RoleCode;
 import com.ssafy.backend.entity.Room;
 import com.ssafy.backend.entity.Status;
@@ -128,33 +127,28 @@ public class ViewerService {
     } else {
       if (participant.getRoleCode().getId() == 2L) {//나가려는 사람이 플레이어인 경우
         //플레이어 목록에서 ID 삭제 후 (토론이 끝나거나 새로 시작할 때 플레이어 정보는 초기화 되기때문에 ID만 삭제한다)
-        Player player = playerRepository.findTopByRoomIdAndUserId(roomId,
-                participant.getRoleCode().getId())
-            .orElse(null);
-        player.setId(null);
-        System.out.println("플레이어임");
+        playerRepository.resetUserId(roomId, userId);
       }
       //사용자의 롤을 퇴장자로 변경
       participant.setRoleCode(new RoleCode(1L, null));
       //토론방의 현재인원을 차감 시킨다
       if (decrementRoomCurrentCount(roomId) == 0) {
         changeRoomStatus(roomId);
-        return new MethodResultDto(true, "토론방 종료");
+        return new MethodResultDto(true, "토론방 종료", null);
       } else {
         if (participant.isHost()) { //방장인 경우
-          System.out.println("방장임");
           participant.setHost(false); //사용자 방장 권한 해제
           //가장 빨리 입장한 사람에게 방장 권한을 부여
           MethodResultDto result = getNextHost(roomId); //다음 방장 사용자 리턴
           if (result.isResult()) {
             Participant newHost = (Participant) result.getData();
             newHost.setHost(true);
-//            participantRepository.save(newHost);
+            participantRepository.save(newHost);
           } else {
             return result;
           }
         }
-//        participantRepository.save(participant);
+        participantRepository.save(participant);
       }
     }
     return new MethodResultDto(true, "정상 퇴장 완료");
@@ -164,7 +158,7 @@ public class ViewerService {
     Room room = roomRepository.findById(roomId).orElse(null);
     if (room != null) {
       room.setCurPeople(room.getCurPeople() - 1);
-//      roomRepository.save(room);
+      roomRepository.save(room);
     }
     return room.getCurPeople();
   }
@@ -173,7 +167,7 @@ public class ViewerService {
     Room room = roomRepository.findById(roomId).orElse(null);
     if (room != null) {
       room.setStatus(Status.DONE);
-//      roomRepository.save(room);
+      roomRepository.save(room);
     }
   }
 

@@ -4,12 +4,14 @@ import style from '../debatePage.module.css';
 import leftVector from '../../../images/leftVector.png';
 import rightVector from '../../../images/rightVector.png';
 
-function Spectator() {
+function Spectator({debateRoomInfo}) {
     const value1 = 0;
     const value2 = 0;
     const totalValue = value1 + value2;
     const ratio1 = value1 === 0 ? 50 : (value1 / totalValue) * 100;
     const ratio2 = value2 === 0 ? 50 : (value2 / totalValue) * 100;
+
+    const spectatorCnt = debateRoomInfo.maxPeople - 2;
 
     const [userVideoStream, setUserVideoStream] = useState(null);
     const userVideoRef = useRef();
@@ -52,28 +54,11 @@ function Spectator() {
             </div>
             <div className={style.spectatorList}>
                 <Button><img src={leftVector} alt="leftVector"/></Button>
-                <div>
-                    {/* <label className="user">asdasd</label> */}
-                    <video className={style.spectator} ref={userVideoRef} autoPlay muted />
-                </div>
-                <div>
-                    <label className={style.spectator}>asdasd</label>
-                </div>
-                <div>
-                    <label className={style.spectator}>asdasd</label>
-                </div>
-                <div>
-                    <label className={style.spectator}>asdasd</label>
-                </div>
-                <div>
-                    <label className={style.spectator}>asdasd</label>
-                </div>
-                <div>
-                    <label className={style.spectator}>asdasd</label>
-                </div>
-                <div>
-                    <label className={style.spectator}>asdasd</label>
-                </div>
+                    {[...Array(spectatorCnt)].map((_, index) => (
+                        <div key={index}>
+                            <video className={style.spectator} ref={userVideoRef} autoPlay muted />
+                        </div>
+                    ))}
                 <Button><img src={rightVector} alt="rightVector"/></Button>
             </div>
         </div>

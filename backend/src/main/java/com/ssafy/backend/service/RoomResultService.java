@@ -72,7 +72,7 @@ public class RoomResultService {
     Room room = roomRepository.findById(roomId).orElse(null);
     if (room == null) {
       methodResultDto.setResult(false);
-      methodResultDto.setData("해당 방을 찾을 수 없습니다.");
+      methodResultDto.setMessage("해당 방을 찾을 수 없습니다.");
     } else {
       room.setStatus(Status.WAITING);
       roomRepository.save(room);

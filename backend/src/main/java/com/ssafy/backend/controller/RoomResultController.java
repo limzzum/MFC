@@ -49,7 +49,7 @@ public class RoomResultController {
         Message message = new Message(HttpStatus.OK, "", null);
         if(!methodResultDto.isResult()){
             message.setStatus(HttpStatus.BAD_REQUEST);
-            message.setMessage(methodResultDto.getData().toString());
+            message.setMessage(methodResultDto.getMessage());
         }else {
             message.setMessage("토론 결과 조회 성공");
             message.setData(methodResultDto.getData());
@@ -63,7 +63,7 @@ public class RoomResultController {
         Message message = new Message(HttpStatus.OK, "", null);
         if(!methodResultDto.isResult()){
             message.setStatus(HttpStatus.BAD_REQUEST);
-            message.setMessage(methodResultDto.getData().toString());
+            message.setMessage(methodResultDto.getMessage());
         }else {
             message.setMessage("토론 결과 조회 성공");
             message.setData(methodResultDto.getData());
@@ -77,7 +77,7 @@ public class RoomResultController {
         Message message = new Message(HttpStatus.OK, "", null);
         if(!methodResultDto.isResult()){
             message.setStatus(HttpStatus.BAD_REQUEST);
-            message.setMessage(methodResultDto.getData().toString());
+            message.setMessage(methodResultDto.getMessage());
         }else {
             message.setMessage("토론 결과 조회 성공");
             message.setData(methodResultDto.getData());
