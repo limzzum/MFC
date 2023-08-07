@@ -2,7 +2,7 @@ import React, {useState, useEffect} from "react";
 import { Row, Col, Button, ProgressBar } from "react-bootstrap";
 import style from '../debatePage.module.css';
 
-function RoomInfo({status, role, onStatusChange, onRoleChange, debateRoomInfo}){
+function RoomInfo({status, playerStatus, role, onStatusChange, onRoleChange, debateRoomInfo, userReady, setUserReady}){
     const user1HP = 70;
     const user2HP = 100;
 
@@ -11,8 +11,6 @@ function RoomInfo({status, role, onStatusChange, onRoleChange, debateRoomInfo}){
 
     const [totalTime, setTotalTime] = useState(total);
     const [speechTime, setSpeechTime] = useState(talk);
-
-    const [userReady, setUserReady] = useState([false, false]);
 
     const formatTime = (time) => {
         const minutes = Math.floor(time / 60);
@@ -79,9 +77,9 @@ function RoomInfo({status, role, onStatusChange, onRoleChange, debateRoomInfo}){
             </Row>
             <Row>
                 <Col className={style.userInfo}>
-                    {status === 'waiting' && (
-                        <Button variant={userReady[0] ? 'outline-primary' : 'primary'} onClick={() => setUserReady((prevState) => [!prevState[0], prevState[1]])}>
-                            {userReady[0] ? '준비완료' : '준비'}
+                    {status === 'waiting' && playerStatus[0] && (
+                        <Button variant={userReady ? 'outline-primary' : 'primary'} onClick={() => setUserReady((prevState) => !prevState)}>
+                            {userReady ? '준비완료' : '준비'}
                         </Button>
                     )}
                     {status === 'ongoing' && <ProgressBar className={style.user1HP} now={user1HP} label={`${user1HP}%`} />}
@@ -90,9 +88,9 @@ function RoomInfo({status, role, onStatusChange, onRoleChange, debateRoomInfo}){
                     {formatTime(speechTime)}
                 </Col>
                 <Col className={style.userInfo}>
-                    {status === 'waiting' && (
-                        <Button variant={userReady[1] ? 'outline-primary' : 'primary'} onClick={() => setUserReady((prevState) => [prevState[0], !prevState[1]])}>
-                            {userReady[1] ? '준비완료' : '준비'}
+                    {status === 'waiting' && playerStatus[1] && (
+                        <Button variant={userReady ? 'outline-primary' : 'primary'} onClick={() => setUserReady((prevState) => !prevState)}>
+                            {userReady ? '준비완료' : '준비'}
                         </Button>
                     )}
                     {status === 'ongoing' && <ProgressBar className="user2HP" now={user2HP} label={`${user2HP}%`} />}
