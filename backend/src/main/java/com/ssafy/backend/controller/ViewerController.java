@@ -98,6 +98,10 @@ public class ViewerController {
   public ResponseEntity<Message> getViewers(@PathVariable Long roomId) {
     Message message = new Message(HttpStatus.OK, "", null);
 
+    MethodResultDto result = viewerService.getParticipants(roomId);
+    message.setMessage(result.getMessage());
+    message.setData(result.getData());
+
     return ResponseEntity.ok(message);
   }
 
