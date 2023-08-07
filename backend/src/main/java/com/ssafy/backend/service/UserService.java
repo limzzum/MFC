@@ -56,15 +56,17 @@ public class UserService {
         findUser.updateInfo(userUpdateDto,itemCode);
     }
 
-    public void delete(Long id) {
-        User findUser = findById(id);
+    public Long delete(Long id) {
+        User findUser = repository.findById(id).orElse(null);
         if(findUser == null){
-            return;
+            return null;
         }
         findUser.signout();
+        return id;
     }
 
     public User findUser(Long id) {
+
         return repository.findById(id).orElse(null);
     }
 

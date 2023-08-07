@@ -53,22 +53,61 @@ public class UserController {
         return ResponseEntity.ok(new Message(HttpStatus.OK, "로그아웃 성공", null));
     }
 
+//    @PostMapping
+//    public ResponseEntity<Message> regist(@RequestBody @Valid UserRegistDto user,
+//        BindingResult result) {
+//        if (result.hasErrors()) {
+//            return ResponseEntity.ok(new Message(HttpStatus.BAD_REQUEST, "입력값이 올바르지 않습니다.", null));
+//        }
+//        String email = user.getEmail();
+//        String token = UUID.randomUUID().toString();
+//        emailService.saveToken(email, token, user);
+//
+//        Random r = new Random();
+//        int checkNum = r.nextInt(888888) + 111111;
+//
+//        String message = "Please click the following link to verify your email: " +
+//            "<a href='http://i9a605.p.ssafy.io:8081/api/user/verify?email=" + email + "&token="
+//            + token + "'>Verify</a>";
+//        emailService.sendMail(user.getEmail(), "Please verify your email", message);
+//        return ResponseEntity.ok(new Message(HttpStatus.ACCEPTED, "이메일 인증번호를 발송하였습니다.", null));
+//
+//    }
+
     @PostMapping
-    public ResponseEntity<Message> regist(@RequestBody @Valid UserRegistDto user,
+    public ResponseEntity<Message> regist2(@RequestBody @Valid UserRegistDto user,
         BindingResult result) {
         if (result.hasErrors()) {
             return ResponseEntity.ok(new Message(HttpStatus.BAD_REQUEST, "입력값이 올바르지 않습니다.", null));
         }
         String email = user.getEmail();
-        String token = UUID.randomUUID().toString();
-        emailService.saveToken(email, token, user);
+        if(emailService.isEqualsEmailNum(email, user.getEmailNum())){
+            Long savedId = userService.regist(user);
+            return ResponseEntity.ok(new Message(HttpStatus.OK, "회원가입 성공", savedId));
+        }
 
-        String message = "Please click the following link to verify your email: " +
-            "<a href='http://i9a605.p.ssafy.io:8081/api/user/verify?email=" + email + "&token="
-            + token + "'>Verify</a>";
-        emailService.sendMail(user.getEmail(), "Please verify your email", message);
+        return ResponseEntity.ok(new Message(HttpStatus.BAD_REQUEST, "회원가입 실패", null));
+
+    }
+    @GetMapping("/email/verify")
+    public ResponseEntity<Message> email_num(@RequestParam String email){
+        Random r = new Random();
+        int checkNum = r.nextInt(888888) + 111111;
+        emailService.saveEmailNum(email, checkNum);
+        String message =  "인증 번호는 " + checkNum + "입니다." +
+            "<br>" +
+            "해당 인증번호를 인증번호 확인란에 기입하여 주세요.";
+        emailService.sendMail(email, "Please verify your email", message);
         return ResponseEntity.ok(new Message(HttpStatus.ACCEPTED, "이메일 인증번호를 발송하였습니다.", null));
+    }
 
+    @PostMapping("/email/verify")
+    public ResponseEntity<Message> email_num_check(@RequestBody EmailNumDto emailNumDto){
+        System.out.println(emailNumDto.getEmail()+" "+emailNumDto.getNum());
+        if(emailService.isEqualsEmailNum(emailNumDto.getEmail(), emailNumDto.getNum())){
+            return ResponseEntity.ok(new Message(HttpStatus.ACCEPTED, "이메일 인증 성공", null));
+        }
+        return ResponseEntity.ok(new Message(HttpStatus.BAD_REQUEST, "이메일 인증 실패", null));
     }
 
     @GetMapping("/verify")
@@ -104,9 +143,9 @@ public class UserController {
     @DeleteMapping
     public ResponseEntity<Message> delete(@RequestHeader("Authorization") String token) {
         Long userId = Long.valueOf(securityService.getSubject(token));
-        User user = userService.findUser(userId);
+        Long delete = userService.delete(userId);
 
-        return ResponseEntity.ok(new Message(HttpStatus.OK, "success", user));
+        return ResponseEntity.ok(new Message(HttpStatus.OK, "success", delete));
     }
 
     @GetMapping("/email")
@@ -125,4 +164,11 @@ public class UserController {
         }
         return ResponseEntity.ok(new Message(HttpStatus.ACCEPTED, "사용가능한 닉네임 입니다.",null));
     }
+
+    @GetMapping("/test")
+    public String test() {
+        String jwtToken = securityService.createJwtToken("1");
+        return jwtToken;
+    }
+
 }
