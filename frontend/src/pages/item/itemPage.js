@@ -4,13 +4,16 @@ import ItemStore from '../../components/itempage/itemStore.js'
 
 import "bootstrap/dist/css/bootstrap.min.css";
 import axios from 'axios';
+import { useRecoilValue } from 'recoil';
+import { userIdState } from '../../recoil/userId'
 
 function ItemPage() {
-    const userId = 2;
     const [ userItems, setUserItems ] = useState([]);
     const [ userCoin, setUserCoin ] = useState(0);
     const [ allItems, setAllItems ] =useState([])
-    
+    const user = useRecoilValue(userIdState);
+    const userId = user.userId;
+
     useEffect(() => {
         fetchUserItems(userId);
         fetchUserCoin(userId);
