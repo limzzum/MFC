@@ -5,11 +5,10 @@ import { BsPlusSquare } from 'react-icons/bs';
 import DebateRoomCard from '../../components/mainpage/debateRoomCard';
 import { useRecoilState } from 'recoil';
 import { minRoomIdState, minWaitingRoomIdState } from '../../recoil/mainPageRoomId';
-
-//==============================================
 import { useRecoilValue } from 'recoil';
 import { userState } from '../../recoil/token'
 import { userIdState } from '../../recoil/userId';
+import { useNavigate } from 'react-router-dom';
 
 function MainPage() {
   const [showModal, setShowModal] = useState(false);
@@ -23,8 +22,9 @@ function MainPage() {
   const [ongoingDebateRooms, setOngoingDebateRooms] = useState([]);
   const [waitingDebateRooms, setWaitingDebateRooms] = useState([]);
   const [minWaitingRoomId, setMinWaitingRoomId] = useRecoilState(minWaitingRoomIdState);
-//===============================================
+  const userId = useRecoilValue(userIdState);
   const tokenis = useRecoilValue(userState);
+  const navigate = useNavigate();
 
   const openModal = () => {
     setShowModal(true);
@@ -34,21 +34,48 @@ function MainPage() {
     setShowModal(false);
   };
 
-  const handleCreateRoom = () => {
+  const handleCreateRoom = async () => {
     // 토론시간 유효성 검사
     const debateTimeInt = parseInt(debateTime);
+    const userIdString = String(userId);
+    
     if (isNaN(debateTimeInt) || debateTimeInt < 20 || debateTimeInt > 120) {
       alert('토론시간은 20분에서 120분 사이의 숫자로 입력해야 합니다.');
-      return;
     }
-    // 방 생성 로직을 처리하고 팝업을 닫을 수 있도록 합니다.
+
+    // 데이터 구성
+    const roomData = {
+      userId : userIdString,
+      totalTime: parseInt(debateTimeInt),
+      talkTime: parseInt(speechTime),
+      maxPeople: parseInt(spectatorCount),
+      overTimeCount: parseInt(extensionCount),
+      atopic: title1,
+      btopic: title2
+    };
+
+    // 서버에 POST 요청 보내기
+    try {
+      const response = await axios.post(`http://i9a605.p.ssafy.io:8081/api/debate/${userId.userId}`, roomData, {
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${tokenis}`  // 토큰을 사용한다면 이렇게 헤더에 추가
+        }
+      });
+      if (response.data) {
+        alert('방이 성공적으로 생성되었습니다.');
+        navigate(`/debateRoom/${response.data.data}`);
+      }
+    } catch (error) {
+      console.error('방 생성에 실패하였습니다.', error);
+      alert('방 생성에 실패하였습니다.');
+    }
+    
     closeModal();
-  };
+};
 
   // 최초 페이지 로드 시 서버에서 데이터 가져오기
   const [minRoomId, setMinRoomId] = useRecoilState(minRoomIdState);
-
-  
 
   useEffect(() => {
     async function fetchData() {
@@ -59,7 +86,6 @@ function MainPage() {
         } else {
           apiUrl += '?minRoomId=10000&size=12';
         }
-
         const response = await axios.get(apiUrl);
         const data = response.data.data;
         
@@ -92,7 +118,6 @@ function MainPage() {
           const newMinRoomId = Math.min(...data.map(room => room.roomId));
           setMinWaitingRoomId(newMinRoomId);
           setWaitingDebateRooms(data);
-          console.log(userState)
         }        
       } catch (error) {
         console.error('Error fetching data:', error);
