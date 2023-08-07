@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import logoImage from '../../images/logo.png';
 import style from './signupPage.module.css';
+import { useNavigate } from 'react-router-dom';
+
 
 function SignupPage() {
   const [timer, setTimer] = useState(0);
@@ -16,6 +18,7 @@ function SignupPage() {
   const [passwordConfirm, setPasswordConfirm] = useState('');
   const [passwordValid, setPasswordValid] = useState(false);
   const [passwordMismatch, setPasswordMismatch] = useState(false);
+  const navigate = useNavigate();
 
   // 이메일 형식 검사하는 부분
   const handleEmail = (e) => {
@@ -44,7 +47,7 @@ function SignupPage() {
     if (emailValid) {
       // Email 보내기 요청 보내는 API 호출
       axios
-        .post('http://i9a605.p.ssafy.io:8081/api/user/email', { email }) // 실제 서버 주소에 맞게 수정
+        .get('http://i9a605.p.ssafy.io:8081/api/user/email/verify', { params: { email } }) // 실제 서버 주소에 맞게 수정
         .then((response) => {
           alert('인증메일이 전송되었습니다!');
           setTimer(180);
@@ -88,7 +91,7 @@ function SignupPage() {
   // 이메일 인증코드 전송하는 부분
   const handleAuthButtonClick = () => {
     axios
-      .post('http://i9a605.p.ssafy.io:8081/api/user/email', { email, authCode }) // 실제 서버 주소에 맞게 수정
+      .post('http://i9a605.p.ssafy.io:8081/api/user/email/verify', { email, authCode }) // 실제 서버 주소에 맞게 수정
       .then((response) => {
         alert('인증이 완료되었습니다!');
         setEmailValid(true);
@@ -102,10 +105,11 @@ function SignupPage() {
   // 닉네임 중복검사 하는 부분
   const handleNicknameButtonClick = () => {
     axios
-      .post('http://i9a605.p.ssafy.io:8081/api/user/nickname', { nickname }) // 실제 서버 주소 및 API 경로에 맞게 수정
+      .get(`http://i9a605.p.ssafy.io:8081/api/user/nickname/?nickname=${nickname}`) // 실제 서버 주소 및 API 경로에 맞게 수정
       .then((response) => {
         // ----------이 부분 서버 열리고 수정-----------
-        if (response.data.isAvailable) {
+        console.log(response)
+        if (response.data.status==="ACCEPTED") {
           alert('확인되었습니다!');
           setNicknameAvailable(true);
         } else {
@@ -120,20 +124,22 @@ function SignupPage() {
 
   // 회원가입 요청 보내는 부분  
   const handleSignupButtonClick = () => {
-    if (!emailValid || !passwordValid || passwordMismatch || !nicknameAvailable || !authCodeValid) {
-      // authCodeValid도 검사에 추가
-      alert('입력한 정보를 다시 확인해주세요.');
-    } else {
-      axios
-        .post('/api/signup', { email, nickname, password }) // 실제 서버 주소 및 API 경로에 맞게 수정
-        .then((response) => {
-          alert('회원가입이 완료되었습니다!');
-        })
-        .catch((error) => {
-          alert('회원가입에 실패하였습니다.');
-        });
-    }
-  };
+  if (!emailValid || !passwordValid || passwordMismatch || !nicknameAvailable || !authCodeValid) {
+    // authCodeValid도 검사에 추가
+    alert('입력한 정보를 다시 확인해주세요.');
+  } else {
+    axios
+      .post('http://i9a605.p.ssafy.io:8081/api/user', { email, nickname, password, emailNum: parseInt(authCode) }) // 실제 서버 주소 및 API 경로에 맞게 수정
+      .then((response) => {
+        alert('회원가입이 완료되었습니다!');
+        // 회원가입 후 메인 페이지로 이동
+        navigate('/login');
+      })
+      .catch((error) => {
+        alert('회원가입에 실패하였습니다.');
+      });
+  }
+};
 
   return (
     <div className={style.SignupPageWrapper}>
@@ -208,8 +214,7 @@ function SignupPage() {
                 setNickname(e.target.value);
                 setNicknameAvailable(false); // Reset nickname availability when input changes
               }}
-              disabled={!(emailValid && authCodeValid) || nicknameAvailable}
-              />
+              disabled={!authCodeValid || nicknameAvailable}              />
             <button
               className={`btn btn-outline-secondary ${style.SignupPageBtn}`}
               style={{
@@ -220,8 +225,8 @@ function SignupPage() {
                 border: 'none',
               }}
               onClick={handleNicknameButtonClick}
-              disabled={emailValid || !authCodeValid}
-            >
+              disabled={!authCodeValid || nicknameAvailable}
+              >
               확인
             </button>
           </div>
