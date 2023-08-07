@@ -4,12 +4,12 @@ import style from '../debatePage.module.css';
 import leftVector from '../../../images/leftVector.png';
 import rightVector from '../../../images/rightVector.png';
 
-function Spectator({debateRoomInfo}) {
-    const value1 = 0;
-    const value2 = 0;
+function Spectator({debateRoomInfo, voteResult}) {
+    const value1 = voteResult.totalCountA;
+    const value2 = voteResult.totalCountB;
     const totalValue = value1 + value2;
-    const ratio1 = value1 === 0 ? 50 : (value1 / totalValue) * 100;
-    const ratio2 = value2 === 0 ? 50 : (value2 / totalValue) * 100;
+    const ratio1 = (value1 === 0 && value2 === 0) ? 50 : (value1 / totalValue) * 100;
+    const ratio2 = (value1 === 0 && value2 === 0) ? 50 : (value2 / totalValue) * 100;
 
     const spectatorCnt = debateRoomInfo.maxPeople - 2;
 

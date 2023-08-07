@@ -1,12 +1,10 @@
 package com.ssafy.backend.dto.request;
 
+import javax.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import javax.validation.constraints.Pattern;
-import javax.validation.constraints.Size;
 
 @Data
 @AllArgsConstructor
@@ -25,4 +23,7 @@ public class UserRegistDto {
     String password;
 
     String profile;
+
+    @NotNull
+    int emailNum;
 }
