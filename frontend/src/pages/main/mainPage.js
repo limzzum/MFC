@@ -6,6 +6,11 @@ import DebateRoomCard from '../../components/mainpage/debateRoomCard';
 import { useRecoilState } from 'recoil';
 import { minRoomIdState, minWaitingRoomIdState } from '../../recoil/mainPageRoomId';
 
+//==============================================
+import { useRecoilValue } from 'recoil';
+import { userState } from '../../recoil/token'
+
+
 function MainPage() {
   const [showModal, setShowModal] = useState(false);
   const [title1, setTitle1] = useState('');
@@ -18,6 +23,10 @@ function MainPage() {
   const [ongoingDebateRooms, setOngoingDebateRooms] = useState([]);
   const [waitingDebateRooms, setWaitingDebateRooms] = useState([]);
   const [minWaitingRoomId, setMinWaitingRoomId] = useRecoilState(minWaitingRoomIdState);
+//===============================================
+  const tokenis = useRecoilValue(userState);
+  console.log(tokenis);
+//===============================================
 
   const openModal = () => {
     setShowModal(true);
@@ -50,6 +59,8 @@ function MainPage() {
   // 최초 페이지 로드 시 서버에서 데이터 가져오기
   const [minRoomId, setMinRoomId] = useRecoilState(minRoomIdState);
 
+  
+
   useEffect(() => {
     async function fetchData() {
       try {
@@ -63,8 +74,6 @@ function MainPage() {
         const response = await axios.get(apiUrl);
         const data = response.data.data;
         
-        console.log(data)
-
         if (data.length > 0) {
           const newMinRoomId = Math.min(...data.map(room => room.roomId));
           setMinRoomId(newMinRoomId);
@@ -74,7 +83,6 @@ function MainPage() {
         console.error('Error fetching data:', error);
       }
     }
-
     fetchData();
   }, [minRoomId]);
 
@@ -95,6 +103,7 @@ function MainPage() {
           const newMinRoomId = Math.min(...data.map(room => room.roomId));
           setMinWaitingRoomId(newMinRoomId);
           setWaitingDebateRooms(data);
+          console.log(userState)
         }        
       } catch (error) {
         console.error('Error fetching data:', error);

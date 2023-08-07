@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom';
+import { userIdState } from '../../recoil/userId';
+import { useRecoilState } from 'recoil';
 import logoImage from "../../images/logo.png"
 import style from "./loginPage.module.css"
-import axios from 'axios'
-
-import { useRecoilState } from 'recoil';
-import { userState } from '../../recoil/token'
+import axios from 'axios';
+import { userState } from '../../recoil/token';
 
 function Loginpage() {
   const [email, setEmail] = useState('') 
@@ -13,9 +13,10 @@ function Loginpage() {
   const [emailValid, setEmailValid] = useState(false)
   const [pwValid, setPwValid] = useState(false)
   const [notAllow, setNotAllow] = useState(true)
-  const [token, setToken] = useState('');
-  const navigate = useNavigate();
+  // const [recoilToken, setRecoilToken] = useRecoilState(tokenState);
   const [user, setUser] = useRecoilState(userState);
+  const [recoilUserId, setRecoilUserId] = useRecoilState(userIdState);
+  const navigate = useNavigate();
 
   //이메일과 비밀번호 형식 확인하는 부분
   useEffect(() => {
@@ -48,14 +49,15 @@ function Loginpage() {
   }
 
   // 서버에 로그인 요청을 보내는 부분
-  
   const serverAddress = 'http://i9a605.p.ssafy.io:8081/api/user/login'
   const handleLogin = async () => {
     try {
-      const response = await axios.post(`${serverAddress}`, { email, password }); // 실제 서버 주소 및 API 경로에 맞게 수정
+      const response = await axios.post(`${serverAddress}`, { email, password });
       const token = response.data.data.accessToken;
+      const userId = response.data.data.userId;
       if (token) {
-        setToken(token);
+
+        setRecoilUserId(userId);
         setUser({token}); // 여기에서 Recoil 상태에 토큰 저장
 
         localStorage.setItem('token', token);
@@ -65,7 +67,6 @@ function Loginpage() {
       } else {
         alert('로그인에 실패하였습니다.');
       }
-      localStorage.setItem('token', token);
     } catch (error) {
       alert('아이디와 비밀번호를 확인해주세요.');
     }
