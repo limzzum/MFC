@@ -1,18 +1,23 @@
 import React from 'react';
-import {Button} from 'react-bootstrap';
-import logoImage from '../../../images/logo.png'
+import {Link} from 'react-router-dom';
+import logoImage from '../../../images/logo.png';
+import settingIcon from '../../../images/setting.png';
+import exitIcon from '../../../images/exitIcon.png';
 import style from '../debatePage.module.css';
+
 
 function Header() {
   return (
     <header className={style.header}>
-      <img src={logoImage} alt="logo" className="logo"/>
+      <img className={style.logo} src={logoImage} alt="logo"/>
       <ul>
         <li>
-          <Button>Setting</Button>
+          <img className={style.setting} src={settingIcon} alt='설정  '/>
         </li>
         <li>
-          <Button>Exit</Button>
+          <Link to={'/'}>
+            <img className={style.exit} src={exitIcon} alt='나가기'/>
+          </Link>
         </li>
       </ul>
     </header>
