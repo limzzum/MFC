@@ -91,7 +91,9 @@ function DebatePage() {
   return (
     <div className={style.debatePage}>
       <Row>
-        <Header/>
+        <Header 
+          status={status}
+        />
         <Button onClick={() => setStatus('ongoing')}>ongoing</Button>
       </Row>
       <Row className='debatePart'>
