@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback} from 'react';
 import axios from 'axios';
 import style from './mainPage.module.css';
 import { BsPlusSquare } from 'react-icons/bs';
@@ -64,6 +64,7 @@ function MainPage() {
       });
       if (response.data) {
         alert('방이 성공적으로 생성되었습니다.');
+        // 여기까지는 성공
         navigate(`/debateRoom/${response.data.data}`);
       }
     } catch (error) {
