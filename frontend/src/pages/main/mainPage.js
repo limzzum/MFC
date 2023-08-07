@@ -9,7 +9,7 @@ import { minRoomIdState, minWaitingRoomIdState } from '../../recoil/mainPageRoom
 //==============================================
 import { useRecoilValue } from 'recoil';
 import { userState } from '../../recoil/token'
-
+import { userIdState } from '../../recoil/userId';
 
 function MainPage() {
   const [showModal, setShowModal] = useState(false);
@@ -25,8 +25,6 @@ function MainPage() {
   const [minWaitingRoomId, setMinWaitingRoomId] = useRecoilState(minWaitingRoomIdState);
 //===============================================
   const tokenis = useRecoilValue(userState);
-  console.log(tokenis);
-//===============================================
 
   const openModal = () => {
     setShowModal(true);
@@ -43,16 +41,7 @@ function MainPage() {
       alert('토론시간은 20분에서 120분 사이의 숫자로 입력해야 합니다.');
       return;
     }
-
     // 방 생성 로직을 처리하고 팝업을 닫을 수 있도록 합니다.
-    console.log('Room created with the following details:');
-    console.log('Title1:', title1);
-    console.log('Title2:', title2);
-    console.log('Debate Time:', debateTime);
-    console.log('Speech Time:', speechTime);
-    console.log('Spectator Count:', spectatorCount);
-    console.log('Extension Count:', extensionCount);
-
     closeModal();
   };
 
@@ -138,6 +127,7 @@ function MainPage() {
               title2={room.btopic}
               debateTime={room.totalTime}
               speechTime={room.talkTime}
+              roomId={room.roomId}
             />
           ))}
         </div>
@@ -156,6 +146,7 @@ function MainPage() {
               title2={room.btopic}
               debateTime={room.totalTime}
               speechTime={room.talkTime}
+              roomId={room.roomId}
             />
           ))}
         </div>
