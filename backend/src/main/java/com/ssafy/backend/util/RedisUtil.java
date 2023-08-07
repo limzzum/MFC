@@ -17,6 +17,7 @@ public class RedisUtil {
     private final RedisTemplate<String, Object> redisBlackListTemplate;
     private final RedisTemplate<String, Object> emailTokenTemplate;
     private final RedisTemplate<String, Object> registUserTemplate;
+    private final RedisTemplate<String, Object> emailNumTemplate;
 
 
     @Value("${jwt.expmin}")
@@ -80,4 +81,13 @@ public class RedisUtil {
         return (UserRegistDto) registUserTemplate.opsForValue().get(key);
     }
 
+    public void setEmailNumTemplate(String key, Object o, int minutes) {
+        emailNumTemplate.setValueSerializer(new Jackson2JsonRedisSerializer(o.getClass()));
+        emailNumTemplate.opsForValue().set(key, o, minutes, TimeUnit.MINUTES);
+    }
+
+    public int getNumByEmail(String key) {
+        emailNumTemplate.setValueSerializer(new Jackson2JsonRedisSerializer<>(int.class));
+        return (int) emailNumTemplate.opsForValue().get(key);
+    }
 }
