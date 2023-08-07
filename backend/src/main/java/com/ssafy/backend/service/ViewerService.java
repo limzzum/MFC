@@ -1,8 +1,12 @@
 package com.ssafy.backend.service;
 
 import com.ssafy.backend.dto.MethodResultDto;
+import com.ssafy.backend.dto.response.ParticipantsDto;
+import com.ssafy.backend.dto.response.PlayerResDto;
+import com.ssafy.backend.dto.response.ViewerDto;
 import com.ssafy.backend.dto.response.voteResultDto;
 import com.ssafy.backend.entity.Participant;
+import com.ssafy.backend.entity.Player;
 import com.ssafy.backend.entity.RoleCode;
 import com.ssafy.backend.entity.Room;
 import com.ssafy.backend.entity.Status;
@@ -12,6 +16,8 @@ import com.ssafy.backend.repository.PlayerRepository;
 import com.ssafy.backend.repository.RoomRepository;
 import com.ssafy.backend.repository.UserRepository;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -169,6 +175,40 @@ public class ViewerService {
       room.setStatus(Status.DONE);
       roomRepository.save(room);
     }
+  }
+
+  public MethodResultDto getParticipants(Long roomId) {
+    List<ViewerDto> viewers = new ArrayList<>();
+    List<PlayerResDto> players = new ArrayList<>();
+
+    //퇴장자를 제외한 모든 유저를 불러온다.
+    List<Participant> participants = participantRepository.findAllByRoomIdAndRoleCodeIdNot(roomId,
+        1L);
+    System.out.println(participants.size());
+    if (!participants.isEmpty()) {
+      for (Participant p : participants) {
+        ViewerDto viewer = new ViewerDto(p.getUser().getId(), p.getUser().getNickname(),
+            p.getUser().getColorItem().getRgb(), p.isHost());
+        //플레이어인 경우
+        System.out.println(p.getNickName());
+        System.out.println(p.getRoleCode().getId());
+        if (p.getRoleCode().getId() == 2L) {
+          Player pInfo = playerRepository.findTopByRoomIdAndUserId(roomId, p.getUser().getId())
+              .orElse(null);
+          if (pInfo != null) {
+            PlayerResDto player = new PlayerResDto(viewer, pInfo.isReady(),
+                pInfo.isTopicTypeA(), pInfo.getHeartPoint());
+            //플레이어 정보 추가
+            players.add(player);
+          }
+        } else {
+          //관전자 정보 추가
+          viewers.add(viewer);
+        }
+      }
+    }
+    ParticipantsDto participantsDto = new ParticipantsDto(viewers, players);
+    return new MethodResultDto(true, "참가자 조회 완료", participantsDto);
   }
 
 }
