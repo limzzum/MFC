@@ -58,8 +58,6 @@ function Loginpage() {
         setRecoilToken(token);
         setRecoilUserId(userId);
         localStorage.setItem('token', token);
-        console.log(token)
-        console.log(userId)
         alert('로그인이 성공적으로 완료되었습니다.');
         navigate('/'); 
       } else {
