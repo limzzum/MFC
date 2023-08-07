@@ -10,6 +10,7 @@ import com.ssafy.backend.service.ViewerService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -28,6 +29,7 @@ public class ViewerController {
 
   private final ViewerService viewerService;
   private final RoomService roomService;
+  private final SimpMessagingTemplate messagingTemplate;
 
   @PostMapping("/{roomId}/{userId}")
   public ResponseEntity<Message> enterRoom(@PathVariable Long roomId, @PathVariable Long userId) {
@@ -69,6 +71,8 @@ public class ViewerController {
     if (!viewerService.vote(userId, roomId, selectedTopic)) {
       message.setStatus(HttpStatus.BAD_REQUEST);
       message.setMessage("일정 시간 후 재투표가 가능합니다.");
+    } else {
+      messagingTemplate.convertAndSend("/from/vote/" + roomId,viewerService.voteResult(roomId));
     }
     return ResponseEntity.ok(message);
   }

@@ -53,7 +53,7 @@ public class RoomController {
         Message message = new Message(HttpStatus.OK,"토론방 생성 성공",roomService.createRoom(userId, roomInfoRuquestDto));
         return ResponseEntity.ok(message);
     }
-    @PatchMapping("/{roomId}")
+    @PatchMapping("/{roomId}") // 토론방 수정 api ( websocket에서만 사용하면 추후 삭제 )
     public ResponseEntity<?> roomUpdate(@PathVariable Long roomId,@RequestBody RoomInfoRuquestDto roomInfoRuquestDto) {
         RoomInfoResponseDto updatedRoom = roomService.updateRoom(roomId, roomInfoRuquestDto);
         Message message = new Message(HttpStatus.OK,"토론방 수정 성공",updatedRoom);
