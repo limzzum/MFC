@@ -1,11 +1,8 @@
 package com.ssafy.backend.controller;
 import com.ssafy.backend.dto.Message;
 import com.ssafy.backend.dto.request.RoomInfoRuquestDto;
-import com.ssafy.backend.dto.response.RoomFinToPlayerDto;
 import com.ssafy.backend.dto.response.RoomInfoResponseDto;
 import com.ssafy.backend.dto.response.RoomListDto;
-import com.ssafy.backend.entity.Participant;
-import com.ssafy.backend.entity.Room;
 import com.ssafy.backend.service.HistoryService;
 import com.ssafy.backend.service.ParticipantService;
 import com.ssafy.backend.service.RoomService;
