@@ -37,6 +37,16 @@ public class EmailService {
         redisUtil.setRegistUserTemplate(token, user, 5);
     }
 
+    public void saveEmailNum(String email, int randomNum){
+        redisUtil.setEmailNumTemplate(email, randomNum, 15);
+    }
+    public boolean isEqualsEmailNum(String email, int randomNum){
+        if(redisUtil.getNumByEmail(email) == randomNum){
+            return true;
+        }
+        return false;
+    }
+
     public String getEmailToken(String email){
         return (String) redisUtil.getTokenByEmail(email);
     }
