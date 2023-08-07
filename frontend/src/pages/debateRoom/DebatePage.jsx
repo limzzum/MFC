@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {useRecoilValue} from 'recoil';
-import {useStatus, useRole, getDebateRoomState, voteResultState} from '../../recoil/debateStateAtom';
+import {useStatus, useRole, getDebateRoomState, getVoteResultState} from '../../recoil/debateStateAtom';
 import { Row, Col, Stack, Modal, Button, ProgressBar} from 'react-bootstrap';
 import Header from './components/Header';
 import ScreenShare from './components/ScreenShare';
@@ -19,7 +19,7 @@ function DebatePage() {
 
   // 토론방 상태 호출
   const debateRoomInfo = useRecoilValue(getDebateRoomState);
-  const voteResult = useRecoilValue(voteResultState);
+  const voteResult = useRecoilValue(getVoteResultState);
 
   // 참가자 참가여부
   const [playerStatus, setPlayerStatus] = useState([false, false]);
@@ -92,6 +92,7 @@ function DebatePage() {
     <div className={style.debatePage}>
       <Row>
         <Header/>
+        <Button onClick={() => setStatus('ongoing')}>ongoing</Button>
       </Row>
       <Row className='debatePart'>
         <Col xs={9}>
@@ -129,13 +130,13 @@ function DebatePage() {
           setPlayerStatus={setPlayerStatus}
           setUserReady={setUserReady}
           debateRoomInfo={debateRoomInfo.data}
-          // voteResult={voteResult.data}
+          voteResult={voteResult.data}
         />
       </Row>
       <Row>
         <Spectator
           debateRoomInfo={debateRoomInfo.data}
-          // voteResult={voteResult.data}
+          voteResult={voteResult.data}
         />
       </Row>
 
