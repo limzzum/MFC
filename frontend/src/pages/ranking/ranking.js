@@ -8,12 +8,25 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import { Button } from "react-bootstrap";
 
 function Ranking() {
-    const [rankUsers, setRankUsers] = useState([]);
-    const [page, setPage] = useState(0);
-
+    const [ rankUsers, setRankUsers ] = useState([]);
+    const [ page, setPage ] = useState(0);
+    const [ myRecord, setMyRecord ] = useState([])
+    const userId = 2;
     useEffect(() => {
         fetchData();
+        getMyRecord();
     }, [page]);
+
+    const getMyRecord = () => {
+        axios.get(`http://i9a605.p.ssafy.io:8081/api/record/${userId}`)
+        .then(response => {
+            setMyRecord(response.data.data)
+        })
+        .catch(error => {
+            console.log(error)
+        })
+
+    }
 
     const fetchData = async (keyword = "") => {
         try {
@@ -35,7 +48,7 @@ function Ranking() {
 
     return (
         <div className={style.wrapper}>
-            <RankMyProfile />
+            <RankMyProfile myData={myRecord}/>
             <div className={style.nextBox}> 
                 <RankingSearchBar onSearch={handleSearch} />
                 <div className={style.rankTitleBox}>

@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom';
-import { tokenState } from '../../recoil/token'
 import { userIdState } from '../../recoil/userId';
 import { useRecoilState } from 'recoil';
 import logoImage from "../../images/logo.png"
 import style from "./loginPage.module.css"
-import axios from 'axios'
-
+import axios from 'axios';
+import { userState } from '../../recoil/token';
 
 function Loginpage() {
   const [email, setEmail] = useState('') 
@@ -14,9 +13,11 @@ function Loginpage() {
   const [emailValid, setEmailValid] = useState(false)
   const [pwValid, setPwValid] = useState(false)
   const [notAllow, setNotAllow] = useState(true)
-  const [recoilToken, setRecoilToken] = useRecoilState(tokenState);
+  // const [recoilToken, setRecoilToken] = useRecoilState(tokenState);
+  const [user, setUser] = useRecoilState(userState);
   const [recoilUserId, setRecoilUserId] = useRecoilState(userIdState);
   const navigate = useNavigate();
+
   //이메일과 비밀번호 형식 확인하는 부분
   useEffect(() => {
     if(emailValid && pwValid) {
@@ -55,11 +56,14 @@ function Loginpage() {
       const token = response.data.data.accessToken;
       const userId = response.data.data.userId;
       if (token) {
-        setRecoilToken(token);
+
         setRecoilUserId(userId);
+        setUser({token}); // 여기에서 Recoil 상태에 토큰 저장
+
         localStorage.setItem('token', token);
+
         alert('로그인이 성공적으로 완료되었습니다.');
-        navigate('/'); 
+        navigate('/');
       } else {
         alert('로그인에 실패하였습니다.');
       }

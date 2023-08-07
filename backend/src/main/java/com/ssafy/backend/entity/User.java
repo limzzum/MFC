@@ -1,6 +1,6 @@
 package com.ssafy.backend.entity;
 
-import java.util.Objects;
+import com.ssafy.backend.dto.request.*;
 import javax.persistence.Column;
 import javax.persistence.ConstraintMode;
 import javax.persistence.Entity;
@@ -50,6 +50,30 @@ public class User {
   @ManyToOne
   @JoinColumn(name = "item_code_id", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
   ItemCode colorItem;
+
+
+  public void updateInfo(UserUpdateDto userUpdateDto, ItemCode itemCode){
+    if(userUpdateDto.getNickname()!=null){
+      this.nickname = userUpdateDto.getNickname();
+    }
+    if(userUpdateDto.getPassword()!=null){
+      this.password = userUpdateDto.getPassword();
+    }
+    if(userUpdateDto.getProfile()!=null){
+      this.profile = userUpdateDto.getProfile();
+    }
+    if(userUpdateDto.getNameColorId()!=null){
+      this.colorItem = itemCode;
+    }
+  }
+
+  public void signout(){
+    isDeleted = true;
+  }
+
+  public User(Long userId){
+    this.id = userId;
+  }
 }
 
 

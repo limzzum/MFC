@@ -1,20 +1,123 @@
-import { useState } from "react";
+import React,  { useState, useEffect } from "react";
 import styles from './myProfile.module.css';
 import profileImage from '../../images/img.jpg';
 import settingIcon from '../../images/settingIcon.png';
 import "bootstrap/dist/css/bootstrap.min.css";
 import { Button, Row } from "react-bootstrap";
 import { Link } from 'react-router-dom';
+import { useNavigate } from "react-router-dom"; 
+import axios from "axios";
+import UserDeleteModal from "../../components/myprofile/userdeletemodal";
 
 
 function MyProfile() {
-  const [selectedImage, setSelectedImage] = useState(null);
-  // const { userId } = useParams();
+  const [ selectedImage, setSelectedImage ] = useState(null);
+  const [ userInfo, setUserInfo ] = useState({});
+  const [ changeNickname , setChangeNickname ] = useState(""); 
+  const userToken = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxIiwiZXhwIjoxNzAxOTUxMDE0fQ.A7avo0u5nleIbTRaiYqw6kcSjNFzgYN5_PKoZgf5GtU"; 
+  const [ finalChangeNickname, setFinalChangeNickname ] = useState("")
+  const [showModal, setShowModal] = useState(false); // 모달 상태 추가
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    getUserInfo();
+  }, []);
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
-    // 선택된 파일(file)을 상태(selectedImage)에 저장
     setSelectedImage(file);
+  };
+  
+  // User정보 가져오기
+  const getUserInfo = async () => {
+    const config = {
+      headers: {
+        Authorization: `Bearer ${userToken}`
+      }
+    };
+  
+    try {
+      const response = await axios.get(`http://i9a605.p.ssafy.io:8081/api/user`, config);
+      setUserInfo(response.data.data);
+      setFinalChangeNickname(response.data.data.nickname); // 바로 nickname을 업데이트하도록 수정
+    } catch (error) {
+      console.error("사용자 정보 가져오기 오류", error);
+    }
+  };
+  
+  // User닉네임 중복 체크
+
+  const handleNicknameButtonClick = () => {
+    const requestData = {
+        nickname: `${changeNickname}`
+      };
+  
+    axios.get('http://i9a605.p.ssafy.io:8081/api/user/nickname', { params: requestData }) 
+    .then((response) => {
+      console.log(response.data)
+      if (response.data.status === 'ACCEPTED') {
+        alert('확인되었습니다!');
+        setFinalChangeNickname(changeNickname);
+      } else {
+        alert('이미 사용 중인 닉네임입니다.');
+        setFinalChangeNickname(`${userInfo.nickname}`);
+      }
+    })
+    .catch((error) => {
+      alert('닉네임 확인에 실패하였습니다.');
+    });
+  };
+
+  const handleWithdrawButtonClick = () => {
+    setShowModal(true); // 모달 열기
+  };
+
+  const handleModalClose = () => {
+    setShowModal(false); // 모달 닫기
+  };
+  
+  const handleWithdrawConfirm = () => {
+    const config = {
+      headers: {
+        Authorization: `Bearer ${userToken}`
+      }
+    };
+    // 탈퇴 처리 로직 구현
+    axios.delete('http://i9a605.p.ssafy.io:8081/api/user', config)
+    .then((response) => {
+      console.log(response);
+      console.log("탈퇴 처리 성공");
+      navigate("/");
+    })
+    .catch((error) => {
+      console.error("탈퇴 처리 실패", error);
+    });
+  };
+
+  // 프로필 업데이트
+  const handleProfileUpdate = () => {
+    console.log(finalChangeNickname);
+
+    const config = {
+      headers: {
+        Authorization: `Bearer ${userToken}`
+      }
+    };
+    const requestData = {
+      nickname: finalChangeNickname,
+      // 다른 변경 정보를 추가할 수 있음
+    };
+
+    // PATCH 요청을 통해 변경 정보 전송
+    axios.patch('http://i9a605.p.ssafy.io:8081/api/user', {params : requestData}, config)
+    .then((response) => {
+      console.log(response.data);
+      console.log("프로필 변경 성공");
+      // 프로필 변경 성공 후 필요한 동작 수행
+    })
+    .catch((error) => {
+      console.error("프로필 변경 실패", error);
+    });
   };
 
   return (
@@ -27,7 +130,7 @@ function MyProfile() {
             {selectedImage ? (
               <img
                 className={`${styles.radiusImg}`}
-                src={URL.createObjectURL(selectedImage)}
+                src={profileImage}
                 alt="profileImage"
               />
             ) : (
@@ -50,7 +153,7 @@ function MyProfile() {
                 <label htmlFor="이메일" className="mb-2">
                   이메일
                 </label>
-                <input className="form-control w-75" type="text" placeholder="email"></input>
+                <input className="form-control w-75" type="text" placeholder={userInfo.email} readOnly />
               </li>
               <li>
                 <label htmlFor="Nickname" className="mb-2">
@@ -60,20 +163,27 @@ function MyProfile() {
                   <input
                     type="text"
                     className="form-control"
-                    placeholder="닉네임 적어줘"
+                    value={changeNickname}
+                    onChange={(e) => {
+                      setChangeNickname(e.target.value);
+                    }}
+                    placeholder={userInfo.nickname}
                     aria-label="Nickname"
                     aria-describedby="basic-addon2"
                   />
                   <div className="input-group-append">
-                    <button className="btn btn-outline-secondary" type="button">
+                    <button 
+                      className="btn btn-outline-secondary" 
+                      type="button"
+                      onClick={handleNicknameButtonClick}>
                       중복확인
                     </button>
                   </div>                 
                 </div>
                 <div>
-                  <Link to="/pages/passwordchange/passwordChangePage/:userId" className={`${styles.pwText}`}>
-            비밀번호변경
-                </Link>
+                  <Link to="/pwchange" className={`${styles.pwText}`}>
+                    비밀번호변경
+                  </Link>
                 </div> 
               </li>
             </ul>
@@ -82,12 +192,28 @@ function MyProfile() {
       </div>
       <div>
         <Row>
-          <Button className="col-4 btn btn-primary w-150px m-auto" type="submit">
+          <Button 
+          className="col-4 btn btn-primary w-150px m-auto" 
+          type="submit"
+          onClick={handleProfileUpdate}>
             변경
           </Button>
-          <Button className="col-4 btn btn-danger w-150px m-auto">탈퇴</Button>
+          <Button 
+            className="col-4 btn btn-danger w-150px m-auto"
+            onClick={handleWithdrawButtonClick}
+            >
+              탈퇴
+          </Button>
         </Row>
       </div>
+      <UserDeleteModal
+        show={showModal}
+        onClose={handleModalClose}
+        onConfirm={() => {
+          handleWithdrawConfirm(); // 탈퇴 처리 함수 호출
+          handleModalClose(); // 모달 닫기
+        }}
+      />
     </div>
   );
 }

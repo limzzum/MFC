@@ -62,4 +62,7 @@ public class Participant {
   @JoinColumn(name = "role_code_id", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
   private RoleCode roleCode;
 
+  public void changeRole(RoleCode roleCode){
+    this.roleCode = roleCode;
+  }
 }

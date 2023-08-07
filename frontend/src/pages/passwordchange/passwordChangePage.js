@@ -1,9 +1,8 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import style from './passwordChange.module.css';
 import "bootstrap/dist/css/bootstrap.min.css";
 import logoImage from "../../images/logo.png"
 import { Button } from "react-bootstrap";
-import { useParams } from "react-router-dom";
 import axios from "axios";
 
 function PasswordChangePage() {
@@ -11,7 +10,7 @@ function PasswordChangePage() {
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [validPassword, setValidPassword] = useState("")
-  const { userId } = useParams();
+  const userToken = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxIiwiZXhwIjoxNzAxOTUxMDE0fQ.A7avo0u5nleIbTRaiYqw6kcSjNFzgYN5_PKoZgf5GtU"; 
 
   const regex = /^(?=.*[a-zA-z])(?=.*[0-9])(?=.*[$`~!@$!%*#^?&\\(\\)\-_=+])(?!.*[^a-zA-z0-9$`~!@$!%*#^?&\\(\\)\-_=+]).{8,20}$/;
 
@@ -19,22 +18,28 @@ function PasswordChangePage() {
     fetchUserInfo();
   }, []);
 
-  const fetchUserInfo = () => {
-    axios.get(`http://i9a605.p.ssafy.io:8081/api/user/info/${userId}`)
-      .then(response => {
-        setValidPassword(response.data.password);
-      })
-      .catch(error => {
-        console.error("사용자 정보 가져오기 오류:", error);
-      });
+  const fetchUserInfo = async() => {
+    const config = {
+      headers: {
+        Authorization: `Bearer ${userToken}`
+      }
+    };
+  
+    try {
+      const response = await axios.get(`http://i9a605.p.ssafy.io:8081/api/user`, config);
+      await setValidPassword(response.data.data.password);
+    } catch (error) {
+      console.error("사용자 정보 가져오기 오류", error);
+    }
   };
+  
 
   const updatePassword = () => {
     const updatedUser = {
       password: newPassword,
     };
 
-    axios.patch(`api/user/${userId}`, updatedUser)
+    axios.patch(`api/user`, updatedUser)
       .then(response => {
         console.log(response);
       })

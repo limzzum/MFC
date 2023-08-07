@@ -1,20 +1,21 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHeartCirclePlus, faUserClock, faVolumeXmark, faHand, faCross, faSprayCan, faCoins } from "@fortawesome/free-solid-svg-icons";
 import { Button } from "react-bootstrap";
 import styles from "./itemStore.module.css";
 import axios from "axios";
 
-function Item({ iconName, name, price, userCoin, color }) {
+function Item({ iconName, name, price, userCoin, color, userId, updateUserInfo }) {
   const [purchasing, setPurchasing] = useState(false);
 
   const handlePurchase = () => {
     if (userCoin >= price) {
       setPurchasing(true);
-      axios
-        .post(`api/item/purchase/{userId}/itemname=${name}`)
+      axios.post(`http://i9a605.p.ssafy.io:8081/api/item/purchase/${userId}?itemName=${name}`)
         .then(response => {
+          console.log(response)
           console.log(`Item ${name} purchased successfully!`);
+          updateUserInfo()
         })
         .catch(error => {
           console.error("Error purchasing item:", error);

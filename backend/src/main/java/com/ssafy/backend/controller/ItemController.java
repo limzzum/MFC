@@ -78,6 +78,8 @@ public class ItemController {
     public ResponseEntity<?> userItemBuy(@PathVariable Long userId, @RequestParam String itemName) {
     // itemCode조회
       Optional<ItemCode> itemCode = itemService.findColorItemCode(itemName);
+      System.out.println(itemName);
+      System.out.println(itemCode.get().getName());
       Message message = new Message();
       if(itemCode.isPresent()) {
         if(itemName.contains("스프레이") && itemCode.get().getRgb() != null) {

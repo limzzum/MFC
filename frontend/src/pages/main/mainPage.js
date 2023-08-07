@@ -8,7 +8,7 @@ import { minRoomIdState, minWaitingRoomIdState } from '../../recoil/mainPageRoom
 
 //==============================================
 import { useRecoilValue } from 'recoil';
-import { tokenState } from '../../recoil/token'
+import { userState } from '../../recoil/token'
 
 
 function MainPage() {
@@ -24,7 +24,7 @@ function MainPage() {
   const [waitingDebateRooms, setWaitingDebateRooms] = useState([]);
   const [minWaitingRoomId, setMinWaitingRoomId] = useRecoilState(minWaitingRoomIdState);
 //===============================================
-  const tokenis = useRecoilValue(tokenState);
+  const tokenis = useRecoilValue(userState);
   console.log(tokenis);
 //===============================================
 
@@ -103,7 +103,7 @@ function MainPage() {
           const newMinRoomId = Math.min(...data.map(room => room.roomId));
           setMinWaitingRoomId(newMinRoomId);
           setWaitingDebateRooms(data);
-          console.log(tokenState)
+          console.log(userState)
         }        
       } catch (error) {
         console.error('Error fetching data:', error);

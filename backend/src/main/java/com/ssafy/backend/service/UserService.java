@@ -2,7 +2,7 @@ package com.ssafy.backend.service;
 
 import com.ssafy.backend.dto.LoginForm;
 import com.ssafy.backend.dto.Message;
-import com.ssafy.backend.dto.request.UserRegistDto;
+import com.ssafy.backend.dto.request.*;
 import com.ssafy.backend.entity.History;
 import com.ssafy.backend.entity.ItemCode;
 import com.ssafy.backend.entity.User;
@@ -14,8 +14,10 @@ import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class UserService {
 
@@ -45,9 +47,25 @@ public class UserService {
     public void logout(Long userId) {
 
     }
+    public void modify(Long id, UserUpdateDto userUpdateDto, Long itemCodeId) {
+        User findUser = findById(id);
+        if(findUser == null){
+            return;
+        }
+        ItemCode itemCode = new ItemCode(itemCodeId);
+        findUser.updateInfo(userUpdateDto,itemCode);
+    }
+
+    public void delete(Long id) {
+        User findUser = findById(id);
+        if(findUser == null){
+            return;
+        }
+        findUser.signout();
+    }
 
     public User findUser(Long id) {
-        return repository.findById(id).orElseGet(null);
+        return repository.findById(id).orElse(null);
     }
 
     public User findById(Long id) {

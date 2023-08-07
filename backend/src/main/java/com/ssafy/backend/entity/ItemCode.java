@@ -50,4 +50,8 @@ public class ItemCode {
     ItemCode itemCode = (ItemCode) o;
     return Objects.equals(id, itemCode.getId());
   }
+
+  public ItemCode(Long id){
+    this.id = id;
+  }
 }

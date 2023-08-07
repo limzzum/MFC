@@ -2,17 +2,18 @@ package com.ssafy.backend.entity;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+
+import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
+
+import java.util.Objects;
 
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
+@Builder
 public class Player {
 
 
@@ -46,5 +47,9 @@ public class Player {
   @Column(name = "is_topic_type_a")
   @ColumnDefault("false")
   private boolean isTopicTypeA;
+
+  public void changeStatus(boolean status){
+    this.isReady = status;
+  }
 
 }

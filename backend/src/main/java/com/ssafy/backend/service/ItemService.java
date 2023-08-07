@@ -22,6 +22,7 @@ import java.util.stream.Collectors;
 import javax.transaction.Transactional;
 
 import com.ssafy.backend.repository.UserItemRepository;
+import io.swagger.models.auth.In;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
@@ -39,6 +40,10 @@ public class ItemService {
   private final UserRepository userRepository;
   private final PlayerRepository playerRepository;
   private final UsedItemRepository usedItemRepository;
+
+  public ItemCode findById(Long id){
+    return itemCodeRepository.findById(id).orElse(null);
+  }
 
   public List<ItemCodeListDto> findAll() {
     List<ItemCode> itemCodes = itemCodeRepository.findAll(Sort.by(Direction.DESC, "id"));
@@ -123,7 +128,7 @@ public class ItemService {
   public String getUsedItem(Long userId, Long roomId, Long itemId) {
     Player player = playerRepository.findTopByRoomIdAndUserId(roomId,userId).orElse(null);
     if(player != null) {
-      Optional<UsedItem> usedItem = usedItemRepository.findTopByPlayerIdAndItemcodeId(player.getId(),itemId);
+      Optional<UsedItem> usedItem = usedItemRepository.findTopByPlayerIdAndItemcodeIdAndUsedTimeGreaterThan(player.getId(),itemId,player.getRoom().getStartTime());
       if(usedItem.isPresent()) {
         return "해당 토론방에서 이미 사용한 아이템입니다.";
       }else {

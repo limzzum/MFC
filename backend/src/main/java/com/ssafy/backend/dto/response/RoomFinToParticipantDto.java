@@ -11,8 +11,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class RoomFinToParticipantDto {
 
-    private String aTopic;
-    private String bTopic;
     private String aResult;
     private String bResult;
     private int aVoteCount;

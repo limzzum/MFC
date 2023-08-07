@@ -22,13 +22,13 @@ function TextChatting(){
         }
     };
 
-    // 메시지 받는 경우 테스트를 위한 함수
-    const handleReceiveMessage = () => {
-        setChatMessages((prevMessage) => [
-            ...prevMessage,
-            {text: "메시지 받는거 테스트", sender: "other"},
-        ]);
-    };
+    // // 메시지 받는 경우 테스트를 위한 함수
+    // const handleReceiveMessage = () => {
+    //     setChatMessages((prevMessage) => [
+    //         ...prevMessage,
+    //         {text: "메시지 받는거 테스트", sender: "other"},
+    //     ]);
+    // };
 
     // 새 메시지가 추가될 때마다 스크롤을 맨 아래로 이동
     useEffect(() => {
@@ -60,7 +60,7 @@ function TextChatting(){
                 className={style.inputChat}
                 />
                 <button className={style.button} onClick={handleSendMessage}>전송</button>
-                <button onClick={handleReceiveMessage}>Receive Test</button>
+                {/* <button onClick={handleReceiveMessage}>Receive Test</button> */}
             </div>
         </>
     );

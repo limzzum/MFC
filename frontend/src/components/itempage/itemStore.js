@@ -1,9 +1,7 @@
-import React from "react";
 import styles from "./itemStore.module.css";
 import Item from "./item";
-import { faHeartCirclePlus, faUserClock, faVolumeXmark, faHand, faCross, faSprayCan, faCoins } from "@fortawesome/free-solid-svg-icons";
 
-function ItemStore({ allItems, userCoin }) {
+function ItemStore({ allItems, userCoin, userId, updateUserInfo }) {
   const itemRows = [];
   for (let i = 0; i < allItems.length; i += 5) {
     itemRows.push(allItems.slice(i, i + 5));
@@ -25,6 +23,8 @@ function ItemStore({ allItems, userCoin }) {
               price={item.price}
               userCoin={userCoin}
               color={item.rgb}
+              userId = {userId}
+              updateUserInfo = {updateUserInfo}
             />
           ))}
         </div>

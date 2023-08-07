@@ -1,8 +1,9 @@
 package com.ssafy.backend.service;
 
-import com.ssafy.backend.dto.Message;
+import com.ssafy.backend.dto.request.PlayerRegistDto;
 import com.ssafy.backend.entity.Participant;
 import com.ssafy.backend.entity.Player;
+import com.ssafy.backend.entity.RoleCode;
 import com.ssafy.backend.repository.ParticipantRepository;
 import com.ssafy.backend.repository.PlayerRepository;
 import java.util.List;
@@ -37,5 +38,10 @@ public class ParticipantService {
       }
       participantRepository.saveAll(participants);
     }
+  }
+
+  public void changeRole(PlayerRegistDto playerRegistDto, RoleCode roleCode){
+    Participant participant = participantRepository.findAllByUserIdAndRoomId(playerRegistDto.getUserId(), playerRegistDto.getRoomId());
+    participant.changeRole(roleCode);
   }
 }

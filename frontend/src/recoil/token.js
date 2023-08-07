@@ -1,6 +1,7 @@
 import { atom } from 'recoil';
 
-export const tokenState = atom({
-  key: 'tokenState', // unique ID (with respect to other atoms/selectors)
-  default: '', // default value (aka initial value)
+// 토큰을 저장하는 Recoil atom
+export const userState = atom({
+  key: 'userState', // 고유한 ID (다른 atom과 중복되지 않아야 함)
+  default: { token: '' }, // 기본값
 });
