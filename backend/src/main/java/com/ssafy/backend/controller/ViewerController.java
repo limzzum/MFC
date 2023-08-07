@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -28,7 +29,7 @@ public class ViewerController {
   private final ViewerService viewerService;
   private final RoomService roomService;
 
-  @GetMapping("/{roomId}/{userId}")
+  @PostMapping("/{roomId}/{userId}")
   public ResponseEntity<Message> enterRoom(@PathVariable Long roomId, @PathVariable Long userId) {
     Message message = new Message(HttpStatus.OK, "테스트", null);
 
@@ -90,6 +91,13 @@ public class ViewerController {
     if (!result.isResult()) {
       message.setStatus(HttpStatus.BAD_REQUEST);
     }
+    return ResponseEntity.ok(message);
+  }
+
+  @GetMapping("/list/{roomId}")
+  public ResponseEntity<Message> getViewers(@PathVariable Long roomId) {
+    Message message = new Message(HttpStatus.OK, "", null);
+
     return ResponseEntity.ok(message);
   }
 
