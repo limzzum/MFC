@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom';
 import { userIdState } from '../../recoil/userId';
+import { userState } from '../../recoil/token';
 import { useRecoilState } from 'recoil';
 import logoImage from "../../images/logo.png"
 import style from "./loginPage.module.css"
 import axios from 'axios';
-import { userState } from '../../recoil/token';
 
 function Loginpage() {
   const [email, setEmail] = useState('') 
@@ -56,8 +56,7 @@ function Loginpage() {
       const token = response.data.data.accessToken;
       const userId = response.data.data.userId;
       if (token) {
-
-        setRecoilUserId(userId);
+        setRecoilUserId({userId});
         setUser({token}); // 여기에서 Recoil 상태에 토큰 저장
 
         localStorage.setItem('token', token);

@@ -18,4 +18,5 @@ public interface ParticipantRepository extends JpaRepository<Participant, Long> 
       Long roleCodeId,
       Boolean isHost);
 
+  List<Participant> findAllByRoomIdAndRoleCodeIdNot(Long roomId, Long RoleCode);
 }
