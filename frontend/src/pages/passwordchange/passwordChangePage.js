@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import style from './passwordChange.module.css';
 import "bootstrap/dist/css/bootstrap.min.css";
 import logoImage from "../../images/logo.png"
+import { useNavigate } from "react-router-dom"; 
 import { Button } from "react-bootstrap";
 import axios from "axios";
 
@@ -10,8 +11,9 @@ function PasswordChangePage() {
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [validPassword, setValidPassword] = useState("")
+  const navigate = useNavigate()
   const userToken = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxIiwiZXhwIjoxNzAxOTUxMDE0fQ.A7avo0u5nleIbTRaiYqw6kcSjNFzgYN5_PKoZgf5GtU"; 
-
+   
   const regex = /^(?=.*[a-zA-z])(?=.*[0-9])(?=.*[$`~!@$!%*#^?&\\(\\)\-_=+])(?!.*[^a-zA-z0-9$`~!@$!%*#^?&\\(\\)\-_=+]).{8,20}$/;
 
   useEffect(() => {
@@ -26,7 +28,6 @@ function PasswordChangePage() {
     };
     try {
       const response = await axios.get(`http://i9a605.p.ssafy.io:8081/api/user`, config);
-      console.log(response.data.data.password)
       setValidPassword(response.data.data.password);
     } catch (error) {
       console.error("사용자 정보 가져오기 오류", error);
@@ -47,6 +48,8 @@ function PasswordChangePage() {
     axios.patch(`http://i9a605.p.ssafy.io:8081/api/user`, updatedUser, config)
       .then(response => {
         console.log(response);
+        alert("비밀번호 변경이 완료되었습니다.")
+        navigate("/")
       })
       .catch(error => {
         console.error("비밀번호 업데이트 오류:", error);
@@ -70,7 +73,7 @@ function PasswordChangePage() {
         setNewPassword("")
         setConfirmPassword("")
         // 비밀번호의 조건
-      } else if (currentPassword.trim() === validPassword) {
+      } else if (currentPassword.trim() !== validPassword) {
         alert("현재 비밀번호와 일치하지 않습니다.")
         setCurrentPassword("")
       } 

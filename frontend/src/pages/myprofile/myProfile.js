@@ -1,4 +1,4 @@
-import React,  { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import styles from './myProfile.module.css';
 import profileImage from '../../images/img.jpg';
 import settingIcon from '../../images/settingIcon.png';
@@ -8,17 +8,19 @@ import { Link } from 'react-router-dom';
 import { useNavigate } from "react-router-dom"; 
 import axios from "axios";
 import UserDeleteModal from "../../components/myprofile/userdeletemodal";
-
+import { userState } from '../../recoil/token'
+import { useRecoilValue } from 'recoil';
 
 function MyProfile() {
   const [ selectedImage, setSelectedImage ] = useState(null);
   const [ userInfo, setUserInfo ] = useState({});
   const [ changeNickname , setChangeNickname ] = useState(""); 
-  const userToken = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxIiwiZXhwIjoxNzAxOTUxMDE0fQ.A7avo0u5nleIbTRaiYqw6kcSjNFzgYN5_PKoZgf5GtU"; 
   const [ finalChangeNickname, setFinalChangeNickname ] = useState("")
   const [showModal, setShowModal] = useState(false); 
   const navigate = useNavigate();
-
+  const user = useRecoilValue(userState);
+  const userToken = user.token;
+  console.log(useRecoilValue(userState))
   useEffect(() => {
     getUserInfo();
   }, []);
