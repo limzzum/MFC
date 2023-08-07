@@ -6,13 +6,18 @@ import RankingSearchBar from "../../components/rankingpage/rankingSearchBar.js";
 import style from "./ranking.module.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { Button } from "react-bootstrap";
+import { useRecoilValue } from 'recoil';
+import { userIdState } from '../../recoil/userId'
+
 
 function Ranking() {
     const [ rankUsers, setRankUsers ] = useState([]);
     const [ page, setPage ] = useState(0);
     const [ myRecord, setMyRecord ] = useState([])
     const [ myWinRate, setMyWinRate ] = useState(0)
-    const userId = 2;
+    const user = useRecoilValue(userIdState);
+    const userId = user.userId;
+
     useEffect(() => {
         fetchData();
         getMyRecord();
