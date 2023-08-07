@@ -101,7 +101,7 @@ function MyProfile() {
       alert('변경 사항이 없습니다.');
       return;
     }
-    
+
     const config = {
       headers: {
         Authorization: `Bearer ${userToken}`
@@ -117,7 +117,7 @@ function MyProfile() {
     .then((response) => {
       console.log(response.data);
       console.log("프로필 변경 성공");
-      // 프로필 변경 성공 후 필요한 동작 수행
+      window.location.reload();
     })
     .catch((error) => {
       console.error("프로필 변경 실패", error);

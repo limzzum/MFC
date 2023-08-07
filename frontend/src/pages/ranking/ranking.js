@@ -11,6 +11,7 @@ function Ranking() {
     const [ rankUsers, setRankUsers ] = useState([]);
     const [ page, setPage ] = useState(0);
     const [ myRecord, setMyRecord ] = useState([])
+    const [ myWinRate, setMyWinRate ] = useState(0)
     const userId = 2;
     useEffect(() => {
         fetchData();
@@ -21,6 +22,7 @@ function Ranking() {
         axios.get(`http://i9a605.p.ssafy.io:8081/api/record/${userId}`)
         .then(response => {
             setMyRecord(response.data.data)
+            setMyWinRate(response.data.data.winRate.toFixed(2))
         })
         .catch(error => {
             console.log(error)
@@ -48,7 +50,7 @@ function Ranking() {
 
     return (
         <div className={style.wrapper}>
-            <RankMyProfile myData={myRecord}/>
+            <RankMyProfile myData={myRecord} myWinRate={myWinRate}/>
             <div className={style.nextBox}> 
                 <RankingSearchBar onSearch={handleSearch} />
                 <div className={style.rankTitleBox}>
