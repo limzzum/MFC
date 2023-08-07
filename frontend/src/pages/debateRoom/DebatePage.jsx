@@ -19,10 +19,15 @@ function DebatePage() {
 
   // 토론방 상태 호출
   const debateRoomInfo = useRecoilValue(getDebateRoomState);
-  // const voteResult = useRecoilValue(voteResultState);
+  const voteResult = useRecoilValue(voteResultState);
+
+  // 참가자 참가여부
+  const [playerStatus, setPlayerStatus] = useState([false, false]);
+  // 참가자 준비여부
+  const [userReady, setUserReady] = useState(false);
 
   console.log('debateRoomInfo: ', debateRoomInfo);
-  // console.log('voteResult: ', voteResult);
+  console.log('voteResult: ', voteResult);
 
   const result = {
     status: "OK",
@@ -70,6 +75,12 @@ function DebatePage() {
   };
 
   useEffect(() => {
+    if(debateRoomInfo?.data?.status){
+      setStatus((debateRoomInfo.data.status).toLowerCase());
+    }
+  }, [debateRoomInfo, setStatus])
+
+  useEffect(() => {
     if(status === 'done'){
       setShowResultModal(true);
     } else{
@@ -87,11 +98,20 @@ function DebatePage() {
           <RoomInfo
             status={status}
             role={role}
+            playerStatus={playerStatus}
             onStatusChange={handleStatusChange}
+            userReady={userReady}
+            setUserReady={setUserReady}
             onRoleChange={handleRoleChange}
             debateRoomInfo={debateRoomInfo.data}
           />
-          <Participate role={role} onRoleChange={handleRoleChange}/>
+          <Participate 
+            status={status}
+            role={role} 
+            onRoleChange={handleRoleChange}
+            playerStatus={playerStatus}
+            setPlayerStatus={setPlayerStatus}
+          />
         </Col>
         <Col xs={3}>
           <Stack gap={1}>
@@ -106,6 +126,8 @@ function DebatePage() {
           role={role}
           onStatusChange={handleStatusChange}
           onRoleChange={handleRoleChange}
+          setPlayerStatus={setPlayerStatus}
+          setUserReady={setUserReady}
           debateRoomInfo={debateRoomInfo.data}
           // voteResult={voteResult.data}
         />
