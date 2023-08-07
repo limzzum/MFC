@@ -78,6 +78,9 @@ public class ViewerController {
     return ResponseEntity.ok(message);
   }
 
+  /*
+   * 토론방 나가기
+   * */
   @DeleteMapping("/{roomId}/{userId}")
   public ResponseEntity<Message> exitRoom(@PathVariable Long roomId, @PathVariable Long userId) {
     Message message = new Message(HttpStatus.OK, "", null);
