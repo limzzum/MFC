@@ -68,10 +68,11 @@ public class ViewerController {
   public ResponseEntity<Message> voteTopic(@PathVariable Long roomId, @PathVariable Long userId,
       @RequestParam(name = "vote") String selectedTopic) {
     Message message = new Message(HttpStatus.OK, "투표 성공", null);
-    messagingTemplate.convertAndSend("/from/vote/" + roomId,viewerService.voteResult(roomId));
     if (!viewerService.vote(userId, roomId, selectedTopic)) {
       message.setStatus(HttpStatus.BAD_REQUEST);
       message.setMessage("일정 시간 후 재투표가 가능합니다.");
+    } else {
+      messagingTemplate.convertAndSend("/from/vote/" + roomId,viewerService.voteResult(roomId));
     }
     return ResponseEntity.ok(message);
   }
