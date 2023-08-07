@@ -83,7 +83,7 @@ public class ViewerController {
     Message message = new Message(HttpStatus.OK, "", null);
 
     MethodResultDto result = viewerService.exit(userId, roomId);
-    message.setMessage(result.getData().toString());
+    message.setMessage(result.getMessage());
     if (!result.isResult()) {
       message.setStatus(HttpStatus.BAD_REQUEST);
     }
