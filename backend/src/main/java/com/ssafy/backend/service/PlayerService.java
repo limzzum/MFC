@@ -1,7 +1,6 @@
 package com.ssafy.backend.service;
 
-import com.ssafy.backend.dto.request.PlayerDto;
-import com.ssafy.backend.dto.request.PlayerRegistDto;
+import com.ssafy.backend.dto.request.*;
 import com.ssafy.backend.entity.*;
 import com.ssafy.backend.repository.PlayerRepository;
 import com.ssafy.backend.repository.RoleCodeRepository;
@@ -54,4 +53,30 @@ public class PlayerService {
         return false;
 
     }
+
+    public void modify(PlayerUpdateDto playerUpdateDto){
+        Player player = playerRepository.findTopByRoomIdAndUserId(playerUpdateDto.getRoomId(), playerUpdateDto.getUserId()).orElse(null);
+        if(player == null){
+            return;
+        }
+        player.updateInfo(playerUpdateDto);
+    }
+
+
+    public boolean overTalk(PlayerDto playerDto){
+        Player player = playerRepository.findTopByRoomIdAndUserId(playerDto.getRoomId(), playerDto.getUserId()).orElse(null);
+        if(player == null){
+            return false;
+        }
+
+        boolean result = player.removeOverTimeCnt();
+        if(result){
+            return true;
+        }
+        return false;
+    }
+
+
+
+
 }
