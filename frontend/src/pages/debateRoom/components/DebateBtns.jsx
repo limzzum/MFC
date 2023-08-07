@@ -1,40 +1,56 @@
 import React, {useState, useEffect} from "react";
 import {Row, Col, Button, Modal, Form} from "react-bootstrap";
+import axios from "axios";
 import style from '../debatePage.module.css';
 
-function DebateBtns({status, role, onRoleChange, debateRoomInfo, setPlayerStatus, setUserReady}){
+function DebateBtns({status, role, onRoleChange, debateRoomInfo, setPlayerStatus, setUserReady, voteResult}){
     const [showModal, setShowModal] = useState(false);
     const [selectedTopic, setSelectedTopics] = useState([]);
     const [isVotingEnabled, setVotingEnabled] = useState(true);
     const votingCooldown = debateRoomInfo.talkTime * 120;
     const [remainingTime, setRemainingTime] = useState(votingCooldown);
 
-    const handleVote = () => {
+    const handleVote = async () => {
         // 투표 로직 구현
         console.log(`Selected ${selectedTopic}`);
         setShowModal(false);
         setVotingEnabled(false);    // 투표 후 투표 비활성화
+
+        try {
+            const base_url = "http://i9a605.p.ssafy.io:8081/api/viewer/vote";
+            const roomId = 1;
+            const userId = 3;
+            const voteChoice = selectedTopic;
+
+            const url = `${base_url}/${roomId}/${userId}?vote=${voteChoice}`;
+
+            const response = await axios.patch(url, {vote: voteChoice});
+            console.log("투표 결과 전송 성공:", response.data);
+        } catch (e) {
+            console.log("투표 결과 전송 실패:", e);
+        }
     };
-useEffect(() => {
-    if(!isVotingEnabled){
-        // 투표 후 재투표 가능 시간 설정
-        const timer = setInterval(() => {
-            setRemainingTime((prevTime) => prevTime - 1);
-        }, 1000);
+    
+    useEffect(() => {
+        if(!isVotingEnabled){
+            // 투표 후 재투표 가능 시간 설정
+            const timer = setInterval(() => {
+                setRemainingTime((prevTime) => prevTime - 1);
+            }, 1000);
 
-        //일정 시간이 지나면 투표 가능하도록 활성화
-        setTimeout(() => {
-            setVotingEnabled(true);
-            setRemainingTime(votingCooldown);
-            clearInterval(timer);
-        }, votingCooldown * 1000);
+            //일정 시간이 지나면 투표 가능하도록 활성화
+            setTimeout(() => {
+                setVotingEnabled(true);
+                setRemainingTime(votingCooldown);
+                clearInterval(timer);
+            }, votingCooldown * 1000);
 
-        //컴포넌트 언마운트 시 타이머 정리
-        return () => {
-            clearTimeout(timer);
-        };
-    }
-}, [isVotingEnabled, votingCooldown]);
+            //컴포넌트 언마운트 시 타이머 정리
+            return () => {
+                clearTimeout(timer);
+            };
+        }
+    }, [isVotingEnabled, votingCooldown]);
 
     const handleRoleChangeToSpectator = () => {
         onRoleChange('spectator');
@@ -98,9 +114,9 @@ useEffect(() => {
                             type="radio"
                             label={debateRoomInfo.atopic}
                             id="topicA"
-                            value="topicA"
-                            checked={selectedTopic === "topicA"}
-                            onChange={() => setSelectedTopics("topicA")}
+                            value="A"
+                            checked={selectedTopic === "A"}
+                            onChange={() => setSelectedTopics("A")}
                             disabled={!isVotingEnabled}
                         />
                         <Form.Check
@@ -108,9 +124,9 @@ useEffect(() => {
                             type="radio"
                             label={debateRoomInfo.btopic}
                             id="topicB"
-                            value="topicB"
-                            checked={selectedTopic === "topicB"}
-                            onChange={() => setSelectedTopics("topicB")}
+                            value="B"
+                            checked={selectedTopic === "B"}
+                            onChange={() => setSelectedTopics("B")}
                             disabled={!isVotingEnabled}
                         />
                     </Form>
