@@ -16,7 +16,7 @@ function MyProfile() {
   const [ userInfo, setUserInfo ] = useState({});
   const [ changeNickname , setChangeNickname ] = useState(""); 
   const [ finalChangeNickname, setFinalChangeNickname ] = useState("")
-  const [showModal, setShowModal] = useState(false); 
+  const [ showModal, setShowModal ] = useState(false); 
   const navigate = useNavigate();
   const user = useRecoilValue(userState);
   const userToken = user.token;

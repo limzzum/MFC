@@ -5,6 +5,8 @@ import logoImage from "../../images/logo.png"
 import { useNavigate } from "react-router-dom"; 
 import { Button } from "react-bootstrap";
 import axios from "axios";
+import { useRecoilValue } from 'recoil';
+import { userState } from '../../recoil/token'
 
 function PasswordChangePage() {
   const [currentPassword, setCurrentPassword] = useState("");
@@ -12,8 +14,9 @@ function PasswordChangePage() {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [validPassword, setValidPassword] = useState("")
   const navigate = useNavigate()
-  const userToken = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxIiwiZXhwIjoxNzAxOTUxMDE0fQ.A7avo0u5nleIbTRaiYqw6kcSjNFzgYN5_PKoZgf5GtU"; 
-   
+  const user = useRecoilValue(userState);
+  const userToken = user.token;   
+
   const regex = /^(?=.*[a-zA-z])(?=.*[0-9])(?=.*[$`~!@$!%*#^?&\\(\\)\-_=+])(?!.*[^a-zA-z0-9$`~!@$!%*#^?&\\(\\)\-_=+]).{8,20}$/;
 
   useEffect(() => {
