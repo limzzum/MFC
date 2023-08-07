@@ -6,17 +6,27 @@ import { BsStopwatch } from 'react-icons/bs';
 import { RiSpeakLine } from 'react-icons/ri';
 import personImage from '../../images/person.png';
 import style from './debateRoomCard.module.css';
+import { useNavigate } from 'react-router-dom';
+
 
 const DebateRoomCard = ({ title1, title2, debateTime, speechTime, roomId }) => {
   const userId = useRecoilValue(userIdState);
+  const navigate = useNavigate();
+
   console.log(userId)
 
   const handleJoinClick = async () => {
-    const response = await axios.post(`http://i9a605.p.ssafy.io:8081/api/viewer/${roomId}/${userId}`);
+    const url = `http://i9a605.p.ssafy.io:8081/api/viewer/${roomId}/${userId.userId}`;
+    const response = await axios.post(url, {
+      roomid: roomId,
+      userid: userId.userId
+    });
+    
     if (response.status === 200) {
-      // 성공적으로 요청이 처리되면 원하는 동작을 수행합니다.
-      console.log("이동 성공")
-      window.location.href = `http://i9a605.p.ssafy.io:8081/api/viewer/${roomId}/${userId}`;
+      console.log("이동 성공");
+      console.log(response)
+      // 여기까지는 성공
+      navigate(`/debateRoom/${roomId}/${userId.userId}`);
     }
   };
   return (
