@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const BASE_URL = 'http://i9a605.p.ssafy.io:8081/api/vote'
+const BASE_URL = 'http://i9a605.p.ssafy.io:8081/api/viewer/vote'
 
 export const getVoteResult = async () => {
     try {
