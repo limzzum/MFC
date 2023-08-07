@@ -3,7 +3,7 @@ import {Button} from 'react-bootstrap';
 import style from '../debatePage.module.css';
 
 
-function ScreenShare(){
+function ScreenShare({status, role}){
 
     const [screenStream, setScreenStream] = useState(null);
     const videoRef = useRef();
@@ -34,18 +34,16 @@ function ScreenShare(){
 
     return(
         <div>
-            {screenStream && (
-                <div className={style.screenShare}>
-                    <video className={style.shareVideo} ref={videoRef} autoPlay muted />
-                </div>
-            )}
-            <div>
+            <div className={style.screenShare}>
                 {screenStream ? (
+                <>
+                    <video className={style.shareVideo} ref={videoRef} autoPlay muted />
                     <Button onClick={stopScreenShare}>화면 공유 중지</Button>
+                </>
                 ) : (
-                    <div className={style.screenShare}>
-                        <Button onClick={startScreenShare}>화면 공유 시작</Button>
-                    </div>
+                status === "ongoing" && role === "participate" && (
+                    <Button onClick={startScreenShare}>화면 공유 시작</Button>
+                )
                 )}
             </div>
         </div>
