@@ -6,7 +6,7 @@ import { faCrown, faCoins, faHandPeace } from "@fortawesome/free-solid-svg-icons
 
 import profileImage from '../../images/img.jpg'
 
-function RankingMyProfile({ myData }) {
+function RankingMyProfile({ myData, myWinRate }) {
 
     return (
         <div className={styles.boxProfile}>
@@ -25,7 +25,7 @@ function RankingMyProfile({ myData }) {
                 </div>
                 <div className={styles.historyItemBox}>
                   <FontAwesomeIcon icon={faHandPeace} size="4x" color="white"/>
-                  <div className={styles.historyText}>{myData.winRate.toFixed(2)} %</div>
+                  <div className={styles.historyText}>{myWinRate.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} %</div>
                 </div>
                 </div>
               </div>

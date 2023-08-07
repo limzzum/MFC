@@ -17,17 +17,17 @@ function PasswordChangePage() {
   useEffect(() => {
     fetchUserInfo();
   }, []);
-
+  // 현재 비밀번호 가져오기
   const fetchUserInfo = async() => {
     const config = {
       headers: {
         Authorization: `Bearer ${userToken}`
       }
     };
-  
     try {
       const response = await axios.get(`http://i9a605.p.ssafy.io:8081/api/user`, config);
-      await setValidPassword(response.data.data.password);
+      console.log(response.data.data.password)
+      setValidPassword(response.data.data.password);
     } catch (error) {
       console.error("사용자 정보 가져오기 오류", error);
     }
@@ -35,11 +35,16 @@ function PasswordChangePage() {
   
 
   const updatePassword = () => {
+    const config = {
+      headers: {
+        Authorization : `Bearer ${userToken}`
+      }
+    }
     const updatedUser = {
       password: newPassword,
     };
 
-    axios.patch(`api/user`, updatedUser)
+    axios.patch(`http://i9a605.p.ssafy.io:8081/api/user`, updatedUser, config)
       .then(response => {
         console.log(response);
       })
@@ -65,7 +70,11 @@ function PasswordChangePage() {
         setNewPassword("")
         setConfirmPassword("")
         // 비밀번호의 조건
-      } else if (!regex.test(newPassword)) {
+      } else if (currentPassword.trim() === validPassword) {
+        alert("현재 비밀번호와 일치하지 않습니다.")
+        setCurrentPassword("")
+      } 
+      else if (!regex.test(newPassword)) {
         alert("비밀번호는 영문자, 숫자, 특수문자를 포함하여 8자 이상 20자 이하여야 합니다.");
         setNewPassword("");
         setConfirmPassword("");

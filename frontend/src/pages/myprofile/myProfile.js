@@ -16,7 +16,7 @@ function MyProfile() {
   const [ changeNickname , setChangeNickname ] = useState(""); 
   const userToken = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxIiwiZXhwIjoxNzAxOTUxMDE0fQ.A7avo0u5nleIbTRaiYqw6kcSjNFzgYN5_PKoZgf5GtU"; 
   const [ finalChangeNickname, setFinalChangeNickname ] = useState("")
-  const [showModal, setShowModal] = useState(false); // 모달 상태 추가
+  const [showModal, setShowModal] = useState(false); 
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -97,6 +97,11 @@ function MyProfile() {
   // 프로필 업데이트
   const handleProfileUpdate = () => {
     console.log(finalChangeNickname);
+    if (finalChangeNickname === userInfo.nickname) {
+      // 변경 사항이 없는 경우 알림 띄우기
+      alert('변경 사항이 없습니다.');
+      return;
+    }
 
     const config = {
       headers: {
@@ -109,11 +114,11 @@ function MyProfile() {
     };
 
     // PATCH 요청을 통해 변경 정보 전송
-    axios.patch('http://i9a605.p.ssafy.io:8081/api/user', {params : requestData}, config)
+    axios.patch('http://i9a605.p.ssafy.io:8081/api/user', requestData, config)
     .then((response) => {
       console.log(response.data);
       console.log("프로필 변경 성공");
-      // 프로필 변경 성공 후 필요한 동작 수행
+      window.location.reload();
     })
     .catch((error) => {
       console.error("프로필 변경 실패", error);
