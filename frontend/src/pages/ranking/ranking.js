@@ -46,9 +46,18 @@ function Ranking() {
     }
   };
 
-  const handlePageChange = (newPage) => {
-    setPage(newPage);
-  };
+    const fetchData = async (keyword = "") => {
+        try {
+            const response = await axios.get(`https://goldenteam.site/api/record/list/?page=${page}&perPage=10&keyword=${keyword}`);
+            setRankUsers(response.data.data.result);
+        } catch (error) {
+            console.error("랭크유저 정보 가져오기 오류:", error);
+        }
+    };
+
+    const handlePageChange = newPage => {
+        setPage(newPage);
+    };
 
   const handleSearch = (keyword) => {
     setPage(0);

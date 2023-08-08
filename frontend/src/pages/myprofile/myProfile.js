@@ -3,9 +3,9 @@ import styles from "./myProfile.module.css";
 import profileImage from "../../images/img.jpg";
 import settingIcon from "../../images/settingIcon.png";
 import "bootstrap/dist/css/bootstrap.min.css";
-import { Button, Row } from "react-bootstrap";
-import { Link } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
+import { Row } from "react-bootstrap";
+import { Link } from 'react-router-dom';
+import { useNavigate } from "react-router-dom"; 
 import axios from "axios";
 import UserDeleteModal from "../../components/myprofile/userdeletemodal";
 import { userState } from "../../recoil/token";
@@ -195,13 +195,19 @@ function MyProfile() {
         </form>
       </div>
       <div>
-        <Row>
-          <Button className="col-4 btn btn-primary w-150px m-auto" type="submit" onClick={handleProfileUpdate}>
+        <Row className="mb-2">
+          <button 
+          className={`${styles.btnChange}`} 
+          type="submit"
+          onClick={handleProfileUpdate}>
             변경
-          </Button>
-          <Button className="col-4 btn btn-danger w-150px m-auto" onClick={handleWithdrawButtonClick}>
-            탈퇴
-          </Button>
+          </button>
+          <button 
+            className={`${styles.btnDelete}`}
+            onClick={handleWithdrawButtonClick}
+            >
+              탈퇴
+          </button>
         </Row>
       </div>
       <UserDeleteModal
