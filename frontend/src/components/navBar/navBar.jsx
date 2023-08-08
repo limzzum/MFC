@@ -4,9 +4,14 @@ import {Container} from 'react-bootstrap';
 import style from './navBar.module.css';
 import logo from '../../images/logo.png';
 import searchIcon from '../../images/search.png';
+import { Button, Form, InputGroup } from "react-bootstrap";
+
 
 function NavBar() {
-    const [searchTerm, setSearchTerm] = useState('');
+    const [ keyword, setKeyword ] = useState('');
+    // const [ userToken, setUserToken ] = useState('')
+    // const [ userId, setUserId ] = useState('')
+    // const [ isLoginned, setisLoginned ] = useState(false)
 
     const handleLogout = () => {
         console.log('로그아웃');
@@ -14,8 +19,8 @@ function NavBar() {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        console.log(`검색어: ${searchTerm}`);
-        setSearchTerm('');
+        console.log(`검색어: ${keyword}`);
+        setKeyword('');
     };
 
     return (
@@ -29,18 +34,25 @@ function NavBar() {
                     <Link className={style.navbarMenu} to={'/item'}>아이템</Link>
                     <Link className={style.navbarMenu} to={'/profile'}>마이페이지</Link>
                 </div>
-                <form onSubmit={handleSubmit} className={style.searchBar}>
-                    <input 
-                        type='text' 
-                        placeholder='검색'
-                        value={searchTerm}
-                        onChange={(e) => setSearchTerm(e.target.value)}
-                    />
-                    <button className={style.btn}>
-                        <img className={style.icon} src={searchIcon} alt='검색'/>
-                    </button>
-                </form>
-                
+                <div>
+                <InputGroup>
+                <Form.Control
+                    placeholder="검색어를 입력해주세요"
+                    aria-label="keyword"
+                    aria-describedby="userSearch"
+                    value={keyword}
+                    onChange={e => setKeyword(e.target.value)}
+                />
+                <Button 
+                    style={{ backgroundColor:"#354C6FFF" }}
+                    variant="outline-secondary" 
+                    id="userSearch"
+                    onClick={handleSubmit}
+                >
+                    <img src={searchIcon} className={style.searchIcon} alt="Search Icon" />
+                </Button>
+            </InputGroup>
+            </div>
                 <button className={style.btn} onClick={handleLogout}>
                     로그아웃
                 </button>
