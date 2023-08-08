@@ -17,12 +17,12 @@ public class MVCConfig implements WebMvcConfigurer {
 //                        "/**/*.css","/**/*.jpg","/**/*.jpeg","/**/*.png","/**/*.peg", "/**/*.js", "/error/**"
 //                    );
 //    }
-@Override
-public void addCorsMappings(CorsRegistry registry) {
-    registry.addMapping("/**")
-        .allowedOrigins("*")
-        .allowedMethods("*");
-}
+//@Override
+//public void addCorsMappings(CorsRegistry registry) {
+//    registry.addMapping("/**")
+//        .allowedOrigins("*")
+//        .allowedMethods("*");
+//}
 
     @Bean
     public LoginCheckInterCeptor loginCheckInterCeptor(){
