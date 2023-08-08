@@ -23,7 +23,7 @@ function MyProfile() {
   console.log(useRecoilValue(userState))
   useEffect(() => {
     getUserInfo();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line
   }, []);
 
   const handleImageChange = (e) => {
