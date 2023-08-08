@@ -178,13 +178,14 @@ function MyProfile() {
                 <div className="input-group mb-4 w-75">
                 <InputGroup>
                   <Form.Control
-                      placeholder={userInfo.nickname}
-                      aria-label="Nickname"
-                      aria-describedby="checkDuplicate"
-                      value={changeNickname}
-                      onChange={(e) => {
-                      setChangeNickname(e.target.value);
+                    placeholder={userInfo.nickname}
+                    aria-label="Nickname"
+                    aria-describedby="checkDuplicate"
+                    value={changeNickname}
+                    onChange={(e) => {
+                    setChangeNickname(e.target.value);
                     }}
+                    onKeyPress={handleEnterKeyPress}
                   />
                   <Button 
                       style={{ backgroundColor:"#354C6FFF" }}

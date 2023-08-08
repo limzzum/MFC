@@ -25,7 +25,7 @@ function NavBarWrapper() {
 function App() {
   const user = useRecoilValue(userState)
   const isLoggedIn = user.token !== undefined ; 
-
+  console.log(user, isLoggedIn)
   return (
     <BrowserRouter>
       <div className='App'>
