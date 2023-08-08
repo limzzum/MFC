@@ -8,13 +8,11 @@ import { Button, Form, InputGroup } from "react-bootstrap";
 import { userState } from '../../recoil/token'
 import { userIdState } from '../../recoil/userId'
 import { useRecoilState } from 'recoil';
-// import { LoggedInState } from '../../recoil/userId'
 
 function NavBar() {
     const [ keyword, setKeyword ] = useState('');
     const [ , setUserToken ] = useRecoilState(userState)
     const [ , setUserId ] = useRecoilState(userIdState)
-    // const [, setLoggedin ] = useRecoilState(LoggedInState)
 
     const handleLogout = () => {
         console.log('로그아웃');

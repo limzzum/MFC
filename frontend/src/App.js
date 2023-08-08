@@ -32,8 +32,8 @@ function App() {
       <div className='App'>
         <NavBarWrapper />
         <Routes>
-          <Route path='/login' element={<LoginPage />} />
-          <Route path='/signup' element={<SignupPage />} />
+          <Route path='/login' element={!isLoggedIn ? <LoginPage /> : <Navigate to='/' />} />
+          <Route path='/signup' element={!isLoggedIn ? <SignupPage /> : <Navigate to='/' />} />
           <Route path='/pwchange' element={isLoggedIn ? <PasswordChangePage /> : <Navigate to='/login' />} />
           <Route path='/' element={isLoggedIn ? <MainPage /> : <Navigate to='/login' />} />
           <Route
