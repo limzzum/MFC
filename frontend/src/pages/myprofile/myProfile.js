@@ -1,26 +1,26 @@
 import { useState, useEffect } from "react";
-import styles from './myProfile.module.css';
-import profileImage from '../../images/img.jpg';
-import settingIcon from '../../images/settingIcon.png';
+import styles from "./myProfile.module.css";
+import profileImage from "../../images/img.jpg";
+import settingIcon from "../../images/settingIcon.png";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { Row } from "react-bootstrap";
 import { Link } from 'react-router-dom';
 import { useNavigate } from "react-router-dom"; 
 import axios from "axios";
 import UserDeleteModal from "../../components/myprofile/userdeletemodal";
-import { userState } from '../../recoil/token'
-import { useRecoilValue } from 'recoil';
+import { userState } from "../../recoil/token";
+import { useRecoilValue } from "recoil";
 
 function MyProfile() {
-  const [ selectedImage, setSelectedImage ] = useState(null);
-  const [ userInfo, setUserInfo ] = useState({});
-  const [ changeNickname , setChangeNickname ] = useState(""); 
-  const [ finalChangeNickname, setFinalChangeNickname ] = useState("")
-  const [ showModal, setShowModal ] = useState(false); 
+  const [selectedImage, setSelectedImage] = useState(null);
+  const [userInfo, setUserInfo] = useState({});
+  const [changeNickname, setChangeNickname] = useState("");
+  const [finalChangeNickname, setFinalChangeNickname] = useState("");
+  const [showModal, setShowModal] = useState(false);
   const navigate = useNavigate();
   const user = useRecoilValue(userState);
   const userToken = user.token;
-  console.log(useRecoilValue(userState))
+  console.log(useRecoilValue(userState));
   useEffect(() => {
     getUserInfo();
     // eslint-disable-next-line
@@ -30,45 +30,46 @@ function MyProfile() {
     const file = e.target.files[0];
     setSelectedImage(file);
   };
-  
+
   // User정보 가져오기
   const getUserInfo = async () => {
     const config = {
       headers: {
-        Authorization: `Bearer ${userToken}`
-      }
+        Authorization: `Bearer ${userToken}`,
+      },
     };
-  
+
     try {
-      const response = await axios.get(`http://i9a605.p.ssafy.io:8081/api/user`, config);
+      const response = await axios.get(`https://goldenteam.site/api/user`, config);
       setUserInfo(response.data.data);
       setFinalChangeNickname(response.data.data.nickname); // 바로 nickname을 업데이트하도록 수정
     } catch (error) {
       console.error("사용자 정보 가져오기 오류", error);
     }
   };
-  
+
   // User닉네임 중복 체크
 
   const handleNicknameButtonClick = () => {
     const requestData = {
-        nickname: `${changeNickname}`
-      };
-  
-    axios.get('http://i9a605.p.ssafy.io:8081/api/user/nickname', { params: requestData }) 
-    .then((response) => {
-      console.log(response.data)
-      if (response.data.status === 'ACCEPTED') {
-        alert('확인되었습니다!');
-        setFinalChangeNickname(changeNickname);
-      } else {
-        alert('이미 사용 중인 닉네임입니다.');
-        setFinalChangeNickname(`${userInfo.nickname}`);
-      }
-    })
-    .catch((error) => {
-      alert('닉네임 확인에 실패하였습니다.');
-    });
+      nickname: `${changeNickname}`,
+    };
+
+    axios
+      .get("https://goldenteam.site/api/user/nickname", { params: requestData })
+      .then((response) => {
+        console.log(response.data);
+        if (response.data.status === "ACCEPTED") {
+          alert("확인되었습니다!");
+          setFinalChangeNickname(changeNickname);
+        } else {
+          alert("이미 사용 중인 닉네임입니다.");
+          setFinalChangeNickname(`${userInfo.nickname}`);
+        }
+      })
+      .catch((error) => {
+        alert("닉네임 확인에 실패하였습니다.");
+      });
   };
 
   const handleWithdrawButtonClick = () => {
@@ -78,23 +79,24 @@ function MyProfile() {
   const handleModalClose = () => {
     setShowModal(false); // 모달 닫기
   };
-  
+
   const handleWithdrawConfirm = () => {
     const config = {
       headers: {
-        Authorization: `Bearer ${userToken}`
-      }
+        Authorization: `Bearer ${userToken}`,
+      },
     };
     // 탈퇴 처리 로직 구현
-    axios.delete('http://i9a605.p.ssafy.io:8081/api/user', config)
-    .then((response) => {
-      console.log(response);
-      console.log("탈퇴 처리 성공");
-      navigate("/");
-    })
-    .catch((error) => {
-      console.error("탈퇴 처리 실패", error);
-    });
+    axios
+      .delete("https://goldenteam.site/api/user", config)
+      .then((response) => {
+        console.log(response);
+        console.log("탈퇴 처리 성공");
+        navigate("/");
+      })
+      .catch((error) => {
+        console.error("탈퇴 처리 실패", error);
+      });
   };
 
   // 프로필 업데이트
@@ -102,14 +104,14 @@ function MyProfile() {
     console.log(finalChangeNickname);
     if (finalChangeNickname === userInfo.nickname) {
       // 변경 사항이 없는 경우 알림 띄우기
-      alert('변경 사항이 없습니다.');
+      alert("변경 사항이 없습니다.");
       return;
     }
 
     const config = {
       headers: {
-        Authorization: `Bearer ${userToken}`
-      }
+        Authorization: `Bearer ${userToken}`,
+      },
     };
     const requestData = {
       nickname: finalChangeNickname,
@@ -117,15 +119,16 @@ function MyProfile() {
     };
 
     // PATCH 요청을 통해 변경 정보 전송
-    axios.patch('http://i9a605.p.ssafy.io:8081/api/user', requestData, config)
-    .then((response) => {
-      console.log(response.data);
-      console.log("프로필 변경 성공");
-      window.location.reload();
-    })
-    .catch((error) => {
-      console.error("프로필 변경 실패", error);
-    });
+    axios
+      .patch("https://goldenteam.site/api/user", requestData, config)
+      .then((response) => {
+        console.log(response.data);
+        console.log("프로필 변경 성공");
+        window.location.reload();
+      })
+      .catch((error) => {
+        console.error("프로필 변경 실패", error);
+      });
   };
 
   return (
@@ -136,11 +139,7 @@ function MyProfile() {
         <form>
           <div className={styles.profileImage}>
             {selectedImage ? (
-              <img
-                className={`${styles.radiusImg}`}
-                src={profileImage}
-                alt="profileImage"
-              />
+              <img className={`${styles.radiusImg}`} src={profileImage} alt="profileImage" />
             ) : (
               <img className={`${styles.radiusImg}`} src={profileImage} alt="profileImage" />
             )}
@@ -180,19 +179,16 @@ function MyProfile() {
                     aria-describedby="basic-addon2"
                   />
                   <div className="input-group-append">
-                    <button 
-                      className="btn btn-outline-secondary" 
-                      type="button"
-                      onClick={handleNicknameButtonClick}>
+                    <button className="btn btn-outline-secondary" type="button" onClick={handleNicknameButtonClick}>
                       중복확인
                     </button>
-                  </div>                 
+                  </div>
                 </div>
                 <div>
                   <Link to="/pwchange" className={`${styles.pwText}`}>
                     비밀번호변경
                   </Link>
-                </div> 
+                </div>
               </li>
             </ul>
           </div>
