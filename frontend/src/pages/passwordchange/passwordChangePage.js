@@ -21,6 +21,7 @@ function PasswordChangePage() {
 
   useEffect(() => {
     fetchUserInfo();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   // 현재 비밀번호 가져오기
   const fetchUserInfo = async() => {
