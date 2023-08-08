@@ -70,6 +70,7 @@ function Loginpage() {
             Authorization: `Bearer ${token}`,
           },
         };
+        
         const userInfoResponse = await axios.get("https://goldenteam.site/api/user", config);
         setUserInfo(userInfoResponse.data.data);
         navigate("/");
