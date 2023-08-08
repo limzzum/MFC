@@ -62,7 +62,8 @@
 }
 .bottomBtn {
   font-size: x-small;
-  text-align: center;
+  text-align: right;
+  margin-right:120px;
 }
 .findPW {
   border: 0;
