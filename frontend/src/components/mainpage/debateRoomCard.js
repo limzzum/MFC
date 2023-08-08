@@ -26,7 +26,8 @@ const DebateRoomCard = ({ title1, title2, debateTime, speechTime, roomId }) => {
       console.log("이동 성공");
       console.log(response)
       // 여기까지는 성공
-      navigate(`/debateRoom/${roomId}/${userId.userId}`);
+      
+      navigate(`/debateRoom/${roomId}`);
     }
   };
   return (
