@@ -5,6 +5,8 @@ import com.ssafy.backend.dto.Message;
 import com.ssafy.backend.dto.MethodResultDto;
 import com.ssafy.backend.dto.response.RoomInfoResponseDto;
 import com.ssafy.backend.dto.response.RoomPeopleCountDto;
+import com.ssafy.backend.dto.response.ViewerDto;
+import com.ssafy.backend.entity.Participant;
 import com.ssafy.backend.service.RoomService;
 import com.ssafy.backend.service.ViewerService;
 import lombok.RequiredArgsConstructor;
@@ -34,16 +36,21 @@ public class ViewerController {
   @PostMapping("/{roomId}/{userId}")
   public ResponseEntity<Message> enterRoom(@PathVariable Long roomId, @PathVariable Long userId) {
     Message message = new Message(HttpStatus.OK, "테스트", null);
-
+    ViewerDto viewerDto = null;
     if (viewerService.existsUser(userId, roomId)) {
       message.setMessage("재 입장 유저입니다.");
-      message.setData(viewerService.reentryParticipant(userId, roomId).getNickName());
+      Participant p = viewerService.reentryParticipant(userId, roomId);
+      message.setData(p.getNickName());
+      viewerDto = new ViewerDto(p.getUser().getId(),p.getNickName(),p.getUser().getColorItem().getRgb(),p.isHost());
     } else { //신규 추가
       message.setMessage("첫 입장 유저입니다.");
-      message.setData(viewerService.firstEntryParticipant(userId, roomId).getNickName());
+      Participant p = viewerService.reentryParticipant(userId, roomId);
+      message.setData(p.getNickName());
+      viewerDto = new ViewerDto(p.getUser().getId(),p.getNickName(),p.getUser().getColorItem().getRgb(),p.isHost());
     }
     //토론방 현재 인원 수 +1
     roomService.incrementRoomCurrentCount(roomId);
+    messagingTemplate.convertAndSend("/from/room/enter/" + roomId, viewerDto);
     return ResponseEntity.ok(message);
   }
 
