@@ -24,7 +24,7 @@
 .createRoomButton {
   font-size: 24px;
   width: 18rem;
-  margin-left: auto; /* Add this */
+  margin-left: auto; 
 }
 
 .createRoomButtonIcon {
@@ -40,10 +40,10 @@
 .debateRoomContainer {
   display: flex;
   flex-wrap: wrap;
-  justify-content: start ; /* Add this */
+  justify-content: start ; 
   gap: 20px;
 }
 
 .debateRoomCard {
-  width: calc((100% - 60px) / 4); /* Add this */
+  width: calc((100% - 60px) / 4); 
 }

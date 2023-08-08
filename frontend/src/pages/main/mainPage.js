@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback} from 'react';
+import React, { useState, useEffect} from 'react';
 import axios from 'axios';
 import style from './mainPage.module.css';
 import { BsPlusSquare } from 'react-icons/bs';
@@ -18,7 +18,6 @@ function MainPage() {
   const [speechTime, setSpeechTime] = useState('');
   const [spectatorCount, setSpectatorCount] = useState('');
   const [extensionCount, setExtensionCount] = useState('');
-  const [minTalkRoomId, setMinTalkRoomId] = useState(null);
   const [ongoingDebateRooms, setOngoingDebateRooms] = useState([]);
   const [waitingDebateRooms, setWaitingDebateRooms] = useState([]);
   const [minWaitingRoomId, setMinWaitingRoomId] = useRecoilState(minWaitingRoomIdState);
