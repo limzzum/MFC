@@ -1,6 +1,5 @@
-import React from 'react';
 import './App.css';
-import { BrowserRouter, Route, Routes, useLocation } from 'react-router-dom';
+import { BrowserRouter, Route, Routes, useLocation, Navigate } from 'react-router-dom';
 import NavBar from './components/navBar/navBar';
 import LoginPage from './pages/login/loginPage';
 import PasswordChangePage from './pages/passwordchange/passwordChangePage';
@@ -10,10 +9,11 @@ import MainPage from './pages/main/mainPage';
 import MyProfilePage from './pages/myprofile/myProfile';
 import RankingPage from './pages/ranking/ranking';
 import ItemPage from './pages/item/itemPage';
+import { userState } from './recoil/token';
+import { useRecoilValue } from 'recoil';
 
 function NavBarWrapper() {
   const location = useLocation();
-  
   const hideNavBar = location.pathname.startsWith('/debateRoom');
   
   return (
@@ -24,6 +24,8 @@ function NavBarWrapper() {
 }
 
 function App() {
+  const user = useRecoilValue(userState)
+  const isLoggedIn = user.token !== undefined ; 
 
   return (
     <BrowserRouter>
@@ -31,16 +33,27 @@ function App() {
         <NavBarWrapper />
         <Routes>
           <Route path='/login' element={<LoginPage />} />
-          <Route path='/pwchange' element={<PasswordChangePage />} />
           <Route path='/signup' element={<SignupPage />} />
-          <Route path='/' element={<MainPage />} />
-          <Route path='/debateRoom' element={<DebatePage/>}>
-            <Route path=':roomId' element={<DebatePage/>} />
+          <Route path='/pwchange' element={isLoggedIn ? <PasswordChangePage /> : <Navigate to='/login' />} />
+          <Route path='/' element={isLoggedIn ? <MainPage /> : <Navigate to='/login' />} />
+          <Route
+            path='/debateRoom'
+            element={isLoggedIn ? <DebatePage /> : <Navigate to='/login' />}
+          >
+            <Route path=':roomId' element={<DebatePage />} />
           </Route>
-          <Route path='/signup' element={<SignupPage/>} />
-          <Route path='/profile' element={<MyProfilePage/>} />
-          <Route path='/ranking' element={<RankingPage/>} />
-          <Route path='/item' element={<ItemPage/>} />
+          <Route
+            path='/profile'
+            element={isLoggedIn ? <MyProfilePage /> : <Navigate to='/login' />}
+          />
+          <Route
+            path='/ranking'
+            element={isLoggedIn ? <RankingPage /> : <Navigate to='/login' />}
+          />
+          <Route
+            path='/item'
+            element={isLoggedIn ? <ItemPage /> : <Navigate to='/login' />}
+          />
         </Routes>
       </div>
     </BrowserRouter>
