@@ -19,7 +19,6 @@ function Loginpage() {
   const [, setUserInfo] = useRecoilState(userInfoState);
   const navigate = useNavigate();
 
-  //이메일과 비밀번호 형식 확인하는 부분
   useEffect(() => {
     if (emailValid && pwValid) {
       setNotAllow(false);
@@ -50,28 +49,29 @@ function Loginpage() {
     }
   };
 
-  // 서버에 로그인 요청을 보내는 부분
   const serverAddress = "https://goldenteam.site/api/user/login";
-  const handleLogin = async () => {
+  
+  const handleLogin = async (event) => {
+    event.preventDefault();  // form의 기본 동작을 방지합니다.
+    
+    // (기존 로그인 로직)
     try {
       const response = await axios.post(`${serverAddress}`, { email, password });
       const token = response.data.data.accessToken;
       const userId = response.data.data.userId;
       if (token) {
         setRecoilUserId({ userId });
-        setUser({ token }); // 여기에서 Recoil 상태에 토큰 저장
+        setUser({ token });
         localStorage.setItem("token", token);
 
-        // 로그인 성공 후 사용자 정보를 가져오는 부분
         const config = {
           headers: {
             "content-type": "json/application",
-            Authorization: `Bearer ${token}`, // 토큰을 헤더에 추가
+            Authorization: `Bearer ${token}`,
           },
         };
         const userInfoResponse = await axios.get("https://goldenteam.site/api/user", config);
-        setUserInfo(userInfoResponse.data.data); // 응답으로 받은 사용자 정보를 Recoil 상태에 저장
-        alert("로그인이 성공적으로 완료되었습니다.");
+        setUserInfo(userInfoResponse.data.data);
         navigate("/");
       } else {
         alert("로그인에 실패하였습니다.");
@@ -83,52 +83,55 @@ function Loginpage() {
 
   return (
     <div className={style.wrapper}>
-      <div className={style.innercontent}>
-        <img className={style.logoImage} src={logoImage} alt="none"></img>
-        <p className={style.MFC}>Mouth Fighting Championship</p>
+      <form onSubmit={handleLogin}>
+        <div className={style.innercontent}>
+          <img className={style.logoImage} src={logoImage} alt="none"></img>
+          <p className={style.MFC}>Mouth Fighting Championship</p>
 
-        <div className={style.contentWrap}>
-          <div className={style.inputtitle}>이메일</div>
-          <div className={style.inputWrap}>
-            <input
-              className="input form-control w-50"
-              placeholder="sample@gmail.com"
-              value={email}
-              onChange={handleEmail}
-              style={{ fontSize: "12px" }}
-            />
-          </div>
-          <div className={style.errorMessageWrap}>
-            {!emailValid && email.length > 0 && <div>올바른 이메일을 입력해주세요.</div>}
-          </div>
-          <div className={style.inputtitle}>비밀번호</div>
-          <div className={style.inputWrap}>
-            <input
-              className={`${style.input} form-control w-50`}
-              type="password"
-              placeholder="영문, 숫자, 특수문자 포함 8자 이상"
-              value={password}
-              onChange={handlePassword}
-              style={{ fontSize: "12px" }}
-            />
-          </div>
-          <div className={style.errorMessageWrap}>
-            {!pwValid && password.length > 0 && <div>영문, 숫자, 특수문자 포함 8자 이상 입력해주세요.</div>}
+          <div className={style.contentWrap}>
+            <div className={style.inputtitle}>이메일</div>
+            <div className={style.inputWrap}>
+              <input
+                className="input form-control w-50"
+                placeholder="sample@gmail.com"
+                value={email}
+                onChange={handleEmail}
+                style={{ fontSize: "12px" }}
+              />
+            </div>
+            <div className={style.errorMessageWrap}>
+              {!emailValid && email.length > 0 && <div>올바른 이메일을 입력해주세요.</div>}
+            </div>
+            <div className={style.inputtitle}>비밀번호</div>
+            <div className={style.inputWrap}>
+              <input
+                className={`${style.input} form-control w-50`}
+                type="password"
+                placeholder="영문, 숫자, 특수문자 포함 8자 이상"
+                value={password}
+                onChange={handlePassword}
+                style={{ fontSize: "12px" }}
+              />
+            </div>
+            <div className={style.errorMessageWrap}>
+              {!pwValid && password.length > 0 && <div>영문, 숫자, 특수문자 포함 8자 이상 입력해주세요.</div>}
+            </div>
           </div>
         </div>
-      </div>
-      <div>
-        <button disabled={notAllow} class="btn btn-outline-secondary" className={style.loginbtn} onClick={handleLogin}>
-          로그인
-        </button>
-      </div>
+        <div>
+          <button type="submit" disabled={notAllow} className={style.loginbtn}>
+            로그인
+          </button>
+        </div>
+      </form>
 
       <div className={style.bottomBtn}>
-        <Link to="/pages/signup/signupPage">
+        <Link to="/signup">
           <button className={style.signup}>회원가입</button>
         </Link>
       </div>
     </div>
   );
 }
+
 export default Loginpage;
