@@ -14,11 +14,10 @@ import { useRecoilValue } from 'recoil';
 
 function NavBarWrapper() {
   const location = useLocation();
-  const hideNavBar = location.pathname.startsWith('/debateRoom');
-  
+  const hideNavBar = location.pathname.startsWith('/debateRoom')|| location.pathname.startsWith('/login');
   return (
     <>
-      { !hideNavBar && <NavBar />}
+      { (!hideNavBar && <NavBar />) }
     </>
   );
 }
