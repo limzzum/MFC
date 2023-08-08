@@ -1,5 +1,7 @@
 server:
   port: 8081
+  ssl:
+    enabled: false
 
 spring:
   datasource:
@@ -51,3 +53,9 @@ logging:
 jwt:
   expmin: 60
   key: "wfaijelwfwwfajelwwlfjaleifajldcmsaqpoifejeliajwlfqpopoppoeimac"
+
+OPENVIDU_URL:
+  "http://goldenteam.site:5443/"
+
+OPENVIDU_SECRET:
+  "ssafy"
