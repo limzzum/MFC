@@ -1,22 +1,28 @@
 package com.ssafy.backend.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ssafy.backend.dto.*;
 import com.ssafy.backend.dto.request.*;
 import com.ssafy.backend.dto.response.*;
 import com.ssafy.backend.entity.*;
+import com.ssafy.backend.file.FileStore;
 import com.ssafy.backend.security.*;
 import com.ssafy.backend.service.*;
+
+import java.io.IOException;
 import java.util.*;
 
 import javax.validation.*;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.*;
 import org.springframework.http.*;
 import org.springframework.validation.*;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequiredArgsConstructor
@@ -30,6 +36,8 @@ public class UserController {
     private final SecurityService securityService;
     private final EmailService emailService;
     private final ItemService itemService;
+    private final HistoryService historyService;
+    private final FileStore fileStore;
 
     @ApiOperation(value = "로그인 요청", notes = "로그인에 성공하면 jwt토큰을 발급, 실패하면 실패메시지 반환",response = Map.class)
     @PostMapping("/login")
@@ -89,6 +97,19 @@ public class UserController {
         return ResponseEntity.ok(new Message(HttpStatus.BAD_REQUEST, "회원가입 실패", null));
 
     }
+
+    @PostMapping("/profile")
+    public ResponseEntity<Message> profile(@RequestParam MultipartFile profile) throws IOException {
+            UploadFile uploadFile = fileStore.storeFile(profile);
+            return ResponseEntity.ok(new Message(HttpStatus.OK, "프로필 업로드 성공", uploadFile.getId()));
+        }
+
+//    @GetMapping("/profile")
+//    public ResponseEntity<Message> getProfile(@RequestHeader("Authorization") String token) {
+//        Long userId = Long.valueOf(securityService.getSubject(token));
+//
+//    }
+
     @GetMapping("/email/verify")
     public ResponseEntity<Message> email_num(@RequestParam String email){
         Random r = new Random();
@@ -147,6 +168,7 @@ public class UserController {
 
         return ResponseEntity.ok(new Message(HttpStatus.OK, "success", delete));
     }
+
 
     @GetMapping("/email")
     public ResponseEntity<Message> email_check(@RequestParam String email) {
