@@ -5,22 +5,27 @@ import style from './navBar.module.css';
 import logo from '../../images/logo.png';
 import searchIcon from '../../images/search.png';
 import { Button, Form, InputGroup } from "react-bootstrap";
-
+import { userState } from '../../recoil/token'
+import { userIdState } from '../../recoil/userId'
+import { useRecoilState } from 'recoil';
 
 function NavBar() {
     const [ keyword, setKeyword ] = useState('');
-    // const [ userToken, setUserToken ] = useState('')
-    // const [ userId, setUserId ] = useState('')
-    // const [ isLoginned, setisLoginned ] = useState(false)
+    const [ , setUserToken ] = useRecoilState(userState)
+    const [ , setUserId ] = useRecoilState(userIdState)
+
 
     const handleLogout = () => {
         console.log('로그아웃');
+        setUserToken("")
+        setUserId("");
     };
 
     const handleSubmit = (e) => {
         e.preventDefault();
         console.log(`검색어: ${keyword}`);
         setKeyword('');
+        
     };
 
     return (
