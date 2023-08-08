@@ -12,7 +12,7 @@ public class CorsConfig {
     @Bean
     public CorsFilter corsFilter() {
         CorsConfiguration corsConfig = new CorsConfiguration();
-//        corsConfig.addAllowedOrigin("http://localhost:3000");
+        corsConfig.addAllowedOrigin("http://localhost:3000");
         corsConfig.addAllowedOrigin("https://goldenteam.site");
         corsConfig.addAllowedMethod("GET");
         corsConfig.addAllowedMethod("POST");
