@@ -2,7 +2,7 @@ import React, {useState, useEffect} from "react";
 import {Row, Col, Button, Modal, Form, OverlayTrigger, Tooltip} from "react-bootstrap";
 import axios from "axios";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCoins, faCross, faHeartCirclePlus, faUserClock, faVolumeXmark, faHand } from "@fortawesome/free-solid-svg-icons";
+import { faCross, faHeartCirclePlus, faUserClock, faVolumeXmark, faHand } from "@fortawesome/free-solid-svg-icons";
 import style from '../debatePage.module.css';
 
 function DebateBtns({status, role, onRoleChange, debateRoomInfo, setPlayerStatus, setUserReady, voteResult}){
