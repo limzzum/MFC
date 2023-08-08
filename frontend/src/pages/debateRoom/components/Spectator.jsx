@@ -11,7 +11,7 @@ function Spectator({debateRoomInfo, voteResult}) {
     const ratio1 = (value1 === 0 && value2 === 0) ? 50 : (value1 / totalValue) * 100;
     const ratio2 = (value1 === 0 && value2 === 0) ? 50 : (value2 / totalValue) * 100;
 
-    const spectatorCnt = debateRoomInfo.maxPeople - 2;
+    const spectatorCnt = debateRoomInfo.maxPeople <= 2 ? 0 : debateRoomInfo.maxPeople - 2;
 
     const [userVideoStream, setUserVideoStream] = useState(null);
     const userVideoRef = useRef();
@@ -35,6 +35,7 @@ function Spectator({debateRoomInfo, voteResult}) {
                 userVideoStream.getTracks().forEach((track) => track.stop());
             }
         };
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     useEffect(() => {

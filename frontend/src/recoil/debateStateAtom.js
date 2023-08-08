@@ -1,4 +1,4 @@
-import {atom, selector, useRecoilState} from 'recoil';
+import {atom, selectorFamily, useRecoilState} from 'recoil';
 import {getRoomInfo} from '../api/getRoomInfoAPI';
 import {getVoteResult} from '../api/getVoteResultAPI'
 
@@ -13,10 +13,10 @@ export const voteResultState = atom({
 })
 
 // API 호출 결과를 Recoil selector로 관리
-export const getDebateRoomState = selector({
+export const getDebateRoomState = selectorFamily({
     key: 'getDebateRoomState',
-    get: async () => {
-        const data = await getRoomInfo();
+    get: (roomId) => async () => {
+        const data = await getRoomInfo(roomId);
 
         if(data) {
             // API 호출 결과가 있으면, debateRoomState에 저장
@@ -28,10 +28,10 @@ export const getDebateRoomState = selector({
     },
 });
 
-export const getVoteResultState = selector({
+export const getVoteResultState = selectorFamily({
     key: 'getVoteResultState',
-    get: async () => {
-        const data = await getVoteResult();
+    get: (roomId) => async () => {
+        const data = await getVoteResult(roomId);
         
         if(data) {
             // API 호출 결과가 있으면, voteResultState에 저장

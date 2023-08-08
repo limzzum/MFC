@@ -1,6 +1,8 @@
 import React, {useState, useEffect} from "react";
-import {Row, Col, Button, Modal, Form} from "react-bootstrap";
+import {Row, Col, Button, Modal, Form, OverlayTrigger, Tooltip} from "react-bootstrap";
 import axios from "axios";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCross, faHeartCirclePlus, faUserClock, faVolumeXmark, faHand } from "@fortawesome/free-solid-svg-icons";
 import style from '../debatePage.module.css';
 
 function DebateBtns({status, role, onRoleChange, debateRoomInfo, setPlayerStatus, setUserReady, voteResult}){
@@ -65,8 +67,8 @@ function DebateBtns({status, role, onRoleChange, debateRoomInfo, setPlayerStatus
                 <Col xs={{span: 9}}>
                     { role === 'participant' && status === 'ongoing' && 
                         <>
-                            <Button variant="outline-primary">연장하기</Button>
-                            <Button variant="outline-primary">항복하기</Button>
+                            <Button variant="secondary">연장하기</Button>
+                            <Button variant="danger">항복하기</Button>
                         </>
                     }
                 </Col>
@@ -85,12 +87,46 @@ function DebateBtns({status, role, onRoleChange, debateRoomInfo, setPlayerStatus
                 <Col className={style.items}>
                     { role === 'participant' && status === 'ongoing' &&
                         <>  
-                            <Button variant="outline-primary">포션</Button>
-                            <Button variant="outline-primary">수호천사</Button>
-                            <Button variant="outline-primary">연장</Button>
-                            <Button variant="outline-primary">마이크</Button>
-                            <Button variant="outline-primary">끼어들기</Button>
-                            <Button variant="outline-primary">음성변조</Button>
+                            <OverlayTrigger
+                                placement="top"
+                                overlay={<Tooltip>포션<hr/>체력을 10 회복합니다</Tooltip>}
+                            >
+                                <Button variant="outline-primary">
+                                    <FontAwesomeIcon icon={faHeartCirclePlus} size="2x" />
+                                </Button>
+                            </OverlayTrigger>
+                            <OverlayTrigger
+                                placement="top"
+                                overlay={<Tooltip>수호천사<hr/>최후의 일격을 1회 무시합니다</Tooltip>}
+                            >
+                                <Button variant="outline-primary">
+                                    <FontAwesomeIcon icon={faCross} size="2x" />
+                                </Button>
+                            </OverlayTrigger>
+                            <OverlayTrigger
+                                placement="top"
+                                overlay={<Tooltip>시간연장<hr/>연장횟수와 상관없이 발언 시간을 연장합니다</Tooltip>}
+                            >
+                                <Button variant="outline-primary">
+                                    <FontAwesomeIcon icon={faUserClock} size="2x" />
+                                </Button>
+                            </OverlayTrigger>
+                            <OverlayTrigger
+                                placement="top"
+                                overlay={<Tooltip>상대 음소거<hr/>상대방 마이크를 10초간 끕니다</Tooltip>}
+                            >
+                                <Button variant="outline-primary">
+                                    <FontAwesomeIcon icon={faVolumeXmark} size="2x" />
+                                </Button>
+                            </OverlayTrigger>
+                            <OverlayTrigger
+                                placement="top"
+                                overlay={<Tooltip>끼어들기<hr/>상대 발언시간에 10초간 말할 수 있습니다</Tooltip>}
+                            >
+                                <Button variant="outline-primary">
+                                    <FontAwesomeIcon icon={faHand} size="2x" />
+                                </Button>
+                            </OverlayTrigger>
                         </>
                     }
                 </Col>

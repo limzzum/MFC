@@ -2,9 +2,9 @@ import axios from 'axios';
 
 const BASE_URL = 'http://i9a605.p.ssafy.io:8081/api/debate'
 
-export const getRoomInfo = async () => {
+export const getRoomInfo = async (roomId) => {
     try {
-        const response = await axios.get(`${BASE_URL}/1`);  // 추후에 클릭한 토론방 번호 들어가도록 수정 필요
+        const response = await axios.get(`${BASE_URL}/${roomId}`);  // 추후에 클릭한 토론방 번호 들어가도록 수정 필요
         return response.data;
     } catch (e) {
         console.log(`토론방 정보 API 오류: ${e}`);

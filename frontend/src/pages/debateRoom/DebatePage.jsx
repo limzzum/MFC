@@ -1,4 +1,5 @@
 import React, {useEffect, useState} from 'react';
+import { useParams } from 'react-router-dom';
 import {useRecoilValue} from 'recoil';
 import {useStatus, useRole, getDebateRoomState, getVoteResultState} from '../../recoil/debateStateAtom';
 import { Row, Col, Stack, Modal, Button, ProgressBar} from 'react-bootstrap';
@@ -17,9 +18,11 @@ import winnerImg from '../../images/img.jpg';
 
 function DebatePage() {
 
+  const {roomId} = useParams();
+
   // 토론방 상태 호출
-  const debateRoomInfo = useRecoilValue(getDebateRoomState);
-  const voteResult = useRecoilValue(getVoteResultState);
+  const debateRoomInfo = useRecoilValue(getDebateRoomState(roomId));
+  const voteResult = useRecoilValue(getVoteResultState(roomId));
 
   // 참가자 참가여부
   const [playerStatus, setPlayerStatus] = useState([false, false]);
@@ -91,7 +94,9 @@ function DebatePage() {
   return (
     <div className={style.debatePage}>
       <Row>
-        <Header/>
+        <Header 
+          status={status}
+        />
         <Button onClick={() => setStatus('ongoing')}>ongoing</Button>
       </Row>
       <Row className='debatePart'>
