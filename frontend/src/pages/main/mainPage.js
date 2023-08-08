@@ -99,6 +99,7 @@ function MainPage() {
       }
     }
     fetchData();
+    // eslint-disable-next-line
   }, [minRoomId]);
 
   useEffect(() => {
@@ -125,6 +126,7 @@ function MainPage() {
     }
 
     fetchData();
+    // eslint-disable-next-line
   }, [minWaitingRoomId]);
 
   return (
