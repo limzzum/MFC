@@ -61,7 +61,10 @@ function MyProfile() {
         console.log(response.data);
         if (response.data.status === "ACCEPTED") {
           alert("확인되었습니다!");
-          setFinalChangeNickname(changeNickname);
+          if (changeNickname === "") {
+            setFinalChangeNickname(userInfo.nickname)
+          } else {
+          setFinalChangeNickname(changeNickname);}
         } else {
           alert("이미 사용 중인 닉네임입니다.");
           setFinalChangeNickname(`${userInfo.nickname}`);
@@ -131,6 +134,13 @@ function MyProfile() {
       });
   };
 
+  const handleEnterKeyPress = (event) => {
+    if (event.key === "Enter") {
+      event.preventDefault();
+      handleNicknameButtonClick();
+    }
+  };
+
   return (
     <div className={styles.wrapper}>
       <p className={styles.profileTitle}>My Profile</p>
@@ -177,9 +187,13 @@ function MyProfile() {
                     placeholder={userInfo.nickname}
                     aria-label="Nickname"
                     aria-describedby="basic-addon2"
+                    onKeyPress={handleEnterKeyPress}
                   />
                   <div className="input-group-append">
-                    <button className="btn btn-outline-secondary" type="button" onClick={handleNicknameButtonClick}>
+                    <button 
+                    className="btn btn-outline-secondary" 
+                    type="button" 
+                    onClick={handleNicknameButtonClick}>
                       중복확인
                     </button>
                   </div>
