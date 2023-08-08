@@ -8,6 +8,8 @@ import logoImage from "../../images/logo.png";
 import style from "./loginPage.module.css";
 import axios from "axios";
 import { Row, Col } from "react-bootstrap";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function Loginpage() {
   const [email, setEmail] = useState("");
@@ -82,10 +84,12 @@ function Loginpage() {
         setUserInfo(userInfoResponse.data.data);
         navigate("/");
       } else {
-        alert("로그인에 실패하였습니다.");
+        // alert("로그인에 실패하였습니다.");
+        toast.error("로그인에 실패하였습니다.");
       }
     } catch (error) {
-      alert("아이디와 비밀번호를 확인해주세요.");
+      toast.error("아이디와 비밀번호를 확인해주세요.");
+      // alert("아이디와 비밀번호를 확인해주세요.");
     }
   };
 
@@ -101,32 +105,32 @@ function Loginpage() {
               <div className={style.inputWrap}>
                 <input
                   className="input form-control"
-                  placeholder="sample@gmail.com"
+                  placeholder="이메일"
                   value={email}
                   onChange={handleEmail}
                   style={{ fontSize: "15px" }}
                 />
-                <div className={style.errorMessageWrap}>
+                {/* <div className={style.errorMessageWrap}>
                   {!emailValid && email.length > 0 && (
                     <div>올바른 이메일을 입력해주세요.</div>
                   )}
-                </div>
+                </div> */}
               </div>
 
               <div className="my-2">
                 <input
                   className={`${style.input} form-control`}
                   type="password"
-                  placeholder="영문, 숫자, 특수문자 포함 8자 이상"
+                  placeholder="비밀번호"
                   value={password}
                   onChange={handlePassword}
                   style={{ fontSize: "15px" }}
                 />
-                <div className={style.errorMessageWrap}>
+                {/* <div className={style.errorMessageWrap}>
                   {!pwValid && password.length > 0 && (
                     <div>영문, 숫자, 특수문자 포함 8자 이상 입력해주세요.</div>
                   )}
-                </div>
+                </div> */}
               </div>
             </div>
             <button
@@ -137,7 +141,13 @@ function Loginpage() {
               로그인
             </button>
             <Row>
-              <Col></Col>
+              <Col>
+                <div className={style.bottomBtn}>
+                  <Link to="/signup">
+                    <button className={style.signup}>비밀번호 재설정</button>
+                  </Link>
+                </div>
+              </Col>
               <Col>
                 <div className={style.bottomBtn}>
                   <Link to="/signup">
@@ -149,6 +159,18 @@ function Loginpage() {
           </div>
         </form>
       </div>
+      <ToastContainer
+        position="top-center"
+        autoClose={2000}
+        limit={1}
+        hideProgressBar={false}
+        newestOnTop
+        closeOnClick
+        rtl={false}
+        draggable
+        pauseOnHover={false}
+        theme="light"
+      />
     </div>
   );
 }

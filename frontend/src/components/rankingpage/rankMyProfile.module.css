@@ -1,47 +1,47 @@
 .historyBox {
-    display:flex;
-    width:350px;
-    height:200px;
-    text-align: center;
-    margin: 0 auto;
+  display: flex;
+  width: 350px;
+  height: 200px;
+  text-align: center;
+  margin: 0 auto;
 }
-.boxProfile { 
-    line-height: 14px;
-    width: 400px;
-    margin: 100px auto;
-    padding-top: 30px;
-    background: #E9EDF5FF;
-    border-radius: 20px;
+.boxProfile {
+  line-height: 14px;
+  width: 400px;
+  margin: 100px auto;
+  padding-top: 30px;
+  background: #e9edf5ff;
+  border-radius: 20px;
 }
-.profileImage{
-    height:50px;
-    width:50px;
-    position:relative;
-    display:flex;
+.profileImage {
+  height: 50px;
+  width: 50px;
+  position: relative;
+  display: flex;
 }
 .radiusImg {
-    border-radius: 50%;
+  border-radius: 50%;
 }
 
 .rankingMyprofileText {
-    text-align: center;
-    font-size: 24px;
-    font-family: Pretendard;
-    margin-top:30px;
+  text-align: center;
+  font-size: 16px;
+  font-family: inherit;
+  margin-top: 30px;
 }
 .rankProfileImage {
-    height: 150px;
-    width: 150px;
+  height: 150px;
+  width: 150px;
 }
 img {
-    height: auto;
-    width: 100%;
+  height: auto;
+  width: 100%;
 }
 .historyText {
-    font-size: 0.8rem;
-    padding-top: 15px;
+  font-size: 0.8rem;
+  padding-top: 15px;
 }
 .historyItemBox {
-    width: 100px;
-    margin:0 auto;
+  width: 100px;
+  margin: 0 auto;
 }
