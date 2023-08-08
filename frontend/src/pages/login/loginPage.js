@@ -14,8 +14,8 @@ function Loginpage() {
   const [pwValid, setPwValid] = useState(false)
   const [notAllow, setNotAllow] = useState(true)
   // const [recoilToken, setRecoilToken] = useRecoilState(tokenState);
-  const [user, setUser] = useRecoilState(userState);
-  const [recoilUserId, setRecoilUserId] = useRecoilState(userIdState);
+  const [, setUser] = useRecoilState(userState);
+  const [, setRecoilUserId] = useRecoilState(userIdState);
   const navigate = useNavigate();
 
   //이메일과 비밀번호 형식 확인하는 부분
@@ -29,7 +29,7 @@ function Loginpage() {
 
   const handleEmail = (e) => {
     setEmail(e.target.value)
-    const regex = /^(([^<>()\[\].,;:\s@"]+(\.[^<>()\[\].,;:\s@"]+)*)|(".+"))@(([^<>()[\].,;:\s@"]+\.)+[^<>()[\].,;:\s@"]{2,})$/i;
+    const regex = /^(([^<>()[\].,;:\s@"]+(\.[^<>()[\].,;:\s@"]+)*)|(".+"))@(([^<>()[\].,;:\s@"]+\.)+[^<>()[\].,;:\s@"]{2,})$/i;
       if(regex.test(email)) {
         setEmailValid(true)
       } else {

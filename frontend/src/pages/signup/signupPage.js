@@ -23,7 +23,7 @@ function SignupPage() {
   // 이메일 형식 검사하는 부분
   const handleEmail = (e) => {
     setEmail(e.target.value);
-    const regex = /^(([^<>()\[\].,;:\s@"]+(\.[^<>()\[\].,;:\s@"]+)*)|(".+"))@(([^<>()[\].,;:\s@"]+\.)+[^<>()[\].,;:\s@"]{2,})$/i;
+    const regex = /^(([^<>()[\].,;:\s@"]+(\.[^<>()[\].,;:\s@"]+)*)|(".+"))@(([^<>()[\].,;:\s@"]+\.)+[^<>()[\].,;:\s@"]{2,})$/i;
     if (regex.test(e.target.value)) {
       setEmailValid(true);
     } else {
@@ -76,7 +76,6 @@ function SignupPage() {
     return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
   };
   
-  // 비밀번호 일치 확인하는 부분
   useEffect(() => {
     if (passwordConfirm !== password && passwordConfirm.length > 0) {
       setPasswordMismatch(true);
@@ -85,17 +84,14 @@ function SignupPage() {
     }
   }, [passwordConfirm, password]);
 
-  //----------------------------------------------------------------------------------------------------------------
-  // 서버에 요청하는 부분
 
-  // 이메일 인증코드 전송하는 부분
   const handleAuthButtonClick = () => {
     axios
       .post('http://i9a605.p.ssafy.io:8081/api/user/email/verify', { email, authCode }) // 실제 서버 주소에 맞게 수정
       .then((response) => {
         alert('인증이 완료되었습니다!');
         setEmailValid(true);
-        setAuthCodeValid(true); // 인증이 완료되면 authCodeValid를 true로 설정
+        setAuthCodeValid(true); 
       })
       .catch((error) => {
         alert('인증번호가 올바르지 않습니다.');
