@@ -25,7 +25,7 @@ function Ranking() {
     }, [page]);
 
     const getMyRecord = () => {
-        axios.get(`http://i9a605.p.ssafy.io:8081/api/record/${userId}`)
+        axios.get(`https://goldenteam.site/api/record/${userId}`)
         .then(response => {
             setMyRecord(response.data.data)
             setMyWinRate(response.data.data.winRate.toFixed(2))
@@ -38,7 +38,7 @@ function Ranking() {
 
     const fetchData = async (keyword = "") => {
         try {
-            const response = await axios.get(`http://i9a605.p.ssafy.io:8081/api/record/list/?page=${page}&perPage=10&keyword=${keyword}`);
+            const response = await axios.get(`https://goldenteam.site/api/record/list/?page=${page}&perPage=10&keyword=${keyword}`);
             setRankUsers(response.data.data.result);
         } catch (error) {
             console.error("랭크유저 정보 가져오기 오류:", error);
