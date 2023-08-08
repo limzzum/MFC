@@ -17,13 +17,21 @@ function PasswordChangePage() {
   const user = useRecoilValue(userState);
   const userToken = user.token;
 
+  const handleKeyPress = (event) => {
+    if (event.key === "Enter") {
+      event.preventDefault();
+      passwordSubmit(event); // passwordSubmit 함수 호출
+    }
+  };
+
   const regex =
     /^(?=.*[a-zA-z])(?=.*[0-9])(?=.*[$`~!@$!%*#^?&\\(\\)\-_=+])(?!.*[^a-zA-z0-9$`~!@$!%*#^?&\\(\\)\-_=+]).{8,20}$/;
 
   useEffect(() => {
     fetchUserInfo();
+    window.addEventListener("keydown", handleKeyPress);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [handleKeyPress]);
   // 현재 비밀번호 가져오기
   const fetchUserInfo = async () => {
     const config = {
