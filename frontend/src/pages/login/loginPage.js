@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom';
 import { userIdState } from '../../recoil/userId';
 import { userState } from '../../recoil/token';
+import { userInfoState } from '../../recoil/userInfo';
 import { useRecoilState } from 'recoil';
 import logoImage from "../../images/logo.png"
 import style from "./loginPage.module.css"
@@ -13,9 +14,9 @@ function Loginpage() {
   const [emailValid, setEmailValid] = useState(false)
   const [pwValid, setPwValid] = useState(false)
   const [notAllow, setNotAllow] = useState(true)
-  // const [recoilToken, setRecoilToken] = useRecoilState(tokenState);
   const [, setUser] = useRecoilState(userState);
   const [, setRecoilUserId] = useRecoilState(userIdState);
+  const [, setUserInfo ] = useRecoilState(userInfoState);
   const navigate = useNavigate();
 
   //이메일과 비밀번호 형식 확인하는 부분
@@ -58,9 +59,17 @@ function Loginpage() {
       if (token) {
         setRecoilUserId({userId});
         setUser({token}); // 여기에서 Recoil 상태에 토큰 저장
-
         localStorage.setItem('token', token);
-
+  
+        // 로그인 성공 후 사용자 정보를 가져오는 부분
+        const config = {
+          headers: {
+            'content-type' : 'json/application',
+            'Authorization': `Bearer ${token}` // 토큰을 헤더에 추가
+          }
+        };
+        const userInfoResponse = await axios.get('http://i9a605.p.ssafy.io:8081/api/user', config);
+        setUserInfo(userInfoResponse.data.data); // 응답으로 받은 사용자 정보를 Recoil 상태에 저장
         alert('로그인이 성공적으로 완료되었습니다.');
         navigate('/');
       } else {
@@ -119,9 +128,6 @@ function Loginpage() {
         </div>
         
         <div className={style.bottomBtn}>
-          <Link to = ''>
-            <button className={style.findPW} >비밀번호 찾기</button>
-          </Link>
           <Link to = '/pages/signup/signupPage'>
             <button className={style.signup} >회원가입</button>
           </Link>
