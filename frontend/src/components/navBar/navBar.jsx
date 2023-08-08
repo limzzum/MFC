@@ -7,14 +7,12 @@ import searchIcon from '../../images/search.png';
 import { Button, Form, InputGroup } from "react-bootstrap";
 import { userState } from '../../recoil/token'
 import { userIdState } from '../../recoil/userId'
-import { useRecoilState, useRecoilValue } from 'recoil';
+import { useRecoilState } from 'recoil';
 
 function NavBar() {
     const [ keyword, setKeyword ] = useState('');
     const [ , setUserToken ] = useRecoilState(userState)
     const [ , setUserId ] = useRecoilState(userIdState)
-    const user = useRecoilValue(userState)
-    const isLoggedIn = user.token !== undefined ; 
 
 
     const handleLogout = () => {
