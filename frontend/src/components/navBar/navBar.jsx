@@ -18,7 +18,7 @@ function NavBar() {
         console.log('로그아웃');
         setUserToken("")
         setUserId("");
-        console.log()
+       
     };
 
     const handleSubmit = (e) => {
