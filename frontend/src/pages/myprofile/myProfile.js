@@ -3,7 +3,7 @@ import styles from "./myProfile.module.css";
 import profileImage from "../../images/img.jpg";
 import settingIcon from "../../images/settingIcon.png";
 import "bootstrap/dist/css/bootstrap.min.css";
-import { Row } from "react-bootstrap";
+import { Button ,Row, InputGroup, Form } from "react-bootstrap";
 import { Link } from 'react-router-dom';
 import { useNavigate } from "react-router-dom"; 
 import axios from "axios";
@@ -118,7 +118,6 @@ function MyProfile() {
     };
     const requestData = {
       nickname: finalChangeNickname,
-      // 다른 변경 정보를 추가할 수 있음
     };
 
     // PATCH 요청을 통해 변경 정보 전송
@@ -149,7 +148,7 @@ function MyProfile() {
         <form>
           <div className={styles.profileImage}>
             {selectedImage ? (
-              <img className={`${styles.radiusImg}`} src={profileImage} alt="profileImage" />
+              <img className={`${styles.radiusImg}`} src={selectedImage} alt="profileImage" />
             ) : (
               <img className={`${styles.radiusImg}`} src={profileImage} alt="profileImage" />
             )}
@@ -177,26 +176,25 @@ function MyProfile() {
                   닉네임 변경
                 </label>
                 <div className="input-group mb-4 w-75">
-                  <input
-                    type="text"
-                    className="form-control"
-                    value={changeNickname}
-                    onChange={(e) => {
+                <InputGroup>
+                  <Form.Control
+                      placeholder={userInfo.nickname}
+                      aria-label="Nickname"
+                      aria-describedby="checkDuplicate"
+                      value={changeNickname}
+                      onChange={(e) => {
                       setChangeNickname(e.target.value);
                     }}
-                    placeholder={userInfo.nickname}
-                    aria-label="Nickname"
-                    aria-describedby="basic-addon2"
-                    onKeyPress={handleEnterKeyPress}
                   />
-                  <div className="input-group-append">
-                    <button 
-                    className="btn btn-outline-secondary" 
-                    type="button" 
-                    onClick={handleNicknameButtonClick}>
-                      중복확인
-                    </button>
-                  </div>
+                  <Button 
+                      style={{ backgroundColor:"#354C6FFF" }}
+                      variant="outline-light" 
+                      id="userSearch"
+                      onClick={handleNicknameButtonClick}
+                  >중복확인
+                  </Button>
+              </InputGroup>
+                  
                 </div>
                 <div>
                   <Link to="/pwchange" className={`${styles.pwText}`}>
