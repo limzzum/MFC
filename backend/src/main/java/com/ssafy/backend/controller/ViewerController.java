@@ -44,7 +44,7 @@ public class ViewerController {
       viewerDto = new ViewerDto(p.getUser().getId(),p.getNickName(),p.getUser().getColorItem().getRgb(),p.isHost());
     } else { //신규 추가
       message.setMessage("첫 입장 유저입니다.");
-      Participant p = viewerService.reentryParticipant(userId, roomId);
+      Participant p = viewerService.firstEntryParticipant(userId, roomId);
       message.setData(p.getNickName());
       viewerDto = new ViewerDto(p.getUser().getId(),p.getNickName(),p.getUser().getColorItem().getRgb(),p.isHost());
     }
