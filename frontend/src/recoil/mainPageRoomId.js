@@ -1,5 +1,6 @@
 import { atom } from 'recoil';
 
+
 export const minRoomIdState = atom({
   key: 'minRoomIdState',
   default: null,
