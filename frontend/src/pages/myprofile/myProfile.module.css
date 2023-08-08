@@ -1,87 +1,87 @@
-.wrapper { 
-	line-height: 14px;
-	width: 500px;
-	margin: 100px auto;
-	padding-top: 30px;
-	border: 1px solid #dadada;
-	background: #fff;
+.wrapper {
+  line-height: 14px;
+  width: 500px;
+  margin: 100px auto;
+  padding-top: 30px;
+  border: 1px solid #dadada;
+  background: #fff;
 }
 .profileTitle {
-    font-family: Pretendard;
-    font-size:32px;
-    letter-spacing:0;
-	padding-left: 20px;
+  font-family: inherit;
+  font-size: 16px;
+  letter-spacing: 0;
+  padding-left: 20px;
 }
-.profileImage{
-    height:100px;
-    width:100px;
-    float:left;
-    position:relative;
-    display:flex;
-    margin-left:20px;
+.profileImage {
+  height: 100px;
+  width: 100px;
+  float: left;
+  position: relative;
+  display: flex;
+  margin-left: 20px;
 }
 .radiusImg {
-    border-radius: 50%;
+  border-radius: 50%;
 }
 .imgSetting {
-    position: absolute;
-    right: 0px;
-    bottom: 0;
-    width: 30px;
-    height: 30px;
-    overflow: hidden;
-    border-radius: 50%;
+  position: absolute;
+  right: 0px;
+  bottom: 0;
+  width: 30px;
+  height: 30px;
+  overflow: hidden;
+  border-radius: 50%;
 }
 .profileText {
-    width: 500px;
-    height: 300px;
-    font-family: Pretendard;
-    padding-left:100px;
-    text-align:left;
-    font-size:18px;
-    letter-spacing:2px;
-    margin-left:50px;
+  width: 500px;
+  height: 300px;
+  font-family: inherit;
+  padding-left: 100px;
+  text-align: left;
+  font-size: 18px;
+  letter-spacing: 2px;
+  margin-left: 50px;
 }
 li {
-	margin-top:20px;
-	list-style-type:none;
+  margin-top: 20px;
+  list-style-type: none;
 }
-.profileTitle { 
-	color:rgba(0, 0, 0, 1);
-	width:200px;
-	margin-left:10px;
-	font-family:Pretendard;
-	text-align:left;
-	font-size:32px;
-	letter-spacing:0;
+.profileTitle {
+  color: rgba(0, 0, 0, 1);
+  width: 200px;
+  margin-left: 10px;
+  font-family: inherit;
+  text-align: left;
+  font-size: 20px;
+  letter-spacing: 0;
 }
 .pwText {
-    font-size: 15px;
-    text-align: right;
-    width: 100%;
-    margin-left: 50%;
+  font-size: 15px;
+  text-align: right;
+  width: 100%;
+  margin-left: 50%;
 }
 .btnChange {
-    background-color: var(--blue-700);
-    width: fit-content;
-    height: fit-content;
-    padding: var(--spacing-2);
+  background-color: var(--blue-700);
+  width: fit-content;
+  height: fit-content;
+  padding: var(--spacing-2);
 
-    border-radius: var(--radius-md);
-    color: var(--white);
-    font-size: var(--text-size-md);
-    margin: 0 auto;
-    width: 150px;
+  border-radius: var(--radius-md);
+  color: var(--white);
+  font-size: var(--text-size-md);
+  margin: 0 auto;
+  width: 150px;
 }
 .btnDelete {
-    background-color: var(--red-600);
-    width: fit-content;
-    height: fit-content;
-    padding: var(--spacing-2);
+  background-color: var(--red-600);
+  width: fit-content;
+  height: fit-content;
+  padding: var(--spacing-2);
 
-    border-radius: var(--radius-md);
-    color: var(--white);
-    font-size: var(--text-size-md);
-    margin: 0 auto;
-    width: 150px;
+  border-radius: var(--radius-md);
+  color: var(--white);
+  font-size: var(--text-size-md);
+  margin: 0 auto;
+  width: 150px;
 }

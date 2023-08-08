@@ -1,34 +1,34 @@
 .flexBox {
-    display: flex;
-    width: 1000px;
-    margin: auto;
+  display: flex;
+  width: 1000px;
+  margin: auto;
 }
 .itemBox {
-    width: 200px;
-    text-align: center;
-    padding-top:50px;
-    padding-bottom: 10px;
-    font-size: 24px;
+  width: 200px;
+  text-align: center;
+  padding-top: 50px;
+  padding-bottom: 10px;
+  font-size: 16px;
 }
-.emptyBox{
-    width: 1000px;
-    margin: auto;
+.emptyBox {
+  width: 1000px;
+  margin: auto;
 }
 .titleBox {
-    width: 1000px;
-    font-size: 32px;
-    display: flex;
-    margin: auto;
-    height: 60px;
+  width: 1000px;
+  font-size: 16px;
+  display: flex;
+  margin: auto;
+  height: 60px;
 }
 img {
-    width: 100%;
-    height: auto;
+  width: 100%;
+  height: auto;
 }
 div {
-    font-family: Pretendard;
+  font-family: inherit;
 }
 .title {
-    font-size: 32px;
-    width: 800px;
+  font-size: 16px;
+  width: 800px;
 }
