@@ -55,7 +55,7 @@ jwt:
   key: "wfaijelwfwwfajelwwlfjaleifajldcmsaqpoifejeliajwlfqpopoppoeimac"
 
 OPENVIDU_URL:
-  "https://goldenteam.site:8443/"
+  "https://goldenteam.site:8443"
 
 OPENVIDU_SECRET:
   "ssafy"
