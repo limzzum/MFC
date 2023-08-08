@@ -14,7 +14,7 @@ import ItemPage from './pages/item/itemPage';
 function NavBarWrapper() {
   const location = useLocation();
   
-  const hideNavBar = location.pathname === '/debateRoom';
+  const hideNavBar = location.pathname.startsWith('/debateRoom');
   
   return (
     <>
@@ -25,7 +25,6 @@ function NavBarWrapper() {
 
 function App() {
 
-
   return (
     <BrowserRouter>
       <div className='App'>
@@ -35,7 +34,9 @@ function App() {
           <Route path='/pwchange' element={<PasswordChangePage />} />
           <Route path='/signup' element={<SignupPage />} />
           <Route path='/' element={<MainPage />} />
-          <Route path='/debateRoom' element={<DebatePage/>} />
+          <Route path='/debateRoom' element={<DebatePage/>}>
+            <Route path=':roomId' element={<DebatePage/>} />
+          </Route>
           <Route path='/signup' element={<SignupPage/>} />
           <Route path='/profile' element={<MyProfilePage/>} />
           <Route path='/ranking' element={<RankingPage/>} />
