@@ -17,6 +17,12 @@ public class MVCConfig implements WebMvcConfigurer {
 //                        "/**/*.css","/**/*.jpg","/**/*.jpeg","/**/*.png","/**/*.peg", "/**/*.js", "/error/**"
 //                    );
 //    }
+@Override
+public void addCorsMappings(CorsRegistry registry) {
+    registry.addMapping("/**")
+        .allowedOrigins("*")
+        .allowedMethods("*");
+}
 
     @Bean
     public LoginCheckInterCeptor loginCheckInterCeptor(){
@@ -25,7 +31,7 @@ public class MVCConfig implements WebMvcConfigurer {
 
     @Override
     public void addViewControllers(ViewControllerRegistry registry) {
-        registry.addViewController("/").setViewName("redirect:/swagger-ui/index.html");
+        registry.addViewController("/").setViewName("redirect:/api/swagger-ui/index.html");
     }
 
 }
