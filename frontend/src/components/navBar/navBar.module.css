@@ -22,10 +22,11 @@
     margin: 10px;
 }
 
-.icon {
-    width: 30px;
-    height: auto;
-}
+.searchIcon {
+    width: 20px; 
+    height: 20px;
+    margin-left: 5px;
+ }
 
 .btn {
     background-color: var(--blue-700);
