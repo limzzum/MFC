@@ -11,6 +11,7 @@ import javax.persistence.*;
 public class UploadFile {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "file_id")
     private Long id;
 
     @Column(name = "upload_filename")

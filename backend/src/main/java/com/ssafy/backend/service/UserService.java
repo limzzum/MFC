@@ -40,8 +40,9 @@ public class UserService {
     public void profileUpload(Long userId, UploadFile uploadFile){
 //        if(!uploadFile.getUploadFileName().equals("default.png")){
             UploadFile saveImage = uploadFileRepository.save(uploadFile);
-            User user = repository.findById(userId).orElse(null);
-            user.setProfile(saveImage);
+            User user = repository.findById(1L).orElse(null);
+        System.out.println(user);
+//            user.setProfile(saveImage);
 //        }
     }
 

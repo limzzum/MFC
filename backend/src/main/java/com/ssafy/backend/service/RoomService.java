@@ -105,11 +105,11 @@ public class RoomService {
     }
 
     if (playerA != null && playerA.getUser() != null && playerA.getUser().getProfile() != null) {
-      aTopicUserUrladdress = playerA.getUser().getProfile().getStoreFileName();
+      aTopicUserUrladdress = playerA.getUser().getProfile();
     }
 
     if (playerB != null && playerB.getUser() != null && playerB.getUser().getProfile() != null) {
-      bTopicUserUrladdress = playerB.getUser().getProfile().getStoreFileName();
+      bTopicUserUrladdress = playerB.getUser().getProfile();
     }
 
     // RoomListDto 객체 생성 후 프로필 사진 URL 설정

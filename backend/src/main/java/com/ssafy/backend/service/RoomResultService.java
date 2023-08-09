@@ -126,7 +126,7 @@ public class RoomResultService {
           }
           playerBDto = playerHistoryGet(playerBDto, playerB.getUser().getId(),"win");
           playerHistoryUpdate(playerBDto, playerB.getUser().getId(),"win");
-          debateFinInfoDto = new DebateFinInfoDto(playerB.getUser().getProfile().getStoreFileName(),playerB.getUser().getId(),playerADto,playerBDto,isSurrender,isExit);
+          debateFinInfoDto = new DebateFinInfoDto(playerB.getUser().getProfile(),playerB.getUser().getId(),playerADto,playerBDto,isSurrender,isExit);
         }else  {
           if(isSurrender) {
             playerBDto = playerHistoryGet(playerBDto, playerB.getUser().getId(),"lose");
@@ -137,7 +137,7 @@ public class RoomResultService {
           }
           playerADto = playerHistoryGet(playerADto, playerA.getUser().getId(),"win");
           playerHistoryUpdate(playerADto, playerA.getUser().getId(),"win");
-          debateFinInfoDto = new DebateFinInfoDto(playerA.getUser().getProfile().getStoreFileName(),playerA.getUser().getId(),playerADto,playerBDto,isSurrender,isExit);
+          debateFinInfoDto = new DebateFinInfoDto(playerA.getUser().getProfile(),playerA.getUser().getId(),playerADto,playerBDto,isSurrender,isExit);
         }
         methodResultDto.setResult(true);
         methodResultDto.setData(debateFinInfoDto);
@@ -151,7 +151,7 @@ public class RoomResultService {
           }else if(playerB.getUser().getId() == userId){
             playerHistoryUpdate(playerBDto, playerB.getUser().getId(),"lose");
           }
-          debateFinInfoDto = new DebateFinInfoDto(playerA.getUser().getProfile().getStoreFileName(),playerA.getUser().getId(),playerADto,playerBDto,isSurrender,isExit);
+          debateFinInfoDto = new DebateFinInfoDto(playerA.getUser().getProfile(),playerA.getUser().getId(),playerADto,playerBDto,isSurrender,isExit);
         }else if(isPlayerAStatus == "draw") {
           playerADto = playerHistoryGet(playerADto, playerA.getUser().getId(),"draw");
           playerBDto = playerHistoryGet(playerBDto, playerB.getUser().getId(),"draw");
@@ -169,7 +169,7 @@ public class RoomResultService {
           }else if(playerB.getUser().getId() == userId){
             playerHistoryUpdate(playerBDto, playerB.getUser().getId(),"win");
           }
-          debateFinInfoDto = new DebateFinInfoDto(playerB.getUser().getProfile().getStoreFileName(),playerB.getUser().getId(),playerADto,playerBDto,isSurrender,isExit);
+          debateFinInfoDto = new DebateFinInfoDto(playerB.getUser().getProfile(),playerB.getUser().getId(),playerADto,playerBDto,isSurrender,isExit);
         }
 
         methodResultDto.setResult(true);
