@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 public class OpenviduController {
 
   @Value("${OPENVIDU_URL}")
