@@ -14,7 +14,7 @@ import java.util.UUID;
 public class FileStore {
 
 //    @Value("${file.dir")
-    private String fileDir = "C:\\Users\\SSAFY\\Documents\\profile";//"/var/www/profiles" ;
+    private String fileDir = "/var/www/profiles"; //"C:\\Users\\SSAFY\\Documents\\profile";
 
 
 
