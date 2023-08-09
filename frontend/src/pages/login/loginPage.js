@@ -17,7 +17,7 @@ function Loginpage() {
   const [emailValid, setEmailValid] = useState(false);
   const [pwValid, setPwValid] = useState(false);
   // const [notAllow, setNotAllow] = useState(true);
-  const [setNotAllow] = useState(true);
+  // const [setNotAllow] = useState(true);
   const [, setUser] = useRecoilState(userState);
   const [, setRecoilUserId] = useRecoilState(userIdState);
   const [, setUserInfo] = useRecoilState(userInfoState);
@@ -25,10 +25,10 @@ function Loginpage() {
 
   useEffect(() => {
     if (emailValid && pwValid) {
-      setNotAllow(false);
+      // setNotAllow(false);
       return;
     }
-    setNotAllow(true);
+    // setNotAllow(true);
   }, [emailValid, pwValid]);
 
   const handleEmail = (e) => {
