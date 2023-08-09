@@ -34,9 +34,10 @@ public class User {
   @NotNull
   String password;
 
-  @OneToOne
-          @JoinColumn(name = "profile")
-  UploadFile profile;
+//  @OneToOne
+//  @JoinColumn(name = "file_id")
+//  UploadFile profile;
+  String profile;
 
   @Column(name = "is_deleted")
   @ColumnDefault("false")
