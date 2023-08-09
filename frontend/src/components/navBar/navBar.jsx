@@ -71,8 +71,8 @@ function NavBar() {
                         <Link className={`${style.navbarMenu} nav-item nav-link text-center`} to={'/ranking'}>랭킹</Link>
                         <Link className={`${style.navbarMenu} nav-item nav-link text-center`} to={'/item'}>아이템</Link>
                         <Link className={`${style.navbarMenu} nav-item nav-link text-center`} to={'/profile'}>마이페이지</Link>
-                        <button className={`${style.navbarMenu} nav-item nav-link`} onClick={handleLogout}>
-                        로그아웃</button>
+                        <Button className={`${style.navbarMenu}, ${style.logoutbtn}`} onClick={handleLogout}>
+                        로그아웃</Button>
                     </div>
                 </div>
            </div>
