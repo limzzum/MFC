@@ -17,7 +17,7 @@ function TextChatting({ roomId }) {
   useEffect(() => {
     const userNickname = userInfo.nickname;
     // https://goldenteam.site
-    const SockJs = new SockJS("http://localhost:8081/mfc", {
+    const SockJs = new SockJS("https://goldenteam.site/mfc", {
       transports: ["websocket"],
       headers: {
         //   // 필요한 헤더 추가
