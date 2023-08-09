@@ -104,7 +104,7 @@ public class UserController {
         Long userId = Long.valueOf(securityService.getSubject(token));
         UploadFile uploadFile = fileStore.storeFile(profile);
         userService.profileUpload(userId, uploadFile);
-        return ResponseEntity.ok(new Message(HttpStatus.OK, "프로필 업로드 성공", uploadFile.getStoreFileName()));
+        return ResponseEntity.ok(new Message(HttpStatus.OK, "프로필 업로드 성공", uploadFile.getFilePath()));
         }
 
 //    @GetMapping("/profile")
