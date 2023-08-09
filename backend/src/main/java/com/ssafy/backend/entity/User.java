@@ -1,15 +1,8 @@
 package com.ssafy.backend.entity;
 
 import com.ssafy.backend.dto.request.*;
-import javax.persistence.Column;
-import javax.persistence.ConstraintMode;
-import javax.persistence.Entity;
-import javax.persistence.ForeignKey;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -41,7 +34,9 @@ public class User {
   @NotNull
   String password;
 
-  String profile;
+  @OneToOne
+          @JoinColumn(name = "profile")
+  UploadFile profile;
 
   @Column(name = "is_deleted")
   @ColumnDefault("false")
@@ -60,7 +55,7 @@ public class User {
       this.password = userUpdateDto.getPassword();
     }
     if(userUpdateDto.getProfile()!=null){
-      this.profile = userUpdateDto.getProfile();
+//      this.profile = userUpdateDto.getProfile();
     }
     if(userUpdateDto.getNameColorId()!=null){
       this.colorItem = itemCode;

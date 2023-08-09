@@ -26,7 +26,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/viewer")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "*", allowedHeaders = "*")
 public class ViewerController {
 
   private final ViewerService viewerService;
@@ -50,7 +49,7 @@ public class ViewerController {
     }
     //토론방 현재 인원 수 +1
     roomService.incrementRoomCurrentCount(roomId);
-    messagingTemplate.convertAndSend("/from/room/enter/" + roomId, viewerDto);
+//    messagingTemplate.convertAndSend("/from/room/enter/" + roomId, viewerDto);
     return ResponseEntity.ok(message);
   }
 

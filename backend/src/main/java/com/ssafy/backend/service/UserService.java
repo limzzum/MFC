@@ -5,8 +5,11 @@ import com.ssafy.backend.dto.Message;
 import com.ssafy.backend.dto.request.*;
 import com.ssafy.backend.entity.History;
 import com.ssafy.backend.entity.ItemCode;
+import com.ssafy.backend.entity.UploadFile;
 import com.ssafy.backend.entity.User;
+import com.ssafy.backend.file.FileStore;
 import com.ssafy.backend.repository.HistoryRepository;
+import com.ssafy.backend.repository.UploadFileRepository;
 import com.ssafy.backend.repository.UserRepository;
 
 import java.util.Optional;
@@ -23,13 +26,23 @@ public class UserService {
 
     private final UserRepository repository;
     private final HistoryRepository historyRepository;
+    private final UploadFileRepository uploadFileRepository;
+    private final FileStore fileStore;
 
     public Long regist(UserRegistDto user) {
         User registUser = User.builder().email(user.getEmail()).nickname(user.getNickname())
                 .password(user.getPassword())
-                .profile(user.getProfile()).build();
+                .build();
         User saved = repository.save(registUser);
         return saved.getId();
+    }
+
+    public void profileUpload(Long userId, UploadFile uploadFile){
+//        if(!uploadFile.getUploadFileName().equals("default.png")){
+            UploadFile saveImage = uploadFileRepository.save(uploadFile);
+            User user = repository.findById(userId).orElse(null);
+            user.setProfile(saveImage);
+//        }
     }
 
     public Long login(LoginForm loginForm) {

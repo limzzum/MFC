@@ -46,6 +46,11 @@ spring:
     pathmatch:
       matching-strategy: ant_path_matcher
 
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+
 logging:
   level:
     org.hibernate.SQL: debug
@@ -53,6 +58,8 @@ logging:
 jwt:
   expmin: 60
   key: "wfaijelwfwwfajelwwlfjaleifajldcmsaqpoifejeliajwlfqpopoppoeimac"
+
+file.dir: "/Users/limzzum/"
 
 OPENVIDU_URL:
   "https://goldenteam.site:8443"

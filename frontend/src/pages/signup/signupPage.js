@@ -3,6 +3,8 @@ import axios from "axios";
 import logoImage from "../../images/logo.png";
 import style from "./signupPage.module.css";
 import { useNavigate } from "react-router-dom";
+import { Button, Form, InputGroup } from "react-bootstrap";
+
 
 function SignupPage() {
   const [timer, setTimer] = useState(0);
@@ -146,7 +148,25 @@ function SignupPage() {
         <div className={style.SignupPageContentWrap}>
           <div className={style.SignupPageInputTitle}>인증메일 전송</div>
           <div className={style.SignupPageInputWrap}>
-            <input
+            {/* 이메일 인증 전송 */}
+            <InputGroup>
+                <Form.Control
+                    placeholder="email"
+                    aria-label="eamilAuth"
+                    aria-describedby="email"
+                    value={email}
+                    onChange={handleEmail}
+                />
+                <Button 
+                    style={{ backgroundColor:"#354C6FFF" }}
+                    variant="outline-light" 
+                    id="emailAuth"
+                    onClick={handleSendEmailClick}
+                >
+                  전송
+                </Button>
+            </InputGroup>
+            {/* <input
               className={`${style.SignupPageInput} form-control`}
               style={{ fontSize: "12px", width: "145px" }}
               value={email}
@@ -166,7 +186,7 @@ function SignupPage() {
               disabled={!emailValid}
             >
               전송
-            </button>
+            </button> */}
           </div>
 
           {isActive && (
@@ -177,7 +197,25 @@ function SignupPage() {
           )}
           {isActive && (
             <div className={style.SignupPageInputWrap}>
-              <input
+              {/* 이메일 인증 번호 입력 */}
+              <InputGroup>
+                <Form.Control
+                    placeholder="000000"
+                    aria-label="emailCheck"
+                    aria-describedby="emailCheck"
+                    value={authCode}
+                    onChange={(e) => setAuthCode(e.target.value)}
+                />
+                <Button 
+                    style={{ backgroundColor:"#354C6FFF" }}
+                    variant="outline-light" 
+                    id="emailAuth"
+                    onClick={handleAuthButtonClick}
+                >
+                  전송
+                </Button>
+              </InputGroup>
+              {/* <input
                 className={`SignupPageInput form-control ${style.SignupPageInput}`}
                 style={{ fontSize: "12px", width: "145px" }}
                 value={authCode}
@@ -196,13 +234,33 @@ function SignupPage() {
                 disabled={authCodeValid}
               >
                 인증
-              </button>
+              </button> */}
             </div>
           )}
 
           <div className={style.SignupPageInputTitle}>닉네임</div>
           <div className={style.SignupPageInputWrap}>
-            <input
+            {/* 닉네임 중복 확인 */}
+            <InputGroup>
+                <Form.Control
+                    placeholder="닉네임"
+                    aria-label="nickNameCheck"
+                    aria-describedby="nickNameCheck"
+                    value={nickname}
+                    onChange={(e) => {
+                      setNickname(e.target.value);
+                      setNicknameAvailable(false);
+                      }}  />
+                <Button 
+                    style={{ backgroundColor:"#354C6FFF" }}
+                    variant="outline-light" 
+                    id="emailAuth"
+                    onClick={handleNicknameButtonClick}
+                >
+                  확인
+                </Button>
+              </InputGroup>
+            {/* <input
               className={`SignupPageInput form-control ${style.SignupPageInput}`}
               style={{ fontSize: "12px", width: "145px" }}
               value={nickname}
@@ -225,7 +283,7 @@ function SignupPage() {
               disabled={!authCodeValid || nicknameAvailable}
             >
               확인
-            </button>
+            </button> */}
           </div>
 
           <div className={style.SignupPageInputTitle}>비밀번호</div>
