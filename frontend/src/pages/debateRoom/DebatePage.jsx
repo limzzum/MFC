@@ -1,7 +1,7 @@
 import React, { useCallback, useRef, useEffect, useState} from 'react';
 import axios from 'axios';
 import { OpenVidu} from 'openvidu-browser';
-// import UserVideoComponent from './Openvidu/UserVideoComponent';
+import UserVideoComponent from './Openvidu/UserVideoComponent';
 import { useParams } from 'react-router-dom';
 import {useRecoilValue} from 'recoil';
 import {useStatus, useRole, getDebateRoomState, getVoteResultState} from '../../recoil/debateStateAtom';
@@ -389,20 +389,20 @@ function DebatePage() {
 
           {mainStreamManager !== undefined ? (
             <div>
-              {/* <UserVideoComponent streamManager={mainStreamManager} /> */}
+              <UserVideoComponent streamManager={mainStreamManager} />
             </div>
           ) : null}
 
           <div>
             {publisher !== undefined ? (
               <div onClick={() => handleMainVideoStream(publisher)}>
-                {/* <UserVideoComponent streamManager={publisher} /> */}
+                <UserVideoComponent streamManager={publisher} />
               </div>
             ) : null}
             {subscribers.map((sub, i) => (
               <div key={sub.id} onClick={() => handleMainVideoStream(sub)}>
                 <span>{sub.id}</span>
-                {/* <UserVideoComponent streamManager={sub} /> */}
+                <UserVideoComponent streamManager={sub} />
               </div>
             ))}
             <input
