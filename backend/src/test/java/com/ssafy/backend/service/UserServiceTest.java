@@ -6,10 +6,9 @@ import com.ssafy.backend.entity.*;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.boot.test.context.*;
-import org.springframework.transaction.annotation.Transactional;
 
 @SpringBootTest
-@Transactional
+//@Transactional
 class UserServiceTest {
 
     private final UserService service;
@@ -26,10 +25,10 @@ class UserServiceTest {
 
     @Test
     void regist() {
-        UserRegistDto user = UserRegistDto.builder().email("test@samsung.com").nickname("testUser").password("Ssafy123!").profile(null).build();
+        UserRegistDto user = UserRegistDto.builder().email("test@samsung.com").nickname("testUser").password("Ssafy123!").build();
 
         Long savedId = service.regist(user);
-        User findUser = service.findUser(savedId);
+        User findUser = service.findById(savedId);
 
         Assertions.assertEquals(findUser.getPassword(), user.getPassword());
         Assertions.assertEquals(findUser.getEmail(), user.getEmail());
