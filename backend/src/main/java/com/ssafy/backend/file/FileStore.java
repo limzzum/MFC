@@ -14,7 +14,8 @@ import java.util.UUID;
 public class FileStore {
 
 //    @Value("${file.dir")
-    private String fileDir = "/var/www/profiles" ;
+    private String fileDir = "/var/www/profiles"; //"C:\\Users\\SSAFY\\Documents\\profile";
+
 
 
 
@@ -47,14 +48,14 @@ public String getFullPath(String filename){
 
         String folderPath = makeFolder();
         String uuid = UUID.randomUUID().toString();
-        String saveName = fileDir + File.separator + folderPath +File.separator + uuid + "." + multipartFile.getOriginalFilename();
+        String saveName = fileDir + File.separator + folderPath +File.separator + uuid;
 
         try{
             multipartFile.transferTo(new File(saveName));
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return new UploadFile(multipartFile.getOriginalFilename(),saveName);
+        return new UploadFile(multipartFile.getOriginalFilename(),saveName, folderPath +File.separator + uuid);
 
     }
 

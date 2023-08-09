@@ -3,6 +3,7 @@ package com.ssafy.backend.service;
 import com.ssafy.backend.dto.LoginForm;
 import com.ssafy.backend.dto.Message;
 import com.ssafy.backend.dto.request.*;
+import com.ssafy.backend.dto.response.*;
 import com.ssafy.backend.entity.History;
 import com.ssafy.backend.entity.ItemCode;
 import com.ssafy.backend.entity.UploadFile;
@@ -38,12 +39,9 @@ public class UserService {
     }
 
     public void profileUpload(Long userId, UploadFile uploadFile){
-//        if(!uploadFile.getUploadFileName().equals("default.png")){
             UploadFile saveImage = uploadFileRepository.save(uploadFile);
             User user = repository.findById(1L).orElse(null);
-        System.out.println(user);
-//            user.setProfile(saveImage);
-//        }
+            user.setProfile(saveImage.getFilePath());
     }
 
     public Long login(LoginForm loginForm) {
@@ -79,9 +77,15 @@ public class UserService {
         return id;
     }
 
-    public User findUser(Long id) {
-
-        return repository.findById(id).orElse(null);
+    public UserInfoDto getUserInfo(Long id) {
+        User user = repository.findById(id).orElse(null);
+        UserInfoDto userInfoDto = UserInfoDto.builder()
+                                        .id(user.getId())
+                                        .email(user.getEmail())
+                                        .nickname(user.getNickname())
+                                        .profile(user.getProfile())
+                                        .colorItem(user.getColorItem()).build();
+        return userInfoDto;
     }
 
     public User findById(Long id) {
