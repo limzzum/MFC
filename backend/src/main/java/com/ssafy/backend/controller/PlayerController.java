@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @RequestMapping("/api/player")
 @Slf4j
-@CrossOrigin(origins = "*", allowedHeaders = "*")
 public class PlayerController {
 
     private final PlayerService playerService;

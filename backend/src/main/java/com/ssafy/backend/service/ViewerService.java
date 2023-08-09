@@ -1,10 +1,7 @@
 package com.ssafy.backend.service;
 
 import com.ssafy.backend.dto.MethodResultDto;
-import com.ssafy.backend.dto.response.ParticipantsDto;
-import com.ssafy.backend.dto.response.PlayerResDto;
-import com.ssafy.backend.dto.response.ViewerDto;
-import com.ssafy.backend.dto.response.voteResultDto;
+import com.ssafy.backend.dto.response.*;
 import com.ssafy.backend.entity.Participant;
 import com.ssafy.backend.entity.Player;
 import com.ssafy.backend.entity.RoleCode;
@@ -158,6 +155,42 @@ public class ViewerService {
       }
     }
     return new MethodResultDto(true, "정상 퇴장 완료");
+  }
+
+  public ParticipantOutDto exitSocket(Long userId, Long roomId) {
+    Participant participant = participantRepository.findAllByUserIdAndRoomId(userId, roomId);
+    ParticipantOutDto participantOutDto = new ParticipantOutDto();
+    if (participant == null) {
+      // 예외처리
+    } else {
+      if (participant.getRoleCode().getId() == 2L) {//나가려는 사람이 플레이어인 경우
+        //플레이어 목록에서 ID 삭제 후 (토론이 끝나거나 새로 시작할 때 플레이어 정보는 초기화 되기때문에 ID만 삭제한다)
+        playerRepository.resetUserId(roomId, userId);
+      }
+      //사용자의 롤을 퇴장자로 변경
+      participant.setRoleCode(new RoleCode(1L, null));
+      //토론방의 현재인원을 차감 시킨다
+      if (decrementRoomCurrentCount(roomId) == 0) {
+        changeRoomStatus(roomId);
+        participantOutDto.setIsRoomChange(true);
+      } else {
+        if (participant.isHost()) { //방장인 경우
+          participant.setHost(false); //사용자 방장 권한 해제
+          //가장 빨리 입장한 사람에게 방장 권한을 부여
+          MethodResultDto result = getNextHost(roomId); //다음 방장 사용자 리턴
+          if (result.isResult()) {
+            Participant newHost = (Participant) result.getData();
+            newHost.setHost(true);
+            participantRepository.save(newHost);
+            participantOutDto.setIsHostChange(true);
+          } else {
+            // 예외 처리
+          }
+        }
+        participantRepository.save(participant);
+      }
+    }
+    return participantOutDto;
   }
 
   public int decrementRoomCurrentCount(Long roomId) {

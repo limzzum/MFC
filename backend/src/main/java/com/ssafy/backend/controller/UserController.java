@@ -29,7 +29,6 @@ import org.springframework.web.multipart.MultipartFile;
 @RequestMapping("/api/user")
 @Slf4j
 @Api(tags = "USER REST API")
-@CrossOrigin(origins = "*", allowedHeaders = "*")
 public class UserController {
 
     private final UserService userService;

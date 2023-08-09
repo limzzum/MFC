@@ -1,18 +1,18 @@
 .wrapper {
-    width: 1200px;
-    margin: 100px auto;
-    display: flex;
-    font-family: Pretendard;
-    text-align: center;
+  width: 1200px;
+  margin: 100px auto;
+  display: flex;
+  font-family: inherit;
+  text-align: center;
 }
 .nextBox {
-    margin: 40px auto;
-    padding: 0 20px;
-    width:600px;
+  margin: 40px auto;
+  padding: 0 20px;
+  width: 600px;
 }
 .rankTitleBox {
-    display: flex;
+  display: flex;
 }
 .rankTitle {
-    width:200px;
+  width: 200px;
 }

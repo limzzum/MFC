@@ -1,26 +1,24 @@
 .profileBox {
-    font-family: Pretendard;
-    font-size: 15px;
-    text-align: center;
-    width: 100%;
-    margin: 5px auto;
-    display: flex;
-    padding: 5px 0;
-    background: #E9EDF5FF;
-    border-radius: 15px;
-
+  font-family: inherit;
+  font-size: 15px;
+  text-align: center;
+  width: 100%;
+  margin: 5px auto;
+  display: flex;
+  padding: 5px 0;
+  background: #e9edf5ff;
+  border-radius: 15px;
 }
 .contentBox {
-    width: 200px;
-    margin: auto 0;    
+  width: 200px;
+  margin: auto 0;
 }
 .rankText {
-    font-family:Pretendard;
-    font-size:14px;
-    text-align: center;
-    width: 500px;
-    
+  font-family: inherit;
+  font-size: 14px;
+  text-align: center;
+  width: 500px;
 }
 .radiusImg {
-    border-radius: 50%;
+  border-radius: 50%;
 }

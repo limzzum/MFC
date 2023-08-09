@@ -5,11 +5,14 @@ import com.ssafy.backend.dto.Message;
 import com.ssafy.backend.dto.MethodResultDto;
 import com.ssafy.backend.dto.response.RoomInfoResponseDto;
 import com.ssafy.backend.dto.response.RoomPeopleCountDto;
+import com.ssafy.backend.dto.response.ViewerDto;
+import com.ssafy.backend.entity.Participant;
 import com.ssafy.backend.service.RoomService;
 import com.ssafy.backend.service.ViewerService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,25 +26,30 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/viewer")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "*", allowedHeaders = "*")
 public class ViewerController {
 
   private final ViewerService viewerService;
   private final RoomService roomService;
+  private final SimpMessagingTemplate messagingTemplate;
 
   @PostMapping("/{roomId}/{userId}")
   public ResponseEntity<Message> enterRoom(@PathVariable Long roomId, @PathVariable Long userId) {
     Message message = new Message(HttpStatus.OK, "테스트", null);
-
+    ViewerDto viewerDto = null;
     if (viewerService.existsUser(userId, roomId)) {
       message.setMessage("재 입장 유저입니다.");
-      message.setData(viewerService.reentryParticipant(userId, roomId).getNickName());
+      Participant p = viewerService.reentryParticipant(userId, roomId);
+      message.setData(p.getNickName());
+      viewerDto = new ViewerDto(p.getUser().getId(),p.getNickName(),p.getUser().getColorItem().getRgb(),p.isHost());
     } else { //신규 추가
       message.setMessage("첫 입장 유저입니다.");
-      message.setData(viewerService.firstEntryParticipant(userId, roomId).getNickName());
+      Participant p = viewerService.firstEntryParticipant(userId, roomId);
+      message.setData(p.getNickName());
+      viewerDto = new ViewerDto(p.getUser().getId(),p.getNickName(),p.getUser().getColorItem().getRgb(),p.isHost());
     }
     //토론방 현재 인원 수 +1
     roomService.incrementRoomCurrentCount(roomId);
+    messagingTemplate.convertAndSend("/from/room/enter/" + roomId, viewerDto);
     return ResponseEntity.ok(message);
   }
 
@@ -69,6 +77,8 @@ public class ViewerController {
     if (!viewerService.vote(userId, roomId, selectedTopic)) {
       message.setStatus(HttpStatus.BAD_REQUEST);
       message.setMessage("일정 시간 후 재투표가 가능합니다.");
+    } else {
+      messagingTemplate.convertAndSend("/from/vote/" + roomId,viewerService.voteResult(roomId));
     }
     return ResponseEntity.ok(message);
   }
