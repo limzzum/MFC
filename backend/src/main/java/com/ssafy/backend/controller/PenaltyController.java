@@ -19,6 +19,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/penalty")
 @RequiredArgsConstructor
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 public class PenaltyController {
 
   private final PenaltyService penaltyService;
