@@ -49,7 +49,7 @@ public class ViewerController {
     }
     //토론방 현재 인원 수 +1
     roomService.incrementRoomCurrentCount(roomId);
-    messagingTemplate.convertAndSend("/from/room/enter/" + roomId, viewerDto);
+//    messagingTemplate.convertAndSend("/from/room/enter/" + roomId, viewerDto);
     return ResponseEntity.ok(message);
   }
 
