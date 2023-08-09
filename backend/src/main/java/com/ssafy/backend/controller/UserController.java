@@ -1,6 +1,5 @@
 package com.ssafy.backend.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ssafy.backend.dto.*;
 import com.ssafy.backend.dto.request.*;
 import com.ssafy.backend.dto.response.*;
@@ -16,7 +15,6 @@ import javax.validation.*;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.*;
 import org.springframework.http.*;
@@ -100,10 +98,13 @@ public class UserController {
 
     @PostMapping("/profile")
     public ResponseEntity<Message> profile(@RequestHeader("Authorization") String token, @RequestParam MultipartFile profile) throws IOException {
+        if(profile.isEmpty()){
+            return ResponseEntity.ok(new Message(HttpStatus.OK, "프로필 사진이 선택되지 않았습니다", null));
+        }
         Long userId = Long.valueOf(securityService.getSubject(token));
         UploadFile uploadFile = fileStore.storeFile(profile);
         userService.profileUpload(userId, uploadFile);
-        return ResponseEntity.ok(new Message(HttpStatus.OK, "프로필 업로드 성공", uploadFile.getId()));
+        return ResponseEntity.ok(new Message(HttpStatus.OK, "프로필 업로드 성공", uploadFile.getStoreFileName()));
         }
 
 //    @GetMapping("/profile")
@@ -150,7 +151,7 @@ public class UserController {
     public ResponseEntity<Message> info(@RequestHeader("Authorization") String token) {
         System.out.println(securityService.getSubject(token));
         Long userId = Long.valueOf(securityService.getSubject(token));
-        User user = userService.findUser(userId);
+        UserInfoDto user = userService.getUserInfo(userId);
 
         return ResponseEntity.ok(new Message(HttpStatus.OK, "success", user));
     }
