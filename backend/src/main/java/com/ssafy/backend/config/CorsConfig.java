@@ -6,26 +6,17 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
-public class CorsConfig {
-    @Bean
-    public CorsFilter corsFilter() {
-        CorsConfiguration corsConfig = new CorsConfiguration();
-        corsConfig.addAllowedOrigin("http://localhost:3000");
-        corsConfig.addAllowedOrigin("https://goldenteam.site");
-        corsConfig.addAllowedMethod("GET");
-        corsConfig.addAllowedMethod("POST");
-        corsConfig.addAllowedMethod("PUT");
-        corsConfig.addAllowedMethod("DELETE");
-        corsConfig.addAllowedMethod("PATCH");
-        corsConfig.addAllowedHeader("Authorization");
-//        corsConfig.addAllowedHeader("Content-Type");
-        corsConfig.setAllowCredentials(true);  // 인증 정보 허용
-
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", corsConfig);
-
-        return new CorsFilter(source);
+public class CorsConfig implements WebMvcConfigurer {
+    @Override
+    public void addCorsMappings(CorsRegistry registry) {
+        registry.addMapping("/**")
+            .allowedOrigins("http://localhost:3000", "https://goldenteam.site") // 허용할 출처
+            .allowedMethods("GET", "POST","PATCH","DELETE","PUT") // 허용할 HTTP method
+            .allowCredentials(true) // 쿠키 인증 요청 허용
+            .maxAge(3000); // 원하는 시간만큼 pre-flight 리퀘스트를 캐싱
     }
 }
