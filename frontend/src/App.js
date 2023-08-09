@@ -15,6 +15,7 @@ import MainPage from "./pages/main/mainPage";
 import MyProfilePage from "./pages/myprofile/myProfile";
 import RankingPage from "./pages/ranking/ranking";
 import ItemPage from "./pages/item/itemPage";
+import Test from "./pages/debateRoom/Test";
 import { userState } from "./recoil/token";
 import { useRecoilValue } from "recoil";
 
@@ -72,7 +73,8 @@ function App() {
             path="/item"
             element={isLoggedIn ? <ItemPage /> : <Navigate to="/login" />}
           />
-        </Routes>
+            <Route path="/test" element={<Test />} />
+          </Routes>
       </div>
     </BrowserRouter>
   );
