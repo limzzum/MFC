@@ -17,9 +17,12 @@ function MyProfile() {
   const [changeNickname, setChangeNickname] = useState("");
   const [finalChangeNickname, setFinalChangeNickname] = useState("");
   const [showModal, setShowModal] = useState(false);
+  const [profileName, setProfileName] = useState("");
+
   const navigate = useNavigate();
   const user = useRecoilValue(userState);
   const userToken = user.token;
+
   console.log(useRecoilValue(userState));
   useEffect(() => {
     getUserInfo();
@@ -104,48 +107,32 @@ function MyProfile() {
   };
 
   // 프로필 업데이트
-  const handleProfileUpdate = async() => {
-    // const config = {
-    //   headers: {
-    //     Authorization: `Bearer ${userToken}`,
-    //   },
-    // };
-    const formData = new FormData()
-    
-    formData.append("file", selectedImage[0])
-    const requestData = [{
-      nickname: finalChangeNickname,
-    }];
-    
-    const blob = new Blob([JSON.stringify(requestData)], {type: "application/json"}) 
-    
-    formData.append("data", blob)
-
-    // PATCH 요청을 통해 변경 정보 전송
-    await axios({
-      method: "PATCH",
-      url: `https://goldenteam.site/api/user`,
-      mode: "cors",
+  const handleProfileUpdate = async () => {
+    const config = {
       headers: {
-        "Content-Type": "multipart/form-data", // Content-Type을 반드시 이렇게 하여야 한다.
-        Authorization: `Bearer ${userToken}`
-      
+        Authorization: `Bearer ${userToken}`,
+        "Content-Type": "multipart/form-data", // Add this line
       },
-      data: formData, // data 전송시에 반드시 생성되어 있는 formData 객체만 전송 하여야 한다.
-    })
-    // 이전 코드
-    // axios
-    //   .patch("https://goldenteam.site/api/user", requestData, config)
-    //   .then((response) => {
-    //     console.log(response.data);
-    //     console.log("프로필 변경 성공");
-    //     window.location.reload();
-    //   })
-    //   .catch((error) => {
-    //     console.error("프로필 변경 실패", error);
-    //   });
-  };
+    };
+    const formData = new FormData();
+    if (selectedImage) {
+      formData.append("profile", selectedImage);
+    }
+    
+    try {
+      const response = await axios.post(
+        "https://goldenteam.site/api/user/profile",
+        formData,
+        config
+      );
 
+      console.log("프로필 이미지 업데이트 응답:", response.data);
+      setProfileName(response.data.data)  
+      // 이후 필요한 작업 수행
+    } catch (error) {
+      console.error("프로필 이미지 업데이트 오류:", error);
+    }
+  };
   const handleEnterKeyPress = (event) => {
     if (event.key === "Enter") {
       event.preventDefault();
@@ -167,12 +154,11 @@ function MyProfile() {
                   ? URL.createObjectURL(selectedImage)  // 선택한 이미지의 URL을 생성
                   : userInfo.profile === null
                   ? baseProfile
-                  : userInfo.profile
+                  : `https://goldenteam.site/profiles/${userInfo.profile}`
               }
               alt="profileImage"
             />
 
-            {/* 이미지 업로드 인풋 */}
             <label htmlFor="fileInput" className={`${styles.radiusImg} ${styles.imgSetting}`}>
               <img src={settingIcon} alt="이미지변경" />
               <input
@@ -235,6 +221,7 @@ function MyProfile() {
           className={`${styles.btnChange}`} 
           type="submit"
           onClick={handleProfileUpdate}>
+          {/* // {handleProfileUpdate}> */}
             변경
           </button>
           <button 
@@ -253,8 +240,10 @@ function MyProfile() {
           handleModalClose(); // 모달 닫기
         }}
       />
+      
     </div>
   );
 }
+
 
 export default MyProfile;
