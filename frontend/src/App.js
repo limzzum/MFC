@@ -22,15 +22,14 @@ function NavBarWrapper() {
   const location = useLocation();
   const hideNavBar =
     location.pathname.startsWith("/debateRoom") ||
-    location.pathname.startsWith("/login")||
+    location.pathname.startsWith("/login") ||
     location.pathname.startsWith("/signup");
   return <>{!hideNavBar && <NavBar />}</>;
 }
 
 function App() {
   const user = useRecoilValue(userState);
-  const isLoggedIn = true;
-  console.log(user, isLoggedIn);
+  const isLoggedIn = user.token !== undefined;
 
   return (
     <BrowserRouter>
