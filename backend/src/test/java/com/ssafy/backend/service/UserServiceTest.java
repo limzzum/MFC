@@ -3,12 +3,13 @@ package com.ssafy.backend.service;
 import com.ssafy.backend.dto.*;
 import com.ssafy.backend.dto.request.UserRegistDto;
 import com.ssafy.backend.entity.*;
+import javax.transaction.*;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.boot.test.context.*;
 
 @SpringBootTest
-//@Transactional
+@Transactional
 class UserServiceTest {
 
     private final UserService service;
