@@ -20,8 +20,12 @@ public class UploadFile {
     @Column(name = "store_filename")
     private String storeFileName;
 
-    public UploadFile(String originalFileName, String storeFileName) {
+    @Column(name = "file_path")
+    private String filePath;
+
+    public UploadFile(String originalFileName, String storeFileName, String filePath) {
         this.uploadFileName = originalFileName;
         this.storeFileName = storeFileName;
+        this.filePath = filePath;
     }
 }
