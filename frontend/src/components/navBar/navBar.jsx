@@ -8,6 +8,9 @@ import { Button, Form, InputGroup } from "react-bootstrap";
 import { userState } from '../../recoil/token'
 import { userIdState } from '../../recoil/userId'
 import { useRecoilState } from 'recoil';
+import "bootstrap/dist/css/bootstrap.min.css";
+import 'jquery/dist/jquery.min.js'
+import 'bootstrap/dist/js/bootstrap.min.js'
 
 function NavBar() {
     const [ keyword, setKeyword ] = useState('');
@@ -30,38 +33,49 @@ function NavBar() {
 
     return (
         <Container>
-            <div className={style.navbar}>
+             <div className={`${style.navbar} navbar navbar-expand-lg bg-white navbar-light py-0 px-4`}>
                 <Link className={style.navbarMenu} to={'/'}>
-                    <img className={style.logo} src={logo} alt='로고' />
+                    <img className={`${style.logo} p-1`} src={logo} alt='로고' />
                 </Link>
-                <div className={style.links}>
-                    <Link className={style.navbarMenu} to={'/ranking'}>랭킹</Link>
-                    <Link className={style.navbarMenu} to={'/item'}>아이템</Link>
-                    <Link className={style.navbarMenu} to={'/profile'}>마이페이지</Link>
-                </div>
                 <div>
-                <InputGroup>
+                <InputGroup className='mx-3'>
                 <Form.Control
                     placeholder="검색어를 입력해주세요"
                     aria-label="keyword"
                     aria-describedby="userSearch"
                     value={keyword}
                     onChange={e => setKeyword(e.target.value)}
+                    style={{ fontSize: "14px"}}
                 />
                 <Button 
-                    style={{ backgroundColor:"#354C6FFF" }}
+                    style={{ backgroundColor:"var(--blue-800)", fontsize:"16px" , inlineheight:"35px", padding:"0px"}}
+                    className='px-2'
                     variant="outline-secondary" 
                     id="userSearch"
                     onClick={handleSubmit}
                 >
                     <img src={searchIcon} className={style.searchIcon} alt="Search Icon" />
                 </Button>
-            </InputGroup>
-            </div>
-                <button className={style.btn} onClick={handleLogout}>
-                    로그아웃
+                </InputGroup>
+                </div>
+                <button
+                    type="button"
+                    className={`navbar-toggler`}
+                    data-bs-toggle="collapse"
+                    data-bs-target="#navbarCollapse"
+                >
+                    <span className="navbar-toggler-icon"></span>
                 </button>
-            </div>
+                <div className={`${style.links} collapse navbar-collapse`} id="navbarCollapse">
+                    <div className={`navbar-nav ms-auto`}>
+                        <Link className={`${style.navbarMenu} nav-item nav-link text-center`} to={'/ranking'}>랭킹</Link>
+                        <Link className={`${style.navbarMenu} nav-item nav-link text-center`} to={'/item'}>아이템</Link>
+                        <Link className={`${style.navbarMenu} nav-item nav-link text-center`} to={'/profile'}>마이페이지</Link>
+                        <button className={`${style.navbarMenu} nav-item nav-link`} onClick={handleLogout}>
+                        로그아웃</button>
+                    </div>
+                </div>
+           </div>
         </Container>
     );
 }
