@@ -22,7 +22,8 @@ function NavBarWrapper() {
   const location = useLocation();
   const hideNavBar =
     location.pathname.startsWith("/debateRoom") ||
-    location.pathname.startsWith("/login");
+    location.pathname.startsWith("/login")||
+    location.pathname.startsWith("/signup");
   return <>{!hideNavBar && <NavBar />}</>;
 }
 
