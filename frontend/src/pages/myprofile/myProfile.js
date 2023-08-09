@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import styles from "./myProfile.module.css";
-import profileImage from "../../images/img.jpg";
+import baseProfile from "../../images/baseProfile.png";
 import settingIcon from "../../images/settingIcon.png";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { Button ,Row, InputGroup, Form } from "react-bootstrap";
@@ -42,6 +42,7 @@ function MyProfile() {
     try {
       const response = await axios.get(`https://goldenteam.site/api/user`, config);
       setUserInfo(response.data.data);
+      console.log(response.data.data)
       setFinalChangeNickname(response.data.data.nickname); // 바로 nickname을 업데이트하도록 수정
     } catch (error) {
       console.error("사용자 정보 가져오기 오류", error);
@@ -147,11 +148,19 @@ function MyProfile() {
         <hr />
         <form>
           <div className={styles.profileImage}>
-            {selectedImage ? (
-              <img className={`${styles.radiusImg}`} src={selectedImage} alt="profileImage" />
-            ) : (
-              <img className={`${styles.radiusImg}`} src={profileImage} alt="profileImage" />
-            )}
+            <img
+              className={`${styles.radiusImg}`}
+              src={
+                selectedImage
+                  ? URL.createObjectURL(selectedImage)  // 선택한 이미지의 URL을 생성
+                  : userInfo.profile === null
+                  ? baseProfile
+                  : userInfo.profile
+              }
+              alt="profileImage"
+            />
+
+            {/* 이미지 업로드 인풋 */}
             <label htmlFor="fileInput" className={`${styles.radiusImg} ${styles.imgSetting}`}>
               <img src={settingIcon} alt="이미지변경" />
               <input
@@ -169,7 +178,7 @@ function MyProfile() {
                 <label htmlFor="이메일" className="mb-2">
                   이메일
                 </label>
-                <input className="form-control w-75" type="text" placeholder={userInfo.email} readOnly />
+                <input className="form-control w-75" type="text" style={{fontSize:"15px"}} placeholder={userInfo.email} readOnly />
               </li>
               <li>
                 <label htmlFor="Nickname" className="mb-2">
@@ -181,6 +190,7 @@ function MyProfile() {
                     placeholder={userInfo.nickname}
                     aria-label="Nickname"
                     aria-describedby="checkDuplicate"
+                    style={{fontSize: "16px"}}
                     value={changeNickname}
                     onChange={(e) => {
                     setChangeNickname(e.target.value);
@@ -188,7 +198,7 @@ function MyProfile() {
                     onKeyPress={handleEnterKeyPress}
                   />
                   <Button 
-                      style={{ backgroundColor:"#354C6FFF" }}
+                      style={{ backgroundColor: "#354C6FFF", fontSize: "15px" }}
                       variant="outline-light" 
                       id="userSearch"
                       onClick={handleNicknameButtonClick}
