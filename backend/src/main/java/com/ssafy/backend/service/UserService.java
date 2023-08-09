@@ -44,7 +44,7 @@ public class UserService {
 
     public void profileUpload(Long userId, UploadFile uploadFile){
             UploadFile saveImage = uploadFileRepository.save(uploadFile);
-            User user = repository.findById(1L).orElse(null);
+            User user = repository.findById(userId).orElse(null);
             user.setProfile(saveImage.getFilePath());
     }
 
