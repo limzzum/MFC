@@ -47,7 +47,7 @@ public class HistoryResDto {
         history.getWinCount(),
         history.getLoseCount(),
         history.getDrawCount(),
-        ((double) history.getWinCount() / (history.getWinCount() + history.getLoseCount())) * 100.0
+        history.getWinCount()+history.getLoseCount() ==0? 0:((double) history.getWinCount() / (history.getWinCount() + history.getLoseCount())) * 100.0
     );
   }
 

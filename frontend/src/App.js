@@ -15,6 +15,7 @@ import MainPage from "./pages/main/mainPage";
 import MyProfilePage from "./pages/myprofile/myProfile";
 import RankingPage from "./pages/ranking/ranking";
 import ItemPage from "./pages/item/itemPage";
+import Test from "./pages/debateRoom/Test";
 import { userState } from "./recoil/token";
 import { useRecoilValue } from "recoil";
 
@@ -22,15 +23,14 @@ function NavBarWrapper() {
   const location = useLocation();
   const hideNavBar =
     location.pathname.startsWith("/debateRoom") ||
-    location.pathname.startsWith("/login")||
+    location.pathname.startsWith("/login") ||
     location.pathname.startsWith("/signup");
   return <>{!hideNavBar && <NavBar />}</>;
 }
 
 function App() {
   const user = useRecoilValue(userState);
-  const isLoggedIn = true;
-  console.log(user, isLoggedIn);
+  const isLoggedIn = user.token !== undefined;
 
   return (
     <BrowserRouter>
@@ -73,7 +73,8 @@ function App() {
             path="/item"
             element={isLoggedIn ? <ItemPage /> : <Navigate to="/login" />}
           />
-        </Routes>
+            <Route path="/test" element={<Test />} />
+          </Routes>
       </div>
     </BrowserRouter>
   );
