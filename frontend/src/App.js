@@ -29,7 +29,7 @@ function NavBarWrapper() {
 
 function App() {
   const user = useRecoilValue(userState);
-  const isLoggedIn = user.token !== undefined;
+  const isLoggedIn = true;
   console.log(user, isLoggedIn);
 
   return (
