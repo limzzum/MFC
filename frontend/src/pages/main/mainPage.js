@@ -22,7 +22,6 @@ function MainPage() {
   const [ongoingDebateRooms, setOngoingDebateRooms] = useState([]);
   const [waitingDebateRooms, setWaitingDebateRooms] = useState([]);
   const [minWaitingRoomId, setMinWaitingRoomId] = useRecoilState(minWaitingRoomIdState);
-  const [minRoomId, setMinRoomId] = useRecoilState(minRoomIdState);
   const userId = useRecoilValue(userIdState);
   const tokenis = useRecoilValue(userState);
   const navigate = useNavigate();
@@ -42,7 +41,6 @@ function MainPage() {
 
     if (isNaN(debateTimeInt) || debateTimeInt < 20 || debateTimeInt > 120) {
       alert("토론시간은 20분에서 120분 사이의 숫자로 입력해야 합니다.");
-      return;
     }
 
     // 데이터 구성
@@ -76,6 +74,7 @@ function MainPage() {
     closeModal();
   };
 
+  const [minRoomId, setMinRoomId] = useRecoilState(minRoomIdState);
 
   useEffect(() => {
     async function fetchData() {
@@ -93,7 +92,6 @@ function MainPage() {
           const newMinRoomId = Math.min(...data.map((room) => room.roomId));
           setMinRoomId(newMinRoomId);
           setOngoingDebateRooms(data);
-          console.log(data)
         }
       } catch (error) {
         console.error("Error fetching data:", error);

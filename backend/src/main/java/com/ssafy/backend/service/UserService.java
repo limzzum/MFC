@@ -3,12 +3,14 @@ package com.ssafy.backend.service;
 import com.ssafy.backend.dto.LoginForm;
 import com.ssafy.backend.dto.Message;
 import com.ssafy.backend.dto.request.*;
+import com.ssafy.backend.dto.response.*;
 import com.ssafy.backend.entity.History;
 import com.ssafy.backend.entity.ItemCode;
 import com.ssafy.backend.entity.UploadFile;
 import com.ssafy.backend.entity.User;
 import com.ssafy.backend.file.FileStore;
 import com.ssafy.backend.repository.HistoryRepository;
+import com.ssafy.backend.repository.ItemCodeRepository;
 import com.ssafy.backend.repository.UploadFileRepository;
 import com.ssafy.backend.repository.UserRepository;
 
@@ -26,24 +28,24 @@ public class UserService {
 
     private final UserRepository repository;
     private final HistoryRepository historyRepository;
+    private final ItemCodeRepository itemCodeRepository;
     private final UploadFileRepository uploadFileRepository;
     private final FileStore fileStore;
 
     public Long regist(UserRegistDto user) {
+        ItemCode itemcode = itemCodeRepository.findById(1L).orElse(null);
         User registUser = User.builder().email(user.getEmail()).nickname(user.getNickname())
-                .password(user.getPassword())
+                 .password(user.getPassword())
+                 .colorItem(itemcode)
                 .build();
         User saved = repository.save(registUser);
         return saved.getId();
     }
 
     public void profileUpload(Long userId, UploadFile uploadFile){
-//        if(!uploadFile.getUploadFileName().equals("default.png")){
             UploadFile saveImage = uploadFileRepository.save(uploadFile);
-            User user = repository.findById(1L).orElse(null);
-        System.out.println(user);
-//            user.setProfile(saveImage);
-//        }
+            User user = repository.findById(userId).orElse(null);
+            user.setProfile(saveImage.getFilePath());
     }
 
     public Long login(LoginForm loginForm) {
@@ -79,9 +81,15 @@ public class UserService {
         return id;
     }
 
-    public User findUser(Long id) {
-
-        return repository.findById(id).orElse(null);
+    public UserInfoDto getUserInfo(Long id) {
+        User user = repository.findById(id).orElse(null);
+        UserInfoDto userInfoDto = UserInfoDto.builder()
+                                        .id(user.getId())
+                                        .email(user.getEmail())
+                                        .nickname(user.getNickname())
+                                        .profile(user.getProfile())
+                                        .colorItem(user.getColorItem()).build();
+        return userInfoDto;
     }
 
     public User findById(Long id) {
