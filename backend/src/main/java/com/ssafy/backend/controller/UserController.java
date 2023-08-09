@@ -99,9 +99,11 @@ public class UserController {
     }
 
     @PostMapping("/profile")
-    public ResponseEntity<Message> profile(@RequestParam MultipartFile profile) throws IOException {
-            UploadFile uploadFile = fileStore.storeFile(profile);
-            return ResponseEntity.ok(new Message(HttpStatus.OK, "프로필 업로드 성공", uploadFile.getId()));
+    public ResponseEntity<Message> profile(@RequestHeader("Authorization") String token, @RequestParam MultipartFile profile) throws IOException {
+        Long userId = Long.valueOf(securityService.getSubject(token));
+        UploadFile uploadFile = fileStore.storeFile(profile);
+        userService.profileUpload(userId, uploadFile);
+        return ResponseEntity.ok(new Message(HttpStatus.OK, "프로필 업로드 성공", uploadFile.getId()));
         }
 
 //    @GetMapping("/profile")
