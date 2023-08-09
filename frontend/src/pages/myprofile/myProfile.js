@@ -104,34 +104,46 @@ function MyProfile() {
   };
 
   // 프로필 업데이트
-  const handleProfileUpdate = () => {
-    console.log(finalChangeNickname);
-    if (finalChangeNickname === userInfo.nickname) {
-      // 변경 사항이 없는 경우 알림 띄우기
-      alert("변경 사항이 없습니다.");
-      return;
-    }
-
-    const config = {
-      headers: {
-        Authorization: `Bearer ${userToken}`,
-      },
-    };
-    const requestData = {
+  const handleProfileUpdate = async() => {
+    // const config = {
+    //   headers: {
+    //     Authorization: `Bearer ${userToken}`,
+    //   },
+    // };
+    const formData = new FormData()
+    
+    formData.append("file", selectedImage[0])
+    const requestData = [{
       nickname: finalChangeNickname,
-    };
+    }];
+    
+    const blob = new Blob([JSON.stringify(requestData)], {type: "application/json"}) 
+    
+    formData.append("data", blob)
 
     // PATCH 요청을 통해 변경 정보 전송
-    axios
-      .patch("https://goldenteam.site/api/user", requestData, config)
-      .then((response) => {
-        console.log(response.data);
-        console.log("프로필 변경 성공");
-        window.location.reload();
-      })
-      .catch((error) => {
-        console.error("프로필 변경 실패", error);
-      });
+    await axios({
+      method: "PATCH",
+      url: `https://goldenteam.site/api/user`,
+      mode: "cors",
+      headers: {
+        "Content-Type": "multipart/form-data", // Content-Type을 반드시 이렇게 하여야 한다.
+        Authorization: `Bearer ${userToken}`
+      
+      },
+      data: formData, // data 전송시에 반드시 생성되어 있는 formData 객체만 전송 하여야 한다.
+    })
+    // 이전 코드
+    // axios
+    //   .patch("https://goldenteam.site/api/user", requestData, config)
+    //   .then((response) => {
+    //     console.log(response.data);
+    //     console.log("프로필 변경 성공");
+    //     window.location.reload();
+    //   })
+    //   .catch((error) => {
+    //     console.error("프로필 변경 실패", error);
+    //   });
   };
 
   const handleEnterKeyPress = (event) => {
