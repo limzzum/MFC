@@ -49,6 +49,7 @@ export default function Test() {
         });
 
         setSession(mySession);
+        // eslint-disable-next-line
     }, []);
 
     useEffect(() => {
@@ -84,6 +85,7 @@ export default function Test() {
                 }
             });
         }
+        // eslint-disable-next-line
     }, [session, myUserName]);
 
 
