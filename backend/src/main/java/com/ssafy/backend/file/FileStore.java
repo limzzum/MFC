@@ -55,7 +55,7 @@ public String getFullPath(String filename){
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return new UploadFile(multipartFile.getOriginalFilename(),saveName, folderPath +File.separator + uuid);
+        return new UploadFile(multipartFile.getOriginalFilename(),saveName, folderPath +File.separator + uuid +  "-" + multipartFile.getOriginalFilename());
 
     }
 
