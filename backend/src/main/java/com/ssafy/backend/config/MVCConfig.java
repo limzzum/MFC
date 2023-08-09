@@ -39,7 +39,7 @@ public class MVCConfig implements WebMvcConfigurer {
             .allowedOrigins("http://localhost:3000", "https://goldenteam.site", "http://goldenteam.site")
             .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS", "HEAD", "PATCH")
             .allowedHeaders("*")
-            .allowCredentials(true)
+            .allowCredentials(false)
             .maxAge(3000);
     }
 
