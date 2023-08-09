@@ -5,6 +5,7 @@
     import UserVideoComponent from './Openvidu/UserVideoComponent';
 
     import ImageSegmentationComponent from './ImageSegmentation'
+    import Spectator from './FaceDetection'; // 컴포넌트 경로에 따라 경로를 알맞게 수정해주세요.
 
     const APPLICATION_SERVER_URL = 'https://goldenteam.site/';
 
@@ -254,11 +255,18 @@
                             />
                         </div>
 
-                        {mainStreamManager !== undefined ? (
+                        {/* {mainStreamManager !== undefined ? (
                             <div id="main-video" className="col-md-6">
                                 <ImageSegmentationComponent stream={mainStreamManager.stream} />
                             </div>
+                        ) : null} */}
+                        {mainStreamManager !== undefined ? (
+                            <div id="main-video" className="col-md-6">
+                                <ImageSegmentationComponent stream={mainStreamManager.stream} />
+                                <Spectator userVideoStream={mainStreamManager.stream} />
+                            </div>
                         ) : null}
+
                         <div id="video-container" className="col-md-6">
                             {publisher !== undefined ? (
                                 <div className="stream-container col-md-6 col-xs-6" onClick={() => handleMainVideoStream(publisher)}>
