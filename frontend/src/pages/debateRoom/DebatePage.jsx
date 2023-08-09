@@ -5,7 +5,7 @@ import { OpenVidu} from 'openvidu-browser';
 import { useParams } from 'react-router-dom';
 import {useRecoilValue} from 'recoil';
 import {useStatus, useRole, getDebateRoomState, getVoteResultState} from '../../recoil/debateStateAtom';
-import { Row, Col, Stack, Modal, Button, ProgressBar} from 'react-bootstrap';
+import { Row, Col, Stack, Modal, Button, ProgressBar, Container} from 'react-bootstrap';
 import Header from './components/Header';
 import ScreenShare from './components/ScreenShare';
 import Participate from './components/Participate';
@@ -37,21 +37,23 @@ function DebatePage() {
 
   const [mySessionId, setMySessionId] = useState(roomId)
   const [myUserName, setMyUserName] = useState(`${userInfo.nickname}`)
-  const [session, setSession] = useState(mySessionId);
+  const [session, setSession] = useState(undefined);
   const [mainStreamManager, setMainStreamManager] = useState(undefined);
-  const [publisher, setPublisher] = useState(userInfo.nickname);
+  const [publisher, setPublisher] = useState(undefined);
   const [subscribers, setSubscribers] = useState([]);
   const [currentVideoDevice, setCurrentVideoDevice] = useState(null);
 
   const OV = useRef(new OpenVidu());
 
-  // const handleChangeSessionId = useCallback((e) => {
-  //     setMySessionId(e.target.value);
-  // }, []);
+  const handleChangeSessionId = useCallback((e) => {
+      setMySessionId(myUserName);
+      // eslint-disable-next-line
+  }, []);
 
-  // const handleChangeUserName = useCallback((e) => {
-  //     setMyUserName(e.target.value);
-  // }, []);
+  const handleChangeUserName = useCallback((e) => {
+      setMyUserName(mySessionId);
+      // eslint-disable-next-line
+  }, []);
 
     /**
    * --------------------------------------------
@@ -109,26 +111,28 @@ function DebatePage() {
 
 
   // 여기가 원래 joinSession
-  useEffect(() => {
-      const mySession = OV.current.initSession();
+  const joinSession = useCallback(() => {
+    const mySession = OV.current.initSession();
 
-      mySession.on('streamCreated', (event) => {
-          const subscriber = mySession.subscribe(event.stream, undefined);
-          setSubscribers((subscribers) => [...subscribers, subscriber]);
+    mySession.on('streamCreated', (event) => {
+        console.log('streamCreated', event);
+        const subscriber = mySession.subscribe(event.stream, undefined);
+        setSubscribers((subscribers) => [...subscribers, subscriber]);
       });
 
       mySession.on('streamDestroyed', (event) => {
+          console.log('streamDestroyed', event);
           deleteSubscriber(event.stream.streamManager);
       });
 
       mySession.on('exception', (exception) => {
-        console.warn(exception);
+          console.warn(exception);
       });
-      
-      console.log("joinSession 되냐");
+      console.log('mySession', mySession);
       setSession(mySession);
-    }, [deleteSubscriber]);
-  
+      // eslint-disable-next-line
+  }, []);
+
   useEffect(() => {
       if (session) {
           // Get a token from the OpenVidu deployment
@@ -161,9 +165,11 @@ function DebatePage() {
                   console.log('There was an error connecting to the session:', error.code, error.message);
               }
           });
+      } else{
+        console.log("session이 없어요");
       }
       // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [session, myUserName]);
+  }, []);
 
 
 
@@ -178,10 +184,10 @@ function DebatePage() {
       setSession(undefined);
       setSubscribers([]);
       setMySessionId('SessionA');
-      setMyUserName('Participant' + Math.floor(Math.random() * 100));
+      setMyUserName(myUserName);
       setMainStreamManager(undefined);
       setPublisher(undefined);
-  }, [session]);
+  }, [myUserName, session]);
 
   const switchCamera = useCallback(async () => {
       try {
@@ -293,6 +299,38 @@ function DebatePage() {
 
   return (
     <div className={style.debatePage}>
+      { session === undefined ? (
+        <Container>
+          <form className="form-group" onSubmit={joinSession}>
+            <p>
+                  <label>Participant: </label>
+                  <input
+                      className="form-control"
+                      type="text"
+                      id="userName"
+                      value={myUserName}
+                      onChange={handleChangeUserName}
+                      required
+                  />
+              </p>
+              <p>
+                  <label> Session: </label>
+                  <input
+                      className="form-control"
+                      type="text"
+                      id="sessionId"
+                      value={mySessionId}
+                      onChange={handleChangeSessionId}
+                      required
+                  />
+              </p>
+              <p className="text-center">
+                  <input className="btn btn-lg btn-success" name="commit" type="submit" value="JOIN" />
+              </p>
+          </form>
+        </Container>
+      ): null}
+
       {session !== undefined ? (
         <>
           <Row>
