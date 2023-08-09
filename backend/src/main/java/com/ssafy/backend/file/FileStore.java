@@ -48,7 +48,7 @@ public String getFullPath(String filename){
 
         String folderPath = makeFolder();
         String uuid = UUID.randomUUID().toString();
-        String saveName = fileDir + File.separator + folderPath +File.separator + uuid;
+        String saveName = fileDir + File.separator + folderPath +File.separator + uuid + "-" + multipartFile.getOriginalFilename();
 
         try{
             multipartFile.transferTo(new File(saveName));
