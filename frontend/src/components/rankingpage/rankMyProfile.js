@@ -3,15 +3,16 @@ import styles from './rankMyProfile.module.css'
 import "bootstrap/dist/css/bootstrap.min.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCrown, faCoins, faHandPeace } from "@fortawesome/free-solid-svg-icons";
-
-import profileImage from '../../images/img.jpg'
+import baseProfile from "../../images/baseProfile.png";
 
 function RankingMyProfile({ myData, myWinRate }) {
-
+  
     return (
         <div className={styles.boxProfile}>
           <div className={`${styles.rankProfileImage} mx-auto`}>
-                <img className={`${styles.radiusImg} ${styles.imgCenter}`} src={profileImage} alt="profileImage" />
+                <img className={`${styles.radiusImg} ${styles.imgCenter}`} src={myData.profile
+                  ? `https://goldenteam.site/profiles/${myData.profile}`
+                  : baseProfile} alt="profileImage" />
             </div>
             <div className={`${styles.rankingMyprofileText} mb-5`}>{myData.nickName} 님</div>
               <div className={styles.historyBox}>
