@@ -387,6 +387,12 @@ function DebatePage() {
               setUserReady={setUserReady}
               debateRoomInfo={debateRoomInfo.data}
               voteResult={voteResult.data}
+              handlePlayerAVideoStream={handlePlayerAVideoStream}
+              publisher={publisher}
+              playerA={playerA}
+              playerB={playerB}
+              setPlayerA={setPlayerA}
+              setPlayerB={setPlayerB}
             />
           </Row>
           <Row>
