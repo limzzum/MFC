@@ -9,7 +9,7 @@ import { userState } from '../../recoil/token'
 import { userIdState } from '../../recoil/userId'
 import { useRecoilState } from 'recoil';
 import "bootstrap/dist/css/bootstrap.min.css";
-import 'jquery/dist/jquery.min.js'
+// import 'jquery/dist/jquery.min.js'
 import 'bootstrap/dist/js/bootstrap.min.js'
 
 function NavBar() {
@@ -71,8 +71,8 @@ function NavBar() {
                         <Link className={`${style.navbarMenu} nav-item nav-link text-center`} to={'/ranking'}>랭킹</Link>
                         <Link className={`${style.navbarMenu} nav-item nav-link text-center`} to={'/item'}>아이템</Link>
                         <Link className={`${style.navbarMenu} nav-item nav-link text-center`} to={'/profile'}>마이페이지</Link>
-                        <Button className={`${style.navbarMenu}, ${style.logoutbtn}`} onClick={handleLogout}>
-                        로그아웃</Button>
+                        <button className={`${style.navbarMenu} nav-item nav-link text-center`} onClick={handleLogout}>
+                        로그아웃</button>
                     </div>
                 </div>
            </div>
