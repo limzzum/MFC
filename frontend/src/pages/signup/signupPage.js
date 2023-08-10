@@ -141,108 +141,72 @@ function SignupPage() {
 
   return (
     <div className={style.SignupPageWrapper}>
+      <div className={style.Signupform}>
       <div className={style.SignupPageInnerContent}>
         <img className={style.SignupPageLogoImage} src={logoImage} alt="Logo" />
         <p className={style.SignupPageMFC}>Mouth Fighting Championship</p>
 
+        <p className={style.SingupTitle}>회원가입</p>
+
         <div className={style.SignupPageContentWrap}>
-          <div className={style.SignupPageInputTitle}>인증메일 전송</div>
+          <div className={style.SignupPageInputTitle}>이메일</div>
           <div className={style.SignupPageInputWrap}>
             {/* 이메일 인증 전송 */}
-            <InputGroup>
+            <InputGroup className="mb-2">
                 <Form.Control
-                    placeholder="email"
+                    style={{ borderColor:"var(--blue-200)", fontSize:"16px"}}
+                    placeholder="이메일 입력"
                     aria-label="eamilAuth"
                     aria-describedby="email"
                     value={email}
                     onChange={handleEmail}
                 />
-                <Button 
-                    style={{ backgroundColor:"#354C6FFF" }}
-                    variant="outline-light" 
+                <button 
+                    className={`btn  ${style.SignupBtn}`}
                     id="emailAuth"
                     onClick={handleSendEmailClick}
                 >
-                  전송
-                </Button>
+                  확인
+                </button>
             </InputGroup>
-            {/* <input
-              className={`${style.SignupPageInput} form-control`}
-              style={{ fontSize: "12px", width: "145px" }}
-              value={email}
-              onChange={handleEmail}
-              disabled={emailValid && authCodeValid}
-            />
-            <button
-              className={`btn btn-outline-secondary ${style.SignupPageBtn}`}
-              style={{
-                fontSize: "14px",
-                color: "white",
-                backgroundColor: emailValid ? "#354c6fff" : "grey",
-                borderRadius: "10px",
-                border: "none",
-              }}
-              onClick={handleSendEmailClick}
-              disabled={!emailValid}
-            >
-              전송
-            </button> */}
           </div>
 
           {isActive && (
             <div>
-              <span className={style.SignupPageInputTitle}>인증번호 입력</span>
-              <span style={{ fontSize: "12px", marginLeft: "10px", color: "red" }}>{formatTime()}</span>
+              <p className={style.SignupPageInputTitle}>인증번호 입력
+              <span style={{ fontSize: "15px", marginLeft: "10px", color: "red", textAlign:"left"}}>{formatTime()}</span>
+              </p>
             </div>
           )}
           {isActive && (
             <div className={style.SignupPageInputWrap}>
               {/* 이메일 인증 번호 입력 */}
-              <InputGroup>
+              <InputGroup className="mb-2">
                 <Form.Control
-                    placeholder="000000"
+                    style={{ borderColor:"var(--blue-200)", fontSize:"16px"}}
+                    placeholder="인증번호 입력"
                     aria-label="emailCheck"
                     aria-describedby="emailCheck"
                     value={authCode}
                     onChange={(e) => setAuthCode(e.target.value)}
                 />
-                <Button 
-                    style={{ backgroundColor:"#354C6FFF" }}
-                    variant="outline-light" 
+                <button 
+                    className={`btn  ${style.SignupBtn}`}
                     id="emailAuth"
                     onClick={handleAuthButtonClick}
                 >
-                  전송
-                </Button>
+                  확인
+                </button>
               </InputGroup>
-              {/* <input
-                className={`SignupPageInput form-control ${style.SignupPageInput}`}
-                style={{ fontSize: "12px", width: "145px" }}
-                value={authCode}
-                onChange={(e) => setAuthCode(e.target.value)}
-                disabled={authCodeValid}
-              />
-              <button
-                className={`btn btn-outline-secondary ${style.SignupPageBtn}`}
-                style={{
-                  fontSize: "14px",
-                  color: "white",
-                  backgroundColor: authCodeValid ? "grey" : "#354c6fff",
-                  border: "none",
-                }}
-                onClick={handleAuthButtonClick}
-                disabled={authCodeValid}
-              >
-                인증
-              </button> */}
             </div>
           )}
 
           <div className={style.SignupPageInputTitle}>닉네임</div>
           <div className={style.SignupPageInputWrap}>
             {/* 닉네임 중복 확인 */}
-            <InputGroup>
+            <InputGroup className="mb-2">
                 <Form.Control
+                    style={{ borderColor:"var(--blue-200)", fontSize:"16px"}}
                     placeholder="닉네임"
                     aria-label="nickNameCheck"
                     aria-describedby="nickNameCheck"
@@ -251,74 +215,49 @@ function SignupPage() {
                       setNickname(e.target.value);
                       setNicknameAvailable(false);
                       }}  />
-                <Button 
-                    style={{ backgroundColor:"#354C6FFF" }}
-                    variant="outline-light" 
+                <button 
+                    className={`btn  ${style.SignupBtn}`}
                     id="emailAuth"
                     onClick={handleNicknameButtonClick}
                 >
                   확인
-                </Button>
+                </button>
               </InputGroup>
-            {/* <input
-              className={`SignupPageInput form-control ${style.SignupPageInput}`}
-              style={{ fontSize: "12px", width: "145px" }}
-              value={nickname}
-              onChange={(e) => {
-                setNickname(e.target.value);
-                setNicknameAvailable(false); // Reset nickname availability when input changes
-              }}
-              disabled={!authCodeValid || nicknameAvailable}
-            />
-            <button
-              className={`btn btn-outline-secondary ${style.SignupPageBtn}`}
-              style={{
-                fontSize: "14px",
-                color: "white",
-                backgroundColor: emailValid || !authCodeValid ? "grey" : "#354c6fff",
-                borderRadius: "10px",
-                border: "none",
-              }}
-              onClick={handleNicknameButtonClick}
-              disabled={!authCodeValid || nicknameAvailable}
-            >
-              확인
-            </button> */}
           </div>
 
-          <div className={style.SignupPageInputTitle}>비밀번호</div>
+<div className="  mb-2">
+          <div className={`${style.SignupPageInputTitle}`}>비밀번호</div>
           <input
             className={`SignupPageInput form-control ${style.SignupPageInput}`}
-            style={{ fontSize: "12px", width: "200px" }}
             type="password"
             value={password}
             onChange={handlePassword}
           />
           {!passwordValid && password.length > 0 && (
-            <div style={{ color: "red", fontSize: "12px" }}>영문, 숫자, 특수문자 포함 8자 이상 입력</div>
+            <div className={style.ErrorText}>영문, 숫자, 특수문자 포함 8자 이상 입력</div>
           )}
-
+</div>
+<div className="  mb-2">
           <div className={style.SignupPageInputTitle}>비밀번호 확인</div>
           <input
             className={`SignupPageInput form-control ${style.SignupPageInput}`}
-            style={{ fontSize: "12px", width: "200px" }}
             type="password"
             value={passwordConfirm}
             onChange={(e) => setPasswordConfirm(e.target.value)}
           />
-          {passwordMismatch && <div style={{ color: "red", fontSize: "12px" }}>비밀번호가 일치하지 않습니다.</div>}
+          {passwordMismatch && <div className={style.ErrorText}>비밀번호가 일치하지 않습니다.</div>}
         </div>
-
+        </div>
         <div className={style.SignupPageBottomBtn}>
           <button
-            className={`btn btn-outline-secondary ${style.SignupPageBtn}`}
+            className={`btn btn-outline-light ${style.SignupBtn}`}
             style={{
               fontSize: "18px",
               color: "white",
-              backgroundColor:
-                emailValid || !passwordValid || passwordMismatch || !nicknameAvailable || !authCodeValid
-                  ? "grey"
-                  : "#354c6fff",
+              // backgroundColor:
+              //   !emailValid || !passwordValid || passwordMismatch || !nicknameAvailable || !authCodeValid
+              //     ? "var(--blue-800)"
+              //     : "blue",
               borderRadius: "10px",
               border: "none",
               width: "100%",
@@ -329,6 +268,7 @@ function SignupPage() {
             가입하기
           </button>
         </div>
+      </div>
       </div>
     </div>
   );
