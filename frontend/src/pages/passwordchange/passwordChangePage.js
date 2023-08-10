@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import style from "./passwordChange.module.css";
 import "bootstrap/dist/css/bootstrap.min.css";
-import logoImage from "../../images/logo.png";
 import { useNavigate } from "react-router-dom";
 import { Button } from "react-bootstrap";
 import axios from "axios";
@@ -40,7 +39,10 @@ function PasswordChangePage() {
       },
     };
     try {
-      const response = await axios.get(`https://goldenteam.site/api/user`, config);
+      const response = await axios.get(
+        `https://goldenteam.site/api/user`,
+        config
+      );
       setValidPassword(response.data.data.password);
     } catch (error) {
       console.error("사용자 정보 가져오기 오류", error);
@@ -73,11 +75,19 @@ function PasswordChangePage() {
   const passwordSubmit = (event) => {
     event.preventDefault();
 
-    if (currentPassword.trim() === validPassword && newPassword === confirmPassword && regex.test(newPassword)) {
+    if (
+      currentPassword.trim() === validPassword &&
+      newPassword === confirmPassword &&
+      regex.test(newPassword)
+    ) {
       updatePassword();
     } else {
       // 모든 칸이 채워지지 않았을 때
-      if (currentPassword.trim() === "" || newPassword.trim() === "" || confirmPassword.trim() === "") {
+      if (
+        currentPassword.trim() === "" ||
+        newPassword.trim() === "" ||
+        confirmPassword.trim() === ""
+      ) {
         alert("모든 비밀번호 입력란을 채워주세요.");
         // 바꿀 비밀번호가 확인 비밀번호와 같지 않을 때
       } else if (newPassword !== confirmPassword) {
@@ -89,7 +99,9 @@ function PasswordChangePage() {
         alert("현재 비밀번호와 일치하지 않습니다.");
         setCurrentPassword("");
       } else if (!regex.test(newPassword)) {
-        alert("비밀번호는 영문자, 숫자, 특수문자를 포함하여 8자 이상 20자 이하여야 합니다.");
+        alert(
+          "비밀번호는 영문자, 숫자, 특수문자를 포함하여 8자 이상 20자 이하여야 합니다."
+        );
         setNewPassword("");
         setConfirmPassword("");
       }
@@ -98,56 +110,52 @@ function PasswordChangePage() {
 
   return (
     <div className={style.wrapper}>
-      <div className={style.innerContent}>
-        <img className={style.logoImage} src={logoImage} alt="none"></img>
-        <p className={style.MFC}>Mouth Fighting Championship</p>
-      </div>
-      <div>
-        <hr />
-        <p className={`mx-3 ${style.title} mt-2`}>비밀번호 변경</p>
-        <hr />
-        <div className={`${style.contentWrap}`}>
-          <form onSubmit={passwordSubmit}>
-            <div className={style.profileText}>
-              <div className={style.inputtitle}>현재비밀번호</div>
+      <p className={`${style.passwordTitle}`}>비밀번호 변경</p>
+      <hr className="mb-5" />
+      <div className={`${style.contentWrap}`}>
+        <form onSubmit={passwordSubmit}>
+          <div className="my-4">
+            <div className={`${style.passwordWrap}`}>
+              <p className={style.inputtitle}>현재 비밀번호</p>
               <div className={style.inputWrap}>
                 <input
                   className="input form-control w-100"
                   type="password"
                   placeholder="현재 비밀번호"
                   value={currentPassword}
-                  style={{ fontSize: "18px" }}
                   onChange={(e) => setCurrentPassword(e.target.value)}
                 />
               </div>
-              <div className={style.inputtitle}>변경 비밀번호</div>
+            </div>
+            <div className={`${style.passwordWrap}`}>
+              <p className={style.inputtitle}>변경 비밀번호</p>
               <div className={style.inputWrap}></div>
               <input
                 className="input form-control w-100"
                 type="password"
                 placeholder="변경할 비밀번호"
                 value={newPassword}
-                style={{ fontSize: "18px" }}
                 onChange={(e) => setNewPassword(e.target.value)}
               />
-              <div className={style.inputtitle}>비밀번호 확인</div>
+            </div>
+            <div className={`${style.passwordWrap}`}>
+              <p className={style.inputtitle}>비밀번호 확인</p>
               <div className={style.inputWrap}></div>
               <input
                 className="input form-control w-100"
                 type="password"
                 placeholder="비밀번호 확인"
                 value={confirmPassword}
-                style={{ fontSize: "18px" }}
                 onChange={(e) => setConfirmPassword(e.target.value)}
               />
             </div>
-            <div className="mx-auto">
-              <Button className="w-100 mb-4" variant="primary" type="submit">
+            <div className="my-4">
+              <button className={`${style.btnChange} btn w-100`} type="submit">
                 변경
-              </Button>
+              </button>
             </div>
-          </form>
-        </div>
+          </div>
+        </form>
       </div>
     </div>
   );
