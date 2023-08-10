@@ -42,6 +42,7 @@ public class HistoryService {
       HistoryResDto historyResDto = HistoryResDto.builder()
           .userId(history.getUser().getId())
           .nickName(history.getUser().getNickname())
+          .profile(history.getUser().getProfile())
           .coin(history.getCoin())
           .exp(history.getExperience())
           .winCount(history.getWinCount())
