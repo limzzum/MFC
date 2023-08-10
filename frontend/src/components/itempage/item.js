@@ -9,18 +9,27 @@ import {
   faSprayCan,
   faCoins,
 } from "@fortawesome/free-solid-svg-icons";
-import { Button } from "react-bootstrap";
 import styles from "./itemStore.module.css";
 import axios from "axios";
 
-function Item({ iconName, name, price, userCoin, color, userId, updateUserInfo }) {
+function Item({
+  iconName,
+  name,
+  price,
+  userCoin,
+  color,
+  userId,
+  updateUserInfo,
+}) {
   const [purchasing, setPurchasing] = useState(false);
 
   const handlePurchase = () => {
     if (userCoin >= price) {
       setPurchasing(true);
       axios
-        .post(`https://goldenteam.site/api/item/purchase/${userId}?itemName=${name}`)
+        .post(
+          `https://goldenteam.site/api/item/purchase/${userId}?itemName=${name}`
+        )
         .then((response) => {
           console.log(response);
           console.log(`Item ${name} purchased successfully!`);
@@ -52,15 +61,18 @@ function Item({ iconName, name, price, userCoin, color, userId, updateUserInfo }
   return (
     <div className={`${styles.itemBox}`}>
       <FontAwesomeIcon icon={iconComponent} size="3x" color={color} />
-
-      <div className="pt-4">{name}</div>
-      <div className="my-1">
+      <p className={`${styles.itemName} py-2`}>{name}</p>
+      <p className={`${styles.coin} pb-2`}>
         <FontAwesomeIcon icon={faCoins} color="orange" />
-        {price}
-      </div>
-      <Button className="btn btn-primary" disabled={purchasing} onClick={handlePurchase}>
-        {purchasing ? "구매 중..." : "구입하기"}
-      </Button>
+        &nbsp;{price}
+      </p>
+      <button
+        className={`${styles.buyBtn} btn`}
+        disabled={purchasing}
+        onClick={handlePurchase}
+      >
+        {purchasing ? "구매 중..." : "구매"}
+      </button>
     </div>
   );
 }
