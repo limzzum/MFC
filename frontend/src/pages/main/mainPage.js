@@ -1,15 +1,13 @@
-import React, { useState, useEffect } from "react";
 import axios from "axios";
 import style from "./mainPage.module.css";
 import { BsPlusSquare } from "react-icons/bs";
 import DebateRoomCard from "../../components/mainpage/debateRoomCard";
-import { useRecoilState } from "recoil";
-import { minRoomIdState, minWaitingRoomIdState } from "../../recoil/mainPageRoomId";
 import { useRecoilValue } from "recoil";
 import { userState } from "../../recoil/token";
 import { userIdState } from "../../recoil/userId";
 import { useNavigate } from "react-router-dom";
 import CreateRoomModal from "../../components/mainpage/createRoomModal";
+import {useEffect, useState} from "react"
 
 function MainPage() {
   const [showModal, setShowModal] = useState(false);
@@ -21,7 +19,7 @@ function MainPage() {
   const [extensionCount, setExtensionCount] = useState("");
   const [ongoingDebateRooms, setOngoingDebateRooms] = useState([]);
   const [waitingDebateRooms, setWaitingDebateRooms] = useState([]);
-  const [minWaitingRoomId, setMinWaitingRoomId] = useRecoilState(minWaitingRoomIdState);
+  const [minWaitingRoomId, setMinWaitingRoomId] = useState(null);
   const userId = useRecoilValue(userIdState);
   const tokenis = useRecoilValue(userState);
   const navigate = useNavigate();
@@ -75,7 +73,7 @@ function MainPage() {
     closeModal();
   };
 
-  const [minRoomId, setMinRoomId] = useRecoilState(minRoomIdState);
+  const [minRoomId, setMinRoomId] = useState(null);
 
   useEffect(() => {
     async function fetchData() {
