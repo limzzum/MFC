@@ -48,6 +48,14 @@
     justify-content: center;
   }
 
-/* .imgbox {
-    height: 50px;
-} */
+.imgbox {
+    width: 50%;      
+    height: 9rem;    
+    overflow: hidden;  
+}
+
+.fullWidthImage {
+    width: 100%;     
+    height: 100%;
+    object-fit: cover; 
+}
