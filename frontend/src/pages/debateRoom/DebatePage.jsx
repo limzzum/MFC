@@ -35,13 +35,17 @@ function DebatePage() {
   // 참가자 준비여부
   const [userReady, setUserReady] = useState(false);
 
-  const [mySessionId, setMySessionId] = useState(roomId)
-  const [myUserName, setMyUserName] = useState(`${userInfo.nickname}`)
+
+  // OpenVidu 코드 시작
+  const [mySessionId, setMySessionId] = useState(roomId);
+  const [myUserName, setMyUserName] = useState(userInfo.nickname);
   const [session, setSession] = useState(undefined);
   const [mainStreamManager, setMainStreamManager] = useState(undefined);
+  const [playerA, setPlayerA] = useState(undefined);
+  const [playerB, setPlayerB] = useState(undefined);
   const [publisher, setPublisher] = useState(undefined);
   const [subscribers, setSubscribers] = useState([]);
-  const [currentVideoDevice, setCurrentVideoDevice] = useState(null);
+  const [, setCurrentVideoDevice] = useState(null);
 
   const OV = useRef(new OpenVidu());
 
@@ -58,6 +62,21 @@ function DebatePage() {
           setMainStreamManager(stream);
       }
   }, [mainStreamManager]);
+
+  const handlePlayerAVideoStream = useCallback(async (stream) => {
+    if (playerA !== stream) {
+      setPlayerA(stream);
+    }else if(playerA === stream){
+      setPlayerA(undefined);
+    }
+    // eslint-disable-next-line
+  },[playerA]);
+
+  const handlePlayerBVideoStream = useCallback((stream) => {
+      if(playerB !== stream){
+        setPlayerB(stream);
+      }
+  },[playerB]);
 
   const joinSession = useCallback(() => {
       const mySession = OV.current.initSession();
@@ -99,6 +118,14 @@ function DebatePage() {
 
                   session.publish(publisher);
 
+                  if(playerA){
+                    session.publish(playerA);
+                  }
+
+                  if(playerB){
+                    session.publish(playerB);
+                  }
+
                   const devices = await OV.current.getDevices();
                   const videoDevices = devices.filter(device => device.kind === 'videoinput');
                   const currentVideoDeviceId = publisher.stream.getMediaStream().getVideoTracks()[0].getSettings().deviceId;
@@ -106,6 +133,7 @@ function DebatePage() {
 
                   setMainStreamManager(publisher);
                   setPublisher(publisher);
+                  setSubscribers((prevSubscribers) => [publisher, ...prevSubscribers]);
                   setCurrentVideoDevice(currentVideoDevice);
               } catch (error) {
                   console.log('There was an error connecting to the session:', error.code, error.message);
@@ -126,41 +154,41 @@ function DebatePage() {
       OV.current = new OpenVidu();
       setSession(undefined);
       setSubscribers([]);
-      setMySessionId('SessionA');
-      setMyUserName('Participant' + Math.floor(Math.random() * 100));
+      setMySessionId(undefined);
+      setMyUserName(userInfo.nickname);
       setMainStreamManager(undefined);
       setPublisher(undefined);
-  }, [session]);
+  }, [session, userInfo.nickname]);
 
-  const switchCamera = useCallback(async () => {
-      try {
-          const devices = await OV.current.getDevices();
-          const videoDevices = devices.filter(device => device.kind === 'videoinput');
+  // const switchCamera = useCallback(async () => {
+  //     try {
+  //         const devices = await OV.current.getDevices();
+  //         const videoDevices = devices.filter(device => device.kind === 'videoinput');
   
-          if (videoDevices && videoDevices.length > 1) {
-              const newVideoDevice = videoDevices.filter(device => device.deviceId !== currentVideoDevice.deviceId);
+  //         if (videoDevices && videoDevices.length > 1) {
+  //             const newVideoDevice = videoDevices.filter(device => device.deviceId !== currentVideoDevice.deviceId);
   
-              if (newVideoDevice.length > 0) {
-                  const newPublisher = OV.current.initPublisher(undefined, {
-                      videoSource: newVideoDevice[0].deviceId,
-                      publishAudio: true,
-                      publishVideo: true,
-                      mirror: true,
-                  });
+  //             if (newVideoDevice.length > 0) {
+  //                 const newPublisher = OV.current.initPublisher(undefined, {
+  //                     videoSource: newVideoDevice[0].deviceId,
+  //                     publishAudio: true,
+  //                     publishVideo: true,
+  //                     mirror: true,
+  //                 });
   
-                  if (session) {
-                      await session.unpublish(mainStreamManager);
-                      await session.publish(newPublisher);
-                      setCurrentVideoDevice(newVideoDevice[0]);
-                      setMainStreamManager(newPublisher);
-                      setPublisher(newPublisher);
-                  }
-              }
-          }
-      } catch (e) {
-          console.error(e);
-      }
-  }, [currentVideoDevice, session, mainStreamManager]);
+  //                 if (session) {
+  //                     await session.unpublish(mainStreamManager);
+  //                     await session.publish(newPublisher);
+  //                     setCurrentVideoDevice(newVideoDevice[0]);
+  //                     setMainStreamManager(newPublisher);
+  //                     setPublisher(newPublisher);
+  //                 }
+  //             }
+  //         }
+  //     } catch (e) {
+  //         console.error(e);
+  //     }
+  // }, [currentVideoDevice, session, mainStreamManager]);
 
   const deleteSubscriber = useCallback((streamManager) => {
       setSubscribers((prevSubscribers) => {
@@ -186,21 +214,6 @@ function DebatePage() {
       };
   }, [leaveSession]);
 
-  /**
-   * --------------------------------------------
-   * GETTING A TOKEN FROM YOUR APPLICATION SERVER
-   * --------------------------------------------
-   * The methods below request the creation of a Session and a Token to
-   * your application server. This keeps your OpenVidu deployment secure.
-   *
-   * In this sample code, there is no user control at all. Anybody could
-   * access your application server endpoints! In a real production
-   * environment, your application server must identify the user to allow
-   * access to the endpoints.
-   *
-   * Visit https://docs.openvidu.io/en/stable/application-server to learn
-   * more about the integration of OpenVidu in your application server.
-   */
   const getToken = useCallback(async () => {
       return createSession(mySessionId).then(sessionId =>
           createToken(sessionId),
@@ -221,8 +234,9 @@ function DebatePage() {
       return response.data; // The token
   };
 
+  // OpenViidu 코드 종료
 
-
+  console.log("subscribers: ", subscribers[0]);
   console.log('debateRoomInfo: ', debateRoomInfo);
   console.log('voteResult: ', voteResult);
 
@@ -285,6 +299,7 @@ function DebatePage() {
   }, [status]);
 
   console.log(`session: ${session}`);
+  // console.log("이거 안찍히냐",subscribers[0].session.options.metadata);
 
   return (
     <div className={style.debatePage}>
@@ -326,7 +341,6 @@ function DebatePage() {
             <Header 
               status={status}
             />
-            <Button onClick={() => setStatus('ongoing')}>ongoing</Button>
           </Row>
           <Row className='debatePart'>
             <Col xs={9}>
@@ -346,6 +360,12 @@ function DebatePage() {
                 onRoleChange={handleRoleChange}
                 playerStatus={playerStatus}
                 setPlayerStatus={setPlayerStatus}
+                handlePlayerAVideoStream={handlePlayerAVideoStream}
+                publisher={publisher}
+                playerA={playerA}
+                playerB={playerB}
+                setPlayerA={setPlayerA}
+                setPlayerB={setPlayerB}
               />
             </Col>
             <Col xs={3}>
@@ -378,7 +398,7 @@ function DebatePage() {
           </Row>
 
           {mainStreamManager !== undefined ? (
-            <div>
+            <div className='mainstream'>
               <UserVideoComponent streamManager={mainStreamManager}>mainStreamManager</UserVideoComponent>
             </div>
           ) : (
@@ -387,23 +407,25 @@ function DebatePage() {
 
           <div>
             {publisher !== undefined ? (
-              <div onClick={() => handleMainVideoStream(publisher)}>
+              <div className='publisher' onClick={() => handleMainVideoStream(publisher)}>
                 <UserVideoComponent streamManager={publisher} />
               </div>
             ) : null}
             {subscribers.map((sub, i) => (
-              <div key={sub.id} onClick={() => handleMainVideoStream(sub)}>
+              <div className='subscribers' key={sub.id} onClick={() => handleMainVideoStream(sub)}>
                 <span>{sub.id}</span>
                 <UserVideoComponent streamManager={sub} />
               </div>
             ))}
-            <input
-                className="btn btn-large btn-success"
-                type="button"
-                id="buttonSwitchCamera"
-                onClick={switchCamera}
-                value="Switch Camera"
-            />
+            <Button onClick={() => handlePlayerAVideoStream(publisher)}>A</Button>
+          </div>
+
+          <div>
+            {playerA !== undefined ? (
+              <div className='playerA' >
+                <UserVideoComponent streamManager={playerA} />
+              </div>
+            ) : null}
           </div>
 
           {/* 토론 결과 Modal*/}
