@@ -17,7 +17,7 @@ public class HistoryResDto {
 
   private Long userId;
   private String nickName;
-//  private MultipartFile profile;
+  private String profile;
   private int coin;
   private int exp;
   private int winCount;
@@ -26,11 +26,11 @@ public class HistoryResDto {
   private double winRate;
 
 
-  HistoryResDto(Long userId, String nickName, int winCount, int loseCount,
+  HistoryResDto(Long userId, String nickName, String profile, int winCount, int loseCount,
       int drawCount) {
     this.userId = userId;
     this.nickName = nickName;
-//    this.profile = profile;
+    this.profile = profile;
     this.winCount = winCount;
     this.loseCount = loseCount;
     this.drawCount = drawCount;
@@ -41,7 +41,7 @@ public class HistoryResDto {
   public static HistoryResDto of(History history) {
     return new HistoryResDto(history.getUser().getId(),
         history.getUser().getNickname(),
-//        history.getUser().getProfile(),
+        history.getUser().getProfile(),
         history.getCoin(),
         history.getExperience(),
         history.getWinCount(),
