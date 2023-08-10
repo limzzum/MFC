@@ -39,6 +39,12 @@ public class UserService {
                  .colorItem(itemcode)
                 .build();
         User saved = repository.save(registUser);
+        History history = History.builder()
+            .user(saved)
+            .coin(0)
+            .experience(0)
+            .build();
+        historyRepository.save(history);
         return saved.getId();
     }
 
