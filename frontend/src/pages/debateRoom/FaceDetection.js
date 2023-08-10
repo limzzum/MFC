@@ -43,6 +43,7 @@ function Spectator() {
                 userVideoStream.getTracks().forEach((track) => track.stop());
             }
         };
+    // eslint-disable-next-line
     }, []);
 
     useEffect(() => {
