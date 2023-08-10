@@ -1,8 +1,21 @@
 import React from "react";
 import {  Row, Col } from "react-bootstrap";
 import style from '../debatePage.module.css';
+import UserVideoComponent from "../Openvidu/UserVideoComponent";
 
-function Participate({status, role, onRoleChange, playerStatus, setPlayerStatus}){
+function Participate({status, role, onRoleChange, playerStatus, setPlayerStatus, handlePlayerAVideoStream, publisher, playerA, playerB, setPlaerA, setPlayerB}){
+    
+    const handlePlayerAChangeToSpectator = (publisher) => {
+        onRoleChange('participant');
+        setPlayerStatus((prevStatus) => [true, prevStatus[1]]);
+        handlePlayerAVideoStream(publisher);
+    };
+
+    const handlePlayerBChangeToSpectator = () => {
+        onRoleChange('participant');
+        setPlayerStatus((prevStatus) => [prevStatus[0], true]);
+    }
+    
     return (
         <div>
             <Row>
@@ -13,14 +26,15 @@ function Participate({status, role, onRoleChange, playerStatus, setPlayerStatus}
                             status === 'waiting' &&
                             <button 
                                 className={style.button} 
-                                onClick={() => {
-                                    onRoleChange('participant');
-                                    setPlayerStatus((prevStatus) => [true, prevStatus[1]]);
-                                }}
+                                onClick={handlePlayerAChangeToSpectator(publisher)}
                             >
                                 참가하기
                             </button>
                         }
+                        { 
+                            playerA !== undefined ? (
+                                <UserVideoComponent streamManager={playerA} />
+                            ):null}
                     </div>
                     <span>남은 연장 횟수: </span>
                 </Col>
@@ -31,10 +45,7 @@ function Participate({status, role, onRoleChange, playerStatus, setPlayerStatus}
                             status === 'waiting' &&
                             <button 
                                 className={style.button} 
-                                onClick={() => {
-                                    onRoleChange('participant');
-                                    setPlayerStatus((prevStatus) => [prevStatus[0], true]);
-                                }}
+                                onClick={handlePlayerBChangeToSpectator}
                             >
                                 참가하기
                             </button>
