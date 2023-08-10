@@ -280,11 +280,35 @@ function DebatePage() {
   };
 
   const totalVote = result.data.a.vote + result.data.b.vote;
+
+
   
 
   // recoil 상태를 사용하는 훅
   const [status, setStatus] = useStatus();
   const [role, setRole] = useRole();
+  const [viewers, setViewers] = useState();
+  const [players, setPlayers] = useState();
+
+  // 참가자 목록 가져오기 수정 필요
+  // useEffect( () => {
+  //   const getParticipants = async () => {
+  //     try {
+  //       const response = await axios.get(`${APPLICATION_SERVER_URL}api/viewer/list/${roomId}`);
+  //       const data = response.data;
+  //       console.log('data: ', data);
+  //       setViewers(data.data.viewers);
+  //       setPlayers(data.data.players);
+
+  //       console.log('viewers: ', viewers[0]);
+  //       console.log('players: ', players);
+  //     } catch (error) {
+  //       console.log(error);
+  //     }
+  //   };
+  //   getParticipants();
+  //   // eslint-disable-next-line
+  // }, []);
 
   const handleStatusChange = (newStatus) => {
     setStatus(newStatus);
