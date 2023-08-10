@@ -3,7 +3,7 @@ import axios from "axios";
 import logoImage from "../../images/logo.png";
 import style from "./signupPage.module.css";
 import { useNavigate } from "react-router-dom";
-import { Button, Form, InputGroup } from "react-bootstrap";
+import { Form, InputGroup } from "react-bootstrap";
 
 
 function SignupPage() {
