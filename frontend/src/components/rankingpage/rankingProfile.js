@@ -1,5 +1,5 @@
 import styles from './rankingProfile.module.css';
-import profileImage from '../../images/img.jpg';
+import baseProfile from "../../images/baseProfile.png";
 
 function RankingProfile({ rank, userData }) {
     return (
@@ -9,7 +9,9 @@ function RankingProfile({ rank, userData }) {
             </div>
             
             <div className={styles.contentBox}>
-                <img className={`${styles.radiusImg} w-50`} src={profileImage} alt="profileImage" />
+                <img className={`${styles.radiusImg} w-50`} src={userData.profile
+                  ? `https://goldenteam.site/profiles/${userData.profile}`
+                  : baseProfile} alt="profileImage" />
             </div>
             <div className={styles.contentBox}>{userData.nickName}</div>
             <div className={styles.contentBox}>
