@@ -46,61 +46,11 @@ function DebatePage() {
   const OV = useRef(new OpenVidu());
 
   const handleChangeSessionId = useCallback((e) => {
-      setMySessionId(myUserName);
-      // eslint-disable-next-line
+      setMySessionId(e.target.value);
   }, []);
 
   const handleChangeUserName = useCallback((e) => {
-      setMyUserName(mySessionId);
-      // eslint-disable-next-line
-  }, []);
-
-    /**
-   * --------------------------------------------
-   * GETTING A TOKEN FROM YOUR APPLICATION SERVER
-   * --------------------------------------------
-   * The methods below request the creation of a Session and a Token to
-   * your application server. This keeps your OpenVidu deployment secure.
-   *
-   * In this sample code, there is no user control at all. Anybody could
-   * access your application server endpoints! In a real production
-   * environment, your application server must identify the user to allow
-   * access to the endpoints.
-   *
-   * Visit https://docs.openvidu.io/en/stable/application-server to learn
-   * more about the integration of OpenVidu in your application server.
-   */
-    const getToken = useCallback(async () => {
-      return createSession(mySessionId).then(sessionId =>
-          createToken(sessionId),
-      );
-  }, [mySessionId]);
-
-  const createSession = async (sessionId) => {
-      const response = await axios.post(APPLICATION_SERVER_URL + 'api/sessions', { customSessionId: sessionId }, {
-          headers: { 'Content-Type': 'application/json', },
-      });
-      return response.data; // The sessionId
-  };
-
-  const createToken = async (sessionId) => {
-      const response = await axios.post(APPLICATION_SERVER_URL + 'api/sessions/' + sessionId + '/connections', {}, {
-          headers: { 'Content-Type': 'application/json', },
-      });
-      return response.data; // The token
-  };
-
-  const deleteSubscriber = useCallback((streamManager) => {
-    setSubscribers((prevSubscribers) => {
-        const index = prevSubscribers.indexOf(streamManager);
-        if (index > -1) {
-            const newSubscribers = [...prevSubscribers];
-            newSubscribers.splice(index, 1);
-            return newSubscribers;
-        } else {
-            return prevSubscribers;
-        }
-      });
+      setMyUserName(e.target.value);
   }, []);
 
   const handleMainVideoStream = useCallback((stream) => {
@@ -109,26 +59,22 @@ function DebatePage() {
       }
   }, [mainStreamManager]);
 
-
-  // 여기가 원래 joinSession
   const joinSession = useCallback(() => {
-    const mySession = OV.current.initSession();
+      const mySession = OV.current.initSession();
 
-    mySession.on('streamCreated', (event) => {
-        console.log('streamCreated', event);
-        const subscriber = mySession.subscribe(event.stream, undefined);
-        setSubscribers((subscribers) => [...subscribers, subscriber]);
+      mySession.on('streamCreated', (event) => {
+          const subscriber = mySession.subscribe(event.stream, undefined);
+          setSubscribers((subscribers) => [...subscribers, subscriber]);
       });
 
       mySession.on('streamDestroyed', (event) => {
-          console.log('streamDestroyed', event);
           deleteSubscriber(event.stream.streamManager);
       });
 
       mySession.on('exception', (exception) => {
           console.warn(exception);
       });
-      console.log('mySession', mySession);
+
       setSession(mySession);
       // eslint-disable-next-line
   }, []);
@@ -165,12 +111,9 @@ function DebatePage() {
                   console.log('There was an error connecting to the session:', error.code, error.message);
               }
           });
-      } else{
-        console.log("session이 없어요");
       }
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
+      // eslint-disable-next-line
+  }, [session, myUserName]);
 
 
   const leaveSession = useCallback(() => {
@@ -184,10 +127,10 @@ function DebatePage() {
       setSession(undefined);
       setSubscribers([]);
       setMySessionId('SessionA');
-      setMyUserName(myUserName);
+      setMyUserName('Participant' + Math.floor(Math.random() * 100));
       setMainStreamManager(undefined);
       setPublisher(undefined);
-  }, [myUserName, session]);
+  }, [session]);
 
   const switchCamera = useCallback(async () => {
       try {
@@ -219,7 +162,18 @@ function DebatePage() {
       }
   }, [currentVideoDevice, session, mainStreamManager]);
 
-
+  const deleteSubscriber = useCallback((streamManager) => {
+      setSubscribers((prevSubscribers) => {
+          const index = prevSubscribers.indexOf(streamManager);
+          if (index > -1) {
+              const newSubscribers = [...prevSubscribers];
+              newSubscribers.splice(index, 1);
+              return newSubscribers;
+          } else {
+              return prevSubscribers;
+          }
+      });
+  }, []);
 
   useEffect(() => {
       const handleBeforeUnload = (event) => {
@@ -231,6 +185,41 @@ function DebatePage() {
           window.removeEventListener('beforeunload', handleBeforeUnload);
       };
   }, [leaveSession]);
+
+  /**
+   * --------------------------------------------
+   * GETTING A TOKEN FROM YOUR APPLICATION SERVER
+   * --------------------------------------------
+   * The methods below request the creation of a Session and a Token to
+   * your application server. This keeps your OpenVidu deployment secure.
+   *
+   * In this sample code, there is no user control at all. Anybody could
+   * access your application server endpoints! In a real production
+   * environment, your application server must identify the user to allow
+   * access to the endpoints.
+   *
+   * Visit https://docs.openvidu.io/en/stable/application-server to learn
+   * more about the integration of OpenVidu in your application server.
+   */
+  const getToken = useCallback(async () => {
+      return createSession(mySessionId).then(sessionId =>
+          createToken(sessionId),
+      );
+  }, [mySessionId]);
+
+  const createSession = async (sessionId) => {
+      const response = await axios.post(APPLICATION_SERVER_URL + 'api/sessions', { customSessionId: sessionId }, {
+          headers: { 'Content-Type': 'application/json', },
+      });
+      return response.data; // The sessionId
+  };
+
+  const createToken = async (sessionId) => {
+      const response = await axios.post(APPLICATION_SERVER_URL + 'api/sessions/' + sessionId + '/connections', {}, {
+          headers: { 'Content-Type': 'application/json', },
+      });
+      return response.data; // The token
+  };
 
 
 
@@ -384,14 +373,17 @@ function DebatePage() {
             <Spectator
               debateRoomInfo={debateRoomInfo.data}
               voteResult={voteResult.data}
+              subscriber={subscribers}
             />
           </Row>
 
           {mainStreamManager !== undefined ? (
             <div>
-              <UserVideoComponent streamManager={mainStreamManager} />
+              <UserVideoComponent streamManager={mainStreamManager}>mainStreamManager</UserVideoComponent>
             </div>
-          ) : null}
+          ) : (
+            <div>no MainStream</div>
+          )}
 
           <div>
             {publisher !== undefined ? (
