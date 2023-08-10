@@ -6,7 +6,10 @@ export default function UserVideoComponent({ streamManager }) {
 
     const getNicknameTag = () => {
         // Gets the nickName of the user
-        return JSON.parse(streamManager.stream.connection.data).clientData;
+        if (streamManager && streamManager.stream && streamManager.stream.connection) {
+            return JSON.parse(streamManager.stream.connection.data).clientData;
+        }
+        return "";
     }
 
     return (
