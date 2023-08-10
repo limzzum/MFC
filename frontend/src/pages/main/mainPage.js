@@ -20,6 +20,9 @@ function MainPage() {
   const [ongoingDebateRooms, setOngoingDebateRooms] = useState([]);
   const [waitingDebateRooms, setWaitingDebateRooms] = useState([]);
   const [minWaitingRoomId, setMinWaitingRoomId] = useState(null);
+  const [userProfileImg1,] = useState("")
+  const [userProfileImg2,] = useState("")
+
   const userId = useRecoilValue(userIdState);
   const tokenis = useRecoilValue(userState);
   const navigate = useNavigate();
@@ -51,6 +54,8 @@ function MainPage() {
       overTimeCount: parseInt(extensionCount),
       atopic: title1,
       btopic: title2,
+      atopicUserUrl : userProfileImg1,
+      btopicUserUrl : userProfileImg2,
     };
 
     // 서버에 POST 요청 보내기
@@ -112,7 +117,8 @@ function MainPage() {
 
         const response = await axios.get(apiUrl);
         const data = response.data.data;
-
+        console.log(response)
+        console.log(data)
         if (data.length > 0) {
           const newMinRoomId = Math.min(...data.map((room) => room.roomId));
           setMinWaitingRoomId(newMinRoomId);
@@ -152,6 +158,8 @@ function MainPage() {
               debateTime={room.totalTime}
               speechTime={room.talkTime}
               roomId={room.roomId}
+              userProfileImg1 = {room.atopicUserUrl}
+              userProfileImg2 = {room.atopicUserUr2}
             />
           ))}
         </div>
@@ -168,6 +176,8 @@ function MainPage() {
               debateTime={room.totalTime}
               speechTime={room.talkTime}
               roomId={room.roomId}
+              userProfileImg1 = {room.atopicUserUrl}
+              userProfileImg2 = {room.atopicUserUr2}
             />
           ))}
         </div>
