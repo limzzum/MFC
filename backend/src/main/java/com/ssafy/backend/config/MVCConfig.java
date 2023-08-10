@@ -17,10 +17,12 @@ public class MVCConfig implements WebMvcConfigurer {
 //        registry.addInterceptor(loginCheckInterCeptor())
 //                .order(1)
 //                .addPathPatterns("/**")
-//                .excludePathPatterns("/", "/api/user", "/api/user/login", "/api/user/logout/**","/api/user/refresh/**","/api/place/**",
+//                .excludePathPatterns("/", "/api/user/login", "/api/user/logout/**","/api/user/email/**",
+//                        "/api/user/nickname/**", "/api/user/test",
 //                        "/**/*.css","/**/*.jpg","/**/*.jpeg","/**/*.png","/**/*.peg", "/**/*.js", "/error/**"
 //                    );
 //    }
+
 //    @Override
 //    public void addCorsMappings(CorsRegistry registry) {
 //        registry.addMapping("/**")
