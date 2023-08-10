@@ -3,7 +3,7 @@
     import React, { useCallback, useEffect, useRef, useState } from 'react';
     import './Test.css';
     import UserVideoComponent from './Openvidu/UserVideoComponent';
-
+    import AudioSegmentationComponent from './AudioSegmentationComponent';
     import ImageSegmentationComponent from './ImageSegmentation'
     import Spectator from './FaceDetection'; // 컴포넌트 경로에 따라 경로를 알맞게 수정해주세요.
 
@@ -264,6 +264,7 @@
                             <div id="main-video" className="col-md-6">
                                 <ImageSegmentationComponent stream={mainStreamManager.stream} />
                                 <Spectator userVideoStream={mainStreamManager.stream} />
+                                <AudioSegmentationComponent stream={mainStreamManager.stream} />
                             </div>
                         ) : null}
 
