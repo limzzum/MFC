@@ -56,9 +56,9 @@ function DebateBtns({ status, role, onRoleChange, debateRoomInfo, setPlayerStatu
 
   const handleRoleChangeToSpectator = () => {
     onRoleChange("spectator");
+    handlePlayerAVideoStream(publisher);
     setPlayerStatus([false, false]);
     setUserReady(false);
-    
   };
 
   return (

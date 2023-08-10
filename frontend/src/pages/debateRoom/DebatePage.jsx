@@ -65,18 +65,31 @@ function DebatePage() {
 
   const handlePlayerAVideoStream = useCallback(async (stream) => {
     if (playerA !== stream) {
+      if(playerB !== undefined){
+        setPlayerB(undefined);
+        setPlayerStatus((prevStatus) => [true, false]);
+      }
       setPlayerA(stream);
-    }else if(playerA === stream){
+    } else if(playerA === stream){
       setPlayerA(undefined);
+      setPlayerStatus((prevStatus) => [false, prevStatus[1]]);
     }
     // eslint-disable-next-line
-  },[playerA]);
-
+  },[playerA, playerB]);
+  
   const handlePlayerBVideoStream = useCallback((stream) => {
-      if(playerB !== stream){
+    if(playerB !== stream){
+      if(playerA === stream){
+        setPlayerA(undefined);
+        setPlayerStatus((prevStatus) => [false, true]);
+
+        }
         setPlayerB(stream);
+      } else if(playerB === stream){
+        setPlayerB(undefined);
+        setPlayerStatus((prevStatus) => [prevStatus[0], false]);
       }
-  },[playerB]);
+  },[playerA, playerB]);
 
   const joinSession = useCallback(() => {
       const mySession = OV.current.initSession();
@@ -234,6 +247,8 @@ function DebatePage() {
       return response.data; // The token
   };
 
+  console.log(`subscribers: ${subscribers[0]}`);
+
   // OpenViidu 코드 종료
 
   console.log("subscribers: ", subscribers[0]);
@@ -299,7 +314,6 @@ function DebatePage() {
   }, [status]);
 
   console.log(`session: ${session}`);
-  // console.log("이거 안찍히냐",subscribers[0].session.options.metadata);
 
   return (
     <div className={style.debatePage}>
@@ -361,6 +375,7 @@ function DebatePage() {
                 playerStatus={playerStatus}
                 setPlayerStatus={setPlayerStatus}
                 handlePlayerAVideoStream={handlePlayerAVideoStream}
+                handlePlayerBVideoStream={handlePlayerBVideoStream}
                 publisher={publisher}
                 playerA={playerA}
                 playerB={playerB}
