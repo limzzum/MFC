@@ -1,21 +1,13 @@
 .wrapper {
   margin: auto;
-  width: 500px;
+  width: 600px;
   margin-top: 50px;
-  /* line-height: 14px; */
-
-  /* margin: 100px auto; */
-
-  /* border: 1px solid #dadada; */
-  /* background: skyblue; */
 }
 .profileTitle {
   font-family: inherit;
   font-size: 18px !important;
-  /* font-weight: 800; */
-  /* letter-spacing: 0; */
-  /* padding-left: 20px; */
 }
+
 .username {
   color: var(--blue-800);
   font-size: 25px !important;
@@ -40,40 +32,51 @@ input[type="text"] {
   font-size: 16px;
 }
 
-.profileImage {
-  height: 100px;
-  width: 100px;
-  float: left;
-  position: relative;
-  display: flex;
-  margin-left: 37px;
+.MypageBtn:hover {
+  color: white;
+  background-color: var(--blue-600) !important;
+  font-size: 16px;
 }
+
+.wrapperProfile {
+  padding-top: 5px;
+}
+
+.profileImage {
+  height: 7rem;
+  width: 7rem;
+  display: flex;
+  position: relative;
+  margin: auto;
+}
+
 .radiusImg {
   border-radius: 50%;
+  border: solid var(--blue-800) 2px;
+  /* border: dashed var(--blue-800) 2px; */
+  /* border: dotted var(--blue-800) 3px; */
 }
+
 .imgSetting {
   position: absolute;
-  right: 0px;
+  right: 0;
   bottom: 0;
-  width: 30px;
-  height: 30px;
+  width: 40px;
+  height: 40px;
+  line-height: 40px;
   overflow: hidden;
   border-radius: 50%;
+  background: var(--blue-800);
+  text-align: center;
+  margin: auto;
+  color: white;
+  cursor: pointer;
 }
-.profileText {
-  width: 500px;
-  height: 300px;
-  font-family: inherit;
-  padding-left: 100px;
-  text-align: left;
-  font-size: 16px;
-  letter-spacing: 2px;
-  margin-left: 50px;
+
+.imgSetting:hover {
+  background: var(--blue-600);
 }
-li {
-  margin-top: 20px;
-  list-style-type: none;
-}
+
 .profileTitle {
   color: rgba(0, 0, 0, 1);
   width: 200px;
@@ -83,33 +86,33 @@ li {
   font-size: 16px;
   letter-spacing: 0;
 }
+
 .pwText {
+  float: right;
   font-size: 16px;
-  text-align: right;
-  width: 100%;
-  margin-left: 50%;
+  text-align: left;
+  text-decoration: none;
+  color: var(--blue-600);
 }
+
 .btnChange {
-  background-color: var(--blue-700);
-  width: fit-content;
-  height: fit-content;
-  padding: var(--spacing-2);
-
-  border-radius: var(--radius-md);
   color: var(--white);
+  background-color: var(--blue-800);
   font-size: 16px;
-  margin: 0 auto;
-  width: 150px;
 }
-.btnDelete {
-  background-color: var(--red-600);
-  width: fit-content;
-  height: fit-content;
-  padding: var(--spacing-2);
 
-  border-radius: var(--radius-md);
+.btnChange:hover {
+  background-color: var(--blue-600);
   color: var(--white);
+}
+
+.btnDelete {
+  color: var(--white);
+  background-color: var(--red-600);
   font-size: 16px;
-  margin: 0 auto;
-  width: 150px;
+}
+
+.btnDelete:hover {
+  color: var(--white);
+  background-color: var(--red-500);
 }
