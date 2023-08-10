@@ -179,8 +179,8 @@ function MyProfile() {
   return (
     <div className={styles.wrapper}>
       <p className={styles.profileTitle}>
-        <strong className={styles.username}>{userInfo.nickname}</strong> 님의
-        정보
+        <strong className={styles.username}>{userInfo.nickname}</strong>
+        <label style={{ fontSize: "20px" }}>&nbsp;님의 정보</label>
       </p>
       <hr className="mb-5" />
       <Row className="my-4">
