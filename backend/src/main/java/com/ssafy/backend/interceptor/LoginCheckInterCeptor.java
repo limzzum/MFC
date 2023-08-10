@@ -22,6 +22,11 @@ public class LoginCheckInterCeptor implements HandlerInterceptor {
         if (HttpMethod.OPTIONS.matches(request.getMethod())) {
             return true;
         }
+
+        String path = request.getRequestURL().substring(request.getRequestURL().lastIndexOf("/")+1);
+        if(path.equals("user") && request.getMethod().equals("POST")){
+            return true;
+        }
         String accessToken = request.getHeader("Authorization");
 
         if(accessToken == null){
