@@ -247,11 +247,12 @@ function DebatePage() {
       return response.data; // The token
   };
 
-  console.log(`subscribers: ${subscribers[0]}`);
-
+  subscribers.forEach(subscriber => {
+    const clientData = JSON.parse(subscriber.stream.connection.data).clientData;
+    console.log(`subscriber clientData: ${clientData}`);
+  })
   // OpenViidu 코드 종료
 
-  console.log("subscribers: ", subscribers[0]);
   console.log('debateRoomInfo: ', debateRoomInfo);
   console.log('voteResult: ', voteResult);
 
@@ -312,8 +313,6 @@ function DebatePage() {
       setShowResultModal(false);
     }
   }, [status]);
-
-  console.log(`session: ${session}`);
 
   return (
     <div className={style.debatePage}>
