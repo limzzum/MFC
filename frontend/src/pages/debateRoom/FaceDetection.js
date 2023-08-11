@@ -51,6 +51,7 @@ function Spectator() {
 
     return () => {
       if (videoRef.current) {
+        // eslint-disable-next-line
         videoRef.current.removeEventListener("canplay", handleCanPlay);
       }
     };
