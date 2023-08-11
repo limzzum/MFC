@@ -183,6 +183,7 @@ function MainPage() {
 
   const ongoingContainerRef = useRef(null);
   const [isongoingLoading, setisongoingLoading] = useState(false);
+  
   // 무한크롤링 (OngoingRoom)
   useEffect(() => {
     if (ongoingContainerRef.current) {
@@ -218,7 +219,7 @@ function MainPage() {
   
       if (newData.length > 0) {
         const newMinRoomId = Math.min(...newData.map((room) => room.roomId));
-        setMinWaitingRoomId(newMinRoomId);
+        setMinRoomId(newMinRoomId);
         setOngoingDebateRooms(newData);
       }
     } catch (error) {
