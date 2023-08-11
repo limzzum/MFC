@@ -41,6 +41,8 @@
   display: flex;
   flex-wrap: wrap;
   justify-content: flex-start;
+  height: 400px;
+  overflow: scroll;
   gap: 20px;
 }
 
