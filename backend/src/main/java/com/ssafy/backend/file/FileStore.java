@@ -15,6 +15,7 @@ public class FileStore {
 
 //    @Value("${file.dir")
     private String fileDir = "/var/www/profiles"; //"C:\\Users\\SSAFY\\Documents\\profile";
+    private String roomFileDir = "/var/www/room-files";
 
 
 
@@ -56,6 +57,24 @@ public String getFullPath(String filename){
             e.printStackTrace();
         }
         return new UploadFile(multipartFile.getOriginalFilename(),saveName, folderPath +File.separator + uuid +  "-" + multipartFile.getOriginalFilename());
+
+    }
+
+    public UploadFile storeRoomFile(MultipartFile multipartFile) throws IOException {
+        if(multipartFile ==null){
+            return null;
+        }
+
+        String folderPath = makeFolder();
+        String storeFileName = createStoreFileName(multipartFile.getOriginalFilename());
+        String saveName = roomFileDir + File.separator + folderPath +File.separator + storeFileName;
+
+        try{
+            multipartFile.transferTo(new File(saveName));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return new UploadFile(multipartFile.getOriginalFilename(),saveName, folderPath +File.separator + storeFileName);
 
     }
 
