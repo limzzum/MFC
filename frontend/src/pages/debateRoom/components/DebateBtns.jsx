@@ -12,6 +12,9 @@ function DebateBtns({ status, role, onRoleChange, debateRoomInfo, setPlayerStatu
   const votingCooldown = debateRoomInfo.talkTime * 120;
   const [remainingTime, setRemainingTime] = useState(votingCooldown);
 
+  const [isVideoOn, setIsVideoOn] = useState(true);
+  const [isAudioOn, setIsAudioOn] = useState(true);
+
   const handleVote = async () => {
     // 투표 로직 구현
     console.log(`Selected ${selectedTopic}`);
@@ -32,6 +35,16 @@ function DebateBtns({ status, role, onRoleChange, debateRoomInfo, setPlayerStatu
       console.log("투표 결과 전송 실패:", e);
     }
   };
+
+  const handleVideoToggle = () => {
+    setIsVideoOn(!isVideoOn);
+    publisher.publishVideo(!isVideoOn);
+  };
+
+  const handleAudioToggle = () => {
+    setIsAudioOn(!isAudioOn);
+    publisher.publishAudio(!isAudioOn);
+  }
 
   useEffect(() => {
     if (!isVotingEnabled) {
@@ -163,8 +176,14 @@ function DebateBtns({ status, role, onRoleChange, debateRoomInfo, setPlayerStatu
               투표하기
             </Button>
           )}
-          <Button variant="primary">캠 OFF</Button>
-          {role === "participant" && <Button variant="primary">마이크 OFF</Button>}
+          <Button variant="primary" onClick={handleVideoToggle}>
+            {isVideoOn ? "CAM OFF" : "CAM ON"}
+          </Button>
+          {role === "participant" && 
+            <Button variant="primary" onClick={handleAudioToggle}>
+              {isAudioOn ? "음소거" : "음소거 해제"}
+            </Button>
+          }
         </Col>
       </Row>
 
