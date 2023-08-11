@@ -13,8 +13,6 @@ const DebateRoomCard = ({ title1, title2, debateTime, speechTime, roomId, userPr
   const userId = useRecoilValue(userIdState);
   const userInfo = useRecoilValue(userInfoState);
   const navigate = useNavigate();
-  console.log(userProfileImg2)
-  console.log(title1)
 
   const handleJoinClick = async () => {
     const url = `https://goldenteam.site/api/viewer/${roomId}/${userId.userId}`;
