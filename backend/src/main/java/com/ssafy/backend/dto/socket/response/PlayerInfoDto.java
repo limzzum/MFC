@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 @Builder
 public class PlayerInfoDto {
 
+    private Long userId;
     private String nickname;
     private String profile;
     private ItemCode colorItem;
