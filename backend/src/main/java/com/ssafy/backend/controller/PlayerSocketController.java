@@ -28,7 +28,7 @@ public class PlayerSocketController {
         Long roomId = playerDto.getRoomId();
         User user = userService.findById(playerDto.getUserId());
         playerService.regist(PlayerRegistDto.builder().roomId(roomId).userId(user.getId()).isATopic(playerDto.isTopicA()).build());
-        PlayerInfoDto playerInfoDto = PlayerInfoDto.builder().nickname(user.getNickname()).profile(user.getProfile())
+        PlayerInfoDto playerInfoDto = PlayerInfoDto.builder().userId(user.getId()).nickname(user.getNickname()).profile(user.getProfile())
                         .colorItem(user.getColorItem()).isReady(false).isTopicA(playerDto.isTopicA()).build();
         messagingTemplate.convertAndSend("/from/player/" + roomId, playerInfoDto);
     }
@@ -38,7 +38,7 @@ public class PlayerSocketController {
         Long roomId = playerDto.getRoomId();
         User user = userService.findById(playerDto.getUserId());
         playerService.changeStatus(new PlayerDto(roomId,user.getId()), playerDto.isReady());
-        PlayerInfoDto playerInfoDto = PlayerInfoDto.builder().nickname(user.getNickname()).profile(user.getProfile())
+        PlayerInfoDto playerInfoDto = PlayerInfoDto.builder().userId(user.getId()).nickname(user.getNickname()).profile(user.getProfile())
                 .colorItem(user.getColorItem()).isReady(playerDto.isReady()).isTopicA(playerDto.isTopicA()).build();
         messagingTemplate.convertAndSend("/from/player/" + roomId, playerInfoDto);
     }
