@@ -131,14 +131,6 @@ function DebatePage() {
 
                   session.publish(publisher);
 
-                  if(playerA){
-                    session.publish(playerA);
-                  }
-
-                  if(playerB){
-                    session.publish(playerB);
-                  }
-
                   const devices = await OV.current.getDevices();
                   const videoDevices = devices.filter(device => device.kind === 'videoinput');
                   const currentVideoDeviceId = publisher.stream.getMediaStream().getVideoTracks()[0].getSettings().deviceId;
@@ -291,24 +283,24 @@ function DebatePage() {
   const [players, setPlayers] = useState();
 
   // 참가자 목록 가져오기 수정 필요
-  // useEffect( () => {
-  //   const getParticipants = async () => {
-  //     try {
-  //       const response = await axios.get(`${APPLICATION_SERVER_URL}api/viewer/list/${roomId}`);
-  //       const data = response.data;
-  //       console.log('data: ', data);
-  //       setViewers(data.data.viewers);
-  //       setPlayers(data.data.players);
+  useEffect( () => {
+    const getParticipants = async () => {
+      try {
+        const response = await axios.get(`${APPLICATION_SERVER_URL}api/viewer/list/${roomId}`);
+        const data = response.data;
+        console.log('data: ', data);
+        setViewers(data.data.viewers);
+        setPlayers(data.data.players);
 
-  //       console.log('viewers: ', viewers[0]);
-  //       console.log('players: ', players);
-  //     } catch (error) {
-  //       console.log(error);
-  //     }
-  //   };
-  //   getParticipants();
-  //   // eslint-disable-next-line
-  // }, []);
+        console.log('viewers: ', viewers[0]);
+        console.log('players: ', players);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    getParticipants();
+    // eslint-disable-next-line
+  }, []);
 
   const handleStatusChange = (newStatus) => {
     setStatus(newStatus);
@@ -351,6 +343,7 @@ function DebatePage() {
                       id="userName"
                       value={myUserName}
                       onChange={handleChangeUserName}
+                      disabled
                       required
                   />
               </p>
@@ -377,6 +370,7 @@ function DebatePage() {
           <Row>
             <Header 
               status={status}
+              leaveSession={leaveSession}
             />
           </Row>
           <Row className='debatePart'>
@@ -461,15 +455,6 @@ function DebatePage() {
                 <UserVideoComponent streamManager={sub} />
               </div>
             ))}
-            <Button onClick={() => handlePlayerAVideoStream(publisher)}>A</Button>
-          </div>
-
-          <div>
-            {playerA !== undefined ? (
-              <div className='playerA' >
-                <UserVideoComponent streamManager={playerA} />
-              </div>
-            ) : null}
           </div>
 
           {/* 토론 결과 Modal*/}
