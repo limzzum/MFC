@@ -2,9 +2,9 @@ package com.ssafy.backend.controller;
 
 import com.ssafy.backend.dto.request.PlayerDto;
 import com.ssafy.backend.dto.request.PlayerRegistDto;
-import com.ssafy.backend.dto.request.PlayerUpdateDto;
 import com.ssafy.backend.dto.socket.request.PlayerItemDto;
 import com.ssafy.backend.dto.socket.request.PlayerRequestDto;
+import com.ssafy.backend.dto.socket.response.ItemFailDto;
 import com.ssafy.backend.dto.socket.response.PlayerInfoDto;
 import com.ssafy.backend.dto.socket.response.PlayerItemInfoDto;
 import com.ssafy.backend.entity.User;
@@ -48,12 +48,15 @@ public class PlayerSocketController {
         Long roomId = playerDto.getRoomId();
         String usedItem = itemService.getUsedItem(playerDto.getUserId(), playerDto.getRoomId(), playerDto.getItemCodeId());
 
+        User user = userService.findById(playerDto.getUserId());
         if(usedItem.equals("아이템 사용 가능")){
-            User user = userService.findById(playerDto.getUserId());
-            PlayerItemInfoDto playerItemInfoDto = PlayerItemInfoDto.builder().nickname(user.getNickname())
-                            .profile(user.getProfile()).colorItem(user.getColorItem())
+            PlayerItemInfoDto playerItemInfoDto = PlayerItemInfoDto.builder().userId(user.getId()).nickname(user.getNickname())
                             .isTopicA(playerDto.isTopicA()).itemCodeId(playerDto.getItemCodeId()).build();
             messagingTemplate.convertAndSend("/from/player/" + roomId,playerItemInfoDto );
+        }else {
+            ItemFailDto itemFailDto = ItemFailDto.builder().userId(user.getId()).nickname(user.getNickname()).itemCodeId(playerDto
+                    .getItemCodeId()).message("아이템 사용 불가능").build();
+            messagingTemplate.convertAndSend("/from/player/" + roomId,itemFailDto );
         }
     }
 
