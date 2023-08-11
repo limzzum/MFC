@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 public class PlayerRequestDto {
     private Long roomId;
     private Long userId;
-    private boolean isTopicA;
+    private boolean isATopic;
     private boolean isReady;
 }
 
