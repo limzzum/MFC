@@ -1,11 +1,35 @@
 import React, { useState, useEffect } from "react";
-import { Row, Col, Button, Modal, Form, OverlayTrigger, Tooltip } from "react-bootstrap";
+import {
+  Row,
+  Col,
+  Button,
+  Modal,
+  Form,
+  OverlayTrigger,
+  Tooltip,
+} from "react-bootstrap";
 import axios from "axios";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCross, faHeartCirclePlus, faUserClock, faVolumeXmark, faHand } from "@fortawesome/free-solid-svg-icons";
+import {
+  faCross,
+  faHeartCirclePlus,
+  faUserClock,
+  faVolumeXmark,
+  faHand,
+} from "@fortawesome/free-solid-svg-icons";
 import style from "../debatePage.module.css";
+import SockJS from "sockjs-client";
+import Stomp from "webstomp-client";
 
-function DebateBtns({ status, role, onRoleChange, debateRoomInfo, setPlayerStatus, setUserReady, voteResult }) {
+function DebateBtns({
+  status,
+  role,
+  onRoleChange,
+  debateRoomInfo,
+  setPlayerStatus,
+  setUserReady,
+  voteResult,
+}) {
   const [showModal, setShowModal] = useState(false);
   const [selectedTopic, setSelectedTopics] = useState([]);
   const [isVotingEnabled, setVotingEnabled] = useState(true);
@@ -15,24 +39,36 @@ function DebateBtns({ status, role, onRoleChange, debateRoomInfo, setPlayerStatu
   const handleVote = async () => {
     // 투표 로직 구현
     console.log(`Selected ${selectedTopic}`);
-    setShowModal(false);
-    setVotingEnabled(false); // 투표 후 투표 비활성화
 
     try {
-      const base_url = "https://goldenteam.site/api/viewer/vote";
-      const roomId = 1;
-      const userId = 3;
-      const voteChoice = selectedTopic;
+      // rooId랑 userId 보내주셔서 넣어주세요 ( 충돌날까봐 우선 작성안했습니다 )
+      const roomId = 35;
+      const userId = 326;
+      const base_url = `http://localhost:8081/api/viewer/vote/${roomId}/${userId}`;
 
-      const url = `${base_url}/${roomId}/${userId}?vote=${voteChoice}`;
-
-      const response = await axios.patch(url, { vote: voteChoice });
-      console.log("투표 결과 전송 성공:", response.data);
+      const response = await axios.patch(base_url, null, {
+        params: { vote: selectedTopic },
+      });
+      if (response.data.status === "BAD_REQUEST") {
+        console.log("투표 가능한 시간이 아닙니다");
+      } else {
+        console.log("투표 결과 전송 성공:", response.data);
+      }
     } catch (e) {
       console.log("투표 결과 전송 실패:", e);
     }
-  };
 
+    setShowModal(false);
+    setVotingEnabled(false); // 투표 후 투표 비활성화
+  };
+  useEffect(() => {
+    const sock = new SockJS("http://localhost:8081/mfc");
+    const stompClient = Stomp.over(sock);
+
+    stompClient.connect({}, function () {
+      console.log("WebSocket 연결 성공");
+    });
+  }, []);
   useEffect(() => {
     if (!isVotingEnabled) {
       // 투표 후 재투표 가능 시간 설정
@@ -73,7 +109,10 @@ function DebateBtns({ status, role, onRoleChange, debateRoomInfo, setPlayerStatu
         </Col>
         <Col xs={2}>
           {role === "participant" && status === "waiting" && (
-            <Button variant="outline-primary" onClick={handleRoleChangeToSpectator}>
+            <Button
+              variant="outline-primary"
+              onClick={handleRoleChangeToSpectator}
+            >
               관전자로 돌아가기
             </Button>
           )}
@@ -163,7 +202,9 @@ function DebateBtns({ status, role, onRoleChange, debateRoomInfo, setPlayerStatu
             </Button>
           )}
           <Button variant="primary">캠 OFF</Button>
-          {role === "participant" && <Button variant="primary">마이크 OFF</Button>}
+          {role === "participant" && (
+            <Button variant="primary">마이크 OFF</Button>
+          )}
         </Col>
       </Row>
 
@@ -194,7 +235,9 @@ function DebateBtns({ status, role, onRoleChange, debateRoomInfo, setPlayerStatu
               disabled={!isVotingEnabled}
             />
           </Form>
-          {!isVotingEnabled && <p>{remainingTime}초 뒤에 재투표가 가능합니다.</p>}
+          {!isVotingEnabled && (
+            <p>{remainingTime}초 뒤에 재투표가 가능합니다.</p>
+          )}
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={() => setShowModal(false)}>

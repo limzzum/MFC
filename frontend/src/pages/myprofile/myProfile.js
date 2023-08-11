@@ -1,15 +1,21 @@
 import { useState, useEffect } from "react";
 import styles from "./myProfile.module.css";
 import baseProfile from "../../images/baseProfile.png";
-import settingIcon from "../../images/settingIcon.png";
 import "bootstrap/dist/css/bootstrap.min.css";
-import { Button ,Row, InputGroup, Form } from "react-bootstrap";
-import { Link } from 'react-router-dom';
-import { useNavigate } from "react-router-dom"; 
+import { Row, InputGroup, Form, Col } from "react-bootstrap";
+import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import UserDeleteModal from "../../components/myprofile/userdeletemodal";
 import { userState } from "../../recoil/token";
 import { useRecoilValue } from "recoil";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faAt,
+  faCircleUser,
+  faCamera,
+  faKey,
+} from "@fortawesome/free-solid-svg-icons";
 
 function MyProfile() {
   const [selectedImage, setSelectedImage] = useState(null);
@@ -41,9 +47,12 @@ function MyProfile() {
     };
 
     try {
-      const response = await axios.get(`https://goldenteam.site/api/user`, config);
+      const response = await axios.get(
+        `https://goldenteam.site/api/user`,
+        config
+      );
       setUserInfo(response.data.data);
-      console.log(response.data.data)
+      console.log(response.data.data);
 
       setFinalChangeNickname(response.data.data.nickname); // 바로 nickname을 업데이트하도록 수정
     } catch (error) {
@@ -65,9 +74,10 @@ function MyProfile() {
         if (response.data.status === "ACCEPTED") {
           alert("확인되었습니다!");
           if (changeNickname === "") {
-            setFinalChangeNickname(userInfo.nickname)
+            setFinalChangeNickname(userInfo.nickname);
           } else {
-          setFinalChangeNickname(changeNickname);}
+            setFinalChangeNickname(changeNickname);
+          }
         } else {
           alert("이미 사용 중인 닉네임입니다.");
           setFinalChangeNickname(`${userInfo.nickname}`);
@@ -109,14 +119,14 @@ function MyProfile() {
     const config = {
       headers: {
         Authorization: `Bearer ${userToken}`,
-        "Content-Type": "multipart/form-data", 
+        "Content-Type": "multipart/form-data",
       },
     };
     const formData = new FormData();
     if (selectedImage) {
       formData.append("profile", selectedImage);
     }
-    
+
     try {
       const response = await axios.post(
         "https://goldenteam.site/api/user/profile",
@@ -133,16 +143,15 @@ function MyProfile() {
 
   // 프로필 업데이트
   const handleProfileUpdate = () => {
-    
     const config = {
       headers: {
         Authorization: `Bearer ${userToken}`,
       },
     };
     if (selectedImage) {
-      console.log("y")
-      profileImgUpload()
-      };
+      console.log("y");
+      profileImgUpload();
+    }
     const requestData = {
       nickname: finalChangeNickname,
     };
@@ -152,7 +161,7 @@ function MyProfile() {
       .then((response) => {
         console.log(response.data);
         console.log("프로필 변경 성공");
-        alert("프로필 변경이 완료되었습니다.")
+        alert("프로필 변경이 완료되었습니다.");
         window.location.reload();
       })
       .catch((error) => {
@@ -169,12 +178,15 @@ function MyProfile() {
 
   return (
     <div className={styles.wrapper}>
-      <p className={styles.profileTitle}>My Profile</p>
-      <div>
-        <hr />
-        <form>
+      <p className={styles.profileTitle}>
+        <strong className={styles.username}>{userInfo.nickname}</strong>
+        <label style={{ fontSize: "20px" }}>&nbsp;님의 정보</label>
+      </p>
+      <hr className="mb-5" />
+      <Row className="my-4">
+        <Col xs={12} md={5} className={styles.wrapperProfile}>
           <div className={styles.profileImage}>
-          <img
+            <img
               className={`${styles.radiusImg}`}
               src={
                 selectedImage
@@ -185,8 +197,8 @@ function MyProfile() {
               }
               alt="profileImage"
             />
-            <label htmlFor="fileInput" className={`${styles.radiusImg} ${styles.imgSetting}`}>
-              <img src={settingIcon} alt="이미지변경" />
+            <label htmlFor="fileInput" className={`${styles.imgSetting}`}>
+              <FontAwesomeIcon icon={faCamera} />
               <input
                 id="fileInput"
                 type="file"
@@ -196,66 +208,79 @@ function MyProfile() {
               />
             </label>
           </div>
-          <div className={styles.profileText}>
-            <ul>
-              <li>
-                <label htmlFor="이메일" className="mb-2">
-                  이메일
-                </label>
-                <input className="form-control w-75" type="text" placeholder={userInfo.email} readOnly />
-              </li>
-              <li>
-                <label htmlFor="Nickname" className="mb-2">
-                  닉네임 변경
-                </label>
-                <div className="input-group mb-4 w-75">
+        </Col>
+        <Col className="mx-3">
+          <Row>
+            <Col xs={12} className="mb-2">
+              <label htmlFor="이메일" className={styles.labelmypage}>
+                <FontAwesomeIcon icon={faAt} size="sm" /> 이메일
+              </label>
+              <input
+                className="form-control inputemail"
+                type="text"
+                placeholder={userInfo.email}
+                readOnly
+              />
+            </Col>
+            <Col xs={12}>
+              <label htmlFor="Nickname" className={styles.labelmypage}>
+                <FontAwesomeIcon icon={faCircleUser} size="sm" /> 닉네임 변경
+              </label>
+              <div className="input-group">
                 <InputGroup>
                   <Form.Control
+                    style={{
+                      borderColor: "var(--blue-200)",
+                      fontSize: "16px",
+                    }}
                     placeholder={userInfo.nickname}
                     aria-label="Nickname"
                     aria-describedby="checkDuplicate"
                     value={changeNickname}
                     onChange={(e) => {
-                    setChangeNickname(e.target.value);
+                      setChangeNickname(e.target.value);
                     }}
                     onKeyPress={handleEnterKeyPress}
                   />
-                  <Button 
-                      style={{ backgroundColor:"#354C6FFF" }}
-                      variant="outline-light" 
-                      id="userSearch"
-                      onClick={handleNicknameButtonClick}
-                  >중복확인
-                  </Button>
-              </InputGroup>
-                  
-                </div>
-                <div>
-                  <Link to="/pwchange" className={`${styles.pwText}`}>
-                    비밀번호변경
-                  </Link>
-                </div>
-              </li>
-            </ul>
-          </div>
-        </form>
-      </div>
-      <div>
-        <Row className="mb-2">
-          <button 
-          className={`${styles.btnChange}`} 
-          type="submit"
-          onClick={handleProfileUpdate}>
+                  <button
+                    className={`btn  ${styles.MypageBtn}`}
+                    id="userSearch"
+                    onClick={handleNicknameButtonClick}
+                  >
+                    중복확인
+                  </button>
+                </InputGroup>
+              </div>
+            </Col>
+          </Row>
+        </Col>
+      </Row>
+      <Row className="m-3">
+        <div>
+          <Link to="/pwchange" className={`${styles.pwText}`}>
+            <FontAwesomeIcon icon={faKey} size="xs" /> 비밀번호변경
+          </Link>
+        </div>
+      </Row>
+      <Row className="mt-5">
+        <Col>
+          <button
+            className={`${styles.btnChange} btn w-100 m-0`}
+            type="submit"
+            onClick={handleProfileUpdate}
+          >
             변경
           </button>
-          <button 
-            className={`${styles.btnDelete}`}
+        </Col>
+        <Col>
+          <button
+            className={`${styles.btnDelete} btn w-100 m-0`}
             onClick={handleWithdrawButtonClick}
-            >
-              탈퇴
+          >
+            탈퇴
           </button>
-        </Row>
-      </div>
+        </Col>
+      </Row>
       <UserDeleteModal
         show={showModal}
         onClose={handleModalClose}

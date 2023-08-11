@@ -61,9 +61,14 @@ function ItemPage() {
   };
 
   return (
-    <div>
+    <div style={{ width: "950px", margin: "auto", marginTop: "50px" }}>
       <HavingItem userItems={userItems} userCoin={userCoin} />
-      <ItemStore allItems={allItems} userCoin={userCoin} userId={userId} updateUserInfo={updateUserInfo} />
+      <ItemStore
+        allItems={allItems}
+        userCoin={userCoin}
+        userId={userId}
+        updateUserInfo={updateUserInfo}
+      />
     </div>
   );
 }

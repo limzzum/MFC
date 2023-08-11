@@ -257,8 +257,8 @@ function MainPage() {
               debateTime={room.totalTime}
               speechTime={room.talkTime}
               roomId={room.roomId}
-              userProfileImg1 = {room.atopicUserUrl}
-              userProfileImg2 = {room.atopicUserUr2}
+              userProfileImg1={room.atopicUserUrl}
+              userProfileImg2={room.btopicUserUrl}
             />
           ))}
         </div>
@@ -275,8 +275,8 @@ function MainPage() {
               debateTime={room.totalTime}
               speechTime={room.talkTime}
               roomId={room.roomId}
-              userProfileImg1 = {room.atopicUserUrl}
-              userProfileImg2 = {room.atopicUserUr2}
+              userProfileImg1={room.atopicUserUrl}
+              userProfileImg2={room.btopicUserUrl}
             />
           ))}
         </div>
