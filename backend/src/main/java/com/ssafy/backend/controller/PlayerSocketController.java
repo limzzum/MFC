@@ -1,6 +1,8 @@
 package com.ssafy.backend.controller;
 
+import com.ssafy.backend.dto.request.PlayerDto;
 import com.ssafy.backend.dto.request.PlayerRegistDto;
+import com.ssafy.backend.dto.request.PlayerUpdateDto;
 import com.ssafy.backend.dto.socket.request.PlayerItemDto;
 import com.ssafy.backend.dto.socket.request.PlayerRequestDto;
 import com.ssafy.backend.dto.socket.response.PlayerInfoDto;
@@ -35,6 +37,7 @@ public class PlayerSocketController {
     public void readyPlayer(PlayerRequestDto playerDto) {
         Long roomId = playerDto.getRoomId();
         User user = userService.findById(playerDto.getUserId());
+        playerService.changeStatus(new PlayerDto(roomId,user.getId()), playerDto.isReady());
         PlayerInfoDto playerInfoDto = PlayerInfoDto.builder().nickname(user.getNickname()).profile(user.getProfile())
                 .colorItem(user.getColorItem()).isReady(playerDto.isReady()).isTopicA(playerDto.isTopicA()).build();
         messagingTemplate.convertAndSend("/from/player/" + roomId, playerInfoDto);
