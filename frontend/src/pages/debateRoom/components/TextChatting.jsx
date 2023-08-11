@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import SockJS from "sockjs-client";
-import Stomp from "webstomp-client"; // 올바르게 가져오기
-import { userInfoState } from "../../../recoil/userInfo"; // Make sure to import userInfoState from the correct path
+import Stomp from "webstomp-client"; 
+import { userInfoState } from "../../../recoil/userInfo"; 
 import style from "../debatePage.module.css";
 import { useRecoilValue } from "recoil";
 
@@ -10,33 +10,35 @@ function TextChatting({ roomId }) {
   const [chatMessages, setChatMessages] = useState([]);
   const userInfo = useRecoilValue(userInfoState);
 
+// 이 부분 다시 보기 / 채팅을 재참조하는 부분
   const chatAreaRef = useRef();
   const stompRef = useRef(null);
 
   useEffect(() => {
-    // const userNickname = userInfo.nickname;
     var sock = new SockJS("http://localhost:8081/mfc");
     var stomp = Stomp.over(sock);
-
     stomp.connect({}, function () {
-      stompRef.current = stomp;
-      console.log("WebSocket connected!");
-
+// 이 부분 조금 수상 재참조하고, 구독하는 부분
+      stompRef.current = stomp;  
       stomp.subscribe(`/from/chat/${roomId}`, (message) => {
+        console.log(123123)
         const content = JSON.parse(message.body);
+// 이전 메시들에 새로운 메시지를 추가해서 chatMessages를 업데이트
         setChatMessages((prevMessages) => [...prevMessages, { sender: content.nickName, text: content.message }]);
       });
     });
-
+    
     return () => {
-      console.log("이건 되나?");
       if (stompRef.current) {
         stompRef.current.disconnect();
-        console.log("WebSocket disconnected!");
       }
-      console.log("WebSocket disconnected!"); // 연결 해제 확인을 위한 로그 출력
     };
   }, [roomId, userInfo.nickname]);
+
+  useEffect(() => {
+    chatAreaRef.current.scrollTop = chatAreaRef.current.scrollHeight;
+  }, [chatMessages]);
+
 
   const handleInputChange = (event) => {
     setInputText(event.target.value);
@@ -53,14 +55,10 @@ function TextChatting({ roomId }) {
         })
       );
       setInputText("");
-      console.log("--------------");
-      console.log(chatMessages);
     }
   };
 
-  useEffect(() => {
-    chatAreaRef.current.scrollTop = chatAreaRef.current.scrollHeight;
-  }, [chatMessages]);
+  
 
   return (
     <>

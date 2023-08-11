@@ -75,3 +75,25 @@ input {
   color: white;
   background-color: var(--blue-400);
 }
+
+.customModalWidth {
+  width: 80vw !important; /* or whatever value you prefer */
+}
+
+.debateRoomContainer {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between; /* 이것은 카드 사이에 동일한 간격을 주기 위함 */
+}
+
+.debateRoomContainer > * {
+  width: 48%; /* 카드의 너비 */
+  margin: 1%; /* 카드 사이의 여백 */
+}
+
+
+.modal-open {
+    overflow: visible;
+    overflow-x: hidden;
+    overflow-y: hidden;
+}
