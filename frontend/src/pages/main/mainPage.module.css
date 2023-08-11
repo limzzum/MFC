@@ -42,8 +42,15 @@
   flex-wrap: wrap;
   justify-content: flex-start;
   gap: 20px;
+  height:400px;
+  overflow: scroll;
 }
 
 .debateRoomCard {
   width: calc((100% - 60px) / 4);
+}
+
+.container {
+  overflow: auto; 
+  max-height: 80vh; 
 }
