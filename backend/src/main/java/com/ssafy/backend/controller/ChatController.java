@@ -31,8 +31,9 @@ public class ChatController {
     messagingTemplate.convertAndSend("/from/chat/" + roomId, chatMessageDto);
   }
 
-  @MessageMapping("/chat/penalty/{roomId}")
-  public void penalty(@DestinationVariable Long roomId, PenaltyRequestDto penaltyRequestDto) {
+  @MessageMapping("/chat/penalty")
+  public void penalty(PenaltyRequestDto penaltyRequestDto) {
+    Long roomId = penaltyRequestDto.getRoomId();
     PenaltyCode penaltyCode = penaltyCodeService.findByCode(penaltyRequestDto.getPenaltyCodeId());
     User user = userService.findById(penaltyRequestDto.getUserId());
     Penalty penalty = penaltyService.save(Penalty.builder().penaltyCode(penaltyCode).user(user).build());
