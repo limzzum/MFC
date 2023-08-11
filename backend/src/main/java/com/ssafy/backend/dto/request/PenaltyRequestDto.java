@@ -8,6 +8,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class PenaltyRequestDto {
-    private Long penaltyCodeId;
+    private Long roomId;
     private Long userId;
+    private Long penaltyCodeId;
+
 }
