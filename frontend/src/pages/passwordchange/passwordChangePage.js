@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import style from "./passwordChange.module.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { useNavigate } from "react-router-dom";
-import { Button } from "react-bootstrap";
 import axios from "axios";
 import { useRecoilValue } from "recoil";
 import { userState } from "../../recoil/token";
