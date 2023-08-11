@@ -26,7 +26,7 @@ function Participate({status, role, onRoleChange, playerStatus, setPlayerStatus,
                         }
                         {
                             (role === 'participant' && playerA !== undefined) &&
-                            <UserVideoComponent className='playerA' streamManager={playerA}/>                       
+                            <UserVideoComponent className='playerA' streamManager={playerA} called={style.Participant}/>                       
                         }
 
                     </div>
@@ -50,7 +50,7 @@ function Participate({status, role, onRoleChange, playerStatus, setPlayerStatus,
                         }
                         {
                             (role === 'participant' && playerB !== undefined) &&
-                            <UserVideoComponent className='playerB' streamManager={playerB}/>
+                            <UserVideoComponent className='playerB' streamManager={playerB} called={style.Participant}/>
                         }
                     </div>
                     <span>남은 연장 횟수: </span>

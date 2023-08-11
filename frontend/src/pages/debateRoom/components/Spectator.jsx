@@ -63,9 +63,9 @@ function Spectator({debateRoomInfo, voteResult, subscriber}) {
                         </div>
                     ))} */}
                     {subscriber.map((sub, i) => (
-                        <div key={sub.id} className={ style.Spectator}>
+                        <div key={sub.id} className={style.Spectator}>
                             <span>{sub.id}</span>
-                            <UserVideoComponent streamManager={sub} />
+                            <UserVideoComponent streamManager={sub} called={style.Spectator}/>
                         </div>
                     ))}
                 <Button><img src={rightVector} alt="rightVector"/></Button>
