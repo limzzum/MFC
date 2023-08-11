@@ -203,7 +203,7 @@ function DebatePage() {
       console.log("session이 없어요");
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [session]);
 
   const leaveSession = useCallback(() => {
     // Leave the session
@@ -396,7 +396,7 @@ function DebatePage() {
             <Col xs={3}>
               <Stack gap={1}>
                 <ScreenShare status={status} role={role} />
-                <TextChatting roomId={roomId} />
+                <TextChatting />
               </Stack>
             </Col>
           </Row>
