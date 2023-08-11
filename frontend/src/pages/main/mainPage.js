@@ -142,7 +142,8 @@ function MainPage() {
   useEffect(() => {
     if (waitingContainerRef.current) {
       waitingContainerRef.current.addEventListener("scroll", handleWaitingScroll);
-      return () => {
+      return () => {    
+        // eslint-disable-next-line
         waitingContainerRef.current.removeEventListener("scroll", handleWaitingScroll);
       };
     }
@@ -191,6 +192,7 @@ function MainPage() {
     if (ongoingContainerRef.current) {
       ongoingContainerRef.current.addEventListener("scroll", handleOngoingScroll);
       return () => {
+        // eslint-disable-next-line
         ongoingContainerRef.current.removeEventListener("scroll", handleOngoingScroll);
       };
     }

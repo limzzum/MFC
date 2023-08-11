@@ -43,7 +43,7 @@
   justify-content: flex-start;
   gap: 20px;
   height:400px;
-  overflow: auto;
+  overflow: scroll;
 }
 
 .debateRoomCard {
