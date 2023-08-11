@@ -1,5 +1,4 @@
-package com.ssafy.backend.dto.request;
-
+package com.ssafy.backend.dto.socket.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -10,8 +9,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class PlayerRegistDto {
+public class PlayerRequestDto {
     private Long roomId;
     private Long userId;
-    private boolean isATopic;
+    private boolean isTopicA;
+    private boolean isReady;
 }
+
