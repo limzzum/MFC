@@ -23,8 +23,11 @@ function NavBar() {
 
     const handleLogout = () => {
         console.log('로그아웃');
-        setUserToken("")
+        setUserToken("");
         setUserId("");
+        localStorage.removeItem('token');
+        localStorage.removeItem('recoil-persist');
+        localStorage.removeItem('userId');
     };
     // 검색 결과를 저장할 상태
     const [searchResults, setSearchResults] = useState([]);
@@ -39,7 +42,7 @@ function NavBar() {
             const response = await axios.get(`https://goldenteam.site/api/debate/listWithKeyword`, {
                 params: {
                     keyword,
-                    minRoomId: 1, // 이 값을 조절해야 할 수도 있습니다.
+                    minRoomId: 10000, // 이 값을 조절해야 할 수도 있습니다.
                     size: 10000
                 }
             });
