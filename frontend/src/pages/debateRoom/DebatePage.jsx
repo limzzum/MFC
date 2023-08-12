@@ -172,34 +172,6 @@ function DebatePage() {
       // eslint-disable-next-line
   }, [session, myUserName]);
 
-          const devices = await OV.current.getDevices();
-          const videoDevices = devices.filter(
-            (device) => device.kind === "videoinput"
-          );
-          const currentVideoDeviceId = publisher.stream
-            .getMediaStream()
-            .getVideoTracks()[0]
-            .getSettings().deviceId;
-          const currentVideoDevice = videoDevices.find(
-            (device) => device.deviceId === currentVideoDeviceId
-          );
-
-          setMainStreamManager(publisher);
-          setPublisher(publisher);
-          setCurrentVideoDevice(currentVideoDevice);
-        } catch (error) {
-          console.log(
-            "There was an error connecting to the session:",
-            error.code,
-            error.message
-          );
-        }
-      });
-    } else {
-      console.log("session이 없어요");
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [session]);
 
   const leaveSession = useCallback(() => {
       // Leave the session
