@@ -3,14 +3,19 @@ import com.ssafy.backend.dto.Message;
 import com.ssafy.backend.dto.request.RoomInfoRuquestDto;
 import com.ssafy.backend.dto.response.RoomInfoResponseDto;
 import com.ssafy.backend.dto.response.RoomListDto;
+import com.ssafy.backend.entity.UploadFile;
+import com.ssafy.backend.file.FileStore;
 import com.ssafy.backend.service.HistoryService;
 import com.ssafy.backend.service.ParticipantService;
 import com.ssafy.backend.service.RoomService;
+
+import java.io.IOException;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequiredArgsConstructor
@@ -21,6 +26,7 @@ public class RoomController {
     private final RoomService roomService;
     private final ParticipantService participantService;
     private final HistoryService historyService;
+    private final FileStore fileStore;
 
     @GetMapping("/list/ongoing")
     public ResponseEntity<?> ongoingRoomList(@RequestParam Long minRoomId,@RequestParam int size) {
@@ -73,5 +79,14 @@ public class RoomController {
             message.setMessage("토론방을 찾을 수 없습니다.");
         }
         return ResponseEntity.ok(message);
+    }
+
+    @PostMapping("/image")
+    public ResponseEntity<Message> profile(@RequestParam MultipartFile image) throws IOException {
+        if(image.isEmpty()){
+            return ResponseEntity.ok(new Message(HttpStatus.OK, "사진이 선택되지 않았습니다", null));
+        }
+        UploadFile uploadFile = fileStore.storeRoomFile(image);
+        return ResponseEntity.ok(new Message(HttpStatus.OK, "파일 업로드 성공", uploadFile.getFilePath()));
     }
 }

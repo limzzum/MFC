@@ -7,6 +7,7 @@ import com.ssafy.backend.dto.response.ParticipantOutDto;
 import com.ssafy.backend.dto.response.RoomInfoResponseDto;
 import com.ssafy.backend.dto.response.ViewerDto;
 import com.ssafy.backend.entity.Participant;
+import com.ssafy.backend.file.FileStore;
 import com.ssafy.backend.service.RoomResultService;
 import com.ssafy.backend.service.RoomService;
 import com.ssafy.backend.service.ViewerService;
@@ -27,6 +28,7 @@ public class DebateSocketController {
     private final RoomService roomService;
     private final RoomResultService roomResultService;
     private final ViewerService viewerService;
+    private final FileStore fileStore;
 
     @MessageMapping("/room/update/{roomId}")
     public void roomUpdate(@DestinationVariable Long roomId, RoomInfoRuquestDto roomInfoRuquestDto) {
@@ -75,6 +77,11 @@ public class DebateSocketController {
         ParticipantOutDto participantOutDto = viewerService.exitSocket(userId, roomId);
         participantOutDto.setUserId(userId);
         messagingTemplate.convertAndSend("/from/room/out/" + roomId, participantOutDto);
+    }
+
+    @MessageMapping("/room/file/{roomId}")
+    public void exitRoom(@DestinationVariable Long roomId, String filepath) {
+        messagingTemplate.convertAndSend("/from/room/file/" + roomId, filepath);
     }
 
 
