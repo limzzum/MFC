@@ -5,15 +5,21 @@ import RankMyProfile from "../../components/rankingpage/rankMyProfile.js";
 import RankingSearchBar from "../../components/rankingpage/rankingSearchBar.js";
 import style from "./ranking.module.css";
 import "bootstrap/dist/css/bootstrap.min.css";
-import { Button, Row, Col } from "react-bootstrap";
+import { Row, Col } from "react-bootstrap";
 import { useRecoilValue } from "recoil";
 import { userIdState } from "../../recoil/userId";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faChevronRight,
+  faChevronLeft,
+} from "@fortawesome/free-solid-svg-icons";
 
 function Ranking() {
   const [rankUsers, setRankUsers] = useState([]);
   const [page, setPage] = useState(0);
   const [myRecord, setMyRecord] = useState([]);
   const [myWinRate, setMyWinRate] = useState(0);
+  const [totalPage, setTotalPage] = useState(0);
   const user = useRecoilValue(userIdState);
   const userId = user.userId;
 
@@ -27,7 +33,6 @@ function Ranking() {
     axios
       .get(`https://goldenteam.site/api/record/${userId}`)
       .then((response) => {
-        console.log(response.data.data);
         setMyRecord(response.data.data);
         setMyWinRate(response.data.data.winRate.toFixed(2));
       })
@@ -39,16 +44,18 @@ function Ranking() {
   const fetchData = async (keyword = "") => {
     try {
       const response = await axios.get(
+        // `https://goldenteam.site/api/record/list/?page=${page}&perPage=10&keyword=${keyword}`
         `https://goldenteam.site/api/record/list/?page=${page}&perPage=10&keyword=${keyword}`
       );
+      setTotalPage(response.data.data.totalPageCount);
       setRankUsers(response.data.data.result);
-      console.log(rankUsers);
     } catch (error) {
       console.error("랭크유저 정보 가져오기 오류:", error);
     }
   };
 
   const handlePageChange = (newPage) => {
+    if (newPage < 0 || newPage >= totalPage) return;
     setPage(newPage);
   };
 
@@ -72,7 +79,7 @@ function Ranking() {
             <Col className={style.rankTitle}>승률</Col>
           </Row>
         </div>
-        <div>
+        <div className={style.rankBox}>
           {rankUsers.map((userData, index) => (
             <RankingProfile
               key={index}
@@ -82,18 +89,75 @@ function Ranking() {
           ))}
         </div>
         <div>
-          {page > 0 && (
-            <Button onClick={() => handlePageChange(page - 1)}>이전</Button>
-          )}
-          <span>{page + 1}</span>
-          {rankUsers.length >= 10 && (
-            <Button
-              onClick={() => handlePageChange(page + 1)}
-              disabled={rankUsers.length < 10}
+          {/* {page > 0 && (
+            <button
+              className={`btn ${style.pageBtn} `}
+              onClick={() => handlePageChange(page - 1)}
             >
-              다음
-            </Button>
-          )}
+              <FontAwesomeIcon icon={faChevronLeft} color="black" size="sm" />
+            </button>
+          )} */}
+          <button
+            className={`btn ${style.pageBtn} `}
+            onClick={() => handlePageChange(page - 1)}
+          >
+            <FontAwesomeIcon icon={faChevronLeft} color="navy" size="sm" />
+          </button>
+          {totalPage <= 5 && //토탈 카운트가 5보다 작거나 같은 경우
+            Array.from({ length: totalPage }, (_, index) => (
+              <span
+                key={index + 1}
+                className={
+                  page === index
+                    ? `${style.currentPage}`
+                    : `${style.PageNumber}`
+                }
+                onClick={() => handlePageChange(index)}
+              >
+                {index + 1}&nbsp;
+              </span>
+            ))}
+          {totalPage > 5 &&
+            totalPage - page > 5 &&
+            // page > totalPage - 5 && //6 > 10-5 5
+            Array.from({ length: 5 }, (_, index) => (
+              <span
+                key={index + 1} // 페이지 번호는 1부터 시작하므로 index + 1을 사용
+                className={
+                  page === index + page
+                    ? `${style.currentPage}`
+                    : `${style.PageNumber}`
+                }
+                onClick={() => handlePageChange(index + page)} // 페이지 번호는 1부터 시작하므로 index + 1을 사용
+              >
+                {index + page + 1}&nbsp;
+              </span>
+            ))}
+          {totalPage > 5 &&
+            totalPage - page <= 5 && // totalPage - page <= 5
+            Array.from({ length: 5 }, (_, index) => (
+              <span
+                key={index}
+                className={
+                  page === totalPage - (totalPage - 5) + index
+                    ? `${style.currentPage}`
+                    : `${style.PageNumber}`
+                }
+                onClick={() =>
+                  handlePageChange(totalPage - (totalPage - 5) + index)
+                }
+              >
+                {totalPage - (totalPage - 5) + index + 1}&nbsp;
+              </span>
+            ))}
+          <button
+            className={`btn ${style.pageBtn} `}
+            onClick={() => handlePageChange(page + 1)}
+            // disabled={rankUsers.length < 10}
+          >
+            <FontAwesomeIcon icon={faChevronRight} color="navy" size="sm" />
+          </button>
+          {/* <span>{page + 1}</span> */}
         </div>
       </div>
     </div>
