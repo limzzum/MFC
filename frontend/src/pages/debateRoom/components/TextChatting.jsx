@@ -21,7 +21,6 @@ function TextChatting({ roomId }) {
 // 이 부분 조금 수상 재참조하고, 구독하는 부분
       stompRef.current = stomp;  
       stomp.subscribe(`/from/chat/${roomId}`, (message) => {
-        console.log(123123)
         const content = JSON.parse(message.body);
 // 이전 메시들에 새로운 메시지를 추가해서 chatMessages를 업데이트
         setChatMessages((prevMessages) => [...prevMessages, { sender: content.nickName, text: content.message }]);
