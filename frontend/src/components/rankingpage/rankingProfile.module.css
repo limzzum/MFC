@@ -1,24 +1,34 @@
 .profileBox {
   font-family: inherit;
-  font-size: 15px;
-  text-align: center;
   width: 100%;
-  margin: 5px auto;
-  display: flex;
-  padding: 5px 0;
-  background: #e9edf5ff;
+  margin: 3px auto;
+  padding: 3px 0;
+  /* background: #e9edf5ff; */
   border-radius: 15px;
-}
-.contentBox {
-  width: 200px;
-  margin: auto 0;
-}
-.rankText {
-  font-family: inherit;
-  font-size: 14px;
-  text-align: center;
-  width: 500px;
 }
 .radiusImg {
   border-radius: 50%;
+  height: 2.5rem;
+  width: 2.5rem;
+}
+
+p {
+  text-align: center;
+  vertical-align: middle;
+  line-height: 50px;
+  width: 100%;
+  margin: auto;
+  font-size: 16px;
+  font-weight: 400;
+}
+
+.nickalign {
+  text-align: left;
+}
+
+.hrStyle {
+  margin-top: 6px;
+  margin-bottom: 3px;
+  color: var(--blue-600);
+  width: 95%;
 }
