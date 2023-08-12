@@ -29,17 +29,17 @@ function RankingMyProfile({ myData, myWinRate }) {
       <div className={`${styles.historyBox} my-4`}>
         <div className={`${styles.historyItemBox}`}>
           <FontAwesomeIcon icon={faCrown} size="xl" color="#FFD700" />
-          <span>&nbsp;경험치</span>
+          <span className={styles.historyTitleText}>&nbsp;경험치</span>
           <p className={styles.historyText}>EXP {myData.exp}</p>
         </div>
         <div className={styles.historyItemBox}>
           <FontAwesomeIcon icon={faCoins} size="xl" color="#FFD700" />
-          <span>&nbsp;코인</span>
+          <span className={styles.historyTitleText}>&nbsp;코인</span>
           <p className={styles.historyText}>{myData.coin}</p>
         </div>
         <div className={styles.historyItemBox}>
           <FontAwesomeIcon icon={faTrophy} size="xl" color="#FFD700" />
-          <span>&nbsp;승률</span>
+          <span className={styles.historyTitleText}>&nbsp;승률</span>
           <p className={styles.historyText}>
             {myWinRate.toLocaleString(undefined, {
               minimumFractionDigits: 2,
