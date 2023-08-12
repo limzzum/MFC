@@ -147,6 +147,7 @@ function DebatePage() {
                       frameRate: 30,
                       insertMode: 'APPEND',
                       mirror: false,
+                      data: JSON.stringify({ clientData: myUserName }),
                   });
 
                   session.publish(publisher);
@@ -306,7 +307,7 @@ function DebatePage() {
         setViewers(data.data.viewers);
         setPlayers(data.data.players);
 
-        console.log('viewers: ', viewers[0]);
+        console.log('viewers: ', viewers);
         console.log('players: ', players);
       } catch (error) {
         console.log(error);
@@ -314,7 +315,7 @@ function DebatePage() {
     };
     getParticipants();
     // eslint-disable-next-line
-  }, [roomId]);
+  }, [subscribers]);
 
   const handleStatusChange = (newStatus) => {
     setStatus(newStatus);
@@ -392,6 +393,8 @@ function DebatePage() {
           <Row className="debatePart">
             <Col xs={9}>
               <RoomInfo
+                roomId={roomId}
+                userId={userInfo.id}
                 status={status}
                 role={role}
                 playerStatus={playerStatus}
@@ -402,6 +405,8 @@ function DebatePage() {
                 debateRoomInfo={debateRoomInfo.data}
               />
               <Participate
+                roomId={roomId}
+                userId={userInfo.id}
                 status={status}
                 role={role}
                 onRoleChange={handleRoleChange}
