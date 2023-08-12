@@ -18,10 +18,10 @@ import {
   faHand,
 } from "@fortawesome/free-solid-svg-icons";
 import style from "../debatePage.module.css";
-import SockJS from "sockjs-client";
-import Stomp from "webstomp-client";
+// import SockJS from "sockjs-client";
+// import Stomp from "webstomp-client";
 
-function DebateBtns({ status, role, onRoleChange, debateRoomInfo, setPlayerStatus, setUserReady, voteResult, handlePlayerAVideoStream, publisher, playerA, playerB, setPlaerA, setPlayerB}) {
+function DebateBtns({ status, role, onRoleChange, debateRoomInfo, setPlayerStatus, setUserReady, voteResult, handlePlayerAVideoStream, publisher, playerA, playerB, setPlaerA, setPlayerB}){
   const [showModal, setShowModal] = useState(false);
   const [selectedTopic, setSelectedTopics] = useState([]);
   const [isVotingEnabled, setVotingEnabled] = useState(true);
@@ -56,9 +56,6 @@ function DebateBtns({ status, role, onRoleChange, debateRoomInfo, setPlayerStatu
     setShowModal(false);
     setVotingEnabled(false); // 투표 후 투표 비활성화
   };
-  useEffect(() => {
-    const sock = new SockJS("http://localhost:8081/mfc");
-    const stompClient = Stomp.over(sock);
 
   const handleVideoToggle = () => {
     setIsVideoOn(!isVideoOn);
