@@ -1,47 +1,51 @@
-.historyBox {
-  display: flex;
-  width: 350px;
-  height: 200px;
-  text-align: center;
-  margin: 0 auto;
-}
+@import url(../../colorSelector.css);
+
 .boxProfile {
-  line-height: 14px;
+  /* line-height: 400px; */
   width: 400px;
-  margin: 100px auto;
-  padding-top: 30px;
-  background: #e9edf5ff;
+  margin: 15% auto;
+  height: 400px;
+  padding-top: 40px;
+  /* background: #e9edf5ff; */
+  background: var(--blue-800);
   border-radius: 20px;
-}
-.profileImage {
-  height: 50px;
-  width: 50px;
-  position: relative;
-  display: flex;
-}
-.radiusImg {
-  border-radius: 50%;
 }
 
 .rankingMyprofileText {
   text-align: center;
-  font-size: 16px;
+  font-size: 20px !important;
   font-family: inherit;
-  margin-top: 30px;
+  color: var(--blue-800);
+  font-weight: 700;
+  color: white;
+  margin-bottom: 20px;
 }
+
 .rankProfileImage {
-  height: 150px;
-  width: 150px;
+  height: 7rem;
+  width: 7rem;
+  border-radius: 50%;
 }
-img {
-  height: auto;
-  width: 100%;
+
+.historyBox {
+  display: flex;
+  margin: 0 auto;
+  /* vertical-align: middle; */
+  /* width: 350px; */
+  /* height: 200px; */
+  /* text-align: center; */
 }
+
 .historyText {
-  font-size: 0.8rem;
-  padding-top: 15px;
+  font-size: 18px;
+  color: white;
 }
 .historyItemBox {
   width: 100px;
   margin: 0 auto;
+}
+
+span {
+  color: white;
+  font-size: 16px;
 }

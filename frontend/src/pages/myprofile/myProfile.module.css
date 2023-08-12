@@ -45,12 +45,15 @@ input[type="text"] {
 .profileImage {
   height: 7rem;
   width: 7rem;
+  object-fit: cover;
   display: flex;
   position: relative;
   margin: auto;
 }
 
 .radiusImg {
+  height: 7rem;
+  width: 7rem;
   border-radius: 50%;
   border: solid var(--blue-800) 2px;
   /* border: dashed var(--blue-800) 2px; */
@@ -79,7 +82,7 @@ input[type="text"] {
 
 .profileTitle {
   color: var(--blue-700);
-  width: 200px;
+  width: 500px;
   margin-left: 10px;
   font-family: inherit;
   text-align: left;
