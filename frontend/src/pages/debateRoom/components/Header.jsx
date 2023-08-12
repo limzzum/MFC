@@ -11,18 +11,16 @@ function Header({status, leaveSession}) {
     <header className={style.header}>
       <img className={style.logo} src={logoImage} alt="logo"/>
       <ul>
-        {status === 'waiting' && 
-            <>
-              <li>
-                <img className={style.setting} src={settingIcon} alt='설정  '/>
-              </li>
-              <li>
-                <Link to={'/'}>
-                  <img className={style.exit} src={exitIcon} alt='나가기' onClick={leaveSession}/>
-                </Link>
-              </li>
-            </>
+        { status === 'waiting' && 
+          <li>
+            <img className={style.setting} src={settingIcon} alt='설정  '/>
+          </li>
         }
+          <li>
+            <Link to={'/'}>
+              <img className={style.exit} src={exitIcon} alt='나가기' onClick={leaveSession}/>
+            </Link>
+          </li>
       </ul>
     </header>
   );
