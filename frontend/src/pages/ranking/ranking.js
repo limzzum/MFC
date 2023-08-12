@@ -101,7 +101,7 @@ function Ranking() {
             className={`btn ${style.pageBtn} `}
             onClick={() => handlePageChange(page - 1)}
           >
-            <FontAwesomeIcon icon={faChevronLeft} color="navy" size="sm" />
+            <FontAwesomeIcon icon={faChevronLeft} color="#2F425DFF" size="sm" />
           </button>
           {totalPage <= 5 && //토탈 카운트가 5보다 작거나 같은 경우
             Array.from({ length: totalPage }, (_, index) => (
@@ -155,7 +155,11 @@ function Ranking() {
             onClick={() => handlePageChange(page + 1)}
             // disabled={rankUsers.length < 10}
           >
-            <FontAwesomeIcon icon={faChevronRight} color="navy" size="sm" />
+            <FontAwesomeIcon
+              icon={faChevronRight}
+              color="#2F425DFF"
+              size="sm"
+            />
           </button>
           {/* <span>{page + 1}</span> */}
         </div>
