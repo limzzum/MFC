@@ -21,20 +21,15 @@ import style from "../debatePage.module.css";
 import SockJS from "sockjs-client";
 import Stomp from "webstomp-client";
 
-function DebateBtns({
-  status,
-  role,
-  onRoleChange,
-  debateRoomInfo,
-  setPlayerStatus,
-  setUserReady,
-  voteResult,
-}) {
+function DebateBtns({ status, role, onRoleChange, debateRoomInfo, setPlayerStatus, setUserReady, voteResult, handlePlayerAVideoStream, publisher, playerA, playerB, setPlaerA, setPlayerB}) {
   const [showModal, setShowModal] = useState(false);
   const [selectedTopic, setSelectedTopics] = useState([]);
   const [isVotingEnabled, setVotingEnabled] = useState(true);
   const votingCooldown = debateRoomInfo.talkTime * 120;
   const [remainingTime, setRemainingTime] = useState(votingCooldown);
+
+  const [isVideoOn, setIsVideoOn] = useState(true);
+  const [isAudioOn, setIsAudioOn] = useState(true);
 
   const handleVote = async () => {
     // 투표 로직 구현
@@ -65,10 +60,16 @@ function DebateBtns({
     const sock = new SockJS("http://localhost:8081/mfc");
     const stompClient = Stomp.over(sock);
 
-    stompClient.connect({}, function () {
-      console.log("WebSocket 연결 성공");
-    });
-  }, []);
+  const handleVideoToggle = () => {
+    setIsVideoOn(!isVideoOn);
+    publisher.publishVideo(!isVideoOn);
+  };
+
+  const handleAudioToggle = () => {
+    setIsAudioOn(!isAudioOn);
+    publisher.publishAudio(!isAudioOn);
+  }
+
   useEffect(() => {
     if (!isVotingEnabled) {
       // 투표 후 재투표 가능 시간 설정
@@ -92,6 +93,7 @@ function DebateBtns({
 
   const handleRoleChangeToSpectator = () => {
     onRoleChange("spectator");
+    handlePlayerAVideoStream(publisher);
     setPlayerStatus([false, false]);
     setUserReady(false);
   };
@@ -201,10 +203,14 @@ function DebateBtns({
               투표하기
             </Button>
           )}
-          <Button variant="primary">캠 OFF</Button>
-          {role === "participant" && (
-            <Button variant="primary">마이크 OFF</Button>
-          )}
+          <Button variant="primary" onClick={handleVideoToggle}>
+            {isVideoOn ? "CAM OFF" : "CAM ON"}
+          </Button>
+          {role === "participant" && 
+            <Button variant="primary" onClick={handleAudioToggle}>
+              {isAudioOn ? "음소거" : "음소거 해제"}
+            </Button>
+          }
         </Col>
       </Row>
 

@@ -1,48 +1,56 @@
 import React from "react";
 import { Row, Col } from "react-bootstrap";
 import style from '../debatePage.module.css';
+import UserVideoComponent from "../Openvidu/UserVideoComponent";
 
-function Participate({status, role, onRoleChange, playerStatus, setPlayerStatus}){
-
-    const handleParticipation = (position) => {
-
-        onRoleChange('participant');
-        if (position === 'left') {
-            setPlayerStatus((prevStatus) => [true, prevStatus[1]]);
-        } else if (position === 'right') {
-            setPlayerStatus((prevStatus) => [prevStatus[0], true]);
-        }
-    }
-
+function Participate({status, role, onRoleChange, playerStatus, setPlayerStatus, handlePlayerAVideoStream, handlePlayerBVideoStream, publisher, playerA, playerB, setPlaerA, setPlayerB}){
     return (
         <div>
             <Row>
                 <Col>
                     <div className={style.Participant}>
-                        { 
-                            role === 'spectator' &&
-                            status === 'waiting' &&
+                        {
+                            (playerStatus[0] === false &&
+                            status === 'waiting') &&
                             <button 
                                 className={style.button} 
-                                onClick={() => handleParticipation('left')}
+                                onClick={() => {
+                                    onRoleChange('participant');
+                                    setPlayerStatus((prevStatus) => [true, prevStatus[1]]);
+                                    handlePlayerAVideoStream(publisher);
+                                }}
                             >
                                 참가하기
                             </button>
+
                         }
+                        {
+                            (role === 'participant' && playerA !== undefined) &&
+                            <UserVideoComponent className='playerA' streamManager={playerA} called={style.Participant}/>                       
+                        }
+
                     </div>
                     <span>남은 연장 횟수: </span>
                 </Col>
                 <Col>
                     <div className={style.Participant}>
                         { 
-                            role === 'spectator' &&
+                            playerStatus[1] === false &&
                             status === 'waiting' &&
                             <button 
                                 className={style.button} 
-                                onClick={() => handleParticipation('right')}
+                                onClick={() => {
+                                    onRoleChange('participant');
+                                    setPlayerStatus((prevStatus) => [prevStatus[0], true]);
+                                    handlePlayerBVideoStream(publisher);
+                                }}
                             >
                                 참가하기
                             </button>
+                        }
+                        {
+                            (role === 'participant' && playerB !== undefined) &&
+                            <UserVideoComponent className='playerB' streamManager={playerB} called={style.Participant}/>
                         }
                     </div>
                     <span>남은 연장 횟수: </span>
