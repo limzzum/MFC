@@ -21,7 +21,7 @@ import style from "../debatePage.module.css";
 // import SockJS from "sockjs-client";
 // import Stomp from "webstomp-client";
 
-function DebateBtns({ status, role, onRoleChange, debateRoomInfo, setPlayerStatus, setUserReady, voteResult, handlePlayerAVideoStream, handlePlayerBVideoStream, publisher, playerA, playerB, setPlayerA, setPlayerB}){
+function DebateBtns({ roomId, userId, status, role, onRoleChange, debateRoomInfo, setPlayerStatus, setUserReady, voteResult, publisher, playerA, playerB, setPlayerA, setPlayerB}){
   const [showModal, setShowModal] = useState(false);
   const [selectedTopic, setSelectedTopics] = useState([]);
   const [isVotingEnabled, setVotingEnabled] = useState(true);
@@ -36,14 +36,9 @@ function DebateBtns({ status, role, onRoleChange, debateRoomInfo, setPlayerStatu
     console.log(`Selected ${selectedTopic}`);
 
     try {
-      // rooId랑 userId 보내주셔서 넣어주세요 ( 충돌날까봐 우선 작성안했습니다 )
-      const roomId = 35;
-      const userId = 326;
-      const base_url = `http://localhost:8081/api/viewer/vote/${roomId}/${userId}`;
+      const base_url = `https://goldenteam.site/api/viewer/vote/${roomId}/${userId}?vote=${selectedTopic}`;
 
-      const response = await axios.patch(base_url, null, {
-        params: { vote: selectedTopic },
-      });
+      const response = await axios.patch(base_url, {vote: selectedTopic});
       if (response.data.status === "BAD_REQUEST") {
         console.log("투표 가능한 시간이 아닙니다");
       } else {
@@ -66,6 +61,8 @@ function DebateBtns({ status, role, onRoleChange, debateRoomInfo, setPlayerStatu
     setIsAudioOn(!isAudioOn);
     publisher.publishAudio(!isAudioOn);
   }
+
+  
 
   useEffect(() => {
     if (!isVotingEnabled) {
