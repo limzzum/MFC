@@ -7,7 +7,7 @@ function RankingProfile({ rank, userData }) {
     <div className={styles.profileBox}>
       <Row className="w-100 m-0">
         <Col>
-          <p>{rank}</p>
+          <p className={styles.rankProfileText}>{rank}</p>
         </Col>
         <Col xs={5} className={styles.rankTitle}>
           <Row>
@@ -23,15 +23,19 @@ function RankingProfile({ rank, userData }) {
               />
             </Col>
             <Col>
-              <p className={styles.nickalign}>{userData.nickName}</p>
+              <p className={`${styles.nickalign} ${styles.rankProfileText}`}>
+                {userData.nickName}
+              </p>
             </Col>
           </Row>
         </Col>
         <Col className={styles.rankTitle}>
-          <p>{userData.exp}</p>
+          <p className={styles.rankProfileText}>{userData.exp}</p>
         </Col>
         <Col className={styles.rankTitle}>
-          <p>{userData.winRate.toFixed(2)}%</p>
+          <p className={styles.rankProfileText}>
+            {userData.winRate.toFixed(2)}%
+          </p>
         </Col>
       </Row>
       <hr className={`${styles.hrStyle} mx-auto`} />
