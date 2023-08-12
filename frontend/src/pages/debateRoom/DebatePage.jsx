@@ -113,6 +113,7 @@ function DebatePage() {
     console.log('playerA: ', playerA);
     console.log('playerB: ', playerB);
     console.log('filteredSubscribers: ', filteredSubscribers);
+    // eslint-disable-next-line
   }, [subscribers, playerA, playerB]);
 
   const joinSession = useCallback(() => {

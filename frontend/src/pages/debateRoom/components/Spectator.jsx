@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React from "react";
 import { Button, ProgressBar } from "react-bootstrap";
 import UserVideoComponent from '../Openvidu/UserVideoComponent';
 

@@ -18,8 +18,8 @@ import {
   faHand,
 } from "@fortawesome/free-solid-svg-icons";
 import style from "../debatePage.module.css";
-import SockJS from "sockjs-client";
-import Stomp from "webstomp-client";
+// import SockJS from "sockjs-client";
+// import Stomp from "webstomp-client";
 
 function DebateBtns({ status, role, onRoleChange, debateRoomInfo, setPlayerStatus, setUserReady, voteResult, handlePlayerAVideoStream, publisher, playerA, playerB, setPlaerA, setPlayerB}){
   const [showModal, setShowModal] = useState(false);
