@@ -1,6 +1,7 @@
 package com.ssafy.backend.dto.response;
 
 import com.ssafy.backend.entity.Room;
+import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -24,6 +25,7 @@ public class RoomInfoResponseDto {
     private String aTopic;
     private String bTopic;
     private Long categoryCodeId;
+    private LocalDateTime startTime;
 
     public RoomInfoResponseDto(Room room) {
         this.id = room.getId();
@@ -36,5 +38,6 @@ public class RoomInfoResponseDto {
         this.aTopic = room.getATopic();
         this.bTopic = room.getBTopic();
         this.categoryCodeId = room.getCategoryCode().getId();
+        this.startTime = room.getStartTime();
     }
 }

@@ -12,6 +12,8 @@
   /* box-shadow: 0px 5px 5px -2px rgb(156, 154, 154); */
   height: 90px;
   border-bottom: 2px solid var(--blue-600);
+  /* width: 100%; */
+  /* min-width: 995px; */
 }
 
 .navbarMenu {
@@ -49,7 +51,7 @@
   /* border-radius: var(--radius-md); */
   /* color: var(--white)!important; */
   border: 0 !important;
-  font-size: var(--text-size-sm)!important;
+  font-size: var(--text-size-sm) !important;
 }
 
 input {
@@ -63,14 +65,35 @@ input {
   align-items: center;
 }
 
-.logoutbtn{
+.logoutbtn {
   background-color: var(--blue-800);
   border: 0px;
   font-size: 16px;
 }
 
-.logoutbtn:hover{
-  color:white;
+.logoutbtn:hover {
+  color: white;
   background-color: var(--blue-400);
+}
 
+.customModalWidth {
+  width: 80vw !important; /* or whatever value you prefer */
+}
+
+.debateRoomContainer {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between; /* 이것은 카드 사이에 동일한 간격을 주기 위함 */
+}
+
+.debateRoomContainer > * {
+  width: 48%; /* 카드의 너비 */
+  margin: 1%; /* 카드 사이의 여백 */
+}
+
+
+.modal-open {
+    overflow: visible;
+    overflow-x: hidden;
+    overflow-y: hidden;
 }

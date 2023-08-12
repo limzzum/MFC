@@ -10,6 +10,7 @@ import com.ssafy.backend.entity.UploadFile;
 import com.ssafy.backend.entity.User;
 import com.ssafy.backend.file.FileStore;
 import com.ssafy.backend.repository.HistoryRepository;
+import com.ssafy.backend.repository.ItemCodeRepository;
 import com.ssafy.backend.repository.UploadFileRepository;
 import com.ssafy.backend.repository.UserRepository;
 
@@ -27,20 +28,29 @@ public class UserService {
 
     private final UserRepository repository;
     private final HistoryRepository historyRepository;
+    private final ItemCodeRepository itemCodeRepository;
     private final UploadFileRepository uploadFileRepository;
     private final FileStore fileStore;
 
     public Long regist(UserRegistDto user) {
+        ItemCode itemcode = itemCodeRepository.findById(1L).orElse(null);
         User registUser = User.builder().email(user.getEmail()).nickname(user.getNickname())
-                .password(user.getPassword())
+                 .password(user.getPassword())
+                 .colorItem(itemcode)
                 .build();
         User saved = repository.save(registUser);
+        History history = History.builder()
+            .user(saved)
+            .coin(0)
+            .experience(0)
+            .build();
+        historyRepository.save(history);
         return saved.getId();
     }
 
     public void profileUpload(Long userId, UploadFile uploadFile){
             UploadFile saveImage = uploadFileRepository.save(uploadFile);
-            User user = repository.findById(1L).orElse(null);
+            User user = repository.findById(userId).orElse(null);
             user.setProfile(saveImage.getFilePath());
     }
 

@@ -1,6 +1,7 @@
 package com.ssafy.backend.service;
 
 import com.ssafy.backend.dto.request.*;
+import com.ssafy.backend.dto.socket.request.*;
 import com.ssafy.backend.entity.*;
 import com.ssafy.backend.repository.PlayerRepository;
 import com.ssafy.backend.repository.RoleCodeRepository;
@@ -62,6 +63,10 @@ public class PlayerService {
         player.updateInfo(playerUpdateDto);
     }
 
+    public void deletePlayer(PlayerRegistDto playerRegistDto){
+        playerRepository.deleteById(playerRegistDto.getUserId());
+        participantService.changeRole(playerRegistDto,roleCodeRepository.findById(3L).get());
+    }
 
     public boolean overTalk(PlayerDto playerDto){
         Player player = playerRepository.findTopByRoomIdAndUserId(playerDto.getRoomId(), playerDto.getUserId()).orElse(null);

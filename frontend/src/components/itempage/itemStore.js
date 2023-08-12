@@ -1,5 +1,7 @@
 import styles from "./itemStore.module.css";
 import Item from "./item";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCartShopping } from "@fortawesome/free-solid-svg-icons";
 
 function ItemStore({ allItems, userCoin, userId, updateUserInfo }) {
   const itemRows = [];
@@ -8,14 +10,15 @@ function ItemStore({ allItems, userCoin, userId, updateUserInfo }) {
   }
 
   return (
-    <div className="mt-4">
-      <div className={styles.titleBox}>상점</div>
-      <div className={styles.emptyBox}>
-        <hr />
-      </div>
+    <div>
+      <p className={styles.title}>
+        <FontAwesomeIcon icon={faCartShopping} size="lg" />
+        &nbsp;상점
+      </p>
+      <hr />
       {itemRows.map((row, rowIndex) => (
         <div className={styles.flexBox} key={rowIndex}>
-          {row.map(item => (
+          {row.map((item) => (
             <Item
               key={item.name}
               iconName={item.iconName}
@@ -23,8 +26,8 @@ function ItemStore({ allItems, userCoin, userId, updateUserInfo }) {
               price={item.price}
               userCoin={userCoin}
               color={item.rgb}
-              userId = {userId}
-              updateUserInfo = {updateUserInfo}
+              userId={userId}
+              updateUserInfo={updateUserInfo}
             />
           ))}
         </div>

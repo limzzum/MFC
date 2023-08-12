@@ -1,15 +1,13 @@
-import React, { useState, useEffect } from "react";
 import axios from "axios";
 import style from "./mainPage.module.css";
 import { BsPlusSquare } from "react-icons/bs";
 import DebateRoomCard from "../../components/mainpage/debateRoomCard";
-import { useRecoilState } from "recoil";
-import { minRoomIdState, minWaitingRoomIdState } from "../../recoil/mainPageRoomId";
 import { useRecoilValue } from "recoil";
 import { userState } from "../../recoil/token";
 import { userIdState } from "../../recoil/userId";
 import { useNavigate } from "react-router-dom";
 import CreateRoomModal from "../../components/mainpage/createRoomModal";
+import {useEffect, useState, useRef} from "react"
 
 function MainPage() {
   const [showModal, setShowModal] = useState(false);
@@ -21,7 +19,10 @@ function MainPage() {
   const [extensionCount, setExtensionCount] = useState("");
   const [ongoingDebateRooms, setOngoingDebateRooms] = useState([]);
   const [waitingDebateRooms, setWaitingDebateRooms] = useState([]);
-  const [minWaitingRoomId, setMinWaitingRoomId] = useRecoilState(minWaitingRoomIdState);
+  const [minWaitingRoomId, setMinWaitingRoomId] = useState(null);
+  const [userProfileImg1,] = useState("")
+  const [userProfileImg2,] = useState("")
+
   const userId = useRecoilValue(userIdState);
   const tokenis = useRecoilValue(userState);
   const navigate = useNavigate();
@@ -33,7 +34,6 @@ function MainPage() {
   const closeModal = () => {
     setShowModal(false);
   };
-
   const handleCreateRoom = async () => {
     // 토론시간 유효성 검사
     const debateTimeInt = parseInt(debateTime);
@@ -41,6 +41,7 @@ function MainPage() {
 
     if (isNaN(debateTimeInt) || debateTimeInt < 20 || debateTimeInt > 120) {
       alert("토론시간은 20분에서 120분 사이의 숫자로 입력해야 합니다.");
+      return;
     }
 
     // 데이터 구성
@@ -52,6 +53,8 @@ function MainPage() {
       overTimeCount: parseInt(extensionCount),
       atopic: title1,
       btopic: title2,
+      atopicUserUrl : userProfileImg1,
+      btopicUserUrl : userProfileImg2,
     };
 
     // 서버에 POST 요청 보내기
@@ -74,7 +77,7 @@ function MainPage() {
     closeModal();
   };
 
-  const [minRoomId, setMinRoomId] = useRecoilState(minRoomIdState);
+  const [minRoomId, setMinRoomId] = useState(null);
 
   useEffect(() => {
     async function fetchData() {
@@ -113,7 +116,8 @@ function MainPage() {
 
         const response = await axios.get(apiUrl);
         const data = response.data.data;
-
+        console.log(response)
+        console.log(data)
         if (data.length > 0) {
           const newMinRoomId = Math.min(...data.map((room) => room.roomId));
           setMinWaitingRoomId(newMinRoomId);
@@ -123,10 +127,106 @@ function MainPage() {
         console.error("Error fetching data:", error);
       }
     }
-
+    
+    
     fetchData();
     // eslint-disable-next-line
   }, [minWaitingRoomId]);
+
+
+  const waitingContainerRef = useRef(null);
+  const [iswaitingLoading, setIsLoading] = useState(false);
+  
+  // 무한크롤링 (WaitingRoom)
+  useEffect(() => {
+    if (waitingContainerRef.current) {
+      waitingContainerRef.current.addEventListener("scroll", handleWaitingScroll);
+      
+    }
+    // eslint-disable-next-line
+  }, []);
+  
+  const handleWaitingScroll = () => {
+    if (waitingContainerRef.current) {
+      const container = waitingContainerRef.current;
+      
+      // 스크롤 컨테이너의 스크롤 위치와 컨테이너 내용의 높이를 비교하여 스크롤이 맨 아래로 내려갔는지 확인
+      if (container.scrollHeight - container.scrollTop === container.clientHeight && !iswaitingLoading) {
+        loadMoreWaitingDebateRooms();
+      }
+    }
+  };
+
+  const loadMoreWaitingDebateRooms = async () => {
+    setIsLoading(true);
+    try {
+      let apiUrl = "https://goldenteam.site/api/debate/list/waiting";
+      if (minWaitingRoomId !== null) {
+        apiUrl += `?minRoomId=${minWaitingRoomId}&size=12`;
+      } else {
+        apiUrl += "?minRoomId=10000&size=12";
+      }
+  
+      const response = await axios.get(apiUrl);
+      const newData = response.data.data;
+    
+      if (newData.length > 0) {
+        const newMinRoomId = Math.min(...newData.map((room) => room.roomId));
+        setMinWaitingRoomId(newMinRoomId);
+        setWaitingDebateRooms(newData);
+      }
+    } catch (error) {
+      console.error("Error fetching more data:", error);
+    }
+    setIsLoading(false);
+  };
+
+  const ongoingContainerRef = useRef(null);
+  const [isongoingLoading, setisongoingLoading] = useState(false);
+  
+  // 무한크롤링 (OngoingRoom)
+  useEffect(() => {
+    if (ongoingContainerRef.current) {
+      ongoingContainerRef.current.addEventListener("scroll", handleOngoingScroll);
+      
+    }
+    // eslint-disable-next-line
+  }, []);
+  
+  const handleOngoingScroll = () => {
+    if (ongoingContainerRef.current) {
+      const container = ongoingContainerRef.current;
+      
+      // 스크롤 컨테이너의 스크롤 위치와 컨테이너 내용의 높이를 비교하여 스크롤이 맨 아래로 내려갔는지 확인
+      if (container.scrollHeight - container.scrollTop === container.clientHeight && !isongoingLoading) {
+        console.log("oooooooooo")
+        loadMoreOngoingDebateRooms();
+      }
+    }
+  };
+
+  const loadMoreOngoingDebateRooms = async () => {
+    setisongoingLoading(true);
+    try {
+      let apiUrl = "https://goldenteam.site/api/debate/list/ongoing";
+        if (minRoomId !== null) {
+          apiUrl += `?minRoomId=${minRoomId}&size=12`;
+        } else {
+          apiUrl += "?minRoomId=10000&size=12";
+        }
+        const response = await axios.get(apiUrl);
+        const newData = response.data.data;
+  
+      if (newData.length > 0) {
+        const newMinRoomId = Math.min(...newData.map((room) => room.roomId));
+        setMinRoomId(newMinRoomId);
+        setOngoingDebateRooms(newData);
+      }
+    } catch (error) {
+      console.error("Error fetching more data:", error);
+    }
+    setIsLoading(false);
+  };
 
   return (
     <div className="container">
@@ -144,7 +244,7 @@ function MainPage() {
         <div className={style.titlebox}>
           <span className={style.title}>참여 가능한 토론방</span>
         </div>
-        <div className={style.debateRoomContainer}>
+        <div className={style.debateRoomContainer} id="waitingRommContainer" ref={waitingContainerRef}>
           {waitingDebateRooms.map((room) => (
             <DebateRoomCard
               key={room.roomId}
@@ -153,6 +253,8 @@ function MainPage() {
               debateTime={room.totalTime}
               speechTime={room.talkTime}
               roomId={room.roomId}
+              userProfileImg1={room.atopicUserUrl}
+              userProfileImg2={room.btopicUserUrl}
             />
           ))}
         </div>
@@ -160,7 +262,7 @@ function MainPage() {
         <div className={style.titlebox}>
           <span className={style.title}>진행 중인 토론방</span>
         </div>
-        <div className={style.debateRoomContainer}>
+        <div className={style.debateRoomContainer} id="ongoingRoomContainer" ref={ongoingContainerRef}>
           {ongoingDebateRooms.map((room) => (
             <DebateRoomCard
               key={room.roomId}
@@ -169,6 +271,8 @@ function MainPage() {
               debateTime={room.totalTime}
               speechTime={room.talkTime}
               roomId={room.roomId}
+              userProfileImg1={room.atopicUserUrl}
+              userProfileImg2={room.btopicUserUrl}
             />
           ))}
         </div>

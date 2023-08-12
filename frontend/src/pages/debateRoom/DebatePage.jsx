@@ -1,29 +1,42 @@
-import React, { useCallback, useRef, useEffect, useState} from 'react';
-import axios from 'axios';
-import { OpenVidu} from 'openvidu-browser';
-import UserVideoComponent from './Openvidu/UserVideoComponent';
-import { useParams } from 'react-router-dom';
-import {useRecoilValue} from 'recoil';
-import {useStatus, useRole, getDebateRoomState, getVoteResultState} from '../../recoil/debateStateAtom';
-import { Row, Col, Stack, Modal, Button, ProgressBar, Container} from 'react-bootstrap';
-import Header from './components/Header';
-import ScreenShare from './components/ScreenShare';
-import Participate from './components/Participate';
-import TextChatting from './components/TextChatting';
-import DebateBtns from './components/DebateBtns';
-import Spectator from './components/Spectator';
-import RoomInfo from './components/RoomInfo';
-import {userInfoState} from '../../recoil/userInfo';
+import React, { useCallback, useRef, useEffect, useState } from "react";
+import axios from "axios";
+import { OpenVidu } from "openvidu-browser";
+import UserVideoComponent from "./Openvidu/UserVideoComponent";
+import { useParams } from "react-router-dom";
+import { useRecoilValue } from "recoil";
+import {
+  useStatus,
+  useRole,
+  getDebateRoomState,
+  getVoteResultState,
+} from "../../recoil/debateStateAtom";
+import {
+  Row,
+  Col,
+  Stack,
+  Modal,
+  Button,
+  ProgressBar,
+  Container,
+} from "react-bootstrap";
+import Header from "./components/Header";
+import ScreenShare from "./components/ScreenShare";
+import Participate from "./components/Participate";
+import TextChatting from "./components/TextChatting";
+import DebateBtns from "./components/DebateBtns";
+import Spectator from "./components/Spectator";
+import RoomInfo from "./components/RoomInfo";
+import { userInfoState } from "../../recoil/userInfo";
 
-import style from './debatePage.module.css';
+import style from "./debatePage.module.css";
 
 // tempImg
-import winnerImg from '../../images/img.jpg';
+import winnerImg from "../../images/img.jpg";
 
-const APPLICATION_SERVER_URL = 'https://goldenteam.site/';
+const APPLICATION_SERVER_URL = "https://goldenteam.site/";
 
 function DebatePage() {
-  const {roomId} = useParams();
+  const { roomId } = useParams();
   const userInfo = useRecoilValue(userInfoState);
 
   // 토론방 상태 호출
@@ -58,9 +71,10 @@ function DebatePage() {
       setMyUserName(e.target.value);
   }, []);
 
-  const handleMainVideoStream = useCallback((stream) => {
+  const handleMainVideoStream = useCallback(
+    (stream) => {
       if (mainStreamManager !== stream) {
-          setMainStreamManager(stream);
+        setMainStreamManager(stream);
       }
   }, [mainStreamManager]);
 
@@ -158,6 +172,34 @@ function DebatePage() {
       // eslint-disable-next-line
   }, [session, myUserName]);
 
+          const devices = await OV.current.getDevices();
+          const videoDevices = devices.filter(
+            (device) => device.kind === "videoinput"
+          );
+          const currentVideoDeviceId = publisher.stream
+            .getMediaStream()
+            .getVideoTracks()[0]
+            .getSettings().deviceId;
+          const currentVideoDevice = videoDevices.find(
+            (device) => device.deviceId === currentVideoDeviceId
+          );
+
+          setMainStreamManager(publisher);
+          setPublisher(publisher);
+          setCurrentVideoDevice(currentVideoDevice);
+        } catch (error) {
+          console.log(
+            "There was an error connecting to the session:",
+            error.code,
+            error.message
+          );
+        }
+      });
+    } else {
+      console.log("session이 없어요");
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [session]);
 
   const leaveSession = useCallback(() => {
       // Leave the session
@@ -219,14 +261,14 @@ function DebatePage() {
   }, []);
 
   useEffect(() => {
-      const handleBeforeUnload = (event) => {
-          leaveSession();
-      };
-      window.addEventListener('beforeunload', handleBeforeUnload);
+    const handleBeforeUnload = (event) => {
+      leaveSession();
+    };
+    window.addEventListener("beforeunload", handleBeforeUnload);
 
-      return () => {
-          window.removeEventListener('beforeunload', handleBeforeUnload);
-      };
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+    };
   }, [leaveSession]);
 
   const getToken = useCallback(async () => {
@@ -284,9 +326,6 @@ function DebatePage() {
 
   const totalVote = result.data.a.vote + result.data.b.vote;
 
-
-  
-
   // recoil 상태를 사용하는 훅
   const [status, setStatus] = useStatus();
   const [role, setRole] = useRole();
@@ -324,19 +363,19 @@ function DebatePage() {
   const [showResultModal, setShowResultModal] = useState(false);
   const goToMainPage = () => {
     setShowResultModal(false);
-    console.log('go to main page');
+    console.log("go to main page");
   };
 
   useEffect(() => {
-    if(debateRoomInfo?.data?.status){
-      setStatus((debateRoomInfo.data.status).toLowerCase());
+    if (debateRoomInfo?.data?.status) {
+      setStatus(debateRoomInfo.data.status.toLowerCase());
     }
-  }, [debateRoomInfo, setStatus])
+  }, [debateRoomInfo, setStatus]);
 
   useEffect(() => {
-    if(status === 'done'){
+    if (status === "done") {
       setShowResultModal(true);
-    } else{
+    } else {
       setShowResultModal(false);
     }
   }, [status]);
@@ -345,7 +384,7 @@ function DebatePage() {
 
   return (
     <div className={style.debatePage}>
-      { session === undefined ? (
+      {session === undefined ? (
         <Container>
           <form className="form-group" onSubmit={joinSession}>
             <p>
@@ -376,7 +415,7 @@ function DebatePage() {
               </p>
           </form>
         </Container>
-      ): null}
+      ) : null}
 
       {session !== undefined ? (
         <>
@@ -386,7 +425,7 @@ function DebatePage() {
               leaveSession={leaveSession}
             />
           </Row>
-          <Row className='debatePart'>
+          <Row className="debatePart">
             <Col xs={9}>
               <RoomInfo
                 status={status}
@@ -398,9 +437,9 @@ function DebatePage() {
                 onRoleChange={handleRoleChange}
                 debateRoomInfo={debateRoomInfo.data}
               />
-              <Participate 
+              <Participate
                 status={status}
-                role={role} 
+                role={role}
                 onRoleChange={handleRoleChange}
                 playerStatus={playerStatus}
                 setPlayerStatus={setPlayerStatus}
@@ -416,14 +455,12 @@ function DebatePage() {
             <Col xs={3}>
               <Stack gap={1}>
                 <ScreenShare status={status} role={role} />
-                <TextChatting
-                  roomId={roomId}
-                />
+                <TextChatting />
               </Stack>
             </Col>
           </Row>
           <Row>
-            <DebateBtns 
+            <DebateBtns
               status={status}
               role={role}
               onStatusChange={handleStatusChange}
@@ -477,7 +514,10 @@ function DebatePage() {
           ))}
 
           {/* 토론 결과 Modal*/}
-          <Modal show={showResultModal} onHide={() => setShowResultModal(false)}>
+          <Modal
+            show={showResultModal}
+            onHide={() => setShowResultModal(false)}
+          >
             <Modal.Header>
               <Modal.Title>토론 결과</Modal.Title>
             </Modal.Header>
@@ -485,23 +525,43 @@ function DebatePage() {
               {result ? (
                 <>
                   <p>{result.data.winner} 승리</p>
-                  <img src={winnerImg} alt='승자 프로필'/>
+                  <img src={winnerImg} alt="승자 프로필" />
                 </>
               ) : (
                 <p>무승부</p>
               )}
 
               <p>투표 결과</p>
-                <ProgressBar>
-                    <ProgressBar variant="success" label={result.data.a.vote} now={(result.data.a.vote / totalVote) * 100} key={1} />
-                    <ProgressBar variant="danger" label={result.data.b.vote} now={(result.data.b.vote / totalVote) * 100} key={2} />
-                </ProgressBar>
+              <ProgressBar>
+                <ProgressBar
+                  variant="success"
+                  label={result.data.a.vote}
+                  now={(result.data.a.vote / totalVote) * 100}
+                  key={1}
+                />
+                <ProgressBar
+                  variant="danger"
+                  label={result.data.b.vote}
+                  now={(result.data.b.vote / totalVote) * 100}
+                  key={2}
+                />
+              </ProgressBar>
               <p>잔여 HP</p>
-                <ProgressBar>
-                      <ProgressBar variant="success" label={result.data.a.hp} now={(result.data.a.hp / 200) * 100} key={1} />
-                      <ProgressBar variant="danger" label={result.data.b.hp} now={(result.data.a.hp / 200) * 100} key={2} />
-                  </ProgressBar>
-              <hr/>
+              <ProgressBar>
+                <ProgressBar
+                  variant="success"
+                  label={result.data.a.hp}
+                  now={(result.data.a.hp / 200) * 100}
+                  key={1}
+                />
+                <ProgressBar
+                  variant="danger"
+                  label={result.data.b.hp}
+                  now={(result.data.a.hp / 200) * 100}
+                  key={2}
+                />
+              </ProgressBar>
+              <hr />
               <p>얻은 경험치: {result.data.a.exp} (+10)</p>
               <p>얻은 코인: {result.data.a.coin} (+15)</p>
             </Modal.Body>
@@ -513,9 +573,8 @@ function DebatePage() {
           </Modal>
         </>
       ) : null}
-      
-    </div> 
-  )
+    </div>
+  );
 }
 
 export default DebatePage;
