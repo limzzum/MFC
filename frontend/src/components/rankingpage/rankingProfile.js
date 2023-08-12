@@ -1,27 +1,42 @@
-import styles from './rankingProfile.module.css';
+import styles from "./rankingProfile.module.css";
 import baseProfile from "../../images/baseProfile.png";
+import { Row, Col } from "react-bootstrap";
 
 function RankingProfile({ rank, userData }) {
-    return (
-        <div className={styles.profileBox}>
-            <div className={styles.contentBox}>
-                {rank}
-            </div>
-            
-            <div className={styles.contentBox}>
-                <img className={`${styles.radiusImg} w-50`} src={userData.profile
-                  ? `https://goldenteam.site/profiles/${userData.profile}`
-                  : baseProfile} alt="profileImage" />
-            </div>
-            <div className={styles.contentBox}>{userData.nickName}</div>
-            <div className={styles.contentBox}>
-                {userData.exp}
-            </div>
-            <div className={styles.contentBox}>
-                {userData.winRate.toFixed(2)}%
-            </div>
-        </div>
-    );
+  return (
+    <div className={styles.profileBox}>
+      <Row className="w-100 m-0">
+        <Col>
+          <p>{rank}</p>
+        </Col>
+        <Col xs={5} className={styles.rankTitle}>
+          <Row>
+            <Col xs={6} className="">
+              <img
+                className={`${styles.radiusImg}`}
+                src={
+                  userData.profile
+                    ? `https://goldenteam.site/profiles/${userData.profile}`
+                    : baseProfile
+                }
+                alt="profileImage"
+              />
+            </Col>
+            <Col>
+              <p className={styles.nickalign}>{userData.nickName}</p>
+            </Col>
+          </Row>
+        </Col>
+        <Col className={styles.rankTitle}>
+          <p>{userData.exp}</p>
+        </Col>
+        <Col className={styles.rankTitle}>
+          <p>{userData.winRate.toFixed(2)}%</p>
+        </Col>
+      </Row>
+      <hr className={`${styles.hrStyle} mx-auto`} />
+    </div>
+  );
 }
 
 export default RankingProfile;
