@@ -21,7 +21,7 @@ import style from "../debatePage.module.css";
 // import SockJS from "sockjs-client";
 // import Stomp from "webstomp-client";
 
-function DebateBtns({ status, role, onRoleChange, debateRoomInfo, setPlayerStatus, setUserReady, voteResult, handlePlayerAVideoStream, publisher, playerA, playerB, setPlaerA, setPlayerB}){
+function DebateBtns({ status, role, onRoleChange, debateRoomInfo, setPlayerStatus, setUserReady, voteResult, handlePlayerAVideoStream, handlePlayerBVideoStream, publisher, playerA, playerB, setPlayerA, setPlayerB}){
   const [showModal, setShowModal] = useState(false);
   const [selectedTopic, setSelectedTopics] = useState([]);
   const [isVotingEnabled, setVotingEnabled] = useState(true);
@@ -88,11 +88,16 @@ function DebateBtns({ status, role, onRoleChange, debateRoomInfo, setPlayerStatu
     }
   }, [isVotingEnabled, votingCooldown]);
 
-  const handleRoleChangeToSpectator = () => {
+  const handleRoleChangeToSpectator = (stream) => {
     onRoleChange("spectator");
-    handlePlayerAVideoStream(publisher);
     setPlayerStatus([false, false]);
     setUserReady(false);
+    if(playerA === stream){
+      setPlayerA(undefined);
+    }
+    if(playerB === stream){
+      setPlayerB(undefined);
+    }
   };
 
   return (
@@ -110,7 +115,7 @@ function DebateBtns({ status, role, onRoleChange, debateRoomInfo, setPlayerStatu
           {role === "participant" && status === "waiting" && (
             <Button
               variant="outline-primary"
-              onClick={handleRoleChangeToSpectator}
+              onClick={() => handleRoleChangeToSpectator(publisher)}
             >
               관전자로 돌아가기
             </Button>
