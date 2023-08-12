@@ -430,6 +430,8 @@ function DebatePage() {
           </Row>
           <Row>
             <DebateBtns
+              roomId={roomId}
+              userId={userInfo.id}
               status={status}
               role={role}
               onStatusChange={handleStatusChange}
