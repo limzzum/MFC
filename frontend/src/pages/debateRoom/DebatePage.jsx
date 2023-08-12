@@ -45,6 +45,7 @@ function DebatePage() {
   const [playerB, setPlayerB] = useState(undefined);
   const [publisher, setPublisher] = useState(undefined);
   const [subscribers, setSubscribers] = useState([]);
+  const [filteredSubscribers, setFilteredSubscribers] = useState([]);
   const [, setCurrentVideoDevice] = useState(null);
 
   const OV = useRef(new OpenVidu());
@@ -90,6 +91,15 @@ function DebatePage() {
         setPlayerStatus((prevStatus) => [prevStatus[0], false]);
       }
   },[playerA, playerB]);
+
+  useEffect(() => {
+    const updatedFilteredSubscribers = subscribers.filter(sub => sub !== playerA && sub !== playerB);
+    setFilteredSubscribers(updatedFilteredSubscribers);
+    console.log('subscribe: ', subscribers);
+    console.log('playerA: ', playerA);
+    console.log('playerB: ', playerB);
+    console.log('filteredSubscribers: ', filteredSubscribers);
+  }, [subscribers, playerA, playerB]);
 
   const joinSession = useCallback(() => {
       const mySession = OV.current.initSession();
@@ -248,6 +258,7 @@ function DebatePage() {
   console.log('debateRoomInfo: ', debateRoomInfo);
   console.log('voteResult: ', voteResult);
 
+
   const result = {
     status: "OK",
     message: "관전자에게 토론 결과 보내기 성공",
@@ -329,6 +340,8 @@ function DebatePage() {
       setShowResultModal(false);
     }
   }, [status]);
+
+
 
   return (
     <div className={style.debatePage}>
@@ -429,9 +442,8 @@ function DebatePage() {
           </Row>
           <Row>
             <Spectator
-              debateRoomInfo={debateRoomInfo.data}
               voteResult={voteResult.data}
-              subscriber={subscribers}
+              filteredSubscribers={filteredSubscribers}
             />
           </Row>
 
@@ -442,6 +454,7 @@ function DebatePage() {
           ) : (
             <div>no MainStream</div>
           )}
+
 
           <div>
             {publisher !== undefined ? (
@@ -456,6 +469,12 @@ function DebatePage() {
               </div>
             ))}
           </div>
+          <hr/>
+          {filteredSubscribers.map((sub, i) => (
+            <div className='spectators' key={sub.id} >
+              <UserVideoComponent streamManager={sub}/>
+            </div>
+          ))}
 
           {/* 토론 결과 Modal*/}
           <Modal show={showResultModal} onHide={() => setShowResultModal(false)}>

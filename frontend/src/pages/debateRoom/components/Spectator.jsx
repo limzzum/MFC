@@ -6,7 +6,7 @@ import style from '../debatePage.module.css';
 import leftVector from '../../../images/leftVector.png';
 import rightVector from '../../../images/rightVector.png';
 
-function Spectator({debateRoomInfo, voteResult, subscriber}) {
+function Spectator({ voteResult, filteredSubscribers}) {
     const value1 = voteResult.totalCountA;
     const value2 = voteResult.totalCountB;
     const totalValue = value1 + value2;
@@ -62,7 +62,7 @@ function Spectator({debateRoomInfo, voteResult, subscriber}) {
                             <video className={style.spectator} ref={userVideoRef} autoPlay muted />
                         </div>
                     ))} */}
-                    {subscriber.map((sub, i) => (
+                    {filteredSubscribers.map((sub, i) => (
                         <div key={sub.id} className={style.Spectator}>
                             <span>{sub.id}</span>
                             <UserVideoComponent streamManager={sub} called={style.spectator}/>
