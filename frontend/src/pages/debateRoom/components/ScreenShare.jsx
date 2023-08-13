@@ -1,29 +1,29 @@
-import React, { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 import style from '../debatePage.module.css';
 import { Button } from 'react-bootstrap';
 import SockJS from "sockjs-client";
 import Stomp from "webstomp-client"; 
 import axios from 'axios'
 
-function ScreenShare({ roomId, role }) {
+function ScreenShare({ status, roomId, role }) {
     const [selectedImage, setSelectedImage] = useState(null);
     const [imgFileName, setImgFileName] = useState("")  
     const imageInputRef = useRef();
     const stompRef = useRef(null);
 
     useEffect(() => {
-        var sock = new SockJS("https://goldenteam.site/mfc");
+        var sock = new SockJS("http://localhost:8081/mfc");
         var stomp = Stomp.over(sock);
 
         stompRef.current = stomp;
         
         stomp.connect({}, function () {
             // 이 부분 조금 수상 재참조하고, 구독하는 부분
-            stomp.subscribe(`/from/room/file/${roomId}`, (data) => {
-                // 이전 메시들에 새로운 메시지를 추가해서 chatMessages를 업데이트
-                console.log(data)
+            stomp.subscribe(`/from/room/file/${roomId}`, (message) => {
+                const messageData = JSON.parse(message.body)
+                console.log(messageData)
                 console.log("a")
-                setImgFileName(data.data);
+                setImgFileName(message.filePath);
             });
         });
         
@@ -56,7 +56,6 @@ function ScreenShare({ roomId, role }) {
                 console.log("이미지 업데이트 응답:", response.data);
                 const imageFileName  = response.data.data
                 const stompMessage = JSON.stringify({ filePath: imageFileName })
-                console.log(stompMessage)
                 stompRef.current.send(`/to/room/file/${roomId}`, {}, stompMessage);
             } catch (error) {
                 console.error("이미지 업데이트 오류:", error);
@@ -64,6 +63,8 @@ function ScreenShare({ roomId, role }) {
         };
     
     const handleRemoveImage = () => {
+        const stompMessage = JSON.stringify({ filePath: null })
+        stompRef.current.send(`/to/room/file/${roomId}`, {}, stompMessage);
         setSelectedImage(null);
     };
 
