@@ -63,31 +63,32 @@ function DebatePage() {
 
   const handlePlayerAVideoStream = useCallback(async (stream) => {
     if (playerA !== stream) {
-      if(playerB !== undefined){
-        setPlayerB(undefined);
-        setPlayerStatus((prevStatus) => [true, false]);
-      }
       setPlayerA(stream);
+      if(playerB === stream){
+        setPlayerB(undefined);
+        setPlayerStatus([true, false]);
+      }
     } else if(playerA === stream){
       setPlayerA(undefined);
-      setPlayerStatus((prevStatus) => [false, prevStatus[1]]);
+      setPlayerStatus((prevStatus) => [!prevStatus[0], prevStatus[1]]);
     }
     // eslint-disable-next-line
   },[playerA, playerB]);
   
-  const handlePlayerBVideoStream = useCallback((stream) => {
+  const handlePlayerBVideoStream = useCallback( async (stream) => {
     if(playerB !== stream){
+      setPlayerB(stream);
       if(playerA === stream){
         setPlayerA(undefined);
-        setPlayerStatus((prevStatus) => [false, true]);
-
-        }
-        setPlayerB(stream);
+        setPlayerStatus([false, true]);
+      }
       } else if(playerB === stream){
         setPlayerB(undefined);
-        setPlayerStatus((prevStatus) => [prevStatus[0], false]);
+        setPlayerStatus((prevStatus) => [prevStatus[0], !prevStatus[1]]);
       }
+      // eslint-disable-next-line
   },[playerA, playerB]);
+
 
   useEffect(() => {
     const updatedFilteredSubscribers = subscribers.filter(sub => sub !== playerA && sub !== playerB);
@@ -370,6 +371,7 @@ function DebatePage() {
               debateRoomInfo={debateRoomInfo.data}
               voteResult={voteResult.data}
               handlePlayerAVideoStream={handlePlayerAVideoStream}
+              handlePlayerBVideoStream={handlePlayerBVideoStream}
               publisher={publisher}
               playerA={playerA}
               playerB={playerB}
