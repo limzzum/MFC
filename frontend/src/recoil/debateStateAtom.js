@@ -12,6 +12,14 @@ export const voteResultState = atom({
   default: {},
 });
 
+export const valueState = atom({
+  key: 'valueState',
+  default: {
+    value1: 0,  // 기본값 설정
+    value2: 0   // 기본값 설정
+  }
+});
+
 // API 호출 결과를 Recoil selector로 관리
 export const getDebateRoomState = selectorFamily({
   key: "getDebateRoomState",
