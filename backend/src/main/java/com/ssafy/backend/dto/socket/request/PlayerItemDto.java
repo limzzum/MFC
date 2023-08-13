@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 public class PlayerItemDto {
     private Long roomId;
     private Long userId;
-    private boolean isTopicA;
+    private boolean isATopic;
     private Long itemCodeId;
 
 }
