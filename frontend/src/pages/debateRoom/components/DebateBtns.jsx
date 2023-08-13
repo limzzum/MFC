@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   Row,
   Col,
@@ -50,46 +50,46 @@ function DebateBtns({
   const [isAudioOn, setIsAudioOn] = useState(true);
 
   //----------------------------------------------------------------------------------------
-  useEffect(() => {
+  const stompClient = useRef(null);  // useRef를 사용하여 stompClient 선언
+
+useEffect(() => {
     const socket = new SockJS("http://localhost:8081/mfc");
-    const stompClient = Stomp.over(socket);
-    console.log('소켓 연결 완료')
-    stompClient.connect({}, () => {
-      stompClient.subscribe("/from/player/item", (response) => {
-        const message = JSON.parse(response.body);
-         // 여기서 필요한 작업을 수행하면 됩니다.
-        // 예: message를 사용하여 상태를 업데이트하거나 필요한 작업 수행
-        
-        console.log("Received:", message);
-      });
+    stompClient.current = Stomp.over(socket);
+    console.log('소켓 연결 완료');
+    stompClient.current.connect({}, () => {
+        stompClient.current.subscribe(`/from/player/${roomId}`, (response) => {
+            const message = JSON.parse(response.body);
+            console.log("Item response received:", message);
+        });
     });
 
     return () => {
-      stompClient.disconnect();
+        if (stompClient.current) {
+            stompClient.current.disconnect();
+        }
     };
-  }, []);
+// eslint-disable-next-line
+}, []);
 
-  const sendItemRequest = async () => {
-    const requestUrl = "/to/player/item"; 
-    const requestData = {
+const sendItemRequest = (itemId) => {
+  const requestUrl = "/to/player/item";
+  const requestData = {
       "roomId": `${roomId}`,
-      "userId": `${userId}`,
+      // "userId": `${userId}`,
+      "userId": 2,
+      // isTopicA: selectedTopic.includes('A'),
       isTopicA: selectedTopic.includes('A'),
-      "itemCodeId": itemCodeId,
-    };
-    console.log('여기')
-    console.log(roomId)
-    try {
-      const response = await axios.post(requestUrl, requestData, {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-      console.log("Item request sent:", response.data);
-    } catch (error) {
-      console.error("Item request failed:", error);
-    }
+      "itemCodeId": itemId,
   };
+  console.log('전송 데이터:', requestData);
+
+  if (stompClient.current && stompClient.current.connected) {
+    stompClient.current.send(requestUrl, JSON.stringify(requestData));
+    console.log('전송성공');
+} else {
+    console.error("소켓 연결이 아직 활성화되지 않았습니다.");
+}
+};
 //----------------------------------------------------------------------------------------
   const handleVote = async () => {
     // 투표 로직 구현
@@ -97,8 +97,8 @@ function DebateBtns({
 
     try {
       // rooId랑 userId 보내주셔서 넣어주세요 ( 충돌날까봐 우선 작성안했습니다 )
-      const roomId = 35;
-      const userId = 326;
+      // const roomId = 35;
+      // const userId = 326;
       const base_url = `http://localhost:8081/api/viewer/vote/${roomId}/${userId}`;
 
       const response = await axios.patch(base_url, null, {
@@ -185,7 +185,7 @@ function DebateBtns({
           {role === "participant" && status === "waiting" && (
             <Button
               variant="outline-primary"
-              onClick={ () => handleRoleChangeToSpectator(publisher)}
+              onClick={handleRoleChangeToSpectator}
             >
               관전자로 돌아가기
             </Button>
@@ -193,8 +193,10 @@ function DebateBtns({
         </Col>
       </Row>
       <Row>
-        <Col className={style.items}>
-          {role === "participant" && status === "ongoing" && (
+      <Col className={style.items}>
+          {/* {role === "participant" && status === "ongoing" && ( */}
+          {status === "ongoing" && (
+
             <>
               <OverlayTrigger
                 placement="top"
@@ -206,7 +208,7 @@ function DebateBtns({
                   </Tooltip>
                 }
               >
-                <Button variant="outline-primary" onClick={sendItemRequest}>
+                <Button variant="outline-primary" onClick={() => sendItemRequest(9)}>
                   <FontAwesomeIcon icon={faHeartCirclePlus} size="2x" />
                 </Button>
               </OverlayTrigger>
@@ -220,7 +222,7 @@ function DebateBtns({
                   </Tooltip>
                 }
               >
-                <Button variant="outline-primary" onClick={sendItemRequest}>
+                <Button variant="outline-primary" onClick={sendItemRequest(8)}>
                   <FontAwesomeIcon icon={faCross} size="2x" />
                 </Button>
               </OverlayTrigger>
@@ -234,7 +236,7 @@ function DebateBtns({
                   </Tooltip>
                 }
               >
-                <Button variant="outline-primary" onClick={sendItemRequest}>
+                <Button variant="outline-primary" onClick={sendItemRequest(10)}>
                   <FontAwesomeIcon icon={faUserClock} size="2x" />
                 </Button>
               </OverlayTrigger>
@@ -248,7 +250,7 @@ function DebateBtns({
                   </Tooltip>
                 }
               >
-                <Button variant="outline-primary" onClick={sendItemRequest}>
+                <Button variant="outline-primary" onClick={sendItemRequest(11)}>
                   <FontAwesomeIcon icon={faVolumeXmark} size="2x" />
                 </Button>
               </OverlayTrigger>
@@ -262,7 +264,7 @@ function DebateBtns({
                   </Tooltip>
                 }
               >
-                <Button variant="outline-primary" onClick={sendItemRequest}>
+                <Button variant="outline-primary" onClick={sendItemRequest(12)}>
                   <FontAwesomeIcon icon={faHand} size="2x" />
                 </Button>
               </OverlayTrigger>
