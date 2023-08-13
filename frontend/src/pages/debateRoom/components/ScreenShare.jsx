@@ -6,8 +6,7 @@ import Stomp from "webstomp-client";
 import axios from 'axios'
 
 function ScreenShare({ status, roomId, role }) {
-    const [selectedImage, setSelectedImage] = useState(null);
-    const [imgFileName, setImgFileName] = useState("")  
+    const [imgFileName, setImgFileName] = useState(null)  
     const imageInputRef = useRef();
     const stompRef = useRef(null);
 
@@ -21,10 +20,9 @@ function ScreenShare({ status, roomId, role }) {
             // 이 부분 조금 수상 재참조하고, 구독하는 부분
             stomp.subscribe(`/from/room/file/${roomId}`, (message) => {
                 const messageData = JSON.parse(message.body)
-                console.log(messageData)
-                console.log("a")
-                setImgFileName(message.filePath);
+                setImgFileName(messageData.filePath);
             });
+            console.log(imgFileName)
         });
         
         return () => {
@@ -36,11 +34,10 @@ function ScreenShare({ status, roomId, role }) {
 
     const handleImageChange = async(event) => {
         const file = event.target.files[0];
-        setSelectedImage(file);
         // 이미지 등록 서버 저장
         const config = {
             headers: {
-              "Content-Type": "multipart/form-data",
+              "Content-Type": "multipanrt/form-data",
             },
           };
           const formData = new FormData();
@@ -54,27 +51,27 @@ function ScreenShare({ status, roomId, role }) {
                 config
                 );
                 console.log("이미지 업데이트 응답:", response.data);
-                const imageFileName  = response.data.data
-                const stompMessage = JSON.stringify({ filePath: imageFileName })
-                stompRef.current.send(`/to/room/file/${roomId}`, {}, stompMessage);
+                const filePath  = response.data.data
+                const stompMessage = { filePath : `${filePath}`}
+                stompRef.current.send(`/to/room/file/${roomId}`, JSON.stringify(stompMessage));
             } catch (error) {
                 console.error("이미지 업데이트 오류:", error);
             }
         };
     
     const handleRemoveImage = () => {
-        const stompMessage = JSON.stringify({ filePath: null })
-        stompRef.current.send(`/to/room/file/${roomId}`, {}, stompMessage);
-        setSelectedImage(null);
+        const stompMessage = { filePath: null }
+        stompRef.current.send(`/to/room/file/${roomId}`, JSON.stringify(stompMessage));
     };
 
+    console.log(imgFileName)
     return (
         <div>
             <div className={style.screenShare}>
-                {selectedImage ? (
+                {imgFileName ? (
                     <div className={style.uploadedContainer}>
                         <img
-                            src={URL.createObjectURL(selectedImage)}
+                            src={`https://goldenteam.site/room-files/${imgFileName}`}
                             alt="Uploaded"
                             className={style.uploadedImage}
                             style={{ objectFit: "contain" }}
