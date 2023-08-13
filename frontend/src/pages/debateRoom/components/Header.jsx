@@ -6,14 +6,16 @@ import exitIcon from '../../../images/exitIcon.png';
 import style from '../debatePage.module.css';
 
 
-function Header({status, leaveSession}) {
+function Header({status, leaveSession, handleModifyModalOpen}) {
   return (
     <header className={style.header}>
       <img className={style.logo} src={logoImage} alt="logo"/>
       <ul>
         { status === 'waiting' && 
           <li>
-            <img className={style.setting} src={settingIcon} alt='설정  '/>
+            <button onClick={handleModifyModalOpen}>
+              <img className={style.setting} src={settingIcon} alt='설정 '/>
+            </button>
           </li>
         }
           <li>
