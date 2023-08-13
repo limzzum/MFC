@@ -1,7 +1,6 @@
 import React, { useCallback, useRef, useEffect, useState } from "react";
 import axios from "axios";
 import { OpenVidu } from "openvidu-browser";
-import UserVideoComponent from "./Openvidu/UserVideoComponent";
 import { useParams } from "react-router-dom";
 import { useRecoilValue } from "recoil";
 import {
@@ -17,7 +16,6 @@ import {
   Modal,
   Button,
   ProgressBar,
-  Container,
 } from "react-bootstrap";
 import Header from "./components/Header";
 import ScreenShare from "./components/ScreenShare";
@@ -53,7 +51,7 @@ function DebatePage() {
   const [mySessionId, setMySessionId] = useState(roomId);
   const [myUserName, setMyUserName] = useState(userInfo.nickname);
   const [session, setSession] = useState(undefined);
-  const [mainStreamManager, setMainStreamManager] = useState(undefined);
+  // const [mainStreamManager, setMainStreamManager] = useState(undefined);
   const [playerA, setPlayerA] = useState(undefined);
   const [playerB, setPlayerB] = useState(undefined);
   const [publisher, setPublisher] = useState(undefined);
@@ -62,21 +60,6 @@ function DebatePage() {
   const [, setCurrentVideoDevice] = useState(null);
 
   const OV = useRef(new OpenVidu());
-
-  const handleChangeSessionId = useCallback((e) => {
-      setMySessionId(e.target.value);
-  }, []);
-
-  const handleChangeUserName = useCallback((e) => {
-      setMyUserName(e.target.value);
-  }, []);
-
-  const handleMainVideoStream = useCallback(
-    (stream) => {
-      if (mainStreamManager !== stream) {
-        setMainStreamManager(stream);
-      }
-  }, [mainStreamManager]);
 
   const handlePlayerAVideoStream = useCallback(async (stream) => {
     if (playerA !== stream) {
@@ -111,7 +94,7 @@ function DebatePage() {
     setFilteredSubscribers(updatedFilteredSubscribers);
   }, [subscribers, playerA, playerB]);
 
-  const joinSession = useCallback(() => {
+  const joinSession = () => {
       const mySession = OV.current.initSession();
 
       mySession.on('streamCreated', (event) => {
@@ -128,8 +111,15 @@ function DebatePage() {
       });
 
       setSession(mySession);
-      // eslint-disable-next-line
-  }, []);
+      
+  };
+
+  useEffect (() => {
+    joinSession();
+
+    return () => leaveSession();
+    // eslint-disable-next-line
+  }, [])
 
   useEffect(() => {
       if (session) {
@@ -157,7 +147,7 @@ function DebatePage() {
                   const currentVideoDeviceId = publisher.stream.getMediaStream().getVideoTracks()[0].getSettings().deviceId;
                   const currentVideoDevice = videoDevices.find(device => device.deviceId === currentVideoDeviceId);
 
-                  setMainStreamManager(publisher);
+                  // setMainStreamManager(publisher);
                   setPublisher(publisher);
                   setSubscribers((prevSubscribers) => [publisher, ...prevSubscribers]);
                   setCurrentVideoDevice(currentVideoDevice);
@@ -182,39 +172,9 @@ function DebatePage() {
       setSubscribers([]);
       setMySessionId(undefined);
       setMyUserName(userInfo.nickname);
-      setMainStreamManager(undefined);
+      // setMainStreamManager(undefined);
       setPublisher(undefined);
   }, [session, userInfo.nickname]);
-
-  // const switchCamera = useCallback(async () => {
-  //     try {
-  //         const devices = await OV.current.getDevices();
-  //         const videoDevices = devices.filter(device => device.kind === 'videoinput');
-  
-  //         if (videoDevices && videoDevices.length > 1) {
-  //             const newVideoDevice = videoDevices.filter(device => device.deviceId !== currentVideoDevice.deviceId);
-  
-  //             if (newVideoDevice.length > 0) {
-  //                 const newPublisher = OV.current.initPublisher(undefined, {
-  //                     videoSource: newVideoDevice[0].deviceId,
-  //                     publishAudio: true,
-  //                     publishVideo: true,
-  //                     mirror: true,
-  //                 });
-  
-  //                 if (session) {
-  //                     await session.unpublish(mainStreamManager);
-  //                     await session.publish(newPublisher);
-  //                     setCurrentVideoDevice(newVideoDevice[0]);
-  //                     setMainStreamManager(newPublisher);
-  //                     setPublisher(newPublisher);
-  //                 }
-  //             }
-  //         }
-  //     } catch (e) {
-  //         console.error(e);
-  //     }
-  // }, [currentVideoDevice, session, mainStreamManager]);
 
   const deleteSubscriber = useCallback((streamManager) => {
       setSubscribers((prevSubscribers) => {
@@ -349,39 +309,6 @@ function DebatePage() {
 
   return (
     <div className={style.debatePage}>
-      {session === undefined ? (
-        <Container>
-          <form className="form-group" onSubmit={joinSession}>
-            <p>
-                  <label>Participant: </label>
-                  <input
-                      className="form-control"
-                      type="text"
-                      id="userName"
-                      value={myUserName}
-                      onChange={handleChangeUserName}
-                      disabled
-                      required
-                  />
-              </p>
-              <p>
-                  <label> Session: </label>
-                  <input
-                      className="form-control"
-                      type="text"
-                      id="sessionId"
-                      value={mySessionId}
-                      onChange={handleChangeSessionId}
-                      required
-                  />
-              </p>
-              <p className="text-center">
-                  <input className="btn btn-lg btn-success" name="commit" type="submit" value="JOIN" />
-              </p>
-          </form>
-        </Container>
-      ) : null}
-
       {session !== undefined ? (
         <>
           <Row>
@@ -455,35 +382,6 @@ function DebatePage() {
               filteredSubscribers={filteredSubscribers}
             />
           </Row>
-
-          {mainStreamManager !== undefined ? (
-            <div className='mainstream'>
-              <UserVideoComponent streamManager={mainStreamManager}>mainStreamManager</UserVideoComponent>
-            </div>
-          ) : (
-            <div>no MainStream</div>
-          )}
-
-
-          <div>
-            {publisher !== undefined ? (
-              <div className='publisher' onClick={() => handleMainVideoStream(publisher)}>
-                <UserVideoComponent streamManager={publisher} />
-              </div>
-            ) : null}
-            {subscribers.map((sub, i) => (
-              <div className='subscribers' key={sub.id} onClick={() => handleMainVideoStream(sub)}>
-                <span>{sub.id}</span>
-                <UserVideoComponent streamManager={sub} />
-              </div>
-            ))}
-          </div>
-          <hr/>
-          {filteredSubscribers.map((sub, i) => (
-            <div className='spectators' key={sub.id} >
-              <UserVideoComponent streamManager={sub}/>
-            </div>
-          ))}
 
           {/* 토론 결과 Modal*/}
           <Modal
