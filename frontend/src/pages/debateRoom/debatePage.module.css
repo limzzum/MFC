@@ -13,6 +13,11 @@ ul {
   list-style: none;
 }
 
+ul button {
+  border: none;
+  background-color: transparent;
+}
+
 .debatePage {
   padding: 0 var(--spacing-3);
 }
