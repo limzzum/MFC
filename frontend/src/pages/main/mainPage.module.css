@@ -1,35 +1,48 @@
 @import url(../../colorSelector.css);
 
-.horizontalLine {
-  height: 1.5px;
-  background-color: black;
+.wrapper {
+  width: 1200px;
+  margin: 50px auto;
+  font-family: inherit;
+}
+
+.createRoomBox {
+  width: 150px;
+  justify-content: flex-end;
+}
+
+.createRoomBtn {
+  float: right;
+  background-color: var(--blue-800);
+  color: white;
+  font-size: 16px;
+}
+
+.createRoomBtn:hover {
+  background-color: var(--blue-600);
+  color: white;
+  font-size: 16px;
+}
+
+.createReoomText {
+  line-height: 20px;
+  font-size: 17px;
+}
+
+.createRoomBtnIcon {
+  line-height: 46px;
+  vertical-align: middle;
+  font-size: 18px;
+  color: var(--blue-900);
+  margin: 0;
+  padding: 0;
 }
 
 .title {
-  font-size: larger;
-  align-items: center;
-}
-
-.titleBox {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.createRoomButtonContainer {
-  display: flex;
-  align-items: center;
-}
-
-.createRoomButton {
-  font-size: 16px;
-  width: 18rem;
-  margin-left: auto;
-}
-
-.createRoomButtonIcon {
-  font-size: 28px;
-  color: var(--blue-900);
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--blue-800);
+  /* align-items: center; */
 }
 
 .contentTitle {
@@ -40,7 +53,7 @@
 .debateRoomContainer {
   display: flex;
   flex-wrap: wrap;
-  justify-content: center;
+  /* justify-content: center; */
   height: 400px;
   overflow: scroll;
   gap: 20px;
@@ -52,8 +65,7 @@
 
 ::-webkit-scrollbar {
   width: 12px;
-  height: 0px;  
-
+  height: 0px;
 }
 
 ::-webkit-scrollbar-track {

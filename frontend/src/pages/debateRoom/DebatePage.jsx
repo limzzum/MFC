@@ -408,7 +408,7 @@ function DebatePage() {
               setPlayerA={setPlayerA}
               setPlayerB={setPlayerB}
               roomId={roomId}
-              userId = {userInfo.userId}
+              userId = {userInfo.Id}
               // isTopicA={}
 
             />
@@ -429,7 +429,6 @@ function DebatePage() {
               stompRef={modifyStompRef.current}
             />
           )}
-
           {/* 토론 결과 Modal*/}
           <Modal
             show={showResultModal}
