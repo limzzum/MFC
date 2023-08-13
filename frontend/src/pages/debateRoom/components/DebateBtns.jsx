@@ -32,12 +32,23 @@ function DebateBtns({
   roomId,      //추가
   userId,  
   itemCodeId,  // 추가
+  handlePlayerAVideoStream, 
+  handlePlayerBVideoStream, 
+  publisher, 
+  playerA, 
+  playerB, 
+  setPlayerA, 
+  setPlayerB
 }) {
   const [showModal, setShowModal] = useState(false);
   const [selectedTopic, setSelectedTopics] = useState([]);
   const [isVotingEnabled, setVotingEnabled] = useState(true);
   const votingCooldown = debateRoomInfo.talkTime * 120;
   const [remainingTime, setRemainingTime] = useState(votingCooldown);
+
+  const [isVideoOn, setIsVideoOn] = useState(true);
+  const [isAudioOn, setIsAudioOn] = useState(true);
+
   //----------------------------------------------------------------------------------------
   useEffect(() => {
     const socket = new SockJS("http://localhost:8081/mfc");
@@ -135,11 +146,29 @@ function DebateBtns({
     }
   }, [isVotingEnabled, votingCooldown]);
 
-  const handleRoleChangeToSpectator = () => {
+  const handleVideoToggle = () => {
+    setIsVideoOn(!isVideoOn);
+    publisher.publishVideo(!isVideoOn);
+  };
+
+  const handleAudioToggle = () => {
+    setIsAudioOn(!isAudioOn);
+    publisher.publishAudio(!isAudioOn);
+  }
+
+
+  const handleRoleChangeToSpectator = (stream) => {
     onRoleChange("spectator");
     setPlayerStatus([false, false]);
     setUserReady(false);
+    if(playerA === stream){
+      setPlayerA(undefined);
+    }
+    if(playerB === stream){
+      setPlayerB(undefined);
+    }
   };
+
 
   return (
     <div className={style.Btns}>
@@ -156,7 +185,7 @@ function DebateBtns({
           {role === "participant" && status === "waiting" && (
             <Button
               variant="outline-primary"
-              onClick={handleRoleChangeToSpectator}
+              onClick={ () => handleRoleChangeToSpectator(publisher)}
             >
               관전자로 돌아가기
             </Button>
@@ -246,9 +275,13 @@ function DebateBtns({
               투표하기
             </Button>
           )}
-          <Button variant="primary">캠 OFF</Button>
+          <Button variant="primary" onClick={handleVideoToggle}>
+            { isVideoOn ? "CAM OFF" : "CAM ON"}
+          </Button>
           {role === "participant" && (
-            <Button variant="primary">마이크 OFF</Button>
+            <Button variant="primary" onClick={handleAudioToggle}>
+              { isAudioOn ? "음소거" : "음소거 해제"}
+            </Button>
           )}
         </Col>
       </Row>
