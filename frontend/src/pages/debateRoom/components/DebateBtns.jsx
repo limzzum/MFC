@@ -18,27 +18,81 @@ import {
   faHand,
 } from "@fortawesome/free-solid-svg-icons";
 import style from "../debatePage.module.css";
-// import SockJS from "sockjs-client";
-// import Stomp from "webstomp-client";
+import SockJS from "sockjs-client";
+import Stomp from "webstomp-client";
 
-function DebateBtns({ roomId, userId, status, role, onRoleChange, debateRoomInfo, setPlayerStatus, setUserReady, voteResult, publisher, playerA, playerB, setPlayerA, setPlayerB}){
+function DebateBtns({
+  status,
+  role,
+  onRoleChange,
+  debateRoomInfo,
+  setPlayerStatus,
+  setUserReady,
+  voteResult,
+  roomId,      //추가
+  userId,  
+  itemCodeId,  // 추가
+}) {
   const [showModal, setShowModal] = useState(false);
   const [selectedTopic, setSelectedTopics] = useState([]);
   const [isVotingEnabled, setVotingEnabled] = useState(true);
   const votingCooldown = debateRoomInfo.talkTime * 120;
   const [remainingTime, setRemainingTime] = useState(votingCooldown);
+  //----------------------------------------------------------------------------------------
+  useEffect(() => {
+    const socket = new SockJS("http://localhost:8081/mfc");
+    const stompClient = Stomp.over(socket);
+    console.log('소켓 연결 완료')
+    stompClient.connect({}, () => {
+      stompClient.subscribe("/from/player/item", (response) => {
+        const message = JSON.parse(response.body);
+         // 여기서 필요한 작업을 수행하면 됩니다.
+        // 예: message를 사용하여 상태를 업데이트하거나 필요한 작업 수행
+        
+        console.log("Received:", message);
+      });
+    });
 
-  const [isVideoOn, setIsVideoOn] = useState(true);
-  const [isAudioOn, setIsAudioOn] = useState(true);
+    return () => {
+      stompClient.disconnect();
+    };
+  }, []);
 
+  const sendItemRequest = async () => {
+    const requestUrl = "/to/player/item"; 
+    const requestData = {
+      "roomId": `${roomId}`,
+      "userId": `${userId}`,
+      isTopicA: selectedTopic.includes('A'),
+      "itemCodeId": itemCodeId,
+    };
+    console.log('여기')
+    console.log(roomId)
+    try {
+      const response = await axios.post(requestUrl, requestData, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      console.log("Item request sent:", response.data);
+    } catch (error) {
+      console.error("Item request failed:", error);
+    }
+  };
+//----------------------------------------------------------------------------------------
   const handleVote = async () => {
     // 투표 로직 구현
     console.log(`Selected ${selectedTopic}`);
 
     try {
-      const base_url = `https://goldenteam.site/api/viewer/vote/${roomId}/${userId}?vote=${selectedTopic}`;
+      // rooId랑 userId 보내주셔서 넣어주세요 ( 충돌날까봐 우선 작성안했습니다 )
+      const roomId = 35;
+      const userId = 326;
+      const base_url = `http://localhost:8081/api/viewer/vote/${roomId}/${userId}`;
 
-      const response = await axios.patch(base_url, {vote: selectedTopic});
+      const response = await axios.patch(base_url, null, {
+        params: { vote: selectedTopic },
+      });
       if (response.data.status === "BAD_REQUEST") {
         console.log("투표 가능한 시간이 아닙니다");
       } else {
@@ -52,18 +106,14 @@ function DebateBtns({ roomId, userId, status, role, onRoleChange, debateRoomInfo
     setVotingEnabled(false); // 투표 후 투표 비활성화
   };
 
-  const handleVideoToggle = () => {
-    setIsVideoOn(!isVideoOn);
-    publisher.publishVideo(!isVideoOn);
-  };
+  useEffect(() => {
+    const sock = new SockJS("http://localhost:8081/mfc");
+    const stompClient = Stomp.over(sock);
 
-  const handleAudioToggle = () => {
-    setIsAudioOn(!isAudioOn);
-    publisher.publishAudio(!isAudioOn);
-  }
-
-  
-
+    stompClient.connect({}, function () {
+      console.log("WebSocket 연결 성공");
+    });
+  }, []);
   useEffect(() => {
     if (!isVotingEnabled) {
       // 투표 후 재투표 가능 시간 설정
@@ -85,16 +135,10 @@ function DebateBtns({ roomId, userId, status, role, onRoleChange, debateRoomInfo
     }
   }, [isVotingEnabled, votingCooldown]);
 
-  const handleRoleChangeToSpectator = (stream) => {
+  const handleRoleChangeToSpectator = () => {
     onRoleChange("spectator");
     setPlayerStatus([false, false]);
     setUserReady(false);
-    if(playerA === stream){
-      setPlayerA(undefined);
-    }
-    if(playerB === stream){
-      setPlayerB(undefined);
-    }
   };
 
   return (
@@ -112,7 +156,7 @@ function DebateBtns({ roomId, userId, status, role, onRoleChange, debateRoomInfo
           {role === "participant" && status === "waiting" && (
             <Button
               variant="outline-primary"
-              onClick={() => handleRoleChangeToSpectator(publisher)}
+              onClick={handleRoleChangeToSpectator}
             >
               관전자로 돌아가기
             </Button>
@@ -133,7 +177,7 @@ function DebateBtns({ roomId, userId, status, role, onRoleChange, debateRoomInfo
                   </Tooltip>
                 }
               >
-                <Button variant="outline-primary">
+                <Button variant="outline-primary" onClick={sendItemRequest}>
                   <FontAwesomeIcon icon={faHeartCirclePlus} size="2x" />
                 </Button>
               </OverlayTrigger>
@@ -147,7 +191,7 @@ function DebateBtns({ roomId, userId, status, role, onRoleChange, debateRoomInfo
                   </Tooltip>
                 }
               >
-                <Button variant="outline-primary">
+                <Button variant="outline-primary" onClick={sendItemRequest}>
                   <FontAwesomeIcon icon={faCross} size="2x" />
                 </Button>
               </OverlayTrigger>
@@ -161,7 +205,7 @@ function DebateBtns({ roomId, userId, status, role, onRoleChange, debateRoomInfo
                   </Tooltip>
                 }
               >
-                <Button variant="outline-primary">
+                <Button variant="outline-primary" onClick={sendItemRequest}>
                   <FontAwesomeIcon icon={faUserClock} size="2x" />
                 </Button>
               </OverlayTrigger>
@@ -175,7 +219,7 @@ function DebateBtns({ roomId, userId, status, role, onRoleChange, debateRoomInfo
                   </Tooltip>
                 }
               >
-                <Button variant="outline-primary">
+                <Button variant="outline-primary" onClick={sendItemRequest}>
                   <FontAwesomeIcon icon={faVolumeXmark} size="2x" />
                 </Button>
               </OverlayTrigger>
@@ -189,7 +233,7 @@ function DebateBtns({ roomId, userId, status, role, onRoleChange, debateRoomInfo
                   </Tooltip>
                 }
               >
-                <Button variant="outline-primary">
+                <Button variant="outline-primary" onClick={sendItemRequest}>
                   <FontAwesomeIcon icon={faHand} size="2x" />
                 </Button>
               </OverlayTrigger>
@@ -202,14 +246,10 @@ function DebateBtns({ roomId, userId, status, role, onRoleChange, debateRoomInfo
               투표하기
             </Button>
           )}
-          <Button variant="primary" onClick={handleVideoToggle}>
-            {isVideoOn ? "CAM OFF" : "CAM ON"}
-          </Button>
-          {role === "participant" && 
-            <Button variant="primary" onClick={handleAudioToggle}>
-              {isAudioOn ? "음소거" : "음소거 해제"}
-            </Button>
-          }
+          <Button variant="primary">캠 OFF</Button>
+          {role === "participant" && (
+            <Button variant="primary">마이크 OFF</Button>
+          )}
         </Col>
       </Row>
 
