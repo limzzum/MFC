@@ -1,9 +1,10 @@
 import React, { useCallback, useRef, useEffect, useState } from "react";
 import axios from "axios";
 import { OpenVidu } from "openvidu-browser";
-import UserVideoComponent from "./Openvidu/UserVideoComponent";
 import { useParams } from "react-router-dom";
 import { useRecoilValue } from "recoil";
+import SockJS from 'sockjs-client';
+import Stomp from 'webstomp-client';
 import {
   useStatus,
   useRole,
@@ -17,7 +18,6 @@ import {
   Modal,
   Button,
   ProgressBar,
-  Container,
 } from "react-bootstrap";
 import Header from "./components/Header";
 import ScreenShare from "./components/ScreenShare";
@@ -32,6 +32,7 @@ import style from "./debatePage.module.css";
 
 // tempImg
 import winnerImg from "../../images/img.jpg";
+import ModifyRoomModal from "./components/modifyRoomModal";
 
 const APPLICATION_SERVER_URL = "https://goldenteam.site/";
 
@@ -47,13 +48,39 @@ function DebatePage() {
   const [playerStatus, setPlayerStatus] = useState([false, false]);
   // 참가자 준비여부
   const [userReady, setUserReady] = useState(false);
+  const [isModifyModalOpen, setIsModifyModalOpen] = useState(false);
+
+  // 토론방 수정 웹소켓 코드
+  const modifyStompRef = useRef(null);
+  useEffect(() => {
+    // var sock = new SockJS("http://localhost:8081/mfc");
+    var sock = new SockJS("https://goldenteam.site/mfc");
+    var stomp = Stomp.over(sock);
+    stomp.connect({}, function () {
+      modifyStompRef.current = stomp;
+      stomp.subscribe(`/from/room/update/${roomId}`, (message) => {
+        const content = JSON.parse(message.body);
+        console.log(content);
+      });
+    });
+    return () => {
+      if (modifyStompRef.current) {
+        modifyStompRef.current.disconnect();
+      }
+    };
+  });
+  // 코드 끝
+
+  const handleModifyModalOpen = () => {
+    setIsModifyModalOpen((prev) => !prev);
+  }
 
 
   // OpenVidu 코드 시작
   const [mySessionId, setMySessionId] = useState(roomId);
   const [myUserName, setMyUserName] = useState(userInfo.nickname);
   const [session, setSession] = useState(undefined);
-  const [mainStreamManager, setMainStreamManager] = useState(undefined);
+  // const [mainStreamManager, setMainStreamManager] = useState(undefined);
   const [playerA, setPlayerA] = useState(undefined);
   const [playerB, setPlayerB] = useState(undefined);
   const [publisher, setPublisher] = useState(undefined);
@@ -63,48 +90,34 @@ function DebatePage() {
 
   const OV = useRef(new OpenVidu());
 
-  const handleChangeSessionId = useCallback((e) => {
-      setMySessionId(e.target.value);
-  }, []);
-
-  const handleChangeUserName = useCallback((e) => {
-      setMyUserName(e.target.value);
-  }, []);
-
-  const handleMainVideoStream = useCallback(
-    (stream) => {
-      if (mainStreamManager !== stream) {
-        setMainStreamManager(stream);
-      }
-  }, [mainStreamManager]);
-
   const handlePlayerAVideoStream = useCallback(async (stream) => {
     if (playerA !== stream) {
-      if(playerB !== undefined){
-        setPlayerB(undefined);
-        setPlayerStatus((prevStatus) => [true, false]);
-      }
       setPlayerA(stream);
+      if(playerB === stream){
+        setPlayerB(undefined);
+        setPlayerStatus([true, false]);
+      }
     } else if(playerA === stream){
       setPlayerA(undefined);
-      setPlayerStatus((prevStatus) => [false, prevStatus[1]]);
+      setPlayerStatus((prevStatus) => [!prevStatus[0], prevStatus[1]]);
     }
     // eslint-disable-next-line
   },[playerA, playerB]);
   
-  const handlePlayerBVideoStream = useCallback((stream) => {
+  const handlePlayerBVideoStream = useCallback( async (stream) => {
     if(playerB !== stream){
+      setPlayerB(stream);
       if(playerA === stream){
         setPlayerA(undefined);
-        setPlayerStatus((prevStatus) => [false, true]);
-
-        }
-        setPlayerB(stream);
+        setPlayerStatus([false, true]);
+      }
       } else if(playerB === stream){
         setPlayerB(undefined);
-        setPlayerStatus((prevStatus) => [prevStatus[0], false]);
+        setPlayerStatus((prevStatus) => [prevStatus[0], !prevStatus[1]]);
       }
+      // eslint-disable-next-line
   },[playerA, playerB]);
+
 
   useEffect(() => {
     const updatedFilteredSubscribers = subscribers.filter(sub => sub !== playerA && sub !== playerB);
@@ -116,7 +129,7 @@ function DebatePage() {
     // eslint-disable-next-line
   }, [subscribers, playerA, playerB]);
 
-  const joinSession = useCallback(() => {
+  const joinSession = () => {
       const mySession = OV.current.initSession();
 
       mySession.on('streamCreated', (event) => {
@@ -133,8 +146,16 @@ function DebatePage() {
       });
 
       setSession(mySession);
-      // eslint-disable-next-line
-  }, []);
+      
+  };
+
+  useEffect (() => {
+    joinSession();
+
+    return () => leaveSession();
+    // eslint-disable-next-line
+  }, [])
+
   useEffect(() => {
       if (session) {
           // Get a token from the OpenVidu deployment
@@ -160,7 +181,7 @@ function DebatePage() {
                   const currentVideoDeviceId = publisher.stream.getMediaStream().getVideoTracks()[0].getSettings().deviceId;
                   const currentVideoDevice = videoDevices.find(device => device.deviceId === currentVideoDeviceId);
 
-                  setMainStreamManager(publisher);
+                  // setMainStreamManager(publisher);
                   setPublisher(publisher);
                   setSubscribers((prevSubscribers) => [publisher, ...prevSubscribers]);
                   setCurrentVideoDevice(currentVideoDevice);
@@ -185,39 +206,9 @@ function DebatePage() {
       setSubscribers([]);
       setMySessionId(undefined);
       setMyUserName(userInfo.nickname);
-      setMainStreamManager(undefined);
+      // setMainStreamManager(undefined);
       setPublisher(undefined);
   }, [session, userInfo.nickname]);
-
-  // const switchCamera = useCallback(async () => {
-  //     try {
-  //         const devices = await OV.current.getDevices();
-  //         const videoDevices = devices.filter(device => device.kind === 'videoinput');
-  
-  //         if (videoDevices && videoDevices.length > 1) {
-  //             const newVideoDevice = videoDevices.filter(device => device.deviceId !== currentVideoDevice.deviceId);
-  
-  //             if (newVideoDevice.length > 0) {
-  //                 const newPublisher = OV.current.initPublisher(undefined, {
-  //                     videoSource: newVideoDevice[0].deviceId,
-  //                     publishAudio: true,
-  //                     publishVideo: true,
-  //                     mirror: true,
-  //                 });
-  
-  //                 if (session) {
-  //                     await session.unpublish(mainStreamManager);
-  //                     await session.publish(newPublisher);
-  //                     setCurrentVideoDevice(newVideoDevice[0]);
-  //                     setMainStreamManager(newPublisher);
-  //                     setPublisher(newPublisher);
-  //                 }
-  //             }
-  //         }
-  //     } catch (e) {
-  //         console.error(e);
-  //     }
-  // }, [currentVideoDevice, session, mainStreamManager]);
 
   const deleteSubscriber = useCallback((streamManager) => {
       setSubscribers((prevSubscribers) => {
@@ -356,45 +347,13 @@ function DebatePage() {
 
   return (
     <div className={style.debatePage}>
-      {session === undefined ? (
-        <Container>
-          <form className="form-group" onSubmit={joinSession}>
-            <p>
-                  <label>Participant: </label>
-                  <input
-                      className="form-control"
-                      type="text"
-                      id="userName"
-                      value={myUserName}
-                      onChange={handleChangeUserName}
-                      disabled
-                      required
-                  />
-              </p>
-              <p>
-                  <label> Session: </label>
-                  <input
-                      className="form-control"
-                      type="text"
-                      id="sessionId"
-                      value={mySessionId}
-                      onChange={handleChangeSessionId}
-                      required
-                  />
-              </p>
-              <p className="text-center">
-                  <input className="btn btn-lg btn-success" name="commit" type="submit" value="JOIN" />
-              </p>
-          </form>
-        </Container>
-      ) : null}
-
       {session !== undefined ? (
         <>
           <Row>
             <Header 
               status={status}
               leaveSession={leaveSession}
+              handleModifyModalOpen={handleModifyModalOpen}
             />
           </Row>
           <Row className="debatePart">
@@ -426,8 +385,8 @@ function DebatePage() {
             </Col>
             <Col xs={3}>
               <Stack gap={1}>
-                <ScreenShare status={status} role={role} />
-                <TextChatting roomId={roomId} />
+              <ScreenShare roomId={roomId} role={role} status={status} />
+              <TextChatting roomId={roomId} />
               </Stack>
             </Col>
           </Row>
@@ -442,6 +401,7 @@ function DebatePage() {
               debateRoomInfo={debateRoomInfo.data}
               voteResult={voteResult.data}
               handlePlayerAVideoStream={handlePlayerAVideoStream}
+              handlePlayerBVideoStream={handlePlayerBVideoStream}
               publisher={publisher}
               playerA={playerA}
               playerB={playerB}
@@ -460,34 +420,15 @@ function DebatePage() {
             />
           </Row>
 
-          {mainStreamManager !== undefined ? (
-            <div className='mainstream'>
-              <UserVideoComponent streamManager={mainStreamManager}>mainStreamManager</UserVideoComponent>
-            </div>
-          ) : (
-            <div>no MainStream</div>
+          { isModifyModalOpen && (
+            <ModifyRoomModal
+              debateRoomInfo={debateRoomInfo.data}
+              roomId={roomId}
+              isModifyModalOpen={isModifyModalOpen}
+              handleModal={handleModifyModalOpen}
+              stompRef={modifyStompRef.current}
+            />
           )}
-
-
-          <div>
-            {publisher !== undefined ? (
-              <div className='publisher' onClick={() => handleMainVideoStream(publisher)}>
-                <UserVideoComponent streamManager={publisher} />
-              </div>
-            ) : null}
-            {subscribers.map((sub, i) => (
-              <div className='subscribers' key={sub.id} onClick={() => handleMainVideoStream(sub)}>
-                <span>{sub.id}</span>
-                <UserVideoComponent streamManager={sub} />
-              </div>
-            ))}
-          </div>
-          <hr/>
-          {filteredSubscribers.map((sub, i) => (
-            <div className='spectators' key={sub.id} >
-              <UserVideoComponent streamManager={sub}/>
-            </div>
-          ))}
 
           {/* 토론 결과 Modal*/}
           <Modal

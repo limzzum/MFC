@@ -1,48 +1,45 @@
-import React from "react";
-// import SockJS from "sockjs-client";
-// import Stomp from "webstomp-client";
+import React, { useEffect, useRef } from "react";
+import SockJS from "sockjs-client";
+import Stomp from "webstomp-client";
 import { Row, Col } from "react-bootstrap";
 import style from '../debatePage.module.css';
 import UserVideoComponent from "../Openvidu/UserVideoComponent";
 
 
-function Participate({status, role, onRoleChange, playerStatus, setPlayerStatus, handlePlayerAVideoStream, handlePlayerBVideoStream, publisher, playerA, playerB}){
+function Participate({ roomId, userId, status, role, onRoleChange, playerStatus, setPlayerStatus, handlePlayerAVideoStream, handlePlayerBVideoStream, publisher, playerA, playerB}){
 
-    // const [stompClient, setStompClient] = useState(null);
+    const stompRef = useRef(null);
 
-    // useEffect (() => {
-    //     const sock = new SockJS("http://localhost:8081/mfc");
-    //     const stomp = Stomp.over(sock);
-    //     stomp.connect({}, () => {
-    //         setStompClient(stomp);
-    //         stomp.subscribe(`/from/player/${roomId}`, (message) => {
-    //             const content = JSON.parse(message.body);
-    //             console.log("player subscribe", content);
-                
-    //         });
+    useEffect(() => {
+        // var sock = new SockJS("http://localhost:8081/mfc");
+        var sock = new SockJS("https://goldenteam.site/mfc");
+        var stomp = Stomp.over(sock);
+        stomp.connect({}, function () {
+            stompRef.current = stomp;
+            stomp.subscribe(`/from/room/player/${roomId}`, (message) => {
+                const content = JSON.parse(message.body);
+                console.log(content);
+            });
+        });
+        return () => {
+            if (stompRef.current) {
+                stompRef.current.disconnect();
+            }
+        }
+    }, [roomId, userId, playerStatus]);
 
-    //     });
-    //     return () => {
-    //         if(stompClient){
-    //             stomp.disconnect();
-    //             setStompClient(null);
-    //         }
-    //     }
-    // }, [roomId, stompClient]);
-
-    // const postPlayer = (isTopicA) => {
-    //     if(stompClient) {
-    //         const data = {
-    //             roomId,
-    //             userId,
-    //             isTopicA,
-    //         };
-    //         stompClient.send("/to/player/enter", JSON.stringify(data));
-    //         console.log("player post", data);
-    //     } else{
-    //         console.log("stompClient is null");
-    //     }
-    // };
+    const handlePostPlayer = (isTopicA) => {
+        if(stompRef.current) {
+            stompRef.current.send(
+                `/to/room/player/${roomId}`,
+                JSON.stringify({
+                    roomId: roomId,
+                    userId: userId,
+                    isTopicA : isTopicA,
+                })
+            );
+        }
+    };
     
     return (
         <div>
@@ -58,7 +55,7 @@ function Participate({status, role, onRoleChange, playerStatus, setPlayerStatus,
                                     onRoleChange('participant');
                                     setPlayerStatus((prevStatus) => [true, prevStatus[1]]);
                                     handlePlayerAVideoStream(publisher);
-                                    // postPlayer(true);
+                                    handlePostPlayer(true);
                                 }}
                             >
                                 참가하기
@@ -84,7 +81,7 @@ function Participate({status, role, onRoleChange, playerStatus, setPlayerStatus,
                                     onRoleChange('participant');
                                     setPlayerStatus((prevStatus) => [prevStatus[0], true]);
                                     handlePlayerBVideoStream(publisher);
-                                    // postPlayer(false);
+                                    handlePostPlayer(false);
                                 }}
                             >
                                 참가하기
