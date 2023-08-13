@@ -378,7 +378,7 @@ function DebatePage() {
               setPlayerA={setPlayerA}
               setPlayerB={setPlayerB}
               roomId={roomId}
-              userId = {userInfo.userId}
+              userId = {userInfo.Id}
               // isTopicA={}
 
             />

@@ -1,12 +1,18 @@
 import React from "react";
 import { Button, ProgressBar } from "react-bootstrap";
 import UserVideoComponent from '../Openvidu/UserVideoComponent';
+// import { valueState} from '../../../recoil/debateStateAtom';  
+// import { useRecoilValue } from 'recoil';
 
 import style from '../debatePage.module.css';
 import leftVector from '../../../images/leftVector.png';
 import rightVector from '../../../images/rightVector.png';
 
 function Spectator({ voteResult, filteredSubscribers}) {
+    // const values = useRecoilValue(valueState); 리코일 값을 가져옴
+    // 리코일로 벨류 변경하기 위해서 선언
+    // const value1 = values.value1;
+    // const value2 = values.value2;
     const value1 = voteResult.totalCountA;
     const value2 = voteResult.totalCountB;
     const totalValue = value1 + value2;
