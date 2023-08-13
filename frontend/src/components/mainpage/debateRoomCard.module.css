@@ -2,30 +2,51 @@
 @import url(../../colorSelector.css);
 
 .card {
-    width: 18rem;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    border-radius: 10px; /* 박스의 모서리를 둥글게 만드는 속성 */
-    overflow: hidden; 
+  width: 280px;
+  /* min-height: 280px; */
+  display: flex;
+  flex-direction: column;
+  /* justify-content: space-between; */
+  border-radius: 10px; /* 박스의 모서리를 둥글게 만드는 속성 */
+  border: solid 1px var(--blue-100);
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.card:hover {
+  border: solid 3px var(--blue-200);
+}
+
+.imgbox {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.fullWidthImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 .cardbody {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    justify-content: center; /* 가로 방향 가운데 정렬 */
-    align-items: center; /* 세로 방향 가운데 정렬 */
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  font-size: 16px;
 }
 
 .cardtitle {
-  font-size: 22px;
+  color: var(--blue-800);
+  font-size: 17px;
   font-weight: bolder;
   margin-bottom: 10px;
+  text-align: center;
 }
 
 .cardtext {
   font-size: 14px;
+  text-align: center;
 }
 
 .timeicon {
@@ -34,28 +55,24 @@
 }
 
 .joinbutton {
-  width: 18rem;
-  height: 40px;
-  background-color: var(--blue-700);
+  width: 95%;
+  /* height: 40px; */
+  background-color: var(--blue-800);
   border-radius: 10px;
   color: white;
-  font-weight: bold;
+  font-size: 16px;
+}
+
+.joinbutton:hover {
+  background-color: var(--blue-600);
+  color: white;
+  font-size: 16px;
 }
 
 /* 추가한 스타일 */
 .joinbuttoncontainer {
-    display: flex;
-    justify-content: center;
-  }
+  text-align: center;
+  /* display: flex; */
 
-.imgbox {
-    width: 50%;      
-    height: 9rem;    
-    overflow: hidden;  
-}
-
-.fullWidthImage {
-    width: 100%;     
-    height: 100%;
-    object-fit: cover; 
+  /* justify-content: center; */
 }
