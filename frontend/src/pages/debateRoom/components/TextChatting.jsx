@@ -15,7 +15,8 @@ function TextChatting({ roomId }) {
   const stompRef = useRef(null);
 
   useEffect(() => {
-    var sock = new SockJS("http://localhost:8081/mfc");
+    var sock = new SockJS("https://goldenteam.site/mfc");
+    // var sock = new SockJS("http://localhost:8081/mfc");
     var stomp = Stomp.over(sock);
     stomp.connect({}, function () {
 // 이 부분 조금 수상 재참조하고, 구독하는 부분
