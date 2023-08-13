@@ -56,6 +56,12 @@ function TextChatting({ roomId }) {
       setInputText("");
     }
   };
+  const handleKeyPress = (event) => {
+    if (event.key === "Enter" && !event.shiftKey) {
+      handleSendMessage();
+      event.preventDefault(); // prevent the default action (newline) from happening
+    }
+  };
 
   
 
@@ -83,6 +89,7 @@ function TextChatting({ roomId }) {
           value={inputText}
           onChange={handleInputChange}
           className={style.inputChat}
+          onKeyPress={handleKeyPress}
         />
         <button className={style.button} onClick={handleSendMessage}>
           전송

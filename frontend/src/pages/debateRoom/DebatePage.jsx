@@ -80,35 +80,40 @@ function DebatePage() {
 
   const handlePlayerAVideoStream = useCallback(async (stream) => {
     if (playerA !== stream) {
-      setPlayerA(stream);
-      if(playerB === stream){
+      if(playerB !== undefined){
         setPlayerB(undefined);
-        setPlayerStatus([true, false]);
+        setPlayerStatus((prevStatus) => [true, false]);
       }
+      setPlayerA(stream);
     } else if(playerA === stream){
       setPlayerA(undefined);
-      setPlayerStatus((prevStatus) => [!prevStatus[0], prevStatus[1]]);
+      setPlayerStatus((prevStatus) => [false, prevStatus[1]]);
     }
     // eslint-disable-next-line
   },[playerA, playerB]);
   
-  const handlePlayerBVideoStream = useCallback( async (stream) => {
+  const handlePlayerBVideoStream = useCallback((stream) => {
     if(playerB !== stream){
-      setPlayerB(stream);
       if(playerA === stream){
         setPlayerA(undefined);
-        setPlayerStatus([false, true]);
-      }
+        setPlayerStatus((prevStatus) => [false, true]);
+
+        }
+        setPlayerB(stream);
       } else if(playerB === stream){
         setPlayerB(undefined);
-        setPlayerStatus((prevStatus) => [prevStatus[0], !prevStatus[1]]);
+        setPlayerStatus((prevStatus) => [prevStatus[0], false]);
       }
-      // eslint-disable-next-line
   },[playerA, playerB]);
 
   useEffect(() => {
     const updatedFilteredSubscribers = subscribers.filter(sub => sub !== playerA && sub !== playerB);
     setFilteredSubscribers(updatedFilteredSubscribers);
+    console.log('subscribe: ', subscribers);
+    console.log('playerA: ', playerA);
+    console.log('playerB: ', playerB);
+    console.log('filteredSubscribers: ', filteredSubscribers);
+    // eslint-disable-next-line
   }, [subscribers, playerA, playerB]);
 
   const joinSession = useCallback(() => {
@@ -130,7 +135,6 @@ function DebatePage() {
       setSession(mySession);
       // eslint-disable-next-line
   }, []);
-
   useEffect(() => {
       if (session) {
           // Get a token from the OpenVidu deployment
@@ -147,7 +151,6 @@ function DebatePage() {
                       frameRate: 30,
                       insertMode: 'APPEND',
                       mirror: false,
-                      data: JSON.stringify({ clientData: myUserName }),
                   });
 
                   session.publish(publisher);
@@ -266,6 +269,10 @@ function DebatePage() {
   })
   // OpenViidu 코드 종료
 
+  console.log('debateRoomInfo: ', debateRoomInfo);
+  console.log('voteResult: ', voteResult);
+
+
   const result = {
     status: "OK",
     message: "관전자에게 토론 결과 보내기 성공",
@@ -307,7 +314,7 @@ function DebatePage() {
         setViewers(data.data.viewers);
         setPlayers(data.data.players);
 
-        console.log('viewers: ', viewers);
+        console.log('viewers: ', viewers[0]);
         console.log('players: ', players);
       } catch (error) {
         console.log(error);
@@ -315,7 +322,7 @@ function DebatePage() {
     };
     getParticipants();
     // eslint-disable-next-line
-  }, [subscribers]);
+  }, []);
 
   const handleStatusChange = (newStatus) => {
     setStatus(newStatus);
@@ -393,8 +400,6 @@ function DebatePage() {
           <Row className="debatePart">
             <Col xs={9}>
               <RoomInfo
-                roomId={roomId}
-                userId={userInfo.id}
                 status={status}
                 role={role}
                 playerStatus={playerStatus}
@@ -405,8 +410,6 @@ function DebatePage() {
                 debateRoomInfo={debateRoomInfo.data}
               />
               <Participate
-                roomId={roomId}
-                userId={userInfo.id}
                 status={status}
                 role={role}
                 onRoleChange={handleRoleChange}
@@ -423,15 +426,13 @@ function DebatePage() {
             </Col>
             <Col xs={3}>
               <Stack gap={1}>
-              <ScreenShare roomId={roomId} role={role} />
-                <TextChatting />
+                <ScreenShare status={status} role={role} />
+                <TextChatting roomId={roomId} />
               </Stack>
             </Col>
           </Row>
           <Row>
             <DebateBtns
-              roomId={roomId}
-              userId={userInfo.id}
               status={status}
               role={role}
               onStatusChange={handleStatusChange}
@@ -441,12 +442,15 @@ function DebatePage() {
               debateRoomInfo={debateRoomInfo.data}
               voteResult={voteResult.data}
               handlePlayerAVideoStream={handlePlayerAVideoStream}
-              handlePlayerBVideoStream={handlePlayerBVideoStream}
               publisher={publisher}
               playerA={playerA}
               playerB={playerB}
               setPlayerA={setPlayerA}
               setPlayerB={setPlayerB}
+              roomId={roomId}
+              userId = {userInfo.userId}
+              // isTopicA={}
+
             />
           </Row>
           <Row>
