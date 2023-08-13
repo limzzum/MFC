@@ -63,11 +63,11 @@ public class PlayerSocketController {
         User user = userService.findById(playerDto.getUserId());
         if(usedItem.equals("아이템 사용 가능")){
             PlayerItemInfoDto playerItemInfoDto = PlayerItemInfoDto.builder().userId(user.getId()).nickname(user.getNickname())
-                .isATopic(playerDto.isATopic()).itemCodeId(playerDto.getItemCodeId()).isUsed(true).message("아이템 사용 성공").build();
+                .isATopic(playerDto.isATopic()).itemCodeId(playerDto.getItemCodeId()).isUsed(true).message(usedItem).build();
             messagingTemplate.convertAndSend("/from/player/item" + roomId,playerItemInfoDto );
         }else {
             PlayerItemInfoDto playerItemInfoDto = PlayerItemInfoDto.builder().userId(user.getId()).nickname(user.getNickname())
-                    .isATopic(playerDto.isATopic()).itemCodeId(playerDto.getItemCodeId()).isUsed(false).message("아이템 사용 실패").build();
+                    .isATopic(playerDto.isATopic()).itemCodeId(playerDto.getItemCodeId()).isUsed(false).message(usedItem).build();
             messagingTemplate.convertAndSend("/from/player/item" + roomId,playerItemInfoDto );
         }
     }
