@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -22,6 +23,10 @@ public class PlayerService {
     private final ParticipantService participantService;
     private final RoleCodeRepository roleCodeRepository;
 
+    public Player getPlayer(Long roomId, Long userId){
+        Player player = playerRepository.findTopByRoomIdAndUserId(roomId, userId).orElse(null);
+        return player;
+    }
 
     public Long regist(PlayerRegistDto playerRegistDto){
         User user = new User(playerRegistDto.getUserId());
