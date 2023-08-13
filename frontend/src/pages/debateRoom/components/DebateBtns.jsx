@@ -28,12 +28,9 @@ function DebateBtns({
   debateRoomInfo,
   setPlayerStatus,
   setUserReady,
-  voteResult,
   roomId,      //추가
   userId,  
   itemCodeId,  // 추가
-  handlePlayerAVideoStream, 
-  handlePlayerBVideoStream, 
   publisher, 
   playerA, 
   playerB, 
