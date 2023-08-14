@@ -67,10 +67,10 @@ ul button {
 
 .infoText {
   color: var(--white);
-  font-size: 20px;
-  font-weight: 600;
+  /* color: var(--blue-800); */
+  font-size: 22px;
+  font-weight: 800;
   text-align: center;
-
   border-radius: 10px;
 }
 .vs {
@@ -133,6 +133,8 @@ ul button {
   vertical-align: middle;
   font-size: 20px;
   margin-top: 7px;
+  width: 95%;
+  /* width: 400px; */
 }
 
 .progress-bar {
@@ -178,10 +180,11 @@ ul button {
 .screenShare {
   background-color: var(--blue-200);
   width: auto;
-  height: 250px;
+  height: 220px;
   display: flex;
   align-items: center;
   justify-content: center;
+  border-radius: 10px;
 }
 
 .shareVideo {
@@ -224,12 +227,20 @@ ul button {
   width: auto;
   height: 270px;
   overflow-y: hidden;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+  display: flexbox;
 }
 
 .chatMessages {
   max-height: 270px;
   overflow-y: auto;
+  /* overflow-x: hidden; */
   scroll-behavior: smooth;
+}
+
+.chatInput {
+  display: flex;
 }
 
 .chatMessages::-webkit-scrollbar {
@@ -328,22 +339,26 @@ ul button {
   color: var(--white);
   padding: var(--spacing-2);
   font-size: 16px;
-
-  /* width: fit-content; */
-  /* height: 50px; */
-  /* border-radius: var(--radius-md); */
-  /* font-size: var(--text-size-md); */
 }
 .button:hover {
   background-color: var(--blue-600);
   color: var(--white);
   padding: var(--spacing-2);
   font-size: 16px;
+}
 
-  /* width: fit-content; */
-  /* height: 50px; */
-  /* border-radius: var(--radius-md); */
-  /* font-size: var(--text-size-md); */
+.inputBtn {
+  background-color: var(--blue-500);
+  color: var(--white);
+  padding: var(--spacing-2);
+  font-size: 16px;
+  border-top-right-radius: 0px;
+}
+.inputBtn:hover {
+  background-color: var(--blue-600);
+  color: var(--white);
+  padding: var(--spacing-2);
+  font-size: 16px;
 }
 
 .inputChat {

@@ -118,7 +118,7 @@ function RoomInfo({
           )}
           {status === "ongoing" && (
             <ProgressBar
-              className={`${style.user1HP} ${style.hpBar}`}
+              className={`${style.user1HP} ${style.hpBar} mx-auto`}
               now={user1HP}
               variant="danger"
               label={`${user1HP}`}
@@ -143,7 +143,7 @@ function RoomInfo({
           )}
           {status === "ongoing" && (
             <ProgressBar
-              className={`${style.hpBar}`}
+              className={`${style.hpBar} mx-auto`}
               now={user2HP}
               variant="danger"
               label={`${user2HP}`}
