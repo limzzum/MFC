@@ -371,7 +371,7 @@ function DebatePage() {
               handleModifyModalOpen={handleModifyModalOpen}
             />
           </Row>
-          <Row className={`${style.debatePart} m-0 p-0 mt-3 `}>
+          <Row className={` m-0 p-0 mt-3 `}>
             <Col xs={9}>
               <RoomInfo
                 status={status}
