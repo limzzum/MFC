@@ -58,7 +58,7 @@ function DebateBtns({
 
   useEffect(() => {
     // const socket = new SockJS("");
-    const socket = new SockJS(`${BASE_URL}/mfc`);
+    const socket = new SockJS(`${BASE_URL}`);
     stompClient.current = Stomp.over(socket);
     console.log("소켓 연결 완료");
     stompClient.current.connect({}, () => {
