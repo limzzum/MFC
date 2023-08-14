@@ -156,7 +156,39 @@ const sendItemRequest = (itemId) => {
     publisher.publishAudio(!isAudioOn);
   }
 
+  //--------------------------------------------------------------------------
+  // 항복버튼 누르면?
+  const stompRef = useRef(null);
 
+  useEffect(() => {
+    const sock = new SockJS("http://localhost:8081/mfc");
+    const stomp = Stomp.over(sock);
+
+    stompRef.current = stomp;
+    
+    stomp.connect({}, function () {
+        // 이 부분 조금 수상 재참조하고, 구독하는 부분
+        stomp.subscribe(`/from/room/surrender/${roomId}`, (message) => {
+            const modalData = JSON.parse(message.body)
+            console.log(modalData)
+        });
+    });
+    
+    return () => {
+        if (stompRef.current) {
+            stompRef.current.disconnect();
+        }
+    };
+}, [roomId, userId]);
+
+  const handleSurrenderClick = () => {
+    console.log(userId)
+    const stompMessage = { userId : userId, roomId : parseInt(roomId) }
+    stompRef.current.send(`/to/room/surrender/${roomId}/${userId}`, JSON.stringify(stompMessage));
+  }
+
+
+  //==========================================================================
   const handleRoleChangeToSpectator = (stream) => {
     onRoleChange("spectator");
     setPlayerStatus([false, false]);
@@ -174,10 +206,14 @@ const sendItemRequest = (itemId) => {
     <div className={style.Btns}>
       <Row>
         <Col xs={{ span: 9 }}>
-          {role === "participant" && status === "ongoing" && (
+          {
+          // role === "participant" && 
+          status === "ongoing" && (
             <>
               <Button variant="secondary">연장하기</Button>
-              <Button variant="danger">항복하기</Button>
+              <Button variant="danger" onClick={handleSurrenderClick}>
+                항복하기
+              </Button>
             </>
           )}
         </Col>
