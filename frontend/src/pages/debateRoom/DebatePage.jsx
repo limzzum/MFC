@@ -20,6 +20,7 @@ import DebateBtns from "./components/DebateBtns";
 import Spectator from "./components/Spectator";
 import RoomInfo from "./components/RoomInfo";
 import { userInfoState } from "../../recoil/userInfo";
+import { BASE_URL } from "../../config";
 // import getParticipate from '../../api/getParticipateAPI'; // 참가자 생길 때마다 호출해서 갱신해야하나? 물어봐야함
 
 import style from "./debatePage.module.css";
@@ -48,8 +49,7 @@ function DebatePage() {
   // 토론방 입장 웹소켓 코드
   const enterStompRef = useRef(null);
   useEffect(() => {
-    // var sock = new SockJS("http://localhost:8081/mfc");
-    var sock = new SockJS("https://goldenteam.site/mfc");
+    var sock = new SockJS(`${BASE_URL}`);
     var stomp = Stomp.over(sock);
     stomp.connect({}, function () {
       enterStompRef.current = stomp;
@@ -88,8 +88,7 @@ function DebatePage() {
   // 토론방 수정 웹소켓 코드
   const modifyStompRef = useRef(null);
   useEffect(() => {
-    // var sock = new SockJS("http://localhost:8081/mfc");
-    var sock = new SockJS("https://goldenteam.site/mfc");
+    var sock = new SockJS(`${BASE_URL}`);
     var stomp = Stomp.over(sock);
     stomp.connect({}, function () {
       modifyStompRef.current = stomp;
