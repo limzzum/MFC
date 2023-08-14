@@ -41,13 +41,13 @@ function DebateBtns({
   setPlayerA,
   setPlayerB,
   setResult,
-  onStatusChange
-  }) {
-    const [showModal, setShowModal] = useState(false);
-    const [selectedTopic, setSelectedTopics] = useState([]);
-    const [isVotingEnabled, setVotingEnabled] = useState(true);
-    const votingCooldown = debateRoomInfo.talkTime * 120;
-    const [remainingTime, setRemainingTime] = useState(votingCooldown);
+  onStatusChange,
+}) {
+  const [showModal, setShowModal] = useState(false);
+  const [selectedTopic, setSelectedTopics] = useState([]);
+  const [isVotingEnabled, setVotingEnabled] = useState(true);
+  const votingCooldown = debateRoomInfo.talkTime * 120;
+  const [remainingTime, setRemainingTime] = useState(votingCooldown);
 
   const [isVideoOn, setIsVideoOn] = useState(true);
   const [isAudioOn, setIsAudioOn] = useState(true);
@@ -75,20 +75,20 @@ function DebateBtns({
     // eslint-disable-next-line
   }, []);
 
-const handlePlayerOut = () => {
-  if(stompClient.current) {
-    stompClient.current.send(
-      `to/player/out`,
-      JSON.stringify({
-        roomid: roomId,
-        userid: userId,
-        isATopic: false,
-        isReady: false,
-        isAllReady: false,
-      })
-    )
-  }
-};
+  const handlePlayerOut = () => {
+    if (stompClient.current) {
+      stompClient.current.send(
+        `to/player/out`,
+        JSON.stringify({
+          roomid: roomId,
+          userid: userId,
+          isATopic: false,
+          isReady: false,
+          isAllReady: false,
+        })
+      );
+    }
+  };
 
   const sendItemRequest = (itemId) => {
     const requestUrl = "/to/player/item";
@@ -189,23 +189,24 @@ const handlePlayerOut = () => {
     stompRef.current = stomp;
 
     stomp.connect({}, function () {
-        // 이 부분 조금 수상 재참조하고, 구독하는 부분
-        stomp.subscribe(`/from/room/surrender/${roomId}`, (message) => {
-            const modalData = JSON.parse(message.body)
-            setResult(modalData)
-            onStatusChange("waiting")
-        });
+      // 이 부분 조금 수상 재참조하고, 구독하는 부분
+      stomp.subscribe(`/from/room/surrender/${roomId}`, (message) => {
+        const modalData = JSON.parse(message.body);
+        setResult(modalData);
+        onStatusChange("waiting");
+      });
     });
-  // eslint-disable-next-line
+    // eslint-disable-next-line
   }, [roomId, userId]);
 
   const handleSurrenderClick = () => {
-    console.log(userId)
-    const stompMessage = { userId : userId, roomId : parseInt(roomId) }
-    stompRef.current.send(`/to/room/surrender/${roomId}/${userId}`, JSON.stringify(stompMessage));
-    
-  }
-
+    console.log(userId);
+    const stompMessage = { userId: userId, roomId: parseInt(roomId) };
+    stompRef.current.send(
+      `/to/room/surrender/${roomId}/${userId}`,
+      JSON.stringify(stompMessage)
+    );
+  };
 
   //==========================================================================
   const handleRoleChangeToSpectator = (stream) => {
@@ -261,7 +262,10 @@ const handlePlayerOut = () => {
           <Col className={style.return}>
             <button
               className={`${style.goSpectatorBtn} btn`}
-              onClick={() => handleRoleChangeToSpectator(publisher)}
+              onClick={() => {
+                handleRoleChangeToSpectator(publisher);
+                handlePlayerOut();
+              }}
             >
               <FaUsers />
               &nbsp; 관전자로 돌아가기

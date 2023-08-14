@@ -46,7 +46,7 @@ function DebatePage() {
   const [isModifyModalOpen, setIsModifyModalOpen] = useState(false);
 
   // 토론방 입장 웹소켓 코드
-  const enterStompRef = useRef(null); 
+  const enterStompRef = useRef(null);
   useEffect(() => {
     // var sock = new SockJS("http://localhost:8081/mfc");
     var sock = new SockJS("https://goldenteam.site/mfc");
@@ -56,13 +56,13 @@ function DebatePage() {
       stomp.subscribe(`/from/room/enter/${roomId}`, (message) => {
         const content = JSON.parse(message.body);
         console.log(content);
-      } )
-    })
+      });
+    });
     // eslint-disable-next-line
-  },[])
+  }, []);
 
   const handleEnterRoom = () => {
-    if(enterStompRef.current){
+    if (enterStompRef.current) {
       enterStompRef.current.send(`/to/room/enter/${roomId}/${userInfo.Id}`);
     }
   };
@@ -84,7 +84,7 @@ function DebatePage() {
     },
     isSurrender: true,
     isExit: false,
-  })
+  });
   // 토론방 수정 웹소켓 코드
   const modifyStompRef = useRef(null);
   useEffect(() => {
@@ -97,15 +97,14 @@ function DebatePage() {
         const content = JSON.parse(message.body);
         console.log(content);
       });
-    
-      const stompMessage = {roomId : roomId}
-      console.log(stompMessage, "")
-    
+
+      const stompMessage = { roomId: roomId };
+      console.log(stompMessage, "");
     });
     // return () => {
-      //   if (modifyStompRef.current) {
-        //     modifyStompRef.current.disconnect();
-      //   }
+    //   if (modifyStompRef.current) {
+    //     modifyStompRef.current.disconnect();
+    //   }
     // };
   });
   // 코드 끝
@@ -353,7 +352,7 @@ function DebatePage() {
 
   // recoil 상태를 사용하는 훅
   const [status, setStatus] = useStatus();
-  const [role, setRole] = useRole ();
+  const [role, setRole] = useRole();
   // const [viewers, setViewers] = useState();
   // const [players, setPlayers] = useState([]);
 
@@ -368,22 +367,23 @@ function DebatePage() {
         // const dataViewers = data.data.viewers;
         const dataPlayers = data.data.players;
 
-        console.log('data: ', data.data);
+        console.log("data: ", data.data);
 
-        for( const player of dataPlayers || []){
+        for (const player of dataPlayers || []) {
           // console.log(player,"asdf");
-          for( const subscriber of subscribers || []){
+          for (const subscriber of subscribers || []) {
             // console.log(subscriber,"qwer");
             // console.log(publisher,"qwerty");
-            const clientData = JSON.parse(subscriber.stream.connection.data).clientData;
+            const clientData = JSON.parse(
+              subscriber.stream.connection.data
+            ).clientData;
             // console.log("clientData: ", clientData);
             // console.log(`문자열 테스트: ${clientData}, ${player.viewerDto.nickName}`, clientData === player.viewerDto.nickName)
-            if(clientData === player.viewerDto.nickName){
+            if (clientData === player.viewerDto.nickName) {
               // console.log("겹치는 닉네임: ", clientData);
-              if(player.topicTypeA){
+              if (player.topicTypeA) {
                 setPlayerA(subscriber);
                 setPlayerStatus((prev) => [true, prev[1]]);
-
               } else {
                 setPlayerB(subscriber);
                 setPlayerStatus((prev) => [prev[0], true]);
@@ -392,7 +392,7 @@ function DebatePage() {
           }
         }
       } catch (error) {
-        console.log("getParticipants 에러 ",error);
+        console.log("getParticipants 에러 ", error);
       }
     };
 
@@ -400,7 +400,7 @@ function DebatePage() {
 
     // eslint-disable-next-line
   }, [subscribers]);
-  
+
   const handleStatusChange = (newStatus) => {
     setStatus(newStatus);
   };
@@ -452,7 +452,6 @@ function DebatePage() {
                   setUserReady={setUserReady}
                   onRoleChange={handleRoleChange}
                   debateRoomInfo={debateRoomInfo.data}
-                  viewers={viewers}
                   userInfo={userInfo}
                 />
               </Row>
@@ -471,7 +470,7 @@ function DebatePage() {
                   setPlayerA={setPlayerA}
                   setPlayerB={setPlayerB}
                   roomId={roomId}
-                  userId = {userInfo.id}
+                  userId={userInfo.id}
                 />
               </Row>
               <Row className={`m-0 p-0`}>
@@ -537,25 +536,33 @@ function DebatePage() {
               ) : (
                 <p>무승부</p>
               )}
-              { !result.isSurrender ? (
-              <>
-              <p>투표 결과</p>
-              <ProgressBar>
-                <ProgressBar
-                  variant="success"
-                  label={result.playerA.vote}
-                  now={(result.playerA.vote / (result.playerA.vote + result.b.vote)) * 100}
-                  key={1}
-                />
-                <ProgressBar
-                  variant="danger"
-                  label={result.playerB.vote}
-                  now={(result.playerB.vote / (result.playerA.vote + result.playerB.vote)) * 100}
-                  key={2}
-                />
-              </ProgressBar>
-              </>
-              ) :  null}
+              {!result.isSurrender ? (
+                <>
+                  <p>투표 결과</p>
+                  <ProgressBar>
+                    <ProgressBar
+                      variant="success"
+                      label={result.playerA.vote}
+                      now={
+                        (result.playerA.vote /
+                          (result.playerA.vote + result.b.vote)) *
+                        100
+                      }
+                      key={1}
+                    />
+                    <ProgressBar
+                      variant="danger"
+                      label={result.playerB.vote}
+                      now={
+                        (result.playerB.vote /
+                          (result.playerA.vote + result.playerB.vote)) *
+                        100
+                      }
+                      key={2}
+                    />
+                  </ProgressBar>
+                </>
+              ) : null}
               <p>잔여 HP</p>
               <ProgressBar>
                 <ProgressBar
