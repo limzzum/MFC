@@ -67,7 +67,7 @@ function RoomInfo({
 
   return (
     <>
-      <Row className={style.roomInfo}>
+      <Row className={`${style.roomInfo} m-0`}>
         <Col id="option1" className={`${style.infoText} ${style.opinion1}`}>
           <span>{debateRoomInfo.atopic}</span>
         </Col>
@@ -118,7 +118,7 @@ function RoomInfo({
           )}
           {status === "ongoing" && (
             <ProgressBar
-              className={`${style.user1HP} ${style.hpBar}`}
+              className={`${style.user1HP} ${style.hpBar} mx-auto`}
               now={user1HP}
               variant="danger"
               label={`${user1HP}`}
@@ -143,7 +143,7 @@ function RoomInfo({
           )}
           {status === "ongoing" && (
             <ProgressBar
-              className={`${style.hpBar}`}
+              className={`${style.hpBar} mx-auto`}
               now={user2HP}
               variant="danger"
               label={`${user2HP}`}

@@ -1,16 +1,16 @@
-package com.ssafy.backend.dto.socket.request;
+package com.ssafy.backend.dto.socket.response;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
-public class PlayerItemDto {
-    private Long roomId;
+@NoArgsConstructor
+@Builder
+public class PlayerStatusDto {
     private Long userId;
     private boolean isATopic;
-    private Long itemCodeId;
-
+    private int hp;
 }

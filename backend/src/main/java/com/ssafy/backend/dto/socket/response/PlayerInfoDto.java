@@ -18,4 +18,5 @@ public class PlayerInfoDto {
     private ItemCode colorItem;
     private boolean isTopicA;
     private boolean isReady;
+    private boolean isAllReady;
 }
