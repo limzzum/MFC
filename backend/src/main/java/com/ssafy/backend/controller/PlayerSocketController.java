@@ -101,4 +101,26 @@ public class PlayerSocketController {
         }
     }
 
+
+    @MessageMapping("/player/overTalk")
+    public void useItem(PlayerRequestDto playerRequestDto) {
+        Long roomId = playerRequestDto.getRoomId();
+        Long userId = playerRequestDto.getUserId();
+        boolean aTopic = playerRequestDto.isATopic();
+        boolean isUsed = playerService.overTalk(new PlayerDto(roomId, playerRequestDto.getUserId()));
+
+        if(isUsed) {
+            PlayerPlusTimeDto playerPlusTimeDto = PlayerPlusTimeDto.builder().roomId(roomId).curUserId(userId)
+                    .isATurn(playerRequestDto.isATopic()).plusTime(10).build();
+            LocalDateTime startTalkTime = playerService.plusPlayerTalkTime(playerPlusTimeDto);
+            int remainOverTimeCnt = playerService.getRemainOverTimeCnt(new PlayerDto(roomId, userId));
+            playerService.updatePlayerHp(PlayerPlusHpDto.builder().roomId(roomId).userId(userId).isATopic(aTopic).hp(-1).build());
+            PlayerOverTalkResultDto result = PlayerOverTalkResultDto.builder().userId(userId).isTopicA(aTopic).startTalkTime(startTalkTime).remainOverTime(remainOverTimeCnt).isUsed(true).build();
+            messagingTemplate.convertAndSend("/from/player/overTalk" + roomId,result);
+            return;
+        }
+        PlayerOverTalkResultDto result = PlayerOverTalkResultDto.builder().userId(userId).isTopicA(aTopic).startTalkTime(null).remainOverTime(0).isUsed(false).build();
+        messagingTemplate.convertAndSend("/from/player/overTalk" + roomId,result);
+    }
+
 }
