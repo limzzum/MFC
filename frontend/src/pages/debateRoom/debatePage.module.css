@@ -195,16 +195,12 @@ ul button {
 
 /* 플레이어 화면 */
 
-.testt {
-  /* background-color: red; */
-}
-
 .Participant {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 400px;
-  height: 300px;
+  width: 100%;
+  aspect-ratio: 4/3;
   border: 1px dashed var(--blue-400);
   border-radius: 10px;
 }
@@ -219,23 +215,23 @@ ul button {
 .rightCount {
   /* clear: both; */
   float: left;
-  width: 400px;
+  /* width: 400px; */
 }
 
 .ChatArea {
   background-color: var(--blue-200);
   width: auto;
-  height: 270px;
+  height: 100%;
   overflow-y: hidden;
   border-top-left-radius: 10px;
   border-top-right-radius: 10px;
-  display: flexbox;
+  /* display: flexbox; */
 }
 
 .chatMessages {
-  max-height: 270px;
+  min-height: 300px;
+  max-height: 350px;
   overflow-y: auto;
-  /* overflow-x: hidden; */
   scroll-behavior: smooth;
 }
 
@@ -257,55 +253,71 @@ ul button {
 }
 
 .messageContainer {
-  display: flex;
+  /* display: flex; */
   align-items: center;
   margin-top: var(--spacing-2);
   margin-bottom: var(--spacing-2);
   width: 90%;
   border-radius: var(--radius-md);
+  padding-top: 3px;
 }
 
 .sender {
-  /* font-size: var(--text-size-sm); */
+  font-size: 14px;
+  font-weight: 600;
   margin-left: var(--spacing-2);
 }
 
 .messageBubble {
   padding: var(--spacing-2);
   border-radius: var(--radius-md);
-  max-width: 70%;
+  max-width: 100%;
+  /* overflow-y: hidden; */
+  /* text-overflow: auto; */
+  font-size: 15px;
+  word-break: break-all;
 }
 
 .userMessage {
   background-color: var(--blue-50);
   justify-content: flex-end;
   margin-left: auto;
+  margin-right: 5px;
 }
 
 .otherMessage {
   background-color: var(--blue-400);
   justify-content: flex-start;
   margin-right: auto;
+  margin-left: 5px;
 }
 
-.Btns {
-  border: 1px solid black;
+.buttonsBox {
+  /* border: 1px solid black; */
+  margin-top: 20px;
 }
 
 .items {
   display: flex;
   flex-wrap: wrap;
-  justify-content: flex-start;
+  justify-content: center;
+  /* border: dashed 1px var(--blue-600); */
+  padding: 0;
+  border-radius: 10px;
+  background-color: var(--blue-50);
 }
 
 .items button {
   margin: var(--spacing-1) var(--spacing-2);
+  /* margin: 0; */
+  padding: 0;
 }
 
 .onOff {
   display: flex;
   flex-wrap: wrap;
   justify-content: flex-end;
+  /* background-color: brown; */
 }
 
 .onOff button {
@@ -369,4 +381,60 @@ ul button {
 .uploadedImage {
   width: 100%;
   height: auto;
+}
+
+.itemButton {
+  /* background-color: var(--blue-500); */
+  color: var(--blue-800);
+  /* color:  */
+  /* padding: var(--spacing-2); */
+  font-size: 13px;
+}
+.itemButton:hover {
+  color: var(--blue-500);
+  font-size: 16px;
+}
+
+.videoButton {
+  width: 40px;
+  height: 40px;
+  /* color: var(--blue-800); */
+  color: white;
+  background-color: var(--blue-800);
+  font-size: 14px;
+  border: solid 1px var(--blue-800);
+  border-radius: 50%;
+}
+.videoButton:hover {
+  color: var(--blue-800);
+  /* font-size: 13px; */
+  border: solid 1px var(--blue-800);
+  border-radius: 50%;
+}
+
+.return {
+  text-align: center;
+  line-height: 50px;
+}
+
+.goSpectatorBtn {
+  color: var(--blue-400);
+  border: solid 1px var(--blue-400);
+  border-radius: 10px;
+  text-align: center;
+}
+
+.goSpectatorBtn:hover {
+  color: var(--blue-600);
+  border: solid 1px var(--blue-600);
+  border-radius: 10px;
+}
+
+.testt {
+  /* background-color: red; */
+  line-height: 50px;
+  /* top: -50%; */
+  /* position: absolute; */
+  /* float: left; */
+  /* margin-right: auto; */
 }
