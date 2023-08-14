@@ -3,6 +3,8 @@ import axios from "axios";
 import { OpenVidu } from "openvidu-browser";
 import { useParams } from "react-router-dom";
 import { useRecoilValue } from "recoil";
+import SockJS from 'sockjs-client';
+import Stomp from 'webstomp-client';
 import {
   useStatus,
   useRole,
@@ -30,6 +32,7 @@ import style from "./debatePage.module.css";
 
 // tempImg
 import winnerImg from "../../images/img.jpg";
+import ModifyRoomModal from "./components/modifyRoomModal";
 
 const APPLICATION_SERVER_URL = "https://goldenteam.site/";
 
@@ -45,6 +48,32 @@ function DebatePage() {
   const [playerStatus, setPlayerStatus] = useState([false, false]);
   // 참가자 준비여부
   const [userReady, setUserReady] = useState(false);
+  const [isModifyModalOpen, setIsModifyModalOpen] = useState(false);
+
+  // 토론방 수정 웹소켓 코드
+  const modifyStompRef = useRef(null);
+  useEffect(() => {
+    // var sock = new SockJS("http://localhost:8081/mfc");
+    var sock = new SockJS("https://goldenteam.site/mfc");
+    var stomp = Stomp.over(sock);
+    stomp.connect({}, function () {
+      modifyStompRef.current = stomp;
+      stomp.subscribe(`/from/room/update/${roomId}`, (message) => {
+        const content = JSON.parse(message.body);
+        console.log(content);
+      });
+    });
+    return () => {
+      if (modifyStompRef.current) {
+        modifyStompRef.current.disconnect();
+      }
+    };
+  });
+  // 코드 끝
+
+  const handleModifyModalOpen = () => {
+    setIsModifyModalOpen((prev) => !prev);
+  }
 
 
   // OpenVidu 코드 시작
@@ -324,6 +353,7 @@ function DebatePage() {
             <Header 
               status={status}
               leaveSession={leaveSession}
+              handleModifyModalOpen={handleModifyModalOpen}
             />
           </Row>
           <Row className="debatePart">
@@ -390,6 +420,15 @@ function DebatePage() {
             />
           </Row>
 
+          { isModifyModalOpen && (
+            <ModifyRoomModal
+              debateRoomInfo={debateRoomInfo.data}
+              roomId={roomId}
+              isModifyModalOpen={isModifyModalOpen}
+              handleModal={handleModifyModalOpen}
+              stompRef={modifyStompRef.current}
+            />
+          )}
           {/* 토론 결과 Modal*/}
           <Modal
             show={showResultModal}
