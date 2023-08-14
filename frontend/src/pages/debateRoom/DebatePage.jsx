@@ -20,6 +20,7 @@ import DebateBtns from "./components/DebateBtns";
 import Spectator from "./components/Spectator";
 import RoomInfo from "./components/RoomInfo";
 import { userInfoState } from "../../recoil/userInfo";
+// import getParticipate from '../../api/getParticipateAPI'; // 참가자 생길 때마다 호출해서 갱신해야하나? 물어봐야함
 
 import style from "./debatePage.module.css";
 
@@ -32,6 +33,7 @@ const APPLICATION_SERVER_URL = "https://goldenteam.site/";
 function DebatePage() {
   const { roomId } = useParams();
   const userInfo = useRecoilValue(userInfoState);
+  console.log("userInfo: ", userInfo);
 
   // 토론방 상태 호출
   const debateRoomInfo = useRecoilValue(getDebateRoomState(roomId));
@@ -42,6 +44,29 @@ function DebatePage() {
   // 참가자 준비여부
   const [userReady, setUserReady] = useState(false);
   const [isModifyModalOpen, setIsModifyModalOpen] = useState(false);
+
+  // 토론방 입장 웹소켓 코드
+  const enterStompRef = useRef(null); 
+  useEffect(() => {
+    // var sock = new SockJS("http://localhost:8081/mfc");
+    var sock = new SockJS("https://goldenteam.site/mfc");
+    var stomp = Stomp.over(sock);
+    stomp.connect({}, function () {
+      enterStompRef.current = stomp;
+      stomp.subscribe(`/from/room/enter/${roomId}`, (message) => {
+        const content = JSON.parse(message.body);
+        console.log(content);
+      } )
+    })
+    // eslint-disable-next-line
+  },[])
+
+  const handleEnterRoom = () => {
+    if(enterStompRef.current){
+      enterStompRef.current.send(`/to/room/enter/${roomId}/${userInfo.Id}`);
+    }
+  };
+
   const [result, setResult] = useState({
     winner: "user1",
     winnerImg: "",
@@ -170,6 +195,7 @@ function DebatePage() {
 
   useEffect(() => {
     joinSession();
+    handleEnterRoom();
 
     return () => leaveSession();
     // eslint-disable-next-line
@@ -327,9 +353,9 @@ function DebatePage() {
 
   // recoil 상태를 사용하는 훅
   const [status, setStatus] = useStatus();
-  const [role, setRole] = useRole();
-  const [viewers, setViewers] = useState();
-  const [players, setPlayers] = useState();
+  const [role, setRole] = useRole ();
+  // const [viewers, setViewers] = useState();
+  // const [players, setPlayers] = useState([]);
 
   // 참가자 목록 가져오기 수정 필요
   useEffect(() => {
@@ -339,20 +365,42 @@ function DebatePage() {
           `${APPLICATION_SERVER_URL}api/viewer/list/${roomId}`
         );
         const data = response.data;
-        console.log("data: ", data);
-        setViewers(data.data.viewers);
-        setPlayers(data.data.players);
+        // const dataViewers = data.data.viewers;
+        const dataPlayers = data.data.players;
 
-        console.log("viewers: ", viewers[0]);
-        console.log("players: ", players);
+        console.log('data: ', data.data);
+
+        for( const player of dataPlayers || []){
+          // console.log(player,"asdf");
+          for( const subscriber of subscribers || []){
+            // console.log(subscriber,"qwer");
+            // console.log(publisher,"qwerty");
+            const clientData = JSON.parse(subscriber.stream.connection.data).clientData;
+            // console.log("clientData: ", clientData);
+            // console.log(`문자열 테스트: ${clientData}, ${player.viewerDto.nickName}`, clientData === player.viewerDto.nickName)
+            if(clientData === player.viewerDto.nickName){
+              // console.log("겹치는 닉네임: ", clientData);
+              if(player.topicTypeA){
+                setPlayerA(subscriber);
+                setPlayerStatus((prev) => [true, prev[1]]);
+
+              } else {
+                setPlayerB(subscriber);
+                setPlayerStatus((prev) => [prev[0], true]);
+              }
+            }
+          }
+        }
       } catch (error) {
-        console.log(error);
+        console.log("getParticipants 에러 ",error);
       }
     };
-    getParticipants();
-    // eslint-disable-next-line
-  }, []);
 
+    getParticipants();
+
+    // eslint-disable-next-line
+  }, [subscribers]);
+  
   const handleStatusChange = (newStatus) => {
     setStatus(newStatus);
   };
@@ -422,6 +470,8 @@ function DebatePage() {
                   playerB={playerB}
                   setPlayerA={setPlayerA}
                   setPlayerB={setPlayerB}
+                  roomId={roomId}
+                  userId = {userInfo.id}
                 />
               </Row>
               <Row className={`m-0 p-0`}>

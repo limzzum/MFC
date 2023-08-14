@@ -75,6 +75,21 @@ function DebateBtns({
     // eslint-disable-next-line
   }, []);
 
+const handlePlayerOut = () => {
+  if(stompClient.current) {
+    stompClient.current.send(
+      `to/player/out`,
+      JSON.stringify({
+        roomid: roomId,
+        userid: userId,
+        isATopic: false,
+        isReady: false,
+        isAllReady: false,
+      })
+    )
+  }
+};
+
   const sendItemRequest = (itemId) => {
     const requestUrl = "/to/player/item";
     const requestData = {
