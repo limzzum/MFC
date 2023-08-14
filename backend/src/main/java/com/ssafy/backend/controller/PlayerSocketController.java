@@ -29,7 +29,7 @@ public class PlayerSocketController {
         User user = userService.findById(playerDto.getUserId());
         playerService.regist(PlayerRegistDto.builder().roomId(roomId).userId(user.getId()).isATopic(playerDto.isATopic()).build());
         PlayerInfoDto playerInfoDto = PlayerInfoDto.builder().userId(user.getId()).nickname(user.getNickname()).profile(user.getProfile())
-                        .colorItem(user.getColorItem()).isReady(false).isTopicA(playerDto.isATopic()).build();
+                        .colorItem(user.getColorItem()).isReady(false).isTopicA(playerDto.isATopic()).isAllReady(false).build();
         messagingTemplate.convertAndSend("/from/player/" + roomId, playerInfoDto);
     }
 
@@ -39,7 +39,7 @@ public class PlayerSocketController {
         User user = userService.findById(playerDto.getUserId());
         playerService.deletePlayer(PlayerRegistDto.builder().roomId(roomId).userId(user.getId()).isATopic(playerDto.isATopic()).build());
         PlayerInfoDto playerInfoDto = PlayerInfoDto.builder().userId(null).nickname(null).profile(null)
-            .colorItem(null).isReady(false).isTopicA(playerDto.isATopic()).build();
+            .colorItem(null).isReady(false).isTopicA(playerDto.isATopic()).isAllReady(false).build();
         messagingTemplate.convertAndSend("/from/player/" + roomId, playerInfoDto);
     }
 
@@ -48,8 +48,9 @@ public class PlayerSocketController {
         Long roomId = playerDto.getRoomId();
         User user = userService.findById(playerDto.getUserId());
         playerService.changeStatus(new PlayerDto(roomId,user.getId()), playerDto.isReady());
+        boolean allReady = playerService.isAllReady(roomId);
         PlayerInfoDto playerInfoDto = PlayerInfoDto.builder().userId(user.getId()).nickname(user.getNickname()).profile(user.getProfile())
-                .colorItem(user.getColorItem()).isReady(playerDto.isReady()).isTopicA(playerDto.isATopic()).build();
+                .colorItem(user.getColorItem()).isReady(playerDto.isReady()).isTopicA(playerDto.isATopic()).isAllReady(allReady).build();
         messagingTemplate.convertAndSend("/from/player/" + roomId, playerInfoDto);
     }
 
