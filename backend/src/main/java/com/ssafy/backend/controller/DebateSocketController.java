@@ -62,10 +62,10 @@ public class DebateSocketController {
         ViewerDto viewerDto = null;
         if (viewerService.existsUser(userId, roomId)) {
             Participant p = viewerService.reentryParticipant(userId, roomId);
-            viewerDto = new ViewerDto(p.getUser().getId(),p.getNickName(),p.getUser().getColorItem().getRgb(),p.isHost());
+            viewerDto = new ViewerDto(p.getUser().getId(),p.getNickName(),p.getUser().getColorItem().getRgb(),p.isHost(),p.getEnterTime());
         } else { //신규 추가
             Participant p = viewerService.firstEntryParticipant(userId, roomId);
-            viewerDto = new ViewerDto(p.getUser().getId(),p.getNickName(),p.getUser().getColorItem().getRgb(),p.isHost());
+            viewerDto = new ViewerDto(p.getUser().getId(),p.getNickName(),p.getUser().getColorItem().getRgb(),p.isHost(),p.getEnterTime());
         }
         //토론방 현재 인원 수 +1
         roomService.incrementRoomCurrentCount(roomId);
