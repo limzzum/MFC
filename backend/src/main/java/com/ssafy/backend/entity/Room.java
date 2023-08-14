@@ -69,5 +69,8 @@ public class Room {
   public Room(Long roomId) {
     this.id = roomId;
   }
+  public void updateStatus(Status status){
+    this.status = status;
+  }
 
 }
