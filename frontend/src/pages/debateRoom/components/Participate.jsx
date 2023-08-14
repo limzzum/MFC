@@ -16,9 +16,9 @@ function Participate({ roomId, userId, status, role, onRoleChange, playerStatus,
         var stomp = Stomp.over(sock);
         stomp.connect({}, function () {
             stompRef.current = stomp;
-            stomp.subscribe(`/from/room/player/${roomId}`, (message) => {
+            stomp.subscribe(`/from/player/${roomId}`, (message) => {
                 const content = JSON.parse(message.body);
-                console.log(content);
+                console.log(content);   // 데이터 파싱해서 프론트에 저장?
             });
         });
         return () => {
@@ -31,7 +31,7 @@ function Participate({ roomId, userId, status, role, onRoleChange, playerStatus,
     const handlePostPlayer = (isTopicA) => {
         if(stompRef.current) {
             stompRef.current.send(
-                `/to/room/player/${roomId}`,
+                `/to/player/enter`,
                 JSON.stringify({
                     roomId: roomId,
                     userId: userId,
@@ -63,7 +63,7 @@ function Participate({ roomId, userId, status, role, onRoleChange, playerStatus,
 
                         }
                         {
-                            (role === 'participant' && playerA !== undefined) &&
+                            (playerA !== undefined) &&
                             <UserVideoComponent className='playerA' streamManager={playerA} called={style.Participant}/>                       
                         }
 
@@ -88,7 +88,7 @@ function Participate({ roomId, userId, status, role, onRoleChange, playerStatus,
                             </button>
                         }
                         {
-                            (role === 'participant' && playerB !== undefined) &&
+                            (playerB !== undefined) &&
                             <UserVideoComponent className='playerB' streamManager={playerB} called={style.Participant}/>
                         }
                     </div>
