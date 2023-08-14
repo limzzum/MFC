@@ -1,11 +1,15 @@
 package com.ssafy.backend.controller;
 
 import com.ssafy.backend.dto.request.PlayerDto;
+import com.ssafy.backend.dto.request.PlayerPlusHpDto;
+import com.ssafy.backend.dto.request.PlayerPlusTimeDto;
 import com.ssafy.backend.dto.request.PlayerRegistDto;
 import com.ssafy.backend.dto.socket.request.PlayerItemDto;
 import com.ssafy.backend.dto.socket.request.PlayerRequestDto;
 import com.ssafy.backend.dto.socket.response.PlayerInfoDto;
 import com.ssafy.backend.dto.socket.response.PlayerItemInfoDto;
+import com.ssafy.backend.dto.socket.response.PlayerOverTalkResultDto;
+import com.ssafy.backend.dto.socket.response.PlayerStatusDto;
 import com.ssafy.backend.entity.Status;
 import com.ssafy.backend.entity.User;
 import com.ssafy.backend.service.*;
@@ -13,6 +17,8 @@ import lombok.*;
 import org.springframework.messaging.handler.annotation.*;
 import org.springframework.messaging.simp.*;
 import org.springframework.web.bind.annotation.*;
+
+import java.time.LocalDateTime;
 
 @RestController
 @RequiredArgsConstructor
@@ -71,15 +77,20 @@ public class PlayerSocketController {
         messagingTemplate.convertAndSend("/from/player/" + roomId, playerInfoDto);
     }
 
-
-
     @MessageMapping("/player/item")
     public void useItem(PlayerItemDto playerDto) {
         Long roomId = playerDto.getRoomId();
+        Long userId = playerDto.getUserId();
+        boolean aTopic = playerDto.isATopic();
         String usedItem = itemService.getUsedItem(playerDto.getUserId(), playerDto.getRoomId(), playerDto.getItemCodeId());
 
         User user = userService.findById(playerDto.getUserId());
         if(usedItem.equals("아이템 사용 가능")){
+            if(playerDto.getItemCodeId() == 9){
+                PlayerPlusHpDto playerPlusHpDto = PlayerPlusHpDto.builder().roomId(roomId).userId(userId).isATopic(aTopic).hp(10).build();
+                PlayerStatusDto playerStatusDto = playerService.updatePlayerHp(playerPlusHpDto);
+                messagingTemplate.convertAndSend("/from/player/status" + roomId,playerStatusDto );
+            }
             PlayerItemInfoDto playerItemInfoDto = PlayerItemInfoDto.builder().userId(user.getId()).nickname(user.getNickname())
                 .isATopic(playerDto.isATopic()).itemCodeId(playerDto.getItemCodeId()).isUsed(true).message(usedItem).build();
             messagingTemplate.convertAndSend("/from/player/item" + roomId,playerItemInfoDto );
