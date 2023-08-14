@@ -181,6 +181,13 @@ public class RoomService {
     return new RoomInfoResponseDto(room);
   }
 
+  public void roomUpdateStatus(Long roomId, Status status) {
+    Room room = roomRepository.findById(roomId).orElse(null);
+    if (room == null) {
+      return;
+    }
+    room.updateStatus(status);
+  }
 
   public int incrementRoomCurrentCount(Long roomId) {
     Room room = roomRepository.findById(roomId).orElse(null);
