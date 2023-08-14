@@ -122,13 +122,25 @@ public class PlayerService {
         return roomStatus.getHpPointB();
     }
 
-    public void changePlayer(PlayerTurnChangeDto playerTurnChangeDto){
+    public void changePlayerTurn(PlayerTurnChangeDto playerTurnChangeDto){
         RoomStatusDto roomStatus = redisUtil.getRoomStatus(String.valueOf(playerTurnChangeDto.getRoomId()));
         redisUtil.setRoomStatusTemplate(String.valueOf(playerTurnChangeDto.getRoomId()), RoomStatusDto.builder()
                 .curUserId(roomStatus.getCurUserId()).hpPointA(roomStatus.getHpPointA()).hpPointB(roomStatus.getHpPointB())
                 .isATurn(playerTurnChangeDto.isATurn()).roomImagePath(roomStatus.getRoomImagePath())
                 .startTalkTime(LocalDateTime.now()).build(), 200);
     }
+
+    public void plusPlayerTalkTime(PlayerPlusTimeDto playerPlusTimeDto){
+        RoomStatusDto roomStatus = redisUtil.getRoomStatus(String.valueOf(playerPlusTimeDto.getRoomId()));
+        redisUtil.setRoomStatusTemplate(String.valueOf(playerPlusTimeDto.getRoomId()), RoomStatusDto.builder()
+                .curUserId(roomStatus.getCurUserId()).hpPointA(roomStatus.getHpPointA()).hpPointB(roomStatus.getHpPointB())
+                .isATurn(roomStatus.isATurn()).roomImagePath(roomStatus.getRoomImagePath())
+                .startTalkTime(roomStatus.getStartTalkTime().minusMinutes(playerPlusTimeDto.getPlusTime())).build(), 200);
+    }
+
+
+
+
 
 
 
