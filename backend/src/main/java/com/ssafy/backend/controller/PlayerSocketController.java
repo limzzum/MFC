@@ -4,9 +4,9 @@ import com.ssafy.backend.dto.request.PlayerDto;
 import com.ssafy.backend.dto.request.PlayerRegistDto;
 import com.ssafy.backend.dto.socket.request.PlayerItemDto;
 import com.ssafy.backend.dto.socket.request.PlayerRequestDto;
-import com.ssafy.backend.dto.socket.response.ItemFailDto;
 import com.ssafy.backend.dto.socket.response.PlayerInfoDto;
 import com.ssafy.backend.dto.socket.response.PlayerItemInfoDto;
+import com.ssafy.backend.entity.Status;
 import com.ssafy.backend.entity.User;
 import com.ssafy.backend.service.*;
 import lombok.*;
@@ -22,6 +22,8 @@ public class PlayerSocketController {
     private final PlayerService playerService;
     private final UserService userService;
     private final ItemService itemService;
+    private final RoomService roomService;
+
 
     @MessageMapping("/player/enter")
     public void setPlayer(PlayerRequestDto playerDto) {
@@ -49,6 +51,11 @@ public class PlayerSocketController {
         User user = userService.findById(playerDto.getUserId());
         playerService.changeStatus(new PlayerDto(roomId,user.getId()), playerDto.isReady());
         boolean allReady = playerService.isAllReady(roomId);
+
+        if(allReady){
+            roomService.setRoomStatus(roomId);
+            roomService.roomUpdateStatus(roomId, Status.ONGOING);
+        }
         PlayerInfoDto playerInfoDto = PlayerInfoDto.builder().userId(user.getId()).nickname(user.getNickname()).profile(user.getProfile())
                 .colorItem(user.getColorItem()).isReady(playerDto.isReady()).isTopicA(playerDto.isATopic()).isAllReady(allReady).build();
         messagingTemplate.convertAndSend("/from/player/" + roomId, playerInfoDto);
