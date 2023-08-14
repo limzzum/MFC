@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 public class PenaltyRequestDto {
     private Long roomId;
     private Long userId;
+    private boolean isATopic;
     private Long penaltyCodeId;
 
 }
