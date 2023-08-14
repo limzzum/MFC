@@ -103,8 +103,8 @@ function DebateBtns({
       // rooId랑 userId 보내주셔서 넣어주세요 ( 충돌날까봐 우선 작성안했습니다 )
       // const roomId = 35;
       // const userId = 326;
-      const base_url = `http://localhost:8081/api/viewer/vote/${roomId}/${userId}`;
-      // const base_url = `https://goldenteam.site/mfc/viewer/vote/${roomId}/${userId}`;
+      // const base_url = `http://localhost:8081/api/viewer/vote/${roomId}/${userId}`;
+      const base_url = `https://goldenteam.site/mfc/viewer/vote/${roomId}/${userId}`;
 
       const response = await axios.patch(base_url, null, {
         params: { vote: selectedTopic },
