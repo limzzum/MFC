@@ -9,16 +9,19 @@ import UserVideoComponent from "../Openvidu/UserVideoComponent";
 function Participate({ roomId, userId, status, role, onRoleChange, playerStatus, setPlayerStatus, handlePlayerAVideoStream, handlePlayerBVideoStream, publisher, playerA, playerB}){
 
     const stompRef = useRef(null);
-
+    console.log("userId", userId);
+    console.log("roomId", roomId);
     useEffect(() => {
-        // var sock = new SockJS("http://localhost:8081/mfc");
-        var sock = new SockJS("https://goldenteam.site/mfc");
+        var sock = new SockJS("http://localhost:8081/mfc");
+        // var sock = new SockJS("https://goldenteam.site/mfc");
         var stomp = Stomp.over(sock);
         stomp.connect({}, function () {
+            console.log("요청이 가니??___________________________");
             stompRef.current = stomp;
             stomp.subscribe(`/from/player/${roomId}`, (message) => {
                 const content = JSON.parse(message.body);
-                console.log(content);   // 데이터 파싱해서 프론트에 저장?
+                console.log("ddddddddddddd");
+                console.log("플레이어 등록 응답", content);   // 데이터 파싱해서 프론트에 저장?
             });
         });
         return () => {
@@ -29,13 +32,15 @@ function Participate({ roomId, userId, status, role, onRoleChange, playerStatus,
     }, [roomId, userId, playerStatus]);
 
     const handlePostPlayer = (isTopicA) => {
-        if(stompRef.current) {
+        if(stompRef.current) {            
+            console.log("A주제인가?", isTopicA);
             stompRef.current.send(
                 `/to/player/enter`,
                 JSON.stringify({
                     roomId: roomId,
                     userId: userId,
-                    isTopicA : isTopicA,
+                    isATopic : Boolean(isTopicA),
+                    isReady: Boolean(true),
                 })
             );
         }
