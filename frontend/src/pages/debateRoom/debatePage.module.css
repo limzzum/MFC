@@ -1,12 +1,25 @@
 /* debatePage.css */
 @import "../../colorSelector.css";
 
-* {
+/* Debage Page */
+.debatePage {
+  padding: 0 var(--spacing-3);
   box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-  font-size: var(--text-size-xl);
-  font-family: inherit;
+  margin: 0px;
+  padding-top: 20px;
+  padding-left: 30px;
+  padding-right: 45px;
+  font-size: 16px;
+  /* font-family: inherit; */
+  /* background-color: red; */
+  /* background-color: skyblue; */
+}
+
+.debatePart {
+  /* height: 100px; */
+  /* margin-left: var(--spacing-3);
+  margin-right: var(--spacing-3); */
+  /* background-color: red; */
 }
 
 ul {
@@ -18,86 +31,156 @@ ul button {
   background-color: transparent;
 }
 
-.debatePage {
-  padding: 0 var(--spacing-3);
-}
-
+/* 헤더 CSS */
 .header {
+  height: 70px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  /* padding: 10px 20px; */
-  border-bottom: 3px solid var(--blue-600);
-  margin-bottom: var(--spacing-3);
-  height: 70px;
+  border-bottom: 2px solid var(--blue-600);
+  padding-left: 20px;
+  padding-right: 20px;
 }
 
 .logo {
-  width: 6%;
+  width: 100px;
+  margin-bottom: 10px;
 }
 
 .header ul {
   display: flex;
   list-style: none;
+  margin: 0px;
+  margin-bottom: 10px;
 }
 
 .header ul li {
-  margin-right: 15px;
+  margin-left: 15px;
 }
 
-.header ul li:last-child {
-  margin-right: 0;
+.setting:hover {
+  color: var(--blue-500);
 }
 
-.setting {
-  width: 50px;
-  height: 50px;
+.exit:hover {
+  color: var(--blue-500);
 }
 
-.exit {
-  width: 50px;
-  height: 50px;
+/* Room CSS */
+.roomInfo {
+  height: 40px;
+  line-height: 40px;
 }
 
-.debatePart {
-  margin-left: var(--spacing-3);
-  margin-right: var(--spacing-3);
-}
-
-.opinion {
+.infoText {
   color: var(--white);
-  font-size: var(--text-size-2xl);
+  font-size: 24px;
+  font-weight: 600;
   text-align: center;
+
+  border-radius: 10px;
+}
+.vs {
+  color: var(--blue-800);
+  text-align: center;
+  font-size: 20px;
+  font-weight: 600;
 }
 
 .opinion1 {
-  background-color: var(--red-500);
+  background-color: var(--blue-800);
 }
 
 .opinion2 {
-  background-color: var(--blue-700);
+  background-color: var(--blue-800);
 }
 
 .userInfo {
   text-align: center;
-  align-items: center;
-  font-size: var(--text-size-2xl);
-  font-weight: normal;
+  line-height: 60px;
+  font-size: 16px;
+  /* font-weight: bold; */
 }
 
-.timer {
-  display: flex;
+.debateTimer {
+  font-size: 24px;
+  color: var(--blue-800);
+  font-weight: bolder;
+  text-align: center;
+  border-bottom: dashed 1px var(--blue-800);
+}
+
+.speechTimer {
+  font-size: 20px;
+  color: var(--blue-800);
   text-align: center;
   justify-content: center;
   align-items: center;
-  font-size: var(--text-size-2xl);
   font-weight: bolder;
   vertical-align: middle;
+}
+
+.micIcon {
+  color: var(--blue-500);
+}
+
+.userStatus {
+  text-align: center;
+  vertical-align: middle;
+  font-size: 16px;
 }
 
 .user1HP {
   direction: rtl;
 }
+
+.hpBar {
+  height: 25px;
+  line-height: 30px;
+  vertical-align: middle;
+  font-size: 20px;
+  margin-top: 7px;
+}
+
+.progress-bar {
+  background-color: #4aa69f;
+}
+.readyBtn {
+  background-color: var(--blue-800);
+}
+
+.readyButton {
+  background-color: var(--red-600);
+  border: 0;
+  color: white;
+}
+
+.readyButton:hover {
+  background-color: var(--red-400);
+  border: 0;
+  color: white;
+}
+
+.completeButton {
+  background-color: var(--blue-600);
+  border: 0;
+  color: white;
+}
+
+.completeButton:hover {
+  background-color: var(--blue-400);
+  border: 0;
+  color: white;
+}
+
+.bottomBox {
+  line-height: 40px;
+  height: 40px;
+
+  margin-bottom: 5px;
+}
+
+/*  */
 
 .screenShare {
   background-color: var(--blue-200);
@@ -161,7 +244,7 @@ ul button {
 }
 
 .sender {
-  font-size: var(--text-size-sm);
+  /* font-size: var(--text-size-sm); */
   margin-left: var(--spacing-2);
 }
 
@@ -237,7 +320,7 @@ ul button {
 
   border-radius: var(--radius-md);
   color: var(--white);
-  font-size: var(--text-size-md);
+  /* font-size: var(--text-size-md); */
 }
 
 .inputChat {
