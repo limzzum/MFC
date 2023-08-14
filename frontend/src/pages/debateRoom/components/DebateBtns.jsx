@@ -56,7 +56,7 @@ function DebateBtns({
   const stompClient = useRef(null); // useRef를 사용하여 stompClient 선언
 
   useEffect(() => {
-    // const socket = new SockJS("http://localhost:8081/mfc");
+    // const socket = new SockJS("");
     const socket = new SockJS("https://goldenteam.site/mfc");
     stompClient.current = Stomp.over(socket);
     console.log("소켓 연결 완료");
@@ -123,8 +123,8 @@ function DebateBtns({
   };
 
   useEffect(() => {
-    const sock = new SockJS("http://localhost:8081/mfc");
-    // const sock = new SockJS("https://goldenteam.site/mfc");
+    // const sock = new SockJS("http://localhost:8081/mfc");
+    const sock = new SockJS("https://goldenteam.site/mfc");
     const stompClient = Stomp.over(sock);
     stompClient.connect({}, function () {
       console.log("WebSocket 연결 성공");
@@ -166,8 +166,8 @@ function DebateBtns({
   const stompRef = useRef(null);
 
   useEffect(() => {
-    const sock = new SockJS("http://localhost:8081/mfc");
-    // const sock = new SockJS("https://goldenteam.site/mfc");
+    // const sock = new SockJS("http://localhost:8081/mfc");
+    const sock = new SockJS("https://goldenteam.site/mfc");
 
     const stomp = Stomp.over(sock);
 
