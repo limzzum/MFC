@@ -23,7 +23,7 @@ function Header({ status, leaveSession, handleModifyModalOpen }) {
                   className={style.setting}
                   icon={faGear}
                   color="#2F425DFF"
-                  size="3x"
+                  size="2x"
                 />
               </button>
             </li>
@@ -33,7 +33,7 @@ function Header({ status, leaveSession, handleModifyModalOpen }) {
               <FontAwesomeIcon
                 icon={faArrowRightFromBracket}
                 color="#2F425DFF"
-                size="3x"
+                size="2x"
                 onClick={leaveSession}
                 className={style.exit}
               />
