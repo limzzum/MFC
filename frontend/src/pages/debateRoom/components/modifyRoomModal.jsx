@@ -19,18 +19,18 @@ function ModifyRoomModal({
 
     const handleModifyRoom = () => {
         if (stompRef) {
-          stompRef.send(`/to/room/update/${roomId}`, JSON.stringify({
-            totalTime: debateTime,
-            talkTime: speechTime,
-            maxPeople: spectatorCount,
-            overTimeCount: extensionCount,
-            atopic: title1,
-            btopic: title2,
-          }));
-        }
-        handleModal();
-      };
-  return (
+            stompRef.send(`/to/room/update/${roomId}`, JSON.stringify({
+                totalTime: debateTime,
+                talkTime: speechTime,
+                maxPeople: spectatorCount,
+                overTimeCount: extensionCount,
+                atopic: title1,
+                btopic: title2,
+            }));
+            }
+            handleModal();
+        };
+    return (
     <>
         <Modal show={isModifyModalOpen} onHide={handleModal}>
             <Modal.Header closeButton>
@@ -114,7 +114,7 @@ function ModifyRoomModal({
         </Modal>
     </>
 
-  );
+    );
 }
 
 export default ModifyRoomModal;
