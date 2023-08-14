@@ -67,7 +67,7 @@ ul button {
 
 .infoText {
   color: var(--white);
-  font-size: 24px;
+  font-size: 20px;
   font-weight: 600;
   text-align: center;
 
@@ -190,15 +190,33 @@ ul button {
   object-fit: cover;
 }
 
+/* 플레이어 화면 */
+
+.testt {
+  /* background-color: red; */
+}
+
 .Participant {
   display: flex;
   align-items: center;
   justify-content: center;
+  width: 400px;
+  height: 300px;
+  border: 1px dashed var(--blue-400);
+  border-radius: 10px;
+}
 
-  width: 100%;
-  height: 400px;
-  background-color: var(--blue-200);
-  border: 1px solid black;
+.rightParticipant {
+  float: right;
+
+  /* background-color: var(--blue-200); */
+  /* border: 1px solid var(--blue-200); */
+}
+
+.rightCount {
+  /* clear: both; */
+  float: left;
+  width: 400px;
 }
 
 .ChatArea {
@@ -306,18 +324,30 @@ ul button {
 }
 
 .button {
-  background-color: var(--blue-700);
-  width: fit-content;
-  height: 50px;
-  padding: var(--spacing-2);
-
-  border-radius: var(--radius-md);
+  background-color: var(--blue-500);
   color: var(--white);
+  padding: var(--spacing-2);
+  font-size: 16px;
+
+  /* width: fit-content; */
+  /* height: 50px; */
+  /* border-radius: var(--radius-md); */
+  /* font-size: var(--text-size-md); */
+}
+.button:hover {
+  background-color: var(--blue-600);
+  color: var(--white);
+  padding: var(--spacing-2);
+  font-size: 16px;
+
+  /* width: fit-content; */
+  /* height: 50px; */
+  /* border-radius: var(--radius-md); */
   /* font-size: var(--text-size-md); */
 }
 
 .inputChat {
-  width: 385px;
+  width: 100%;
   height: 50px;
   border-radius: var(--radius-md);
 }

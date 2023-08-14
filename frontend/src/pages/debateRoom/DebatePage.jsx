@@ -364,15 +364,15 @@ function DebatePage() {
     <div className={style.debatePage}>
       {session !== undefined ? (
         <>
-          <Row>
+          <Row className={`m-0 p-0`}>
             <Header
               status={status}
               leaveSession={leaveSession}
               handleModifyModalOpen={handleModifyModalOpen}
             />
           </Row>
-          <Row className={` m-0 p-0 mt-3 `}>
-            <Col xs={9}>
+          <Row className={` m-0 p-0 my-3 `}>
+            <Col xs={9} className={` m-0 p-0`}>
               <RoomInfo
                 status={status}
                 role={role}
@@ -405,7 +405,7 @@ function DebatePage() {
               </Stack>
             </Col>
           </Row>
-          <Row>
+          <Row className={`m-0 p-0`}>
             <DebateBtns
               status={status}
               role={role}
@@ -427,7 +427,7 @@ function DebatePage() {
               // isTopicA={}
             />
           </Row>
-          <Row>
+          <Row className={`m-0 p-0`}>
             <Spectator
               voteResult={voteResult.data}
               filteredSubscribers={filteredSubscribers}
