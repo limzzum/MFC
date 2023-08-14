@@ -1,5 +1,6 @@
 package com.ssafy.backend.dto.request;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -12,6 +13,7 @@ import lombok.NoArgsConstructor;
 public class PlayerPlusTimeDto {
     private Long roomId;
     private Long curUserId;
+    @JsonProperty("isATurn")
     private boolean isATurn;
     private long plusTime;
 }

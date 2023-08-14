@@ -39,9 +39,10 @@ public class PlayerService {
         if(room == null){
             return null;
         }
-        Player curPlayer = playerRepository.findFirstByRoomIdAndIsTopicTypeA(playerRegistDto.getRoomId(), playerRegistDto.isATopic()).orElse(null);
+        Player curPlayer = playerRepository.findTopByRoomIdAndUserId(playerRegistDto.getRoomId(), playerRegistDto.getUserId()).orElse(null);
         if(curPlayer != null){
-            return null;
+            curPlayer.changeTopic(playerRegistDto.isATopic());
+            return curPlayer.getId();
         }
         Player player = Player.builder().room(room).user(user).remainOverTimeCount(room.getOverTimeCount()).isTopicTypeA(playerRegistDto.isATopic()).build();
         Player save = playerRepository.save(player);
@@ -74,7 +75,7 @@ public class PlayerService {
     }
 
     public void deletePlayer(PlayerRegistDto playerRegistDto){
-        playerRepository.deleteById(playerRegistDto.getUserId());
+        playerRepository.deleteByRoomIdAndUserId(playerRegistDto.getRoomId(),playerRegistDto.getUserId());
         participantService.changeRole(playerRegistDto,roleCodeRepository.findById(3L).get());
     }
 
@@ -89,6 +90,14 @@ public class PlayerService {
             return true;
         }
         return false;
+    }
+    public int getRemainOverTimeCnt(PlayerDto playerDto){
+        Player player = playerRepository.findTopByRoomIdAndUserId(playerDto.getRoomId(), playerDto.getUserId()).orElse(null);
+        if(player == null){
+            return 0;
+        }
+        int remainCnt = player.getRemainOverTimeCount();
+        return remainCnt;
     }
     public boolean isAllReady(Long roomId){
         List<Player> allByRoomId = playerRepository.findAllByRoomId(roomId);
@@ -139,12 +148,14 @@ public class PlayerService {
                 .startTalkTime(LocalDateTime.now()).build(), 200);
     }
 
-    public void plusPlayerTalkTime(PlayerPlusTimeDto playerPlusTimeDto){
+    public LocalDateTime plusPlayerTalkTime(PlayerPlusTimeDto playerPlusTimeDto){
         RoomStatusDto roomStatus = redisUtil.getRoomStatus(String.valueOf(playerPlusTimeDto.getRoomId()));
+        LocalDateTime updateStartTime = roomStatus.getStartTalkTime().plusSeconds(playerPlusTimeDto.getPlusTime());
         redisUtil.setRoomStatusTemplate(String.valueOf(playerPlusTimeDto.getRoomId()), RoomStatusDto.builder()
                 .curUserId(roomStatus.getCurUserId()).hpPointA(roomStatus.getHpPointA()).hpPointB(roomStatus.getHpPointB())
                 .isATurn(roomStatus.isATurn()).roomImagePath(roomStatus.getRoomImagePath())
-                .startTalkTime(roomStatus.getStartTalkTime().minusMinutes(playerPlusTimeDto.getPlusTime())).build(), 200);
+                .startTalkTime(updateStartTime).build(), 200);
+        return updateStartTime;
     }
 
 

@@ -12,6 +12,7 @@ public interface PlayerRepository extends JpaRepository<Player, Long> {
 
   Optional<Player> findFirstByRoomIdAndIsTopicTypeA(Long roomId, Boolean isTopicTypeA);
 
+  Long deleteByRoomIdAndUserId(Long roomId, Long userId);
   List<Player> findAllByRoomId(Long roomId);
 
   Optional<Player> findTopByRoomIdAndUserId(Long roomId, Long userId);
