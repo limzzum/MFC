@@ -99,7 +99,7 @@ function RoomInfo({
           <span>
             <strong>승</strong> 5&nbsp;
           </span>
-          <span>무 0&nbsp;</span>
+          <span>무 1&nbsp;</span>
           <span>패 0&nbsp;</span>
           <span>승률 100%</span>
         </Col>
