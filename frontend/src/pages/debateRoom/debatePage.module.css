@@ -1,12 +1,23 @@
 /* debatePage.css */
 @import "../../colorSelector.css";
 
-* {
+.debatePage {
+  padding: 0 var(--spacing-3);
   box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-  font-size: var(--text-size-xl);
-  font-family: inherit;
+  margin: 0px;
+  padding-top: 20px;
+  padding-left: 30px;
+  padding-right: 45px;
+  font-size: 16px;
+  /* font-family: inherit; */
+  /* background-color: red; */
+  /* background-color: skyblue; */
+}
+
+.debatePart {
+  margin-left: var(--spacing-3);
+  margin-right: var(--spacing-3);
+  background-color: red;
 }
 
 ul {
@@ -18,55 +29,45 @@ ul button {
   background-color: transparent;
 }
 
-.debatePage {
-  padding: 0 var(--spacing-3);
-}
-
+/* 헤더 CSS */
 .header {
+  height: 70px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  /* padding: 10px 20px; */
-  border-bottom: 3px solid var(--blue-600);
-  margin-bottom: var(--spacing-3);
-  height: 70px;
+  border-bottom: 2px solid var(--blue-600);
+  padding-left: 20px;
+  padding-right: 20px;
 }
 
 .logo {
-  width: 6%;
+  width: 120px;
+  margin-bottom: 10px;
 }
 
 .header ul {
   display: flex;
   list-style: none;
+  margin: 0px;
+  margin-bottom: 10px;
 }
 
 .header ul li {
-  margin-right: 15px;
+  margin-left: 15px;
 }
 
-.header ul li:last-child {
-  margin-right: 0;
+.setting:hover {
+  color: var(--blue-500);
 }
 
-.setting {
-  width: 50px;
-  height: 50px;
+.exit:hover {
+  color: var(--blue-500);
 }
 
-.exit {
-  width: 50px;
-  height: 50px;
-}
-
-.debatePart {
-  margin-left: var(--spacing-3);
-  margin-right: var(--spacing-3);
-}
-
+/* ?? CSS */
 .opinion {
   color: var(--white);
-  font-size: var(--text-size-2xl);
+  /* font-size: var(--text-size-2xl); */
   text-align: center;
 }
 
@@ -81,7 +82,7 @@ ul button {
 .userInfo {
   text-align: center;
   align-items: center;
-  font-size: var(--text-size-2xl);
+  /* font-size: var(--text-size-2xl); */
   font-weight: normal;
 }
 
@@ -90,7 +91,7 @@ ul button {
   text-align: center;
   justify-content: center;
   align-items: center;
-  font-size: var(--text-size-2xl);
+  /* font-size: var(--text-size-2xl); */
   font-weight: bolder;
   vertical-align: middle;
 }
@@ -161,7 +162,7 @@ ul button {
 }
 
 .sender {
-  font-size: var(--text-size-sm);
+  /* font-size: var(--text-size-sm); */
   margin-left: var(--spacing-2);
 }
 
@@ -237,7 +238,7 @@ ul button {
 
   border-radius: var(--radius-md);
   color: var(--white);
-  font-size: var(--text-size-md);
+  /* font-size: var(--text-size-md); */
 }
 
 .inputChat {
