@@ -50,8 +50,8 @@ function DebateBtns({
   const stompClient = useRef(null);  // useRef를 사용하여 stompClient 선언
 
 useEffect(() => {
-    // const socket = new SockJS("http://localhost:8081/mfc");
-    const socket = new SockJS("https://goldenteam.site/mfc");
+    const socket = new SockJS("http://localhost:8081/mfc");
+    // const socket = new SockJS("https://goldenteam.site/mfc");
     stompClient.current = Stomp.over(socket);
     console.log('소켓 연결 완료');
     stompClient.current.connect({}, () => {
@@ -97,8 +97,8 @@ const sendItemRequest = (itemId) => {
       // rooId랑 userId 보내주셔서 넣어주세요 ( 충돌날까봐 우선 작성안했습니다 )
       // const roomId = 35;
       // const userId = 326; 
-      // const base_url = `http://localhost:8081/api/viewer/vote/${roomId}/${userId}`;
-      const base_url = `https://goldenteam.site/mfc/viewer/vote/${roomId}/${userId}`;
+      const base_url = `http://localhost:8081/api/viewer/vote/${roomId}/${userId}`;
+      // const base_url = `https://goldenteam.site/mfc/viewer/vote/${roomId}/${userId}`;
 
       const response = await axios.patch(base_url, null, {
         params: { vote: selectedTopic },
@@ -117,8 +117,8 @@ const sendItemRequest = (itemId) => {
   };
 
   useEffect(() => {
-    // const sock = new SockJS("http://localhost:8081/mfc");
-    const sock = new SockJS("https://goldenteam.site/mfc");
+    const sock = new SockJS("http://localhost:8081/mfc");
+    // const sock = new SockJS("https://goldenteam.site/mfc");
     const stompClient = Stomp.over(sock);
 
     stompClient.connect({}, function () {
