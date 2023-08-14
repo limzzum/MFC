@@ -42,29 +42,29 @@ function DebatePage() {
   // 참가자 준비여부
   const [userReady, setUserReady] = useState(false);
   const [isModifyModalOpen, setIsModifyModalOpen] = useState(false);
-  const [result, setResult] = useState({data: {
+  const [result, setResult] = useState({
     winner: "user1",
     winnerImg: "",
-    a: {
+    playerA: {
       vote: 0,
       hp: 0,
       coin: 0,
       exp: 0,
     },
-    b: {
+    playerB: {
       vote: 0,
       hp: 0,
       coin: 0,
       exp: 0,
     },
-    isSurrender: false,
+    isSurrender: true,
     isExit: false,
-  },})
+  })
   // 토론방 수정 웹소켓 코드
   const modifyStompRef = useRef(null);
   useEffect(() => {
-    // var sock = new SockJS("http://localhost:8081/mfc");
-    var sock = new SockJS("https://goldenteam.site/mfc");
+    var sock = new SockJS("http://localhost:8081/mfc");
+    // var sock = new SockJS("https://goldenteam.site/mfc");
     var stomp = Stomp.over(sock);
     stomp.connect({}, function () {
       modifyStompRef.current = stomp;
@@ -73,11 +73,11 @@ function DebatePage() {
         console.log(content);
       });
     });
-    return () => {
-      if (modifyStompRef.current) {
-        modifyStompRef.current.disconnect();
-      }
-    };
+    // return () => {
+    //   if (modifyStompRef.current) {
+    //     modifyStompRef.current.disconnect();
+    //   }
+    // };
   });
   // 코드 끝
 
@@ -370,7 +370,7 @@ function DebatePage() {
   }, [debateRoomInfo, setStatus]);
 
   useEffect(() => {
-    if (status === "done") {
+    if (status === "waiting") {
       setShowResultModal(true);
     } else {
       setShowResultModal(false);
@@ -475,46 +475,49 @@ function DebatePage() {
             <Modal.Body>
               {result ? (
                 <>
-                  <p>{result.data.winner} 승리</p>
+                  <p>{result.winner} 승리</p>
                   <img src={winnerImg} alt="승자 프로필" />
                 </>
               ) : (
                 <p>무승부</p>
               )}
-
+              { !result.isSurrender ? (
+              <>
               <p>투표 결과</p>
               <ProgressBar>
                 <ProgressBar
                   variant="success"
-                  label={result.data.a.vote}
-                  now={(result.data.a.vote / (result.data.a.vote + result.data.b.vote)) * 100}
+                  label={result.playerA.vote}
+                  now={(result.playerA.vote / (result.playerA.vote + result.b.vote)) * 100}
                   key={1}
                 />
                 <ProgressBar
                   variant="danger"
-                  label={result.data.b.vote}
-                  now={(result.data.b.vote / (result.data.a.vote + result.data.b.vote)) * 100}
+                  label={result.playerB.vote}
+                  now={(result.playerB.vote / (result.playerA.vote + result.playerB.vote)) * 100}
                   key={2}
                 />
               </ProgressBar>
+              </>
+              ) :  null}
               <p>잔여 HP</p>
               <ProgressBar>
                 <ProgressBar
                   variant="success"
-                  label={result.data.a.hp}
-                  now={(result.data.a.hp / 200) * 100}
+                  label={result.playerA.hp}
+                  now={(result.playerA.hp / 200) * 100}
                   key={1}
                 />
                 <ProgressBar
                   variant="danger"
-                  label={result.data.b.hp}
-                  now={(result.data.a.hp / 200) * 100}
+                  label={result.playerB.hp}
+                  now={(result.playerB.hp / 200) * 100}
                   key={2}
                 />
               </ProgressBar>
               <hr />
-              <p>얻은 경험치: {result.data.a.exp} (+10)</p>
-              <p>얻은 코인: {result.data.a.coin} (+15)</p>
+              <p>얻은 경험치: {result.playerA.exp} (+10)</p>
+              <p>얻은 코인: {result.playerA.coin} (+15)</p>
             </Modal.Body>
             <Modal.Footer>
               <Button variant="secondary" onClick={goToMainPage}>
