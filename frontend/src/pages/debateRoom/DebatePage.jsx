@@ -63,8 +63,8 @@ function DebatePage() {
   // 토론방 수정 웹소켓 코드
   const modifyStompRef = useRef(null);
   useEffect(() => {
-    var sock = new SockJS("http://localhost:8081/mfc");
-    // var sock = new SockJS("https://goldenteam.site/mfc");
+    // var sock = new SockJS("http://localhost:8081/mfc");
+    var sock = new SockJS("https://goldenteam.site/mfc");
     var stomp = Stomp.over(sock);
     stomp.connect({}, function () {
       modifyStompRef.current = stomp;

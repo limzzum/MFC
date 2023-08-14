@@ -162,7 +162,9 @@ function DebateBtns({
   const stompRef = useRef(null);
 
   useEffect(() => {
-    const sock = new SockJS("http://localhost:8081/mfc");
+    // const sock = new SockJS("http://localhost:8081/mfc");
+    const sock = new SockJS("https://goldenteam.site/mfc");
+
     const stomp = Stomp.over(sock);
 
     stompRef.current = stomp;
