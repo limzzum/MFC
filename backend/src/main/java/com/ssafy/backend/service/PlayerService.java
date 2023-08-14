@@ -90,6 +90,15 @@ public class PlayerService {
         }
         return false;
     }
+    public boolean isAllReady(Long roomId){
+        List<Player> allByRoomId = playerRepository.findAllByRoomId(roomId);
+        for (Player player : allByRoomId) {
+            if(!player.isReady()){
+                return false;
+            }
+        }
+        return true;
+    }
 
     public PlayerStatusDto updatePlayerHp(PlayerPlusHpDto playerPlusHpDto){
         RoomStatusDto roomStatus = redisUtil.getRoomStatus(String.valueOf(playerPlusHpDto.getRoomId()));
