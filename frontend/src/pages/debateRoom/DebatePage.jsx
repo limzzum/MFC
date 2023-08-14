@@ -3,22 +3,15 @@ import axios from "axios";
 import { OpenVidu } from "openvidu-browser";
 import { useParams } from "react-router-dom";
 import { useRecoilValue } from "recoil";
-import SockJS from 'sockjs-client';
-import Stomp from 'webstomp-client';
+import SockJS from "sockjs-client";
+import Stomp from "webstomp-client";
 import {
   useStatus,
   useRole,
   getDebateRoomState,
   getVoteResultState,
 } from "../../recoil/debateStateAtom";
-import {
-  Row,
-  Col,
-  Stack,
-  Modal,
-  Button,
-  ProgressBar,
-} from "react-bootstrap";
+import { Row, Col, Stack, Modal, Button, ProgressBar } from "react-bootstrap";
 import Header from "./components/Header";
 import ScreenShare from "./components/ScreenShare";
 import Participate from "./components/Participate";
@@ -74,7 +67,24 @@ function DebatePage() {
     }
   };
 
-
+  const [result, setResult] = useState({
+    winner: "user1",
+    winnerImg: "",
+    playerA: {
+      vote: 0,
+      hp: 0,
+      coin: 0,
+      exp: 0,
+    },
+    playerB: {
+      vote: 0,
+      hp: 0,
+      coin: 0,
+      exp: 0,
+    },
+    isSurrender: true,
+    isExit: false,
+  })
   // 토론방 수정 웹소켓 코드
   const modifyStompRef = useRef(null);
   useEffect(() => {
@@ -87,19 +97,22 @@ function DebatePage() {
         const content = JSON.parse(message.body);
         console.log(content);
       });
+    
+      const stompMessage = {roomId : roomId}
+      console.log(stompMessage, "")
+    
     });
-    return () => {
-      if (modifyStompRef.current) {
-        modifyStompRef.current.disconnect();
-      }
-    };
+    // return () => {
+      //   if (modifyStompRef.current) {
+        //     modifyStompRef.current.disconnect();
+      //   }
+    // };
   });
   // 코드 끝
 
   const handleModifyModalOpen = () => {
     setIsModifyModalOpen((prev) => !prev);
-  }
-
+  };
 
   // OpenVidu 코드 시작
   const [mySessionId, setMySessionId] = useState(roomId);
@@ -115,138 +128,154 @@ function DebatePage() {
 
   const OV = useRef(new OpenVidu());
 
-  const handlePlayerAVideoStream = useCallback(async (stream) => {
-    if (playerA !== stream) {
-      setPlayerA(stream);
-      if(playerB === stream){
-        setPlayerB(undefined);
-        setPlayerStatus([true, false]);
-      }
-    } else if(playerA === stream){
-      setPlayerA(undefined);
-      setPlayerStatus((prevStatus) => [!prevStatus[0], prevStatus[1]]);
-    }
-    // eslint-disable-next-line
-  },[playerA, playerB]);
-  
-  const handlePlayerBVideoStream = useCallback( async (stream) => {
-    if(playerB !== stream){
-      setPlayerB(stream);
-      if(playerA === stream){
+  const handlePlayerAVideoStream = useCallback(
+    async (stream) => {
+      if (playerA !== stream) {
+        setPlayerA(stream);
+        if (playerB === stream) {
+          setPlayerB(undefined);
+          setPlayerStatus([true, false]);
+        }
+      } else if (playerA === stream) {
         setPlayerA(undefined);
-        setPlayerStatus([false, true]);
+        setPlayerStatus((prevStatus) => [!prevStatus[0], prevStatus[1]]);
       }
-      } else if(playerB === stream){
+      // eslint-disable-next-line
+    },
+    [playerA, playerB]
+  );
+
+  const handlePlayerBVideoStream = useCallback(
+    async (stream) => {
+      if (playerB !== stream) {
+        setPlayerB(stream);
+        if (playerA === stream) {
+          setPlayerA(undefined);
+          setPlayerStatus([false, true]);
+        }
+      } else if (playerB === stream) {
         setPlayerB(undefined);
         setPlayerStatus((prevStatus) => [prevStatus[0], !prevStatus[1]]);
       }
       // eslint-disable-next-line
-  },[playerA, playerB]);
-
+    },
+    [playerA, playerB]
+  );
 
   useEffect(() => {
-    const updatedFilteredSubscribers = subscribers.filter(sub => sub !== playerA && sub !== playerB);
+    const updatedFilteredSubscribers = subscribers.filter(
+      (sub) => sub !== playerA && sub !== playerB
+    );
     setFilteredSubscribers(updatedFilteredSubscribers);
-    console.log('subscribe: ', subscribers);
-    console.log('playerA: ', playerA);
-    console.log('playerB: ', playerB);
-    console.log('filteredSubscribers: ', filteredSubscribers);
+    console.log("subscribe: ", subscribers);
+    console.log("playerA: ", playerA);
+    console.log("playerB: ", playerB);
+    console.log("filteredSubscribers: ", filteredSubscribers);
     // eslint-disable-next-line
   }, [subscribers, playerA, playerB]);
 
   const joinSession = () => {
-      const mySession = OV.current.initSession();
+    const mySession = OV.current.initSession();
 
-      mySession.on('streamCreated', (event) => {
-          const subscriber = mySession.subscribe(event.stream, undefined);
-          setSubscribers((subscribers) => [...subscribers, subscriber]);
-      });
+    mySession.on("streamCreated", (event) => {
+      const subscriber = mySession.subscribe(event.stream, undefined);
+      setSubscribers((subscribers) => [...subscribers, subscriber]);
+    });
 
-      mySession.on('streamDestroyed', (event) => {
-          deleteSubscriber(event.stream.streamManager);
-      });
+    mySession.on("streamDestroyed", (event) => {
+      deleteSubscriber(event.stream.streamManager);
+    });
 
-      mySession.on('exception', (exception) => {
-          console.warn(exception);
-      });
+    mySession.on("exception", (exception) => {
+      console.warn(exception);
+    });
 
-      setSession(mySession);
-      
+    setSession(mySession);
   };
 
-  useEffect (() => {
+  useEffect(() => {
     joinSession();
     handleEnterRoom();
 
     return () => leaveSession();
     // eslint-disable-next-line
-  }, [])
+  }, []);
 
   useEffect(() => {
-      if (session) {
-          // Get a token from the OpenVidu deployment
-          getToken().then(async (token) => {
-              try {
-                  await session.connect(token, { clientData: myUserName });
+    if (session) {
+      // Get a token from the OpenVidu deployment
+      getToken().then(async (token) => {
+        try {
+          await session.connect(token, { clientData: myUserName });
 
-                  let publisher = await OV.current.initPublisherAsync(undefined, {
-                      audioSource: undefined,
-                      videoSource: undefined,
-                      publishAudio: true,
-                      publishVideo: true,
-                      resolution: '640x480',
-                      frameRate: 30,
-                      insertMode: 'APPEND',
-                      mirror: false,
-                  });
-
-                  session.publish(publisher);
-
-                  const devices = await OV.current.getDevices();
-                  const videoDevices = devices.filter(device => device.kind === 'videoinput');
-                  const currentVideoDeviceId = publisher.stream.getMediaStream().getVideoTracks()[0].getSettings().deviceId;
-                  const currentVideoDevice = videoDevices.find(device => device.deviceId === currentVideoDeviceId);
-
-                  // setMainStreamManager(publisher);
-                  setPublisher(publisher);
-                  setSubscribers((prevSubscribers) => [publisher, ...prevSubscribers]);
-                  setCurrentVideoDevice(currentVideoDevice);
-              } catch (error) {
-                  console.log('There was an error connecting to the session:', error.code, error.message);
-              }
+          let publisher = await OV.current.initPublisherAsync(undefined, {
+            audioSource: undefined,
+            videoSource: undefined,
+            publishAudio: true,
+            publishVideo: true,
+            resolution: "640x480",
+            frameRate: 30,
+            insertMode: "APPEND",
+            mirror: false,
           });
-      }
-      // eslint-disable-next-line
+
+          session.publish(publisher);
+
+          const devices = await OV.current.getDevices();
+          const videoDevices = devices.filter(
+            (device) => device.kind === "videoinput"
+          );
+          const currentVideoDeviceId = publisher.stream
+            .getMediaStream()
+            .getVideoTracks()[0]
+            .getSettings().deviceId;
+          const currentVideoDevice = videoDevices.find(
+            (device) => device.deviceId === currentVideoDeviceId
+          );
+
+          // setMainStreamManager(publisher);
+          setPublisher(publisher);
+          setSubscribers((prevSubscribers) => [publisher, ...prevSubscribers]);
+          setCurrentVideoDevice(currentVideoDevice);
+        } catch (error) {
+          console.log(
+            "There was an error connecting to the session:",
+            error.code,
+            error.message
+          );
+        }
+      });
+    }
+    // eslint-disable-next-line
   }, [session, myUserName]);
 
-
   const leaveSession = useCallback(() => {
-      // Leave the session
-      if (session) {
-          session.disconnect();
-      }
-  
-      // Reset all states and OpenVidu object
-      OV.current = new OpenVidu();
-      setSession(undefined);
-      setSubscribers([]);
-      setMySessionId(undefined);
-      setMyUserName(userInfo.nickname);
-      // setMainStreamManager(undefined);
-      setPublisher(undefined);
+    // Leave the session
+    if (session) {
+      session.disconnect();
+    }
+
+    // Reset all states and OpenVidu object
+    OV.current = new OpenVidu();
+    setSession(undefined);
+    setSubscribers([]);
+    setMySessionId(undefined);
+    setMyUserName(userInfo.nickname);
+    // setMainStreamManager(undefined);
+    setPublisher(undefined);
   }, [session, userInfo.nickname]);
 
   const deleteSubscriber = useCallback((streamManager) => {
-      setSubscribers((prevSubscribers) => {
-          const index = prevSubscribers.indexOf(streamManager);
-          if (index > -1) {
-              const newSubscribers = [...prevSubscribers];
-              newSubscribers.splice(index, 1);
-              return newSubscribers;
-          } else {
-              return prevSubscribers;
-          }
-      });
+    setSubscribers((prevSubscribers) => {
+      const index = prevSubscribers.indexOf(streamManager);
+      if (index > -1) {
+        const newSubscribers = [...prevSubscribers];
+        newSubscribers.splice(index, 1);
+        return newSubscribers;
+      } else {
+        return prevSubscribers;
+      }
+    });
   }, []);
 
   useEffect(() => {
@@ -261,59 +290,66 @@ function DebatePage() {
   }, [leaveSession]);
 
   const getToken = useCallback(async () => {
-      return createSession(mySessionId).then(sessionId =>
-          createToken(sessionId),
-      );
+    return createSession(mySessionId).then((sessionId) =>
+      createToken(sessionId)
+    );
   }, [mySessionId]);
 
   const createSession = async (sessionId) => {
-      const response = await axios.post(APPLICATION_SERVER_URL + 'api/sessions', { customSessionId: sessionId }, {
-          headers: { 'Content-Type': 'application/json', },
-      });
-      return response.data; // The sessionId
+    const response = await axios.post(
+      APPLICATION_SERVER_URL + "api/sessions",
+      { customSessionId: sessionId },
+      {
+        headers: { "Content-Type": "application/json" },
+      }
+    );
+    return response.data; // The sessionId
   };
 
   const createToken = async (sessionId) => {
-      const response = await axios.post(APPLICATION_SERVER_URL + 'api/sessions/' + sessionId + '/connections', {}, {
-          headers: { 'Content-Type': 'application/json', },
-      });
-      return response.data; // The token
+    const response = await axios.post(
+      APPLICATION_SERVER_URL + "api/sessions/" + sessionId + "/connections",
+      {},
+      {
+        headers: { "Content-Type": "application/json" },
+      }
+    );
+    return response.data; // The token
   };
 
-  subscribers.forEach(subscriber => {
+  subscribers.forEach((subscriber) => {
     const clientData = JSON.parse(subscriber.stream.connection.data).clientData;
     console.log(`subscriber clientData: ${clientData}`);
-  })
+  });
   // OpenViidu 코드 종료
 
-  console.log('debateRoomInfo: ', debateRoomInfo);
-  console.log('voteResult: ', voteResult);
+  console.log("debateRoomInfo: ", debateRoomInfo);
+  console.log("voteResult: ", voteResult);
 
+  // const result = {
+  //   status: "OK",
+  //   message: "관전자에게 토론 결과 보내기 성공",
+  //   data: {
+  //     winner: "user1",
+  //     winnerImg: "",
+  //     a: {
+  //       vote: 3,
+  //       hp: 85,
+  //       coin: 302,
+  //       exp: 55,
+  //     },
+  //     b: {
+  //       vote: 7,
+  //       hp: 55,
+  //       coin: 200,
+  //       exp: 96,
+  //     },
+  //     isSurrender: false,
+  //     isExit: false,
+  //   },
+  // };
 
-  const result = {
-    status: "OK",
-    message: "관전자에게 토론 결과 보내기 성공",
-    data: {
-      winner: "user1",
-      winnerImg: "",
-      a: {
-        vote: 3,
-        hp: 85,
-        coin: 302,
-        exp: 55,
-      },
-      b: {
-        vote: 7,
-        hp: 55,
-        coin: 200,
-        exp: 96,
-      },
-      isSurrender: false,
-      isExit: false,
-    },
-  };
-
-  const totalVote = result.data.a.vote + result.data.b.vote;
+  // const totalVote = result.data.a.vote + result.data.b.vote;
 
   // recoil 상태를 사용하는 훅
   const [status, setStatus] = useStatus();
@@ -322,11 +358,12 @@ function DebatePage() {
   // const [players, setPlayers] = useState([]);
 
   // 참가자 목록 가져오기 수정 필요
-  
-  useEffect( () => {
+  useEffect(() => {
     const getParticipants = async () => {
       try {
-        const response = await axios.get(`${APPLICATION_SERVER_URL}api/viewer/list/${roomId}`);
+        const response = await axios.get(
+          `${APPLICATION_SERVER_URL}api/viewer/list/${roomId}`
+        );
         const data = response.data;
         // const dataViewers = data.data.viewers;
         const dataPlayers = data.data.players;
@@ -385,93 +422,96 @@ function DebatePage() {
   }, [debateRoomInfo, setStatus]);
 
   useEffect(() => {
-    if (status === "done") {
+    if (status === "waiting") {
       setShowResultModal(true);
     } else {
       setShowResultModal(false);
     }
   }, [status]);
 
-
-
   return (
     <div className={style.debatePage}>
       {session !== undefined ? (
         <>
-          <Row>
-            <Header 
+          <Row className={`m-0 p-0`}>
+            <Header
               status={status}
               leaveSession={leaveSession}
               handleModifyModalOpen={handleModifyModalOpen}
             />
           </Row>
-          <Row className="debatePart">
-            <Col xs={9}>
-              <RoomInfo
-                status={status}
-                role={role}
-                playerStatus={playerStatus}
-                onStatusChange={handleStatusChange}
-                userReady={userReady}
-                setUserReady={setUserReady}
-                onRoleChange={handleRoleChange}
-                debateRoomInfo={debateRoomInfo.data}
-              />
-              <Participate
-                status={status}
-                role={role}
-                onRoleChange={handleRoleChange}
-                playerStatus={playerStatus}
-                setPlayerStatus={setPlayerStatus}
-                handlePlayerAVideoStream={handlePlayerAVideoStream}
-                handlePlayerBVideoStream={handlePlayerBVideoStream}
-                publisher={publisher}
-                playerA={playerA}
-                playerB={playerB}
-                setPlayerA={setPlayerA}
-                setPlayerB={setPlayerB}
-                roomId={roomId}
-                userId = {userInfo.id}
-              />
+          <Row className={` m-0 p-0 my-3 `}>
+            <Col xs={9} className={` m-0 p-0`}>
+              <Row>
+                <RoomInfo
+                  status={status}
+                  role={role}
+                  playerStatus={playerStatus}
+                  onStatusChange={handleStatusChange}
+                  userReady={userReady}
+                  setUserReady={setUserReady}
+                  onRoleChange={handleRoleChange}
+                  debateRoomInfo={debateRoomInfo.data}
+                  viewers={viewers}
+                  userInfo={userInfo}
+                />
+              </Row>
+              <Row>
+                <Participate
+                  status={status}
+                  role={role}
+                  onRoleChange={handleRoleChange}
+                  playerStatus={playerStatus}
+                  setPlayerStatus={setPlayerStatus}
+                  handlePlayerAVideoStream={handlePlayerAVideoStream}
+                  handlePlayerBVideoStream={handlePlayerBVideoStream}
+                  publisher={publisher}
+                  playerA={playerA}
+                  playerB={playerB}
+                  setPlayerA={setPlayerA}
+                  setPlayerB={setPlayerB}
+                  roomId={roomId}
+                  userId = {userInfo.id}
+                />
+              </Row>
+              <Row className={`m-0 p-0`}>
+                <DebateBtns
+                  status={status}
+                  role={role}
+                  onStatusChange={handleStatusChange}
+                  onRoleChange={handleRoleChange}
+                  setPlayerStatus={setPlayerStatus}
+                  setUserReady={setUserReady}
+                  debateRoomInfo={debateRoomInfo.data}
+                  voteResult={voteResult.data}
+                  handlePlayerAVideoStream={handlePlayerAVideoStream}
+                  handlePlayerBVideoStream={handlePlayerBVideoStream}
+                  publisher={publisher}
+                  playerA={playerA}
+                  playerB={playerB}
+                  setPlayerA={setPlayerA}
+                  setPlayerB={setPlayerB}
+                  roomId={roomId}
+                  userId={userInfo.id}
+                  setResult={setResult}
+                  // isTopicA={}
+                />
+              </Row>
             </Col>
             <Col xs={3}>
               <Stack gap={1}>
-              <ScreenShare roomId={roomId} role={role} status={status} />
-              <TextChatting roomId={roomId} />
+                <ScreenShare roomId={roomId} role={role} status={status} />
+                <TextChatting roomId={roomId} />
               </Stack>
             </Col>
           </Row>
-          <Row>
-            <DebateBtns
-              status={status}
-              role={role}
-              onStatusChange={handleStatusChange}
-              onRoleChange={handleRoleChange}
-              setPlayerStatus={setPlayerStatus}
-              setUserReady={setUserReady}
-              debateRoomInfo={debateRoomInfo.data}
-              voteResult={voteResult.data}
-              handlePlayerAVideoStream={handlePlayerAVideoStream}
-              handlePlayerBVideoStream={handlePlayerBVideoStream}
-              publisher={publisher}
-              playerA={playerA}
-              playerB={playerB}
-              setPlayerA={setPlayerA}
-              setPlayerB={setPlayerB}
-              roomId={roomId}
-              userId = {userInfo.id}
-              // isTopicA={}
-
-            />
-          </Row>
-          <Row>
+          <Row className={`m-0 p-0`}>
             <Spectator
               voteResult={voteResult.data}
               filteredSubscribers={filteredSubscribers}
             />
           </Row>
-
-          { isModifyModalOpen && (
+          {isModifyModalOpen && (
             <ModifyRoomModal
               debateRoomInfo={debateRoomInfo.data}
               roomId={roomId}
@@ -491,46 +531,49 @@ function DebatePage() {
             <Modal.Body>
               {result ? (
                 <>
-                  <p>{result.data.winner} 승리</p>
+                  <p>{result.winner} 승리</p>
                   <img src={winnerImg} alt="승자 프로필" />
                 </>
               ) : (
                 <p>무승부</p>
               )}
-
+              { !result.isSurrender ? (
+              <>
               <p>투표 결과</p>
               <ProgressBar>
                 <ProgressBar
                   variant="success"
-                  label={result.data.a.vote}
-                  now={(result.data.a.vote / totalVote) * 100}
+                  label={result.playerA.vote}
+                  now={(result.playerA.vote / (result.playerA.vote + result.b.vote)) * 100}
                   key={1}
                 />
                 <ProgressBar
                   variant="danger"
-                  label={result.data.b.vote}
-                  now={(result.data.b.vote / totalVote) * 100}
+                  label={result.playerB.vote}
+                  now={(result.playerB.vote / (result.playerA.vote + result.playerB.vote)) * 100}
                   key={2}
                 />
               </ProgressBar>
+              </>
+              ) :  null}
               <p>잔여 HP</p>
               <ProgressBar>
                 <ProgressBar
                   variant="success"
-                  label={result.data.a.hp}
-                  now={(result.data.a.hp / 200) * 100}
+                  label={result.playerA.hp}
+                  now={(result.playerA.hp / 200) * 100}
                   key={1}
                 />
                 <ProgressBar
                   variant="danger"
-                  label={result.data.b.hp}
-                  now={(result.data.a.hp / 200) * 100}
+                  label={result.playerB.hp}
+                  now={(result.playerB.hp / 200) * 100}
                   key={2}
                 />
               </ProgressBar>
               <hr />
-              <p>얻은 경험치: {result.data.a.exp} (+10)</p>
-              <p>얻은 코인: {result.data.a.coin} (+15)</p>
+              <p>얻은 경험치: {result.playerA.exp} (+10)</p>
+              <p>얻은 코인: {result.playerA.coin} (+15)</p>
             </Modal.Body>
             <Modal.Footer>
               <Button variant="secondary" onClick={goToMainPage}>

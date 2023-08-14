@@ -63,5 +63,9 @@ public class Player {
     return true;
   }
 
+  public void changeTopic(boolean isTopicTypeA){
+    this.isTopicTypeA = isTopicTypeA;
+  }
+
 
 }

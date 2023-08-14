@@ -2,8 +2,8 @@ import {useEffect, useRef} from "react";
 import SockJS from "sockjs-client";
 import Stomp from "webstomp-client";
 
-const baseUrl = "http://localhost:8081/mfc";    // 얘는 로컬 테스트용으로 사용
-// const baseUrl = "https://goldenteam.site/mfc";   // 푸시할 때는 이 주소로 변경
+// const baseUrl = "http://localhost:8081/mfc";    // 얘는 로컬 테스트용으로 사용
+const baseUrl = "https://goldenteam.site/mfc";   // 푸시할 때는 이 주소로 변경
 
 const WebSocketService = () => {
     const chatStompClientRef = useRef(null);

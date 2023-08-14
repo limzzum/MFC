@@ -1,5 +1,6 @@
 package com.ssafy.backend.dto.socket.response;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -13,6 +14,10 @@ public class PlayerItemInfoDto {
 
     private Long userId;
     private String nickname;
-    private boolean isTopicA;
+    @JsonProperty("isATopic")
+    private boolean isATopic;
     private Long itemCodeId;
+    @JsonProperty("isUsed")
+    private boolean isUsed;
+    private String message;
 }

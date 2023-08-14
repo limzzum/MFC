@@ -221,7 +221,7 @@ public class ViewerService {
     if (!participants.isEmpty()) {
       for (Participant p : participants) {
         ViewerDto viewer = new ViewerDto(p.getUser().getId(), p.getUser().getNickname(),
-            p.getUser().getColorItem().getRgb(), p.isHost());
+            p.getUser().getColorItem().getRgb(), p.isHost(),p.getEnterTime());
         //플레이어인 경우
         System.out.println(p.getNickName());
         System.out.println(p.getRoleCode().getId());

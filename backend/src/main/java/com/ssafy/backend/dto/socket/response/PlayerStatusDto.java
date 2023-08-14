@@ -1,4 +1,4 @@
-package com.ssafy.backend.dto.socket.request;
+package com.ssafy.backend.dto.socket.response;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
@@ -7,15 +7,12 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 @Builder
-public class PlayerRequestDto {
-    private Long roomId;
+public class PlayerStatusDto {
     private Long userId;
     @JsonProperty("isATopic")
     private boolean isATopic;
-    @JsonProperty("isReady")
-    private boolean isReady;
+    private int hp;
 }
-
