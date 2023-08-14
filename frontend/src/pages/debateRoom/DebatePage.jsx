@@ -72,11 +72,15 @@ function DebatePage() {
         const content = JSON.parse(message.body);
         console.log(content);
       });
+    
+      const stompMessage = {roomId : roomId}
+      console.log(stompMessage, "")
+    
     });
     // return () => {
-    //   if (modifyStompRef.current) {
-    //     modifyStompRef.current.disconnect();
-    //   }
+      //   if (modifyStompRef.current) {
+        //     modifyStompRef.current.disconnect();
+      //   }
     // };
   });
   // 코드 끝
@@ -400,6 +404,8 @@ function DebatePage() {
                   setUserReady={setUserReady}
                   onRoleChange={handleRoleChange}
                   debateRoomInfo={debateRoomInfo.data}
+                  viewers={viewers}
+                  userInfo={userInfo}
                 />
               </Row>
               <Row>

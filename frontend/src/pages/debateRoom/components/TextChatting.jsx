@@ -81,7 +81,7 @@ function TextChatting({ roomId }) {
                     : style.otherMessage
                 }`}
               >
-                <p className={style.sender}>
+                <p className={`${style.sender}`}>
                   {message.sender === userInfo.nickname ? "나" : message.sender}
                 </p>
                 <div className={style.messageBubble}>{message.text}</div>
