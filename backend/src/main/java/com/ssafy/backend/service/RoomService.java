@@ -1,26 +1,20 @@
 package com.ssafy.backend.service;
 
+import com.ssafy.backend.dto.request.RoomImageUpdateDto;
 import com.ssafy.backend.dto.request.RoomInfoRuquestDto;
 import com.ssafy.backend.dto.response.RoomInfoResponseDto;
 import com.ssafy.backend.dto.response.RoomListDto;
-import com.ssafy.backend.entity.CategoryCode;
-import com.ssafy.backend.entity.Participant;
-import com.ssafy.backend.entity.Player;
-import com.ssafy.backend.entity.RoleCode;
-import com.ssafy.backend.entity.Room;
-import com.ssafy.backend.entity.Status;
-import com.ssafy.backend.entity.User;
-import com.ssafy.backend.repository.CategoryCodeRepository;
-import com.ssafy.backend.repository.HistoryRepository;
-import com.ssafy.backend.repository.ParticipantRepository;
-import com.ssafy.backend.repository.PlayerRepository;
-import com.ssafy.backend.repository.RoleCodeRepository;
-import com.ssafy.backend.repository.RoomRepository;
-import com.ssafy.backend.repository.UserRepository;
+import com.ssafy.backend.dto.socket.response.RoomStatusDto;
+import com.ssafy.backend.entity.*;
+import com.ssafy.backend.repository.*;
+
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import javax.transaction.Transactional;
+
+import com.ssafy.backend.util.RedisUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -38,7 +32,9 @@ public class RoomService {
   private final ParticipantRepository participantRepository;
   private final UserRepository userRepository;
   private final RoleCodeRepository roleCodeRepository;
+  private final UploadFileRepository uploadFileRepository;
   private final HistoryRepository historyRepository;
+  private final RedisUtil redisUtil;
   private static final int MAX_LIFE_GAUGE = 100;
 
   public List<RoomListDto> ongoingRoomList(Long minRoomId, int size) {
@@ -193,6 +189,34 @@ public class RoomService {
       roomRepository.save(room);
     }
     return room.getCurPeople();
+  }
+
+  public void fileUpload(UploadFile uploadFile){
+    UploadFile saveImage = uploadFileRepository.save(uploadFile);
+  }
+
+  public void setRoomStatus(Long roomId){
+    Player player = playerRepository.findFirstByRoomIdAndIsTopicTypeA(roomId, true).orElse(null);
+    redisUtil.setRoomStatusTemplate(String.valueOf(roomId), RoomStatusDto.builder()
+            .curUserId(player.getUser().getId()).hpPointA(100).hpPointB(100).isATurn(true).roomImagePath(null)
+            .startTalkTime(LocalDateTime.now()).build(), 200);
+  }
+
+  public RoomStatusDto getRoomStatus(Long roomId){
+    return redisUtil.getRoomStatus(String.valueOf(roomId));
+  }
+
+  public void deleteRoomStatus(Long roomId){
+    redisUtil.setRoomStatusTemplate(String.valueOf(roomId), null, 1);
+  }
+
+  public void updateRoomImage(RoomImageUpdateDto roomImageUpdateDto){
+    RoomStatusDto roomStatus = redisUtil.getRoomStatus(String.valueOf(roomImageUpdateDto.getRoomId()));
+    redisUtil.setRoomStatusTemplate(String.valueOf(roomImageUpdateDto.getRoomId()), RoomStatusDto.builder()
+            .curUserId(roomStatus.getCurUserId()).hpPointA(roomStatus.getHpPointA()).hpPointB(roomStatus.getHpPointB())
+            .isATurn(roomStatus.isATurn()).roomImagePath(roomImageUpdateDto.getRoomImagePath())
+            .startTalkTime(roomStatus.getStartTalkTime()).build(), 200);
+
   }
 
 }

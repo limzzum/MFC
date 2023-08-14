@@ -1,16 +1,17 @@
 package com.ssafy.backend.dto.request;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class PenaltyRequestDto {
+@Builder
+public class PlayerPlusTimeDto {
     private Long roomId;
-    private Long userId;
-    private boolean isATopic;
-    private Long penaltyCodeId;
-
+    private Long curUserId;
+    private boolean isATurn;
+    private long plusTime;
 }

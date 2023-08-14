@@ -13,6 +13,8 @@ public class PlayerItemInfoDto {
 
     private Long userId;
     private String nickname;
-    private boolean isTopicA;
+    private boolean isATopic;
     private Long itemCodeId;
+    private boolean isUsed;
+    private String message;
 }

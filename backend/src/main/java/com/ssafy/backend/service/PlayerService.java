@@ -2,15 +2,20 @@ package com.ssafy.backend.service;
 
 import com.ssafy.backend.dto.request.*;
 import com.ssafy.backend.dto.socket.request.*;
+import com.ssafy.backend.dto.socket.response.PlayerStatusDto;
+import com.ssafy.backend.dto.socket.response.RoomStatusDto;
 import com.ssafy.backend.entity.*;
 import com.ssafy.backend.repository.PlayerRepository;
 import com.ssafy.backend.repository.RoleCodeRepository;
 import com.ssafy.backend.repository.RoomRepository;
+import com.ssafy.backend.util.RedisUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -21,7 +26,12 @@ public class PlayerService {
     private final RoomRepository roomRepository;
     private final ParticipantService participantService;
     private final RoleCodeRepository roleCodeRepository;
+    private final RedisUtil redisUtil;
 
+    public Player getPlayer(Long roomId, Long userId){
+        Player player = playerRepository.findTopByRoomIdAndUserId(roomId, userId).orElse(null);
+        return player;
+    }
 
     public Long regist(PlayerRegistDto playerRegistDto){
         User user = new User(playerRegistDto.getUserId());
@@ -80,6 +90,66 @@ public class PlayerService {
         }
         return false;
     }
+    public boolean isAllReady(Long roomId){
+        List<Player> allByRoomId = playerRepository.findAllByRoomId(roomId);
+        for (Player player : allByRoomId) {
+            if(!player.isReady()){
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public PlayerStatusDto updatePlayerHp(PlayerPlusHpDto playerPlusHpDto){
+        RoomStatusDto roomStatus = redisUtil.getRoomStatus(String.valueOf(playerPlusHpDto.getRoomId()));
+        Room room = roomRepository.findById(playerPlusHpDto.getRoomId()).orElse(null);
+        boolean aTopic = playerPlusHpDto.isATopic();
+        int hpPointA = roomStatus.getHpPointA();
+        int hpPointB = roomStatus.getHpPointB();
+
+        PlayerStatusDto playerStatusDto;
+        if(aTopic){
+            hpPointA += playerPlusHpDto.getHp();
+            playerStatusDto = PlayerStatusDto.builder().userId(playerPlusHpDto.getUserId())
+                    .isATopic(playerPlusHpDto.isATopic()).hp(hpPointA).build();
+        }else{
+            hpPointB += playerPlusHpDto.getHp();
+            playerStatusDto = PlayerStatusDto.builder().userId(playerPlusHpDto.getUserId())
+                    .isATopic(playerPlusHpDto.isATopic()).hp(hpPointB).build();
+        }
+        redisUtil.setRoomStatusTemplate(String.valueOf(playerPlusHpDto.getRoomId()), RoomStatusDto.builder()
+                .curUserId(roomStatus.getCurUserId()).hpPointA(hpPointA).hpPointB(hpPointB).isATurn(roomStatus.isATurn()).roomImagePath(roomStatus.getRoomImagePath())
+                .startTalkTime(roomStatus.getStartTalkTime()).build(), room.getTotalTime());
+        return playerStatusDto;
+    }
+
+    public int getPlayerHp(Long roomId, boolean isATpoic ){
+        RoomStatusDto roomStatus = redisUtil.getRoomStatus(String.valueOf(roomId));
+        if(isATpoic){
+            return roomStatus.getHpPointA();
+        }
+        return roomStatus.getHpPointB();
+    }
+
+    public void changePlayerTurn(PlayerTurnChangeDto playerTurnChangeDto){
+        RoomStatusDto roomStatus = redisUtil.getRoomStatus(String.valueOf(playerTurnChangeDto.getRoomId()));
+        redisUtil.setRoomStatusTemplate(String.valueOf(playerTurnChangeDto.getRoomId()), RoomStatusDto.builder()
+                .curUserId(roomStatus.getCurUserId()).hpPointA(roomStatus.getHpPointA()).hpPointB(roomStatus.getHpPointB())
+                .isATurn(playerTurnChangeDto.isATurn()).roomImagePath(roomStatus.getRoomImagePath())
+                .startTalkTime(LocalDateTime.now()).build(), 200);
+    }
+
+    public void plusPlayerTalkTime(PlayerPlusTimeDto playerPlusTimeDto){
+        RoomStatusDto roomStatus = redisUtil.getRoomStatus(String.valueOf(playerPlusTimeDto.getRoomId()));
+        redisUtil.setRoomStatusTemplate(String.valueOf(playerPlusTimeDto.getRoomId()), RoomStatusDto.builder()
+                .curUserId(roomStatus.getCurUserId()).hpPointA(roomStatus.getHpPointA()).hpPointB(roomStatus.getHpPointB())
+                .isATurn(roomStatus.isATurn()).roomImagePath(roomStatus.getRoomImagePath())
+                .startTalkTime(roomStatus.getStartTalkTime().minusMinutes(playerPlusTimeDto.getPlusTime())).build(), 200);
+    }
+
+
+
+
 
 
 

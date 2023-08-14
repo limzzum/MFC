@@ -1,6 +1,7 @@
 package com.ssafy.backend.util;
 
 import com.ssafy.backend.dto.request.*;
+import com.ssafy.backend.dto.socket.response.RoomStatusDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -18,6 +19,7 @@ public class RedisUtil {
     private final RedisTemplate<String, Object> emailTokenTemplate;
     private final RedisTemplate<String, Object> registUserTemplate;
     private final RedisTemplate<String, Object> emailNumTemplate;
+    private final RedisTemplate<String, Object> roomStatusTemplate;
 
 
     @Value("${jwt.expmin}")
@@ -90,4 +92,15 @@ public class RedisUtil {
         emailNumTemplate.setValueSerializer(new Jackson2JsonRedisSerializer<>(int.class));
         return (int) emailNumTemplate.opsForValue().get(key);
     }
+
+    public void setRoomStatusTemplate(String key, Object o, int minutes) {
+        roomStatusTemplate.setValueSerializer(new Jackson2JsonRedisSerializer(o.getClass()));
+        roomStatusTemplate.opsForValue().set(key, o, minutes, TimeUnit.MINUTES);
+    }
+
+    public RoomStatusDto getRoomStatus(String key) {
+        roomStatusTemplate.setValueSerializer(new Jackson2JsonRedisSerializer<>(RoomStatusDto.class));
+        return (RoomStatusDto) roomStatusTemplate.opsForValue().get(key);
+    }
+
 }
