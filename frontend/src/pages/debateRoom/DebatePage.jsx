@@ -316,30 +316,82 @@ function DebatePage() {
 
   // recoil 상태를 사용하는 훅
   const [status, setStatus] = useStatus();
-  const [role, setRole] = useRole();
-  const [viewers, setViewers] = useState();
-  const [players, setPlayers] = useState();
+  const [role, setRole] = useRole ();
+  // const [viewers, setViewers] = useState();
+  // const [players, setPlayers] = useState();
 
   // 참가자 목록 가져오기 수정 필요
+  
   useEffect( () => {
     const getParticipants = async () => {
       try {
         const response = await axios.get(`${APPLICATION_SERVER_URL}api/viewer/list/${roomId}`);
         const data = response.data;
-        console.log('data: ', data);
-        setViewers(data.data.viewers);
-        setPlayers(data.data.players);
+        // const dataViewers = data.data.viewers;
+        const dataPlayers = data.data.players;
+        console.log('data: ', data.data);
+        // console.log("viewers: ", dataViewers);
+        // console.log("players: ", dataPlayers);
+        // setViewers(dataViewers);
+        // setPlayers(dataPlayers);
+        
 
-        console.log('viewers: ', viewers[0]);
-        console.log('players: ', players);
+        for( const player of dataPlayers || []){
+          console.log(player,"asdf");
+          for( const subscriber of subscribers || []){
+            const clientData = JSON.parse(subscriber.stream.connection.data).clientData;
+            console.log("clientData: ", clientData);
+            console.log(`문자열 테스트: ${clientData}, ${player.viewerDto.nickName}`, clientData === player.viewerDto.nickName)
+            if(clientData === player.viewerDto.nickName){
+              console.log("겹치는 닉네임: ", clientData);
+              if(player.topicTypeA){
+                setPlayerA(subscriber);
+                setPlayerStatus((prev) => [true, prev[1]]);
+                console.log(playerA,"PlayerA");
+              } else {
+                setPlayerB(subscriber.stream);
+                setPlayerStatus((prev) => [prev[0], true]);
+                console.log(playerB,"PlayerB");
+              }
+            }
+          }
+        }
+  
+        // console.log('viewers2222: ', viewers);
+        // console.log('players: ', players);
       } catch (error) {
         console.log(error);
       }
     };
-    getParticipants();
-    // eslint-disable-next-line
-  }, []);
 
+    // const settingPlayer = () => {
+    //   for( const player of players || []){
+    //     for( const subscriber of subscribers || []){
+    //       const clientData = JSON.parse(subscriber.stream.connection.data).clientData;
+    //       if(clientData === player.viewerDto.nickName){
+    //         if(player.isTopicA){
+    //           setPlayerA(subscriber.stream);
+    //           setPlayerStatus((prev) => [true, prev[1]]);
+    //           console.log(playerA,"PlayerA");
+    //         } else {
+    //           setPlayerB(subscriber.stream);
+    //           setPlayerStatus((prev) => [prev[0], true]);
+    //           console.log(playerB,"PlayerB");
+    //         }
+    //       }
+    //     }
+    //   }
+    // }
+
+    getParticipants();
+    
+    // console.log(`1111111111111viewers: ${viewers}`);
+    // console.log(`222222222222222222222players: ${players}`);
+    // settingPlayer();
+
+    // eslint-disable-next-line
+  }, [subscribers]);
+  
   const handleStatusChange = (newStatus) => {
     setStatus(newStatus);
   };
