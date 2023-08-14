@@ -41,7 +41,7 @@ function RoomInfo({
         const seconds = Math.floor(timeDifferenceInMillis / 1000);
         const minutes = Math.floor(seconds / 60);
         if (minutes >= debateRoomInfo.totalTime) {
-            onStatusChange('done');
+            // onStatusChange('done');
           } else {
             // const hours = Math.floor(minutes / 60); 
             // const remainingSeconds = seconds % 60;

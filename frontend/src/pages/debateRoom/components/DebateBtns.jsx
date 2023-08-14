@@ -41,12 +41,13 @@ function DebateBtns({
   setPlayerA,
   setPlayerB,
   setResult,
-}) {
-  const [showModal, setShowModal] = useState(false);
-  const [selectedTopic, setSelectedTopics] = useState([]);
-  const [isVotingEnabled, setVotingEnabled] = useState(true);
-  const votingCooldown = debateRoomInfo.talkTime * 120;
-  const [remainingTime, setRemainingTime] = useState(votingCooldown);
+  onStatusChange
+  }) {
+    const [showModal, setShowModal] = useState(false);
+    const [selectedTopic, setSelectedTopics] = useState([]);
+    const [isVotingEnabled, setVotingEnabled] = useState(true);
+    const votingCooldown = debateRoomInfo.talkTime * 120;
+    const [remainingTime, setRemainingTime] = useState(votingCooldown);
 
   const [isVideoOn, setIsVideoOn] = useState(true);
   const [isAudioOn, setIsAudioOn] = useState(true);
@@ -55,7 +56,7 @@ function DebateBtns({
   const stompClient = useRef(null); // useRef를 사용하여 stompClient 선언
 
   useEffect(() => {
-    // const socket = new SockJS("http://localhost:8081/mfc");
+    // const socket = new SockJS("");
     const socket = new SockJS("https://goldenteam.site/mfc");
     stompClient.current = Stomp.over(socket);
     console.log("소켓 연결 완료");
@@ -125,7 +126,6 @@ function DebateBtns({
     // const sock = new SockJS("http://localhost:8081/mfc");
     const sock = new SockJS("https://goldenteam.site/mfc");
     const stompClient = Stomp.over(sock);
-
     stompClient.connect({}, function () {
       console.log("WebSocket 연결 성공");
     });
@@ -174,30 +174,23 @@ function DebateBtns({
     stompRef.current = stomp;
 
     stomp.connect({}, function () {
-      // 이 부분 조금 수상 재참조하고, 구독하는 부분
-      stomp.subscribe(`/from/room/surrender/${roomId}`, (message) => {
-        const modalData = JSON.parse(message.body);
-        console.log(modalData);
-        setResult(modalData);
-      });
+        // 이 부분 조금 수상 재참조하고, 구독하는 부분
+        stomp.subscribe(`/from/room/surrender/${roomId}`, (message) => {
+            const modalData = JSON.parse(message.body)
+            setResult(modalData)
+            onStatusChange("waiting")
+        });
     });
-
-    return () => {
-      if (stompRef.current) {
-        stompRef.current.disconnect();
-      }
-    };
-    // eslint-disable-next-line
+  // eslint-disable-next-line
   }, [roomId, userId]);
 
   const handleSurrenderClick = () => {
-    console.log(userId);
-    const stompMessage = { userId: userId, roomId: parseInt(roomId) };
-    stompRef.current.send(
-      `/to/room/surrender/${roomId}/${userId}`,
-      JSON.stringify(stompMessage)
-    );
-  };
+    console.log(userId)
+    const stompMessage = { userId : userId, roomId : parseInt(roomId) }
+    stompRef.current.send(`/to/room/surrender/${roomId}/${userId}`, JSON.stringify(stompMessage));
+    
+  }
+
 
   //==========================================================================
   const handleRoleChangeToSpectator = (stream) => {
