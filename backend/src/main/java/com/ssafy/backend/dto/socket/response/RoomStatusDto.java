@@ -12,7 +12,6 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Builder
 public class RoomStatusDto {
-    private LocalDateTime DebateStartTime;
     private Long curUserId;
     private boolean isATurn;
     private LocalDateTime startTalkTime;
