@@ -69,42 +69,49 @@ function TextChatting({ roomId }) {
 
   return (
     <>
-      <div className={style.ChatArea}>
-        <div className={style.chatMessages} ref={chatAreaRef}>
-          {chatMessages.map((message, index) => (
-            <div
-              key={index}
-              className={`${style.messageContainer} ${
-                message.sender === userInfo.nickname
-                  ? style.userMessage
-                  : style.otherMessage
-              }`}
-            >
-              <p className={style.sender}>
-                {message.sender === userInfo.nickname ? "나" : message.sender}
-              </p>
-              <div className={style.messageBubble}>{message.text}</div>
-            </div>
-          ))}
+      <div>
+        <div className={style.ChatArea}>
+          <div className={style.chatMessages} ref={chatAreaRef}>
+            {chatMessages.map((message, index) => (
+              <div
+                key={index}
+                className={`${style.messageContainer} ${
+                  message.sender === userInfo.nickname
+                    ? style.userMessage
+                    : style.otherMessage
+                }`}
+              >
+                <p className={style.sender}>
+                  {message.sender === userInfo.nickname ? "나" : message.sender}
+                </p>
+                <div className={style.messageBubble}>{message.text}</div>
+              </div>
+            ))}
+          </div>
         </div>
-      </div>
-      <div className={style.chatInput}>
-        <InputGroup>
-          <Form.Control
-            placeholder="메시지를 입력하세요"
-            value={inputText}
-            onChange={handleInputChange}
-            className={style.inputChat}
-            onKeyPress={handleKeyPress}
-            style={{
-              borderColor: "var(--blue-500)",
-              fontSize: "16px",
-            }}
-          />
-          <button className={`${style.button} btn`} onClick={handleSendMessage}>
-            전송
-          </button>
-        </InputGroup>
+        <div className={style.chatInput}>
+          <InputGroup>
+            <Form.Control
+              placeholder="메시지를 입력하세요"
+              value={inputText}
+              onChange={handleInputChange}
+              className={style.inputChat}
+              onKeyPress={handleKeyPress}
+              style={{
+                borderColor: "var(--blue-500)",
+                borderTopLeftRadius: "0px",
+                borderTopRightRadius: "0px",
+                fontSize: "16px",
+              }}
+            />
+            <button
+              className={`${style.inputBtn} btn`}
+              onClick={handleSendMessage}
+            >
+              전송
+            </button>
+          </InputGroup>
+        </div>
       </div>
     </>
   );
