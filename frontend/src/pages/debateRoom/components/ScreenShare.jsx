@@ -10,9 +10,10 @@ function ScreenShare({ status, roomId, role }) {
   const imageInputRef = useRef();
   const stompRef = useRef(null);
 
-  useEffect(() => {
-    var sock = new SockJS("https://goldenteam.site/mfc");
-    var stomp = Stomp.over(sock);
+    useEffect(() => {
+        var sock = new SockJS("https://goldenteam.site/mfc");
+        // var sock = new SockJS("http://localhost:8081/mfc")
+        var stomp = Stomp.over(sock);
 
     stompRef.current = stomp;
 
@@ -77,7 +78,7 @@ function ScreenShare({ status, roomId, role }) {
         {imgFileName ? (
           <div className={style.uploadedContainer}>
             <img
-              src={`https://goldenteam.site/room-files/${imgFileName}`}
+              src={`https://goldenteam.site/profiles/${imgFileName}`}
               alt="Uploaded"
               className={style.uploadedImage}
               style={{ objectFit: "contain" }}

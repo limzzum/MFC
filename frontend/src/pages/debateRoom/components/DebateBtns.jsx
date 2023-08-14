@@ -35,21 +35,22 @@ function DebateBtns({
   playerA, 
   playerB, 
   setPlayerA, 
-  setPlayerB
-}) {
-  const [showModal, setShowModal] = useState(false);
-  const [selectedTopic, setSelectedTopics] = useState([]);
-  const [isVotingEnabled, setVotingEnabled] = useState(true);
-  const votingCooldown = debateRoomInfo.talkTime * 120;
-  const [remainingTime, setRemainingTime] = useState(votingCooldown);
+  setPlayerB,
+  setResult,
+  }) {
+    const [showModal, setShowModal] = useState(false);
+    const [selectedTopic, setSelectedTopics] = useState([]);
+    const [isVotingEnabled, setVotingEnabled] = useState(true);
+    const votingCooldown = debateRoomInfo.talkTime * 120;
+    const [remainingTime, setRemainingTime] = useState(votingCooldown);
 
-  const [isVideoOn, setIsVideoOn] = useState(true);
-  const [isAudioOn, setIsAudioOn] = useState(true);
+    const [isVideoOn, setIsVideoOn] = useState(true);
+    const [isAudioOn, setIsAudioOn] = useState(true);
 
-  //----------------------------------------------------------------------------------------
-  const stompClient = useRef(null);  // useRef를 사용하여 stompClient 선언
+    //----------------------------------------------------------------------------------------
+    const stompClient = useRef(null);  // useRef를 사용하여 stompClient 선언
 
-useEffect(() => {
+  useEffect(() => {
     // const socket = new SockJS("http://localhost:8081/mfc");
     const socket = new SockJS("https://goldenteam.site/mfc");
     stompClient.current = Stomp.over(socket);
@@ -66,28 +67,28 @@ useEffect(() => {
             stompClient.current.disconnect();
         }
     };
-// eslint-disable-next-line
-}, []);
+  // eslint-disable-next-line
+  }, []);
 
-const sendItemRequest = (itemId) => {
-  const requestUrl = "/to/player/item";
-  const requestData = {
-      "roomId": `${roomId}`,
-      // "userId": `${userId}`,
-      "userId": 2,
-      // isTopicA: selectedTopic.includes('A'),
-      isTopicA: selectedTopic.includes('A'),
-      "itemCodeId": itemId,
+  const sendItemRequest = (itemId) => {
+    const requestUrl = "/to/player/item";
+    const requestData = {
+        "roomId": `${roomId}`,
+        // "userId": `${userId}`,
+        "userId": 2,
+        // isTopicA: selectedTopic.includes('A'),
+        isTopicA: selectedTopic.includes('A'),
+        "itemCodeId": itemId,
+    };
+    console.log('전송 데이터:', requestData);
+
+    if (stompClient.current && stompClient.current.connected) {
+      stompClient.current.send(requestUrl, JSON.stringify(requestData));
+      console.log('전송성공');
+  } else {
+      console.error("소켓 연결이 아직 활성화되지 않았습니다.");
+  }
   };
-  console.log('전송 데이터:', requestData);
-
-  if (stompClient.current && stompClient.current.connected) {
-    stompClient.current.send(requestUrl, JSON.stringify(requestData));
-    console.log('전송성공');
-} else {
-    console.error("소켓 연결이 아직 활성화되지 않았습니다.");
-}
-};
 //----------------------------------------------------------------------------------------
   const handleVote = async () => {
     // 투표 로직 구현
@@ -156,7 +157,43 @@ const sendItemRequest = (itemId) => {
     publisher.publishAudio(!isAudioOn);
   }
 
+  //--------------------------------------------------------------------------
+  // 항복버튼 누르면?
+  const stompRef = useRef(null);
 
+  useEffect(() => {
+    // const sock = new SockJS("http://localhost:8081/mfc");
+    const sock = new SockJS("https://goldenteam.site/mfc");
+
+    const stomp = Stomp.over(sock);
+
+    stompRef.current = stomp;
+    
+    stomp.connect({}, function () {
+        // 이 부분 조금 수상 재참조하고, 구독하는 부분
+        stomp.subscribe(`/from/room/surrender/${roomId}`, (message) => {
+            const modalData = JSON.parse(message.body)
+            console.log(modalData)
+            setResult(modalData)
+        });
+    });
+    
+    return () => {
+        if (stompRef.current) {
+            stompRef.current.disconnect();
+        }
+    };
+// eslint-disable-next-line
+}, [roomId, userId]);
+
+  const handleSurrenderClick = () => {
+    console.log(userId)
+    const stompMessage = { userId : userId, roomId : parseInt(roomId) }
+    stompRef.current.send(`/to/room/surrender/${roomId}/${userId}`, JSON.stringify(stompMessage));
+  }
+
+
+  //==========================================================================
   const handleRoleChangeToSpectator = (stream) => {
     onRoleChange("spectator");
     setPlayerStatus([false, false]);
@@ -174,10 +211,14 @@ const sendItemRequest = (itemId) => {
     <div className={style.Btns}>
       <Row>
         <Col xs={{ span: 9 }}>
-          {role === "participant" && status === "ongoing" && (
+          {
+          // role === "participant" && 
+          status === "ongoing" && (
             <>
               <Button variant="secondary">연장하기</Button>
-              <Button variant="danger">항복하기</Button>
+              <Button variant="danger" onClick={handleSurrenderClick}>
+                항복하기
+              </Button>
             </>
           )}
         </Col>
