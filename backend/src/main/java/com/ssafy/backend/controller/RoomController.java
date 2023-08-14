@@ -86,7 +86,7 @@ public class RoomController {
         if(image.isEmpty()){
             return ResponseEntity.ok(new Message(HttpStatus.OK, "사진이 선택되지 않았습니다", null));
         }
-        UploadFile uploadFile = fileStore.storeRoomFile(image);
+        UploadFile uploadFile = fileStore.storeFile(image);
         return ResponseEntity.ok(new Message(HttpStatus.OK, "파일 업로드 성공", uploadFile.getFilePath()));
     }
 }
