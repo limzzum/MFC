@@ -12,8 +12,8 @@ function Participate({ roomId, userId, status, role, onRoleChange, playerStatus,
     console.log("userId", userId);
     console.log("roomId", roomId);
     useEffect(() => {
-        var sock = new SockJS("http://localhost:8081/mfc");
-        // var sock = new SockJS("https://goldenteam.site/mfc");
+        // var sock = new SockJS("http://localhost:8081/mfc");
+        var sock = new SockJS("https://goldenteam.site/mfc");
         var stomp = Stomp.over(sock);
         stomp.connect({}, function () {
             console.log("요청이 가니??___________________________");
@@ -39,8 +39,8 @@ function Participate({ roomId, userId, status, role, onRoleChange, playerStatus,
                 JSON.stringify({
                     roomId: roomId,
                     userId: userId,
-                    isATopic : Boolean(isTopicA),
-                    isReady: Boolean(true),
+                    isATopic : isTopicA,
+                    isReady: false,
                 })
             );
         }

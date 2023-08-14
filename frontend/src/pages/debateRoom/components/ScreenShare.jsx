@@ -11,8 +11,8 @@ function ScreenShare({ status, roomId, role }) {
     const stompRef = useRef(null);
 
     useEffect(() => {
-        // var sock = new SockJS("https://goldenteam.site/mfc");
-        var sock = new SockJS("http://localhost:8081/mfc");
+        var sock = new SockJS("https://goldenteam.site/mfc");
+        // var sock = new SockJS("http://localhost:8081/mfc");
         var stomp = Stomp.over(sock);
 
         stompRef.current = stomp;
