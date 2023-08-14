@@ -42,7 +42,24 @@ function DebatePage() {
   // 참가자 준비여부
   const [userReady, setUserReady] = useState(false);
   const [isModifyModalOpen, setIsModifyModalOpen] = useState(false);
-
+  const [result, setResult] = useState({data: {
+    winner: "user1",
+    winnerImg: "",
+    a: {
+      vote: 0,
+      hp: 0,
+      coin: 0,
+      exp: 0,
+    },
+    b: {
+      vote: 0,
+      hp: 0,
+      coin: 0,
+      exp: 0,
+    },
+    isSurrender: false,
+    isExit: false,
+  },})
   // 토론방 수정 웹소켓 코드
   const modifyStompRef = useRef(null);
   useEffect(() => {
@@ -279,30 +296,30 @@ function DebatePage() {
   console.log("debateRoomInfo: ", debateRoomInfo);
   console.log("voteResult: ", voteResult);
 
-  const result = {
-    status: "OK",
-    message: "관전자에게 토론 결과 보내기 성공",
-    data: {
-      winner: "user1",
-      winnerImg: "",
-      a: {
-        vote: 3,
-        hp: 85,
-        coin: 302,
-        exp: 55,
-      },
-      b: {
-        vote: 7,
-        hp: 55,
-        coin: 200,
-        exp: 96,
-      },
-      isSurrender: false,
-      isExit: false,
-    },
-  };
+  // const result = {
+  //   status: "OK",
+  //   message: "관전자에게 토론 결과 보내기 성공",
+  //   data: {
+  //     winner: "user1",
+  //     winnerImg: "",
+  //     a: {
+  //       vote: 3,
+  //       hp: 85,
+  //       coin: 302,
+  //       exp: 55,
+  //     },
+  //     b: {
+  //       vote: 7,
+  //       hp: 55,
+  //       coin: 200,
+  //       exp: 96,
+  //     },
+  //     isSurrender: false,
+  //     isExit: false,
+  //   },
+  // };
 
-  const totalVote = result.data.a.vote + result.data.b.vote;
+  // const totalVote = result.data.a.vote + result.data.b.vote;
 
   // recoil 상태를 사용하는 훅
   const [status, setStatus] = useStatus();
@@ -424,6 +441,7 @@ function DebatePage() {
               setPlayerB={setPlayerB}
               roomId={roomId}
               userId = {userInfo.id}
+              setResult={setResult}
               // isTopicA={}
             />
           </Row>
@@ -466,13 +484,13 @@ function DebatePage() {
                 <ProgressBar
                   variant="success"
                   label={result.data.a.vote}
-                  now={(result.data.a.vote / totalVote) * 100}
+                  now={(result.data.a.vote / (result.data.a.vote + result.data.b.vote)) * 100}
                   key={1}
                 />
                 <ProgressBar
                   variant="danger"
                   label={result.data.b.vote}
-                  now={(result.data.b.vote / totalVote) * 100}
+                  now={(result.data.b.vote / (result.data.a.vote + result.data.b.vote)) * 100}
                   key={2}
                 />
               </ProgressBar>
