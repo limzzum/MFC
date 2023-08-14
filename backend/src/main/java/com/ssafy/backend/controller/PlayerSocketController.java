@@ -27,9 +27,19 @@ public class PlayerSocketController {
     public void setPlayer(PlayerRequestDto playerDto) {
         Long roomId = playerDto.getRoomId();
         User user = userService.findById(playerDto.getUserId());
-        playerService.regist(PlayerRegistDto.builder().roomId(roomId).userId(user.getId()).isATopic(playerDto.isATopic()).build());
-        PlayerInfoDto playerInfoDto = PlayerInfoDto.builder().userId(user.getId()).nickname(user.getNickname()).profile(user.getProfile())
-                        .colorItem(user.getColorItem()).isReady(false).isTopicA(playerDto.isATopic()).isAllReady(false).build();
+        playerService.regist(PlayerRegistDto.builder()
+                .roomId(roomId)
+                .userId(user.getId())
+                .isATopic(playerDto.isATopic())
+                .build());
+        PlayerInfoDto playerInfoDto = PlayerInfoDto.builder()
+                .userId(user.getId())
+                .nickname(user.getNickname())
+                .profile(user.getProfile())
+                .colorItem(user.getColorItem())
+                .isReady(false)
+                .isTopicA(playerDto.isATopic())
+                .isAllReady(false).build();
         messagingTemplate.convertAndSend("/from/player/" + roomId, playerInfoDto);
     }
 
