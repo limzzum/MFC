@@ -67,7 +67,7 @@ function RoomInfo({
 
   return (
     <>
-      <Row className={style.roomInfo}>
+      <Row className={`${style.roomInfo} m-0`}>
         <Col id="option1" className={`${style.infoText} ${style.opinion1}`}>
           <span>{debateRoomInfo.atopic}</span>
         </Col>
