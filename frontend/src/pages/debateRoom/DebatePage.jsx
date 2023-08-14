@@ -373,30 +373,56 @@ function DebatePage() {
           </Row>
           <Row className={` m-0 p-0 my-3 `}>
             <Col xs={9} className={` m-0 p-0`}>
-              <RoomInfo
-                status={status}
-                role={role}
-                playerStatus={playerStatus}
-                onStatusChange={handleStatusChange}
-                userReady={userReady}
-                setUserReady={setUserReady}
-                onRoleChange={handleRoleChange}
-                debateRoomInfo={debateRoomInfo.data}
-              />
-              <Participate
-                status={status}
-                role={role}
-                onRoleChange={handleRoleChange}
-                playerStatus={playerStatus}
-                setPlayerStatus={setPlayerStatus}
-                handlePlayerAVideoStream={handlePlayerAVideoStream}
-                handlePlayerBVideoStream={handlePlayerBVideoStream}
-                publisher={publisher}
-                playerA={playerA}
-                playerB={playerB}
-                setPlayerA={setPlayerA}
-                setPlayerB={setPlayerB}
-              />
+              <Row>
+                <RoomInfo
+                  status={status}
+                  role={role}
+                  playerStatus={playerStatus}
+                  onStatusChange={handleStatusChange}
+                  userReady={userReady}
+                  setUserReady={setUserReady}
+                  onRoleChange={handleRoleChange}
+                  debateRoomInfo={debateRoomInfo.data}
+                />
+              </Row>
+              <Row>
+                <Participate
+                  status={status}
+                  role={role}
+                  onRoleChange={handleRoleChange}
+                  playerStatus={playerStatus}
+                  setPlayerStatus={setPlayerStatus}
+                  handlePlayerAVideoStream={handlePlayerAVideoStream}
+                  handlePlayerBVideoStream={handlePlayerBVideoStream}
+                  publisher={publisher}
+                  playerA={playerA}
+                  playerB={playerB}
+                  setPlayerA={setPlayerA}
+                  setPlayerB={setPlayerB}
+                />
+              </Row>
+              <Row className={`m-0 p-0`}>
+                <DebateBtns
+                  status={status}
+                  role={role}
+                  onStatusChange={handleStatusChange}
+                  onRoleChange={handleRoleChange}
+                  setPlayerStatus={setPlayerStatus}
+                  setUserReady={setUserReady}
+                  debateRoomInfo={debateRoomInfo.data}
+                  voteResult={voteResult.data}
+                  handlePlayerAVideoStream={handlePlayerAVideoStream}
+                  handlePlayerBVideoStream={handlePlayerBVideoStream}
+                  publisher={publisher}
+                  playerA={playerA}
+                  playerB={playerB}
+                  setPlayerA={setPlayerA}
+                  setPlayerB={setPlayerB}
+                  roomId={roomId}
+                  userId={userInfo.Id}
+                  // isTopicA={}
+                />
+              </Row>
             </Col>
             <Col xs={3}>
               <Stack gap={1}>
@@ -406,34 +432,11 @@ function DebatePage() {
             </Col>
           </Row>
           <Row className={`m-0 p-0`}>
-            <DebateBtns
-              status={status}
-              role={role}
-              onStatusChange={handleStatusChange}
-              onRoleChange={handleRoleChange}
-              setPlayerStatus={setPlayerStatus}
-              setUserReady={setUserReady}
-              debateRoomInfo={debateRoomInfo.data}
-              voteResult={voteResult.data}
-              handlePlayerAVideoStream={handlePlayerAVideoStream}
-              handlePlayerBVideoStream={handlePlayerBVideoStream}
-              publisher={publisher}
-              playerA={playerA}
-              playerB={playerB}
-              setPlayerA={setPlayerA}
-              setPlayerB={setPlayerB}
-              roomId={roomId}
-              userId={userInfo.Id}
-              // isTopicA={}
-            />
-          </Row>
-          <Row className={`m-0 p-0`}>
             <Spectator
               voteResult={voteResult.data}
               filteredSubscribers={filteredSubscribers}
             />
           </Row>
-
           {isModifyModalOpen && (
             <ModifyRoomModal
               debateRoomInfo={debateRoomInfo.data}
