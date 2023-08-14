@@ -1,9 +1,9 @@
 package com.ssafy.backend.service;
 
+import com.ssafy.backend.dto.request.RoomImageUpdateDto;
 import com.ssafy.backend.dto.request.RoomInfoRuquestDto;
 import com.ssafy.backend.dto.response.RoomInfoResponseDto;
 import com.ssafy.backend.dto.response.RoomListDto;
-import com.ssafy.backend.dto.socket.response.PlayerStatusDto;
 import com.ssafy.backend.dto.socket.response.RoomStatusDto;
 import com.ssafy.backend.entity.*;
 import com.ssafy.backend.repository.*;
@@ -11,7 +11,6 @@ import com.ssafy.backend.repository.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 import javax.transaction.Transactional;
 
@@ -211,5 +210,13 @@ public class RoomService {
     redisUtil.setRoomStatusTemplate(String.valueOf(roomId), null, 1);
   }
 
+  public void updateRoomImage(RoomImageUpdateDto roomImageUpdateDto){
+    RoomStatusDto roomStatus = redisUtil.getRoomStatus(String.valueOf(roomImageUpdateDto.getRoomId()));
+    redisUtil.setRoomStatusTemplate(String.valueOf(roomImageUpdateDto.getRoomId()), RoomStatusDto.builder()
+            .curUserId(roomStatus.getCurUserId()).hpPointA(roomStatus.getHpPointA()).hpPointB(roomStatus.getHpPointB())
+            .isATurn(roomStatus.isATurn()).roomImagePath(roomImageUpdateDto.getRoomImagePath())
+            .startTalkTime(roomStatus.getStartTalkTime()).build(), 200);
+
+  }
 
 }
