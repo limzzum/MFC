@@ -1,6 +1,7 @@
 package com.ssafy.backend.dto.response;
 
 
+import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -18,4 +19,5 @@ public class ViewerDto {
   private String nickName;
   private String nickNameColorCode;
   private boolean isHost;
+  private LocalDateTime enterTime;
 }

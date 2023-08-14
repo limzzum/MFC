@@ -53,7 +53,7 @@ function Participate({
   };
 
   return (
-    <div className={style.testt}>
+    <div>
       <Row className={`m-0 p-0`}>
         <Col className={`m-0 p-0`}>
           <div className={`${style.Participant} mx-auto`}>
@@ -78,7 +78,10 @@ function Participate({
               />
             )}
           </div>
-          <span className={`mx-auto`}>남은 연장 횟수: </span>
+          {/* <span className={`mx-auto`}>남은 연장 횟수: </span> */}
+          {/* <div className={`${style.rightCount} m-0 p-0 mx-auto`}>
+            <span>남은 연장 횟수: </span>
+          </div> */}
         </Col>
         <Col xs={1} className={`m-0 p-0`}></Col>
         <Col className={`m-0 p-0`}>
@@ -104,9 +107,9 @@ function Participate({
               />
             )}
           </div>
-          <div className={`${style.rightCount} m-0 p-0 mx-auto`}>
+          {/* <div className={`${style.rightCount} m-0 p-0 mx-auto`}>
             <span>남은 연장 횟수: </span>
-          </div>
+          </div> */}
         </Col>
       </Row>
     </div>

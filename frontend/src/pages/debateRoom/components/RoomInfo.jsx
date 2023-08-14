@@ -13,6 +13,8 @@ function RoomInfo({
   debateRoomInfo,
   userReady,
   setUserReady,
+  viewers, 
+  userInfo
 }) {
   const user1HP = 70;
   const user2HP = 100;
@@ -32,14 +34,23 @@ function RoomInfo({
   useEffect(() => {
     if (status === "ongoing") {
       // 총 토론시간 타이머
-      const totalTimer = setInterval(() => {
-        if (totalTime > 0) {
-          setTotalTime((prevTime) => prevTime - 1);
-        } else {
-          onStatusChange("done");
-        }
-      }, 1000);
-
+      const totalTimer = setInterval( () => {
+        const currentTime = new Date();
+        const startTime = new Date(debateRoomInfo.startTime);
+        const timeDifferenceInMillis = currentTime - startTime;
+        const seconds = Math.floor(timeDifferenceInMillis / 1000);
+        const minutes = Math.floor(seconds / 60);
+        if (minutes >= debateRoomInfo.totalTime) {
+            onStatusChange('done');
+          } else {
+            // const hours = Math.floor(minutes / 60); 
+            // const remainingSeconds = seconds % 60;
+            // const remainingMinutes = minutes % 60;
+          
+            // console.log(`Remaining Time: ${hours} hours, ${remainingMinutes} minutes, ${remainingSeconds} seconds`);'
+            setTotalTime((debateRoomInfo.totalTime*60)-seconds);
+          }
+        }, 1000);
       // 1회 발언시간 타이머
       const speechTimer = setInterval(() => {
         if (speechTime > 0 && totalTime > 0) {
@@ -56,7 +67,7 @@ function RoomInfo({
         clearInterval(speechTimer);
       };
     }
-  }, [status, onStatusChange, totalTime, speechTime, talk]);
+  }, [status, onStatusChange, totalTime, speechTime, talk, debateRoomInfo.startTime, debateRoomInfo.totalTime]);
 
   //두 참가자가 모두 준비가 되면 토론 시작
   useEffect(() => {

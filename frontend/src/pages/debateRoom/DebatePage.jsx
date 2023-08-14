@@ -404,6 +404,8 @@ function DebatePage() {
                   setUserReady={setUserReady}
                   onRoleChange={handleRoleChange}
                   debateRoomInfo={debateRoomInfo.data}
+                  viewers={viewers}
+                  userInfo={userInfo}
                 />
               </Row>
               <Row>
