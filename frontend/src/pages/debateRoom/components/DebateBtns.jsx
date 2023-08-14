@@ -20,6 +20,10 @@ import {
 import style from "../debatePage.module.css";
 import SockJS from "sockjs-client";
 import Stomp from "webstomp-client";
+import { FiCameraOff, FiCamera } from "react-icons/fi";
+import { AiOutlineAudioMuted, AiOutlineAudio } from "react-icons/ai";
+import { FaUsers, FaFlag } from "react-icons/fa";
+import { MdMoreTime } from "react-icons/md";
 
 function DebateBtns({
   status,
@@ -28,68 +32,68 @@ function DebateBtns({
   debateRoomInfo,
   setPlayerStatus,
   setUserReady,
-  roomId,      //추가
-  userId,  
-  itemCodeId,  // 추가
-  publisher, 
-  playerA, 
-  playerB, 
-  setPlayerA, 
+  roomId, //추가
+  userId,
+  itemCodeId, // 추가
+  publisher,
+  playerA,
+  playerB,
+  setPlayerA,
   setPlayerB,
   setResult,
-  }) {
-    const [showModal, setShowModal] = useState(false);
-    const [selectedTopic, setSelectedTopics] = useState([]);
-    const [isVotingEnabled, setVotingEnabled] = useState(true);
-    const votingCooldown = debateRoomInfo.talkTime * 120;
-    const [remainingTime, setRemainingTime] = useState(votingCooldown);
+}) {
+  const [showModal, setShowModal] = useState(false);
+  const [selectedTopic, setSelectedTopics] = useState([]);
+  const [isVotingEnabled, setVotingEnabled] = useState(true);
+  const votingCooldown = debateRoomInfo.talkTime * 120;
+  const [remainingTime, setRemainingTime] = useState(votingCooldown);
 
-    const [isVideoOn, setIsVideoOn] = useState(true);
-    const [isAudioOn, setIsAudioOn] = useState(true);
+  const [isVideoOn, setIsVideoOn] = useState(true);
+  const [isAudioOn, setIsAudioOn] = useState(true);
 
-    //----------------------------------------------------------------------------------------
-    const stompClient = useRef(null);  // useRef를 사용하여 stompClient 선언
+  //----------------------------------------------------------------------------------------
+  const stompClient = useRef(null); // useRef를 사용하여 stompClient 선언
 
   useEffect(() => {
     // const socket = new SockJS("http://localhost:8081/mfc");
     const socket = new SockJS("https://goldenteam.site/mfc");
     stompClient.current = Stomp.over(socket);
-    console.log('소켓 연결 완료');
+    console.log("소켓 연결 완료");
     stompClient.current.connect({}, () => {
-        stompClient.current.subscribe(`/from/player/${roomId}`, (response) => {
-            const message = JSON.parse(response.body);
-            console.log("Item response received:", message);
-        });
+      stompClient.current.subscribe(`/from/player/${roomId}`, (response) => {
+        const message = JSON.parse(response.body);
+        console.log("Item response received:", message);
+      });
     });
 
     return () => {
-        if (stompClient.current) {
-            stompClient.current.disconnect();
-        }
+      if (stompClient.current) {
+        stompClient.current.disconnect();
+      }
     };
-  // eslint-disable-next-line
+    // eslint-disable-next-line
   }, []);
 
   const sendItemRequest = (itemId) => {
     const requestUrl = "/to/player/item";
     const requestData = {
-        "roomId": `${roomId}`,
-        // "userId": `${userId}`,
-        "userId": 2,
-        // isTopicA: selectedTopic.includes('A'),
-        isTopicA: selectedTopic.includes('A'),
-        "itemCodeId": itemId,
+      roomId: `${roomId}`,
+      // "userId": `${userId}`,
+      userId: 2,
+      // isTopicA: selectedTopic.includes('A'),
+      isTopicA: selectedTopic.includes("A"),
+      itemCodeId: itemId,
     };
-    console.log('전송 데이터:', requestData);
+    console.log("전송 데이터:", requestData);
 
     if (stompClient.current && stompClient.current.connected) {
       stompClient.current.send(requestUrl, JSON.stringify(requestData));
-      console.log('전송성공');
-  } else {
+      console.log("전송성공");
+    } else {
       console.error("소켓 연결이 아직 활성화되지 않았습니다.");
-  }
+    }
   };
-//----------------------------------------------------------------------------------------
+  //----------------------------------------------------------------------------------------
   const handleVote = async () => {
     // 투표 로직 구현
     console.log(`Selected ${selectedTopic}`);
@@ -97,7 +101,7 @@ function DebateBtns({
     try {
       // rooId랑 userId 보내주셔서 넣어주세요 ( 충돌날까봐 우선 작성안했습니다 )
       // const roomId = 35;
-      // const userId = 326; 
+      // const userId = 326;
       // const base_url = `http://localhost:8081/api/viewer/vote/${roomId}/${userId}`;
       const base_url = `https://goldenteam.site/mfc/viewer/vote/${roomId}/${userId}`;
 
@@ -155,7 +159,7 @@ function DebateBtns({
   const handleAudioToggle = () => {
     setIsAudioOn(!isAudioOn);
     publisher.publishAudio(!isAudioOn);
-  }
+  };
 
   //--------------------------------------------------------------------------
   // 항복버튼 누르면?
@@ -168,167 +172,210 @@ function DebateBtns({
     const stomp = Stomp.over(sock);
 
     stompRef.current = stomp;
-    
+
     stomp.connect({}, function () {
-        // 이 부분 조금 수상 재참조하고, 구독하는 부분
-        stomp.subscribe(`/from/room/surrender/${roomId}`, (message) => {
-            const modalData = JSON.parse(message.body)
-            console.log(modalData)
-            setResult(modalData)
-        });
+      // 이 부분 조금 수상 재참조하고, 구독하는 부분
+      stomp.subscribe(`/from/room/surrender/${roomId}`, (message) => {
+        const modalData = JSON.parse(message.body);
+        console.log(modalData);
+        setResult(modalData);
+      });
     });
-    
+
     return () => {
-        if (stompRef.current) {
-            stompRef.current.disconnect();
-        }
+      if (stompRef.current) {
+        stompRef.current.disconnect();
+      }
     };
-// eslint-disable-next-line
-}, [roomId, userId]);
+    // eslint-disable-next-line
+  }, [roomId, userId]);
 
   const handleSurrenderClick = () => {
-    console.log(userId)
-    const stompMessage = { userId : userId, roomId : parseInt(roomId) }
-    stompRef.current.send(`/to/room/surrender/${roomId}/${userId}`, JSON.stringify(stompMessage));
-  }
-
+    console.log(userId);
+    const stompMessage = { userId: userId, roomId: parseInt(roomId) };
+    stompRef.current.send(
+      `/to/room/surrender/${roomId}/${userId}`,
+      JSON.stringify(stompMessage)
+    );
+  };
 
   //==========================================================================
   const handleRoleChangeToSpectator = (stream) => {
     onRoleChange("spectator");
     setPlayerStatus([false, false]);
     setUserReady(false);
-    if(playerA === stream){
+    if (playerA === stream) {
       setPlayerA(undefined);
     }
-    if(playerB === stream){
+    if (playerB === stream) {
       setPlayerB(undefined);
     }
   };
 
-
   return (
-    <div className={style.Btns}>
+    <div className={style.buttonsBox}>
       <Row>
-        <Col xs={{ span: 9 }}>
+        <Col>
           {
-          // role === "participant" && 
-          status === "ongoing" && (
-            <>
-              <Button variant="secondary">연장하기</Button>
-              <Button variant="danger" onClick={handleSurrenderClick}>
-                항복하기
-              </Button>
-            </>
-          )}
+            // role === "participant" &&
+            status === "ongoing" && (
+              <>
+                <OverlayTrigger
+                  placement="top"
+                  overlay={
+                    <Tooltip>
+                      시간 연장
+                      <hr className={`m-0`} />
+                      발언시간이 10초 연장됩니다 다만, 체력이 감소합니다.
+                    </Tooltip>
+                  }
+                >
+                  <Button variant="secondary">
+                    발언 시간 연장&nbsp;
+                    <span>
+                      <MdMoreTime />
+                    </span>
+                  </Button>
+                </OverlayTrigger>
+                <Button
+                  className={`mx-3`}
+                  variant="danger"
+                  onClick={handleSurrenderClick}
+                >
+                  항복하기&nbsp;
+                  <FaFlag />
+                </Button>
+              </>
+            )
+          }
         </Col>
-        <Col xs={2}>
-          {role === "participant" && status === "waiting" && (
-            <Button
-              variant="outline-primary"
-              onClick={ () => handleRoleChangeToSpectator(publisher)}
+        {role === "participant" && status === "waiting" && (
+          <Col className={style.return}>
+            <button
+              className={`${style.goSpectatorBtn} btn`}
+              onClick={() => handleRoleChangeToSpectator(publisher)}
             >
-              관전자로 돌아가기
-            </Button>
-          )}
-        </Col>
-      </Row>
-      <Row>
-      {/* <Col className={style.items}>
+              <FaUsers />
+              &nbsp; 관전자로 돌아가기
+            </button>
+          </Col>
+        )}
+        {/* <Col className={style.items}>
           {status === "ongoing" && ( */}
-      <Col className={style.items}>
-          {role === "participant" && status === "ongoing" && (
-            <>
+
+        {role === "participant" && status === "ongoing" && (
+          <>
+            <Col className={style.items}>
               <OverlayTrigger
                 placement="top"
                 overlay={
                   <Tooltip>
                     포션
-                    <hr />
+                    <hr className={`m-0`} />
                     체력을 10 회복합니다
                   </Tooltip>
                 }
               >
-                <Button variant="outline-primary" onClick={() => sendItemRequest(9)}>
+                <button
+                  className={`${style.itemButton} btn`}
+                  onClick={() => sendItemRequest(9)}
+                >
                   <FontAwesomeIcon icon={faHeartCirclePlus} size="2x" />
-                </Button>
+                </button>
               </OverlayTrigger>
               <OverlayTrigger
                 placement="top"
                 overlay={
                   <Tooltip>
                     수호천사
-                    <hr />
+                    <hr className={`m-0`} />
                     최후의 일격을 1회 무시합니다
                   </Tooltip>
                 }
               >
-                <Button variant="outline-primary" onClick={sendItemRequest(8)}>
+                <button
+                  className={`${style.itemButton} btn`}
+                  onClick={sendItemRequest(8)}
+                >
                   <FontAwesomeIcon icon={faCross} size="2x" />
-                </Button>
+                </button>
               </OverlayTrigger>
               <OverlayTrigger
                 placement="top"
                 overlay={
                   <Tooltip>
                     시간연장
-                    <hr />
+                    <hr className={`m-0`} />
                     연장횟수와 상관없이 발언 시간을 연장합니다
                   </Tooltip>
                 }
               >
-                <Button variant="outline-primary" onClick={sendItemRequest(10)}>
+                <button
+                  className={`${style.itemButton} btn`}
+                  onClick={sendItemRequest(10)}
+                >
                   <FontAwesomeIcon icon={faUserClock} size="2x" />
-                </Button>
+                </button>
               </OverlayTrigger>
               <OverlayTrigger
                 placement="top"
                 overlay={
                   <Tooltip>
                     상대 음소거
-                    <hr />
+                    <hr className={`m-0`} />
                     상대방 마이크를 10초간 끕니다
                   </Tooltip>
                 }
               >
-                <Button variant="outline-primary" onClick={sendItemRequest(11)}>
+                <button
+                  className={`${style.itemButton} btn`}
+                  onClick={sendItemRequest(11)}
+                >
                   <FontAwesomeIcon icon={faVolumeXmark} size="2x" />
-                </Button>
+                </button>
               </OverlayTrigger>
               <OverlayTrigger
                 placement="top"
                 overlay={
                   <Tooltip>
                     끼어들기
-                    <hr />
+                    <hr className={`m-0`} />
                     상대 발언시간에 10초간 말할 수 있습니다
                   </Tooltip>
                 }
               >
-                <Button variant="outline-primary" onClick={sendItemRequest(12)}>
+                <button
+                  className={`${style.itemButton} btn`}
+                  onClick={sendItemRequest(12)}
+                >
                   <FontAwesomeIcon icon={faHand} size="2x" />
-                </Button>
+                </button>
               </OverlayTrigger>
-            </>
-          )}
-        </Col>
+            </Col>
+          </>
+        )}
         <Col className={style.onOff}>
           {role === "spectator" && status === "ongoing" && (
             <Button variant="primary" onClick={() => setShowModal(true)}>
               투표하기
             </Button>
           )}
-          <Button variant="primary" onClick={handleVideoToggle}>
-            { isVideoOn ? "CAM OFF" : "CAM ON"}
-          </Button>
+          <button
+            className={`${style.videoButton} btn `}
+            onClick={handleVideoToggle}
+          >
+            {isVideoOn ? <FiCameraOff /> : <FiCamera />}
+          </button>
           {role === "participant" && (
-            <Button variant="primary" onClick={handleAudioToggle}>
-              { isAudioOn ? "음소거" : "음소거 해제"}
-            </Button>
+            <button
+              className={`${style.videoButton} btn`}
+              onClick={handleAudioToggle}
+            >
+              {isAudioOn ? <AiOutlineAudioMuted /> : <AiOutlineAudio />}
+            </button>
           )}
         </Col>
       </Row>
-
       <Modal show={showModal} onHide={() => setShowModal(false)}>
         <Modal.Header closeButton>
           <Modal.Title>Vote for Topics</Modal.Title>
