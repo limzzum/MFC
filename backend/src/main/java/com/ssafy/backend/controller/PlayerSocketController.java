@@ -115,11 +115,11 @@ public class PlayerSocketController {
             LocalDateTime startTalkTime = playerService.plusPlayerTalkTime(playerPlusTimeDto);
             int remainOverTimeCnt = playerService.getRemainOverTimeCnt(new PlayerDto(roomId, userId));
             playerService.updatePlayerHp(PlayerPlusHpDto.builder().roomId(roomId).userId(userId).isATopic(aTopic).hp(-1).build());
-            PlayerOverTalkResultDto result = PlayerOverTalkResultDto.builder().userId(userId).isTopicA(aTopic).startTalkTime(startTalkTime).remainOverTime(remainOverTimeCnt).isUsed(true).build();
+            PlayerOverTalkResultDto result = PlayerOverTalkResultDto.builder().userId(userId).isATopic(aTopic).startTalkTime(startTalkTime).remainOverTime(remainOverTimeCnt).isUsed(true).build();
             messagingTemplate.convertAndSend("/from/player/overTalk" + roomId,result);
             return;
         }
-        PlayerOverTalkResultDto result = PlayerOverTalkResultDto.builder().userId(userId).isTopicA(aTopic).startTalkTime(null).remainOverTime(0).isUsed(false).build();
+        PlayerOverTalkResultDto result = PlayerOverTalkResultDto.builder().userId(userId).isATopic(aTopic).startTalkTime(null).remainOverTime(0).isUsed(false).build();
         messagingTemplate.convertAndSend("/from/player/overTalk" + roomId,result);
     }
 
