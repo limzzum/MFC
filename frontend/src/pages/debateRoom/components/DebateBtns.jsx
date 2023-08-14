@@ -37,6 +37,7 @@ function DebateBtns({
   setPlayerA, 
   setPlayerB,
   setResult,
+  onStatusChange
   }) {
     const [showModal, setShowModal] = useState(false);
     const [selectedTopic, setSelectedTopics] = useState([]);
@@ -121,7 +122,6 @@ function DebateBtns({
     // const sock = new SockJS("http://localhost:8081/mfc");
     const sock = new SockJS("https://goldenteam.site/mfc");
     const stompClient = Stomp.over(sock);
-
     stompClient.connect({}, function () {
       console.log("WebSocket 연결 성공");
     });
@@ -173,23 +173,18 @@ function DebateBtns({
         // 이 부분 조금 수상 재참조하고, 구독하는 부분
         stomp.subscribe(`/from/room/surrender/${roomId}`, (message) => {
             const modalData = JSON.parse(message.body)
-            console.log(modalData)
             setResult(modalData)
+            onStatusChange("waiting")
         });
     });
-    
-    return () => {
-        if (stompRef.current) {
-            stompRef.current.disconnect();
-        }
-    };
-// eslint-disable-next-line
-}, [roomId, userId]);
+  // eslint-disable-next-line
+  }, [roomId, userId]);
 
   const handleSurrenderClick = () => {
     console.log(userId)
     const stompMessage = { userId : userId, roomId : parseInt(roomId) }
     stompRef.current.send(`/to/room/surrender/${roomId}/${userId}`, JSON.stringify(stompMessage));
+    
   }
 
 
@@ -234,8 +229,6 @@ function DebateBtns({
         </Col>
       </Row>
       <Row>
-      {/* <Col className={style.items}>
-          {status === "ongoing" && ( */}
       <Col className={style.items}>
           {role === "participant" && status === "ongoing" && (
             <>
