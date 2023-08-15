@@ -5,6 +5,7 @@ import { Row, Col } from "react-bootstrap";
 import style from "../debatePage.module.css";
 import UserVideoComponent from "../Openvidu/UserVideoComponent";
 import { SOCKET_BASE_URL } from "../../../config";
+import AudioSegmentationComponent from "../AudioSegmentationComponent"
 
 function Participate({
   roomId,
@@ -89,6 +90,7 @@ function Participate({
           {/* <div className={`${style.rightCount} m-0 p-0 mx-auto`}>
             <span>남은 연장 횟수: </span>
           </div> */}
+          <AudioSegmentationComponent roomId={roomId} userId={userId} />
         </Col>
         <Col xs={1} className={`m-0 p-0`}></Col>
         <Col className={`m-0 p-0`}>

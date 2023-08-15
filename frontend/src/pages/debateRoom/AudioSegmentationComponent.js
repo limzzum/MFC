@@ -41,6 +41,7 @@ const AudioSegmentationComponent = (roomId, userId) => {
                 );
               };
                 if (!toxicityDetected) {
+                  console.log("aaa")
                   setToxicityDetected(true); // Set toxicityDetected to true when toxicity is detected
                 }
               }
