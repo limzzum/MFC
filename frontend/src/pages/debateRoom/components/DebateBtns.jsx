@@ -276,8 +276,8 @@ function DebateBtns({
             <button
               className={`${style.goSpectatorBtn} btn`}
               onClick={() => {
-                handleRoleChangeToSpectator(publisher);
                 handlePlayerOut();
+                handleRoleChangeToSpectator(publisher);
               }}
             >
               <FaUsers />

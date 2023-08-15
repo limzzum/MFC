@@ -451,7 +451,7 @@ function DebatePage() {
     getParticipants();
 
     // eslint-disable-next-line
-  }, []);
+  }, [subscribers]);
 
   const updatePlayer = (playerInfo) => {
     console.log("토론 참가자 업데이트: ", playerInfo);
