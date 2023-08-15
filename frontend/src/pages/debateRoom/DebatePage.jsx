@@ -26,7 +26,7 @@ import { BASE_URL } from "../../config";
 import style from "./debatePage.module.css";
 
 // tempImg
-import winnerImg from "../../images/img.jpg";
+import baseProfileImg from "../../images/baseProfile.png";
 import ModifyRoomModal from "./components/modifyRoomModal";
 
 const APPLICATION_SERVER_URL = "https://goldenteam.site/";
@@ -555,7 +555,7 @@ function DebatePage() {
               {result ? (
                 <>
                   <p>{result.winner} 승리</p>
-                  <img src={winnerImg} alt="승자 프로필" />
+                  <img src={result.userProfile ? `https://goldenteam.site/${result.userProfile}` : baseProfileImg } alt="승자 프로필" />
                 </>
               ) : (
                 <p>무승부</p>
