@@ -6,10 +6,7 @@ import { useRecoilValue } from "recoil";
 import SockJS from "sockjs-client";
 import Stomp from "webstomp-client";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faCoins,
-  faFaceSmile
-} from "@fortawesome/free-solid-svg-icons";
+import { faCoins, faFaceSmile } from "@fortawesome/free-solid-svg-icons";
 import {
   useStatus,
   useRole,
@@ -43,9 +40,9 @@ function DebatePage() {
 
   // 토론방 상태 호출
   const debateRoomInfo = useRecoilValue(getDebateRoomState(roomId));
-  
-const getVoteResult = useRecoilValue(getVoteResultState(roomId));
-const [voteResult, setVoteResult] = useState(getVoteResult.data);
+
+  const getVoteResult = useRecoilValue(getVoteResultState(roomId));
+  const [voteResult, setVoteResult] = useState(getVoteResult.data);
 
   // 참가자 참가여부
   const [playerStatus, setPlayerStatus] = useState([false, false]);
@@ -75,25 +72,25 @@ const [voteResult, setVoteResult] = useState(getVoteResult.data);
     }
   };
 
-  // 토론방 퇴장 웹소켓 코드 
+  // 토론방 퇴장 웹소켓 코드
   const outStompRef = useRef(null);
-  useEffect( () => {
+  useEffect(() => {
     var sock = new SockJS(`${SOCKET_BASE_URL}`);
     var stomp = Stomp.over(sock);
-    stomp.connect({}, function() {
+    stomp.connect({}, function () {
       outStompRef.current = stomp;
       stomp.subscribe(`/from/room/out/${roomId}`, (message) => {
         const content = JSON.parse(message.body);
         console.log(`토론방 퇴장 메시지: ${content}`);
-      })
-    })
-  })
+      });
+    });
+  });
 
   const handleOutRoom = () => {
-    if(outStompRef.current){
+    if (outStompRef.current) {
       outStompRef.current.send(`/to/room/out/${roomId}/${userInfo.id}`);
     }
-  }
+  };
 
   const [result, setResult] = useState({
     winner: "user1",
@@ -410,7 +407,7 @@ const [voteResult, setVoteResult] = useState(getVoteResult.data);
   // const [viewers, setViewers] = useState();
   // const [players, setPlayers] = useState([]);
 
-  // 참가자 목록 가져와서 
+  // 참가자 목록 가져와서
   useEffect(() => {
     const getParticipants = async () => {
       try {
@@ -458,19 +455,21 @@ const [voteResult, setVoteResult] = useState(getVoteResult.data);
 
   const updatePlayer = (playerInfo) => {
     console.log("토론 참가자 업데이트: ", playerInfo);
-    for(const subscriber of subscribers || []){
-      const clientData = JSON.parse(subscriber.stream.connection.data).clientData;
-      if(clientData === playerInfo.nickname){
-        if(playerInfo.isATopic){
+    for (const subscriber of subscribers || []) {
+      const clientData = JSON.parse(
+        subscriber.stream.connection.data
+      ).clientData;
+      if (clientData === playerInfo.nickname) {
+        if (playerInfo.isATopic) {
           setPlayerA(subscriber);
           setPlayerStatus((prev) => [true, prev[1]]);
-        }else{
+        } else {
           setPlayerB(subscriber);
           setPlayerStatus((prev) => [prev[0], true]);
         }
       }
     }
-  }
+  };
 
   const handleStatusChange = (newStatus) => {
     setStatus(newStatus);
@@ -526,6 +525,7 @@ const [voteResult, setVoteResult] = useState(getVoteResult.data);
                   debateRoomInfo={debateRoomInfo.data}
                   userInfo={userInfo}
                   players={players}
+                  roomId={roomId}
                 />
               </Row>
               <Row>
@@ -596,90 +596,102 @@ const [voteResult, setVoteResult] = useState(getVoteResult.data);
             />
           )}
           {/* 토론 결과 Modal*/}
-          <div className={`modal ${showResultModal ? "show d-block" : ""}`} tabIndex="-1" role="dialog">
+          <div
+            className={`modal ${showResultModal ? "show d-block" : ""}`}
+            tabIndex="-1"
+            role="dialog"
+          >
             <div className="modal-dialog" role="document">
               <div className="modal-content">
                 <div className="modal-header">
                   <h5 className="modal-title">토론 결과</h5>
                 </div>
-            <div className="modal-body">
-              {result ? (
-                <>
-                  <p className={style.contentTitle}>승리</p>
-                  <p className={style.contentTitleWinner}>{result.winner}</p>
-                  <div className={style.imgBox}> 
-                    <img src={result.userProfile ? `https://goldenteam.site/${result.userProfile}` : baseProfileImg } 
-                      className={style.contentTitleWinnerImg}
-                      alt="승자 프로필"
-                       />
-                  </div>
-                </>
-              ) : (
-                <p>무승부</p>
-              )}
-              <hr />
-              {(!result.isSurrender || result.isExit) ? (
-                <>
-                  <p>투표 결과</p>
+                <div className="modal-body">
+                  {result ? (
+                    <>
+                      <p className={style.contentTitle}>승리</p>
+                      <p className={style.contentTitleWinner}>
+                        {result.winner}
+                      </p>
+                      <div className={style.imgBox}>
+                        <img
+                          src={
+                            result.userProfile
+                              ? `https://goldenteam.site/${result.userProfile}`
+                              : baseProfileImg
+                          }
+                          className={style.contentTitleWinnerImg}
+                          alt="승자 프로필"
+                        />
+                      </div>
+                    </>
+                  ) : (
+                    <p>무승부</p>
+                  )}
+                  <hr />
+                  {!result.isSurrender || result.isExit ? (
+                    <>
+                      <p>투표 결과</p>
+                      <ProgressBar>
+                        <ProgressBar
+                          variant="success"
+                          label={result.playerA.vote}
+                          now={
+                            (result.playerA.vote /
+                              (result.playerA.vote + result.b.vote)) *
+                            100
+                          }
+                          key={1}
+                        />
+                        <ProgressBar
+                          variant="danger"
+                          label={result.playerB.vote}
+                          now={
+                            (result.playerB.vote /
+                              (result.playerA.vote + result.playerB.vote)) *
+                            100
+                          }
+                          key={2}
+                        />
+                      </ProgressBar>
+                    </>
+                  ) : null}
+
+                  <p className={style.contentTitle}>잔여 HP</p>
                   <ProgressBar>
                     <ProgressBar
-                      variant="success"
-                      label={result.playerA.vote}
-                      now={
-                        (result.playerA.vote /
-                          (result.playerA.vote + result.b.vote)) *
-                        100
-                      }
-                      key={1}
-                    />
-                    <ProgressBar
                       variant="danger"
-                      label={result.playerB.vote}
-                      now={
-                        (result.playerB.vote /
-                          (result.playerA.vote + result.playerB.vote)) *
-                        100
-                      }
-                      key={2}
+                      label={result.playerA.hp}
+                      // label={(result.playerA.nickName === result.winner) ? result.playerA.hp : result.playerB.hp }
+                      // now={ (result.playerA.nickName === result.winner) ? ((result.playerA.hp / 100) * 100) : ((result.playerB.hp / 100) * 100)}
+                      now={(result.playerA.hp / 100) * 100}
                     />
                   </ProgressBar>
-                </>
-              ) : null}
-              
-              <p className={style.contentTitle}>잔여 HP</p>
-              <ProgressBar>
-                <ProgressBar
-                  variant="danger"
-                  label={result.playerA.hp}
-                  // label={(result.playerA.nickName === result.winner) ? result.playerA.hp : result.playerB.hp }
-                  // now={ (result.playerA.nickName === result.winner) ? ((result.playerA.hp / 100) * 100) : ((result.playerB.hp / 100) * 100)}
-                  now={(result.playerA.hp / 100) * 100}
-                />
-              </ProgressBar>
-              <hr />
-              <div className={style.recordBox}>
-                <div className={style.recordAlone}>
-                  <p className={style.contentSubTitle}>얻은 경험치</p>
-                  <p className={style.contentSubContent}> 
-                  <FontAwesomeIcon icon={faFaceSmile} color="orange" />
-                    &nbsp; {result.playerA.exp} (+10)</p>
+                  <hr />
+                  <div className={style.recordBox}>
+                    <div className={style.recordAlone}>
+                      <p className={style.contentSubTitle}>얻은 경험치</p>
+                      <p className={style.contentSubContent}>
+                        <FontAwesomeIcon icon={faFaceSmile} color="orange" />
+                        &nbsp; {result.playerA.exp} (+10)
+                      </p>
+                    </div>
+                    <div className={style.recordAlone}>
+                      <p className={style.contentSubTitle}>얻은 코인</p>
+                      <p className={style.contentSubContent}>
+                        <FontAwesomeIcon icon={faCoins} color="orange" />
+                        &nbsp; {result.playerA.coin} (+15)
+                      </p>
+                    </div>
+                  </div>
                 </div>
-                <div className={style.recordAlone}>
-                  <p className={style.contentSubTitle}>얻은 코인</p> 
-                  <p className={style.contentSubContent}>
-                    <FontAwesomeIcon icon={faCoins} color="orange" />
-                    &nbsp; {result.playerA.coin} (+15)
-                  </p>
-                </div>
+                <Modal.Footer>
+                  <Button variant="secondary" onClick={goToMainPage}>
+                    메인 페이지로 이동
+                  </Button>
+                </Modal.Footer>
               </div>
             </div>
-            <Modal.Footer>
-              <Button variant="secondary" onClick={goToMainPage}>
-                메인 페이지로 이동
-              </Button>
-            </Modal.Footer>
-          </div>
-          </div>
           </div>
         </>
       ) : null}
