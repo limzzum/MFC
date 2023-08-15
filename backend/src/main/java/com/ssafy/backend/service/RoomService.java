@@ -88,8 +88,8 @@ public class RoomService {
         .findFirst()
         .orElse(null);
 
-    String aTopicUserUrladdress = null;
-    String bTopicUserUrladdress = null;
+    String aTopicUserUrladdress = "NONE";
+    String bTopicUserUrladdress = "NONE";
 
     RoomListDto.Status roomStatus;
     if (room.getStatus() == Status.ONGOING) {
