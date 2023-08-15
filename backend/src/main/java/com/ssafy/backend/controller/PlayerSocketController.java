@@ -42,7 +42,7 @@ public class PlayerSocketController {
                 .isReady(false)
                 .isATopic(playerDto.isATopic())
                 .isAllReady(false).build();
-        messagingTemplate.convertAndSend("/from/player/" + roomId, playerInfoDto);
+        messagingTemplate.convertAndSend("/from/player/enter/" + roomId, playerInfoDto);
     }
 
     @MessageMapping("/player/out")
@@ -50,9 +50,16 @@ public class PlayerSocketController {
         Long roomId = playerDto.getRoomId();
         User user = userService.findById(playerDto.getUserId());
         playerService.deletePlayer(PlayerRegistDto.builder().roomId(roomId).userId(user.getId()).isATopic(playerDto.isATopic()).build());
-        PlayerInfoDto playerInfoDto = PlayerInfoDto.builder().userId(null).nickname(null).profile(null)
-            .colorItem(null).isReady(false).isATopic(playerDto.isATopic()).isAllReady(false).build();
-        messagingTemplate.convertAndSend("/from/player/" + roomId, playerInfoDto);
+
+        PlayerInfoDto playerInfoDto = PlayerInfoDto.builder()
+                .userId(user.getId())
+                .nickname(user.getNickname())
+                .profile(user.getProfile())
+                .colorItem(user.getColorItem())
+                .isReady(false)
+                .isATopic(playerDto.isATopic())
+                .isAllReady(false).build();
+        messagingTemplate.convertAndSend("/from/player/out/" + roomId, playerInfoDto);
     }
 
     @MessageMapping("/player/ready")
@@ -68,7 +75,7 @@ public class PlayerSocketController {
         }
         PlayerInfoDto playerInfoDto = PlayerInfoDto.builder().userId(user.getId()).nickname(user.getNickname()).profile(user.getProfile())
                 .colorItem(user.getColorItem()).isReady(playerDto.isReady()).isATopic(playerDto.isATopic()).isAllReady(allReady).build();
-        messagingTemplate.convertAndSend("/from/player/" + roomId, playerInfoDto);
+        messagingTemplate.convertAndSend("/from/player/ready/" + roomId, playerInfoDto);
     }
 
     @MessageMapping("/player/item")
