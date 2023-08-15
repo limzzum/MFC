@@ -4,7 +4,7 @@ import Stomp from "webstomp-client";
 import { Row, Col } from "react-bootstrap";
 import style from "../debatePage.module.css";
 import UserVideoComponent from "../Openvidu/UserVideoComponent";
-import { BASE_URL } from "../../../config";
+import { SOCKET_BASE_URL } from "../../../config";
 
 function Participate({
   roomId,
@@ -24,7 +24,7 @@ function Participate({
   console.log("userId", userId);
   console.log("roomId", roomId);
   useEffect(() => {
-    var sock = new SockJS(`${BASE_URL}`);
+    var sock = new SockJS(`${SOCKET_BASE_URL}`);
     var stomp = Stomp.over(sock);
     stomp.connect({}, function () {
       console.log("요청이 가니??___________________________");

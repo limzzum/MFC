@@ -14,7 +14,7 @@ import lombok.Setter;
 public class DebateFinInfoDto {
 
   private String userProfile;
-  private Long winner;
+  private String winner;
   private DebateFinPlayerDto playerA;
   private DebateFinPlayerDto playerB;
   private Boolean isSurrender;

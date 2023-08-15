@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { BASE_URL } from "../../../config";
+import {AXIOS_BASE_URL, SOCKET_BASE_URL } from "../../../config";
 import {
   Row,
   Col,
@@ -58,7 +58,7 @@ function DebateBtns({
 
   useEffect(() => {
     // const socket = new SockJS("");
-    const socket = new SockJS(`${BASE_URL}`);
+    const socket = new SockJS(`${SOCKET_BASE_URL}`);
     stompClient.current = Stomp.over(socket);
     console.log("소켓 연결 완료");
     stompClient.current.connect({}, () => {
@@ -121,7 +121,7 @@ function DebateBtns({
       // const userId = 326;
       // const base_url = `http://localhost:8081/api/viewer/vote/${roomId}/${userId}`;
       // const base_url = `https://goldenteam.site/mfc/viewer/vote/${roomId}/${userId}`;
-      const base_url = `${BASE_URL}/viewer/vote/${roomId}/${userId}`;
+      const base_url = `${AXIOS_BASE_URL}/viewer/vote/${roomId}/${userId}`;
 
       const response = await axios.patch(base_url, null, {
         params: { vote: selectedTopic },
@@ -140,7 +140,7 @@ function DebateBtns({
   };
 
   useEffect(() => {
-    const sock = new SockJS(`${BASE_URL}`);
+    const sock = new SockJS(`${SOCKET_BASE_URL}`);
     const stompClient = Stomp.over(sock);
     stompClient.connect({}, function () {
       console.log("WebSocket 연결 성공");
@@ -182,7 +182,7 @@ function DebateBtns({
   const stompRef = useRef(null);
 
   useEffect(() => {
-    const sock = new SockJS(`${BASE_URL}`);
+    const sock = new SockJS(`${SOCKET_BASE_URL}`);
     const stomp = Stomp.over(sock);
 
     stompRef.current = stomp;
