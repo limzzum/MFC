@@ -10,7 +10,7 @@ import {
   faArrowRightFromBracket,
 } from "@fortawesome/free-solid-svg-icons";
 
-function Header({ status, leaveSession, handleModifyModalOpen }) {
+function Header({ status, leaveSession, handleModifyModalOpen, handleOutRoom}) {
   return (
     <header className={style.header}>
       <img className={style.logo} src={logoImage} alt="logo" />
@@ -34,7 +34,10 @@ function Header({ status, leaveSession, handleModifyModalOpen }) {
                 icon={faArrowRightFromBracket}
                 color="#2F425DFF"
                 size="2x"
-                onClick={leaveSession}
+                onClick={() => {
+                  leaveSession();
+                  handleOutRoom();
+                }}
                 className={style.exit}
               />
             </Link>
