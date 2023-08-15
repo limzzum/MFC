@@ -93,7 +93,7 @@ function Participate({
         <Col xs={1} className={`m-0 p-0`}></Col>
         <Col className={`m-0 p-0`}>
           <div className={`${style.Participant} mx-auto`}>
-            { playerA === undefined && playerStatus[1] === false && status === "waiting" && (
+            { playerB === undefined && playerStatus[1] === false && status === "waiting" && (
               <button
                 className={`${style.button} btn`}
                 onClick={() => {
