@@ -40,7 +40,7 @@ public class LoginCheckInterCeptor implements HandlerInterceptor {
             return true;
         }catch (ExpiredJwtException e){
             e.printStackTrace();
-            response.sendRedirect("/error/access-token");
+            response.sendRedirect("/error/token");
             return false;
         }catch (Exception e){
             e.printStackTrace();
