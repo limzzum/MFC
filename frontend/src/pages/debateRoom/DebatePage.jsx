@@ -440,6 +440,7 @@ function DebatePage() {
                 setPlayerB(subscriber);
                 setPlayerStatus((prev) => [prev[0], true]);
               }
+              break;
             }
           }
         }
@@ -451,7 +452,7 @@ function DebatePage() {
     getParticipants();
 
     // eslint-disable-next-line
-  }, []);
+  }, [subscribers]);
 
   const updatePlayer = (playerInfo) => {
     console.log("토론 참가자 업데이트: ", playerInfo);
@@ -470,6 +471,17 @@ function DebatePage() {
       }
     }
   };
+
+  const removePlayer = (playerInfo) => {
+    console.log("토론 참가자 삭제: ", playerInfo);
+    if(playerInfo.isATopic){
+      setPlayerA(undefined);
+      setPlayerStatus((prev) => [false, prev[1]]);
+    } else{
+      setPlayerB(undefined);
+      setPlayerStatus((prev) => [prev[0], false]);
+    }
+  }
 
   const handleStatusChange = (newStatus) => {
     setStatus(newStatus);
@@ -567,7 +579,7 @@ function DebatePage() {
                   roomId={roomId}
                   userId={userInfo.id}
                   setResult={setResult}
-                  // isTopicA={}
+                  removePlayer={removePlayer}
                 />
               </Row>
             </Col>
