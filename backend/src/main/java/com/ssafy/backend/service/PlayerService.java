@@ -37,12 +37,18 @@ public class PlayerService {
         User user = new User(playerRegistDto.getUserId());
         Room room = roomRepository.findById(playerRegistDto.getRoomId()).orElse(null);
         if(room == null){
+            System.out.println("room  null");
             return null;
         }
-        Player curPlayer = playerRepository.findTopByRoomIdAndUserId(playerRegistDto.getRoomId(), playerRegistDto.getUserId()).orElse(null);
+        Player curPlayer = playerRepository.findFirstByRoomIdAndIsTopicTypeA(playerRegistDto.getRoomId(), playerRegistDto.isATopic()).orElse(null);
         if(curPlayer != null){
-            curPlayer.changeTopic(playerRegistDto.isATopic());
-            return curPlayer.getId();
+            System.out.println("curPlayer 존재");
+            return null;
+        }
+        Player existPlayer = playerRepository.findTopByRoomIdAndUserId(playerRegistDto.getRoomId(), playerRegistDto.getUserId()).orElse(null);
+        if(existPlayer != null){
+            existPlayer.changeTopic(playerRegistDto.isATopic());
+            return existPlayer.getId();
         }
         Player player = Player.builder().room(room).user(user).remainOverTimeCount(room.getOverTimeCount()).isTopicTypeA(playerRegistDto.isATopic()).build();
         Player save = playerRepository.save(player);

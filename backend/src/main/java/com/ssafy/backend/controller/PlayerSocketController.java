@@ -1,15 +1,9 @@
 package com.ssafy.backend.controller;
 
-import com.ssafy.backend.dto.request.PlayerDto;
-import com.ssafy.backend.dto.request.PlayerPlusHpDto;
-import com.ssafy.backend.dto.request.PlayerPlusTimeDto;
-import com.ssafy.backend.dto.request.PlayerRegistDto;
+import com.ssafy.backend.dto.request.*;
 import com.ssafy.backend.dto.socket.request.PlayerItemDto;
 import com.ssafy.backend.dto.socket.request.PlayerRequestDto;
-import com.ssafy.backend.dto.socket.response.PlayerInfoDto;
-import com.ssafy.backend.dto.socket.response.PlayerItemInfoDto;
-import com.ssafy.backend.dto.socket.response.PlayerOverTalkResultDto;
-import com.ssafy.backend.dto.socket.response.PlayerStatusDto;
+import com.ssafy.backend.dto.socket.response.*;
 import com.ssafy.backend.entity.Status;
 import com.ssafy.backend.entity.User;
 import com.ssafy.backend.service.*;
@@ -121,6 +115,14 @@ public class PlayerSocketController {
         }
         PlayerOverTalkResultDto result = PlayerOverTalkResultDto.builder().userId(userId).isATopic(aTopic).startTalkTime(null).remainOverTime(0).isUsed(false).build();
         messagingTemplate.convertAndSend("/from/player/overTalk" + roomId,result);
+    }
+
+    @MessageMapping("/player/changeTurn")
+    public void turnChange(PlayerTurnChangeDto playerTurnChangeDto) {
+        Long roomId = playerTurnChangeDto.getRoomId();
+        playerService.changePlayerTurn(playerTurnChangeDto);
+        RoomStatusDto roomStatus = roomService.getRoomStatus(roomId);
+        messagingTemplate.convertAndSend("/from/room/status" + roomId,roomStatus);
     }
 
 }
