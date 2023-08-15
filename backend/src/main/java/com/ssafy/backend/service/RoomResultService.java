@@ -112,8 +112,8 @@ public class RoomResultService {
               .filter(p -> Boolean.TRUE.equals(p.getIsVoteTypeA()))
               .count();
 
-      DebateFinPlayerDto playerADto = new DebateFinPlayerDto(aVoteCount, playerA.getHeartPoint());
-      DebateFinPlayerDto playerBDto = new DebateFinPlayerDto(bVoteCount, playerB.getHeartPoint());
+      DebateFinPlayerDto playerADto = new DebateFinPlayerDto(playerA.getUser().getNickname(),aVoteCount, playerA.getHeartPoint());
+      DebateFinPlayerDto playerBDto = new DebateFinPlayerDto(playerB.getUser().getNickname(),bVoteCount, playerB.getHeartPoint());
 
       if(isSurrender || isExit) {
         if(playerA.getUser().getId() == userId) {
