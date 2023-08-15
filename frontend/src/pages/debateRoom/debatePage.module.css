@@ -339,7 +339,7 @@ ul button {
 
 /* .spectatorList div {
   /* margin: 0 var(--spacing-3); */
-/* } */ 
+/* } */
 
 .spectator {
   background-color: var(--blue-200);
@@ -513,8 +513,8 @@ ul button {
   border: 0.5px solid var(--gray-300);
 }
 .imgBox {
-  width : 150px;
-  height : 150px;
+  width: 150px;
+  height: 150px;
   margin: 10px auto;
 }
 .contentSubTitle {
@@ -534,5 +534,11 @@ ul button {
 }
 
 .recordAlone {
-  margin : 0 auto;
+  margin: 0 auto;
+}
+
+.penaltyChat {
+  text-align: center;
+  color: var(--blue-600);
+  font-size: 15px;
 }

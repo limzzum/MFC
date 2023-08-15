@@ -43,7 +43,9 @@ function DebatePage() {
 
   // 토론방 상태 호출
   const debateRoomInfo = useRecoilValue(getDebateRoomState(roomId));
-  const voteResult = useRecoilValue(getVoteResultState(roomId));
+  
+const getVoteResult = useRecoilValue(getVoteResultState(roomId));
+const [voteResult, setVoteResult] = useState(getVoteResult.data);
 
   // 참가자 참가여부
   const [playerStatus, setPlayerStatus] = useState([false, false]);
@@ -554,7 +556,7 @@ function DebatePage() {
                   setPlayerStatus={setPlayerStatus}
                   setUserReady={setUserReady}
                   debateRoomInfo={debateRoomInfo.data}
-                  voteResult={voteResult.data}
+                  voteResult={voteResult}
                   handlePlayerAVideoStream={handlePlayerAVideoStream}
                   handlePlayerBVideoStream={handlePlayerBVideoStream}
                   publisher={publisher}
@@ -578,8 +580,10 @@ function DebatePage() {
           </Row>
           <Row className={`m-0 p-0`}>
             <Spectator
-              voteResult={voteResult.data}
+              voteResult={voteResult}
               filteredSubscribers={filteredSubscribers}
+              setVoteResult={setVoteResult}
+              roomId={roomId}
             />
           </Row>
           {isModifyModalOpen && (

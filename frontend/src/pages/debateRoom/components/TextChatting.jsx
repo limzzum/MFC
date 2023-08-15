@@ -30,6 +30,20 @@ function TextChatting({ roomId }) {
           { sender: content.nickName, text: content.message },
         ]);
       });
+
+      //페널티 채팅
+      stomp.subscribe(`/from/chat/penalty${roomId}`, (message) => {
+        const content = JSON.parse(message.body);
+        const penaltyResult = {
+          nickName: content.userName,
+          penalty: content.penaltyName,
+          point: content.points,
+        };
+        setChatMessages((prevMessages) => [
+          ...prevMessages,
+          { sender: "admin", text: penaltyResult },
+        ]);
+      });
     });
 
     return () => {
@@ -60,6 +74,7 @@ function TextChatting({ roomId }) {
       setInputText("");
     }
   };
+
   const handleKeyPress = (event) => {
     if (event.key === "Enter" && !event.shiftKey) {
       handleSendMessage();
@@ -72,21 +87,32 @@ function TextChatting({ roomId }) {
       <div>
         <div className={style.ChatArea}>
           <div className={style.chatMessages} ref={chatAreaRef}>
-            {chatMessages.map((message, index) => (
-              <div
-                key={index}
-                className={`${style.messageContainer} ${
-                  message.sender === userInfo.nickname
-                    ? style.userMessage
-                    : style.otherMessage
-                }`}
-              >
-                <p className={`${style.sender}`}>
-                  {message.sender === userInfo.nickname ? "나" : message.sender}
+            {chatMessages.map((message, index) =>
+              message.sender === "admin" ? (
+                <p className={style.penaltyChat} key={index}>
+                  <strong>
+                    플레이어&nbsp;[{message.text.nickName}]&nbsp;::&nbsp;
+                    {message.text.penalty}&nbsp; -{message.text.point}점
+                  </strong>
                 </p>
-                <div className={style.messageBubble}>{message.text}</div>
-              </div>
-            ))}
+              ) : (
+                <div
+                  key={index}
+                  className={`${style.messageContainer} ${
+                    message.sender === userInfo.nickname
+                      ? style.userMessage
+                      : style.otherMessage
+                  }`}
+                >
+                  <p className={`${style.sender}`}>
+                    {message.sender === userInfo.nickname
+                      ? "나"
+                      : message.sender}
+                  </p>
+                  <div className={style.messageBubble}>{message.text}</div>
+                </div>
+              )
+            )}
           </div>
         </div>
         <div className={style.chatInput}>
