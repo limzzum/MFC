@@ -98,7 +98,7 @@ function DebateBtns({
   //----------------------------------------------------------------------------------------
   const playerOutRef = useRef(null); 
   useEffect(() => {
-    const socket = new SockJS(`${BASE_URL}`);
+    const socket = new SockJS(`${SOCKET_BASE_URL}`);
     const stomp = Stomp.over(socket);
     stomp.connect({}, function () {
       playerOutRef.current = stomp;

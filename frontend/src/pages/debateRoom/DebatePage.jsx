@@ -76,7 +76,7 @@ function DebatePage() {
   // 토론방 퇴장 웹소켓 코드 
   const outStompRef = useRef(null);
   useEffect( () => {
-    var sock = new SockJS(`${BASE_URL}`);
+    var sock = new SockJS(`${SOCKET_BASE_URL}`);
     var stomp = Stomp.over(sock);
     stomp.connect({}, function() {
       outStompRef.current = stomp;
