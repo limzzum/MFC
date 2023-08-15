@@ -191,7 +191,7 @@ function DebateBtns({
       stomp.subscribe(`/from/room/surrender/${roomId}`, (message) => {
         const modalData = JSON.parse(message.body);
         setResult(modalData);
-        onStatusChange("waiting");
+        onStatusChange("done");
       });
     });
     // eslint-disable-next-line

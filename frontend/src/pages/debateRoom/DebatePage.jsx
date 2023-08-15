@@ -5,6 +5,11 @@ import { useParams } from "react-router-dom";
 import { useRecoilValue } from "recoil";
 import SockJS from "sockjs-client";
 import Stomp from "webstomp-client";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faCoins,
+  faFaceSmile
+} from "@fortawesome/free-solid-svg-icons";
 import {
   useStatus,
   useRole,
@@ -26,7 +31,7 @@ import { SOCKET_BASE_URL } from "../../config";
 import style from "./debatePage.module.css";
 
 // tempImg
-import winnerImg from "../../images/img.jpg";
+import baseProfileImg from "../../images/baseProfile.png";
 import ModifyRoomModal from "./components/modifyRoomModal";
 
 const APPLICATION_SERVER_URL = "https://goldenteam.site/";
@@ -72,14 +77,16 @@ function DebatePage() {
     winner: "user1",
     winnerImg: "",
     playerA: {
+      nickName: "Kim",
       vote: 0,
-      hp: 0,
+      hp: 80,
       coin: 0,
       exp: 0,
     },
     playerB: {
+      nickName: "Lee",
       vote: 0,
-      hp: 0,
+      hp: 100,
       coin: 0,
       exp: 0,
     },
@@ -448,7 +455,7 @@ function DebatePage() {
   }, [debateRoomInfo, setStatus]);
 
   useEffect(() => {
-    if (status === "waiting") {
+    if (status === "done") {
       setShowResultModal(true);
     } else {
       setShowResultModal(false);
@@ -547,22 +554,28 @@ function DebatePage() {
             />
           )}
           {/* 토론 결과 Modal*/}
-          <Modal
-            show={showResultModal}
-            onHide={() => setShowResultModal(false)}
-          >
-            <Modal.Header>
-              <Modal.Title>토론 결과</Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
+          <div className={`modal ${showResultModal ? "show d-block" : ""}`} tabIndex="-1" role="dialog">
+            <div className="modal-dialog" role="document">
+              <div className="modal-content">
+                <div className="modal-header">
+                  <h5 className="modal-title">토론 결과</h5>
+                </div>
+            <div className="modal-body">
               {result ? (
                 <>
-                  <p>{result.winner} 승리</p>
-                  <img src={winnerImg} alt="승자 프로필" />
+                  <p className={style.contentTitle}>승리</p>
+                  <p className={style.contentTitleWinner}>{result.winner}</p>
+                  <div className={style.imgBox}> 
+                    <img src={result.userProfile ? `https://goldenteam.site/${result.userProfile}` : baseProfileImg } 
+                      className={style.contentTitleWinnerImg}
+                      alt="승자 프로필"
+                       />
+                  </div>
                 </>
               ) : (
                 <p>무승부</p>
               )}
+              <hr />
               {(!result.isSurrender || result.isExit) ? (
                 <>
                   <p>투표 결과</p>
@@ -590,31 +603,42 @@ function DebatePage() {
                   </ProgressBar>
                 </>
               ) : null}
-              <p>잔여 HP</p>
+              
+              <p className={style.contentTitle}>잔여 HP</p>
               <ProgressBar>
                 <ProgressBar
-                  variant="success"
-                  label={result.playerA.hp}
-                  now={(result.playerA.hp / 200) * 100}
-                  key={1}
-                />
-                <ProgressBar
                   variant="danger"
-                  label={result.playerB.hp}
-                  now={(result.playerB.hp / 200) * 100}
-                  key={2}
+                  label={result.playerA.hp}
+                  // label={(result.playerA.nickName === result.winner) ? result.playerA.hp : result.playerB.hp }
+                  // now={ (result.playerA.nickName === result.winner) ? ((result.playerA.hp / 100) * 100) : ((result.playerB.hp / 100) * 100)}
+                  now={(result.playerA.hp / 100) * 100}
                 />
               </ProgressBar>
               <hr />
-              <p>얻은 경험치: {result.playerA.exp} (+10)</p>
-              <p>얻은 코인: {result.playerA.coin} (+15)</p>
-            </Modal.Body>
+              <div className={style.recordBox}>
+                <div className={style.recordAlone}>
+                  <p className={style.contentSubTitle}>얻은 경험치</p>
+                  <p className={style.contentSubContent}> 
+                  <FontAwesomeIcon icon={faFaceSmile} color="orange" />
+                    &nbsp; {result.playerA.exp} (+10)</p>
+                </div>
+                <div className={style.recordAlone}>
+                  <p className={style.contentSubTitle}>얻은 코인</p> 
+                  <p className={style.contentSubContent}>
+                    <FontAwesomeIcon icon={faCoins} color="orange" />
+                    &nbsp; {result.playerA.coin} (+15)
+                  </p>
+                </div>
+              </div>
+            </div>
             <Modal.Footer>
               <Button variant="secondary" onClick={goToMainPage}>
                 메인 페이지로 이동
               </Button>
             </Modal.Footer>
-          </Modal>
+          </div>
+          </div>
+          </div>
         </>
       ) : null}
     </div>
