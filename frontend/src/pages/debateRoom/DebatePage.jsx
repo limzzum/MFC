@@ -61,7 +61,7 @@ function DebatePage() {
       enterStompRef.current = stomp;
       stomp.subscribe(`/from/room/enter/${roomId}`, (message) => {
         const content = JSON.parse(message.body);
-        console.log(content);
+        console.log("입장 데이터: ", content);
       });
     });
     // eslint-disable-next-line
@@ -69,9 +69,29 @@ function DebatePage() {
 
   const handleEnterRoom = () => {
     if (enterStompRef.current) {
-      enterStompRef.current.send(`/to/room/enter/${roomId}/${userInfo.Id}`);
+      enterStompRef.current.send(`/to/room/enter/${roomId}/${userInfo.id}`);
     }
   };
+
+  // 토론방 퇴장 웹소켓 코드 
+  const outStompRef = useRef(null);
+  useEffect( () => {
+    var sock = new SockJS(`${BASE_URL}`);
+    var stomp = Stomp.over(sock);
+    stomp.connect({}, function() {
+      outStompRef.current = stomp;
+      stomp.subscribe(`/from/room/out/${roomId}`, (message) => {
+        const content = JSON.parse(message.body);
+        console.log(`토론방 퇴장 메시지: ${content}`);
+      })
+    })
+  })
+
+  const handleOutRoom = () => {
+    if(outStompRef.current){
+      outStompRef.current.send(`/to/room/out/${roomId}/${userInfo.id}`);
+    }
+  }
 
   const [result, setResult] = useState({
     winner: "user1",
@@ -388,7 +408,7 @@ function DebatePage() {
   // const [viewers, setViewers] = useState();
   // const [players, setPlayers] = useState([]);
 
-  // 참가자 목록 가져오기 수정 필요
+  // 참가자 목록 가져와서 
   useEffect(() => {
     const getParticipants = async () => {
       try {
@@ -434,6 +454,22 @@ function DebatePage() {
     // eslint-disable-next-line
   }, [subscribers]);
 
+  const updatePlayer = (playerInfo) => {
+    console.log("토론 참가자 업데이트: ", playerInfo);
+    for(const subscriber of subscribers || []){
+      const clientData = JSON.parse(subscriber.stream.connection.data).clientData;
+      if(clientData === playerInfo.nickname){
+        if(playerInfo.isATopic){
+          setPlayerA(subscriber);
+          setPlayerStatus((prev) => [true, prev[1]]);
+        }else{
+          setPlayerB(subscriber);
+          setPlayerStatus((prev) => [prev[0], true]);
+        }
+      }
+    }
+  }
+
   const handleStatusChange = (newStatus) => {
     setStatus(newStatus);
   };
@@ -470,6 +506,7 @@ function DebatePage() {
             <Header
               status={status}
               leaveSession={leaveSession}
+              handleOutRoom={handleOutRoom}
               handleModifyModalOpen={handleModifyModalOpen}
             />
           </Row>
@@ -505,6 +542,7 @@ function DebatePage() {
                   setPlayerB={setPlayerB}
                   roomId={roomId}
                   userId={userInfo.id}
+                  updatePlayer={updatePlayer}
                 />
               </Row>
               <Row className={`m-0 p-0`}>

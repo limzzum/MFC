@@ -19,6 +19,7 @@ function Participate({
   publisher,
   playerA,
   playerB,
+  updatePlayer,
 }) {
   const stompRef = useRef(null);
   console.log("userId", userId);
@@ -31,8 +32,8 @@ function Participate({
       stompRef.current = stomp;
       stomp.subscribe(`/from/player/${roomId}`, (message) => {
         const content = JSON.parse(message.body);
-        console.log("ddddddddddddd");
         console.log("플레이어 등록 응답", content); // 데이터 파싱해서 프론트에 저장?
+        updatePlayer(content);
       });
     });
     return () => {
@@ -40,6 +41,7 @@ function Participate({
         stompRef.current.disconnect();
       }
     };
+    // eslint-disable-next-line
   }, [roomId, userId, playerStatus]);
 
   const handlePostPlayer = (isTopicA) => {
@@ -62,7 +64,7 @@ function Participate({
       <Row className={`m-0 p-0`}>
         <Col className={`m-0 p-0`}>
           <div className={`${style.Participant} mx-auto`}>
-            {playerStatus[0] === false && status === "waiting" && (
+            {playerA === undefined && playerStatus[0] === false && status === "waiting" && (
               <button
                 className={`${style.button} btn`}
                 onClick={() => {
@@ -75,7 +77,7 @@ function Participate({
                 참가하기
               </button>
             )}
-            {role === "participant" && playerA !== undefined && (
+            {playerA !== undefined && (
               <UserVideoComponent
                 className="playerA"
                 streamManager={playerA}
@@ -91,7 +93,7 @@ function Participate({
         <Col xs={1} className={`m-0 p-0`}></Col>
         <Col className={`m-0 p-0`}>
           <div className={`${style.Participant} mx-auto`}>
-            {playerStatus[1] === false && status === "waiting" && (
+            { playerA === undefined && playerStatus[1] === false && status === "waiting" && (
               <button
                 className={`${style.button} btn`}
                 onClick={() => {
@@ -104,7 +106,7 @@ function Participate({
                 참가하기
               </button>
             )}
-            {role === "participant" && playerB !== undefined && (
+            { playerB !== undefined && (
               <UserVideoComponent
                 className="playerB"
                 streamManager={playerB}

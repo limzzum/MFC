@@ -76,21 +76,6 @@ function DebateBtns({
     // eslint-disable-next-line
   }, []);
 
-  const handlePlayerOut = () => {
-    if (stompClient.current) {
-      stompClient.current.send(
-        `to/player/out`,
-        JSON.stringify({
-          roomid: roomId,
-          userid: userId,
-          isATopic: false,
-          isReady: false,
-          isAllReady: false,
-        })
-      );
-    }
-  };
-
   const sendItemRequest = (itemId) => {
     const requestUrl = "/to/player/item";
     const requestData = {
@@ -110,6 +95,36 @@ function DebateBtns({
       console.error("소켓 연결이 아직 활성화되지 않았습니다.");
     }
   };
+  //----------------------------------------------------------------------------------------
+  const playerOutRef = useRef(null); 
+  useEffect(() => {
+    const socket = new SockJS(`${BASE_URL}`);
+    const stomp = Stomp.over(socket);
+    stomp.connect({}, function () {
+      playerOutRef.current = stomp;
+      stomp.subscribe(`/from/player/${roomId}`, (message) => {
+        const content = JSON.parse(message.body);
+        console.log("플레이어 관전자로 나갔을 때 받는 메세지:", content);
+      })
+    })
+
+  });
+
+  const handlePlayerOut = () => {
+    if(playerOutRef.current){
+      console.log("플레이어 관전자로 변경");
+      playerOutRef.current.send(
+        `/to/player/out`, 
+        JSON.stringify({
+          roomid: roomId,
+          userid: userId,
+          isATopic: false,
+          isReady: false,
+        })
+      )
+    }
+  }
+
   //----------------------------------------------------------------------------------------
   const handleVote = async () => {
     // 투표 로직 구현
