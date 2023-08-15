@@ -30,7 +30,7 @@ function Participate({
     stomp.connect({}, function () {
       console.log("요청이 가니??___________________________");
       stompRef.current = stomp;
-      stomp.subscribe(`/from/player/${roomId}`, (message) => {
+      stomp.subscribe(`/from/player/enter/${roomId}`, (message) => {
         const content = JSON.parse(message.body);
         console.log("플레이어 등록 응답", content); // 데이터 파싱해서 프론트에 저장?
         updatePlayer(content);
