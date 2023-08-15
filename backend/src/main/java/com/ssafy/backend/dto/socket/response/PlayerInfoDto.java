@@ -18,7 +18,7 @@ public class PlayerInfoDto {
     private String profile;
     private ItemCode colorItem;
     @JsonProperty("isATopic")
-    private boolean isTopicA;
+    private boolean isATopic;
     @JsonProperty("isReady")
     private boolean isReady;
     @JsonProperty("isAllReady")
