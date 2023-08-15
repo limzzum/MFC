@@ -6,6 +6,7 @@ import { userInfoState } from "../../recoil/userInfo";
 import { BsStopwatch } from "react-icons/bs";
 import { RiSpeakLine } from "react-icons/ri";
 import personImage from "../../images/person.png";
+import baseProfile from "../../images/baseProfile.png";
 import style from "./debateRoomCard.module.css";
 import { useNavigate } from "react-router-dom";
 import { Row, Col } from "react-bootstrap";
@@ -45,9 +46,11 @@ const DebateRoomCard = ({
             <img
               className={style.fullWidthImage}
               src={
-                userProfileImg1
+                userProfileImg1 === "NONE"
+                  ? personImage
+                  : userProfileImg1
                   ? `https://goldenteam.site/profiles/${userProfileImg1}`
-                  : personImage
+                  : baseProfile
               }
               alt="User1"
             />
@@ -56,9 +59,11 @@ const DebateRoomCard = ({
             <img
               className={style.fullWidthImage}
               src={
-                userProfileImg2
+                userProfileImg2 === "NONE"
+                  ? personImage
+                  : userProfileImg2
                   ? `https://goldenteam.site/profiles/${userProfileImg2}`
-                  : personImage
+                  : baseProfile
               }
               alt="User2"
             />
@@ -82,7 +87,7 @@ const DebateRoomCard = ({
               토론 시간&nbsp;:&nbsp; {debateTime}분
             </span>
           </div>
-          <div className={`my-1 text-center`}>
+          <div className={`my-1 text-center mb-3`}>
             <RiSpeakLine className={style.timeicon} />
             <span className={style.cardtext}>
               발언 제한 시간&nbsp;:&nbsp; {speechTime}분

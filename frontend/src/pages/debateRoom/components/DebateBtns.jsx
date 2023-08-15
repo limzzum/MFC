@@ -43,6 +43,7 @@ function DebateBtns({
   setPlayerB,
   setResult,
   onStatusChange,
+  removePlayer,
 }) {
   const [showModal, setShowModal] = useState(false);
   const [selectedTopic, setSelectedTopics] = useState([]);
@@ -102,9 +103,10 @@ function DebateBtns({
     const stomp = Stomp.over(socket);
     stomp.connect({}, function () {
       playerOutRef.current = stomp;
-      stomp.subscribe(`/from/player/${roomId}`, (message) => {
+      stomp.subscribe(`/from/player/out/${roomId}`, (message) => {
         const content = JSON.parse(message.body);
         console.log("플레이어 관전자로 나갔을 때 받는 메세지:", content);
+        removePlayer(content);
       })
     })
 
@@ -276,8 +278,8 @@ function DebateBtns({
             <button
               className={`${style.goSpectatorBtn} btn`}
               onClick={() => {
-                handleRoleChangeToSpectator(publisher);
                 handlePlayerOut();
+                handleRoleChangeToSpectator(publisher);
               }}
             >
               <FaUsers />
