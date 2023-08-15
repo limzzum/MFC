@@ -32,7 +32,7 @@ function TextChatting({ roomId }) {
       });
 
       //페널티 채팅
-      stomp.subscribe(`/from/chat/penalty${roomId}`, (message) => {
+      stomp.subscribe(`/from/chat/penalty/${roomId}`, (message) => {
         const content = JSON.parse(message.body);
         const penaltyResult = {
           nickName: content.userName,
