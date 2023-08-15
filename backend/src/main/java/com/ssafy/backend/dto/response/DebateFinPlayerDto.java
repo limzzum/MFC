@@ -13,6 +13,7 @@ import lombok.Setter;
 @Builder
 public class DebateFinPlayerDto {
 
+  private String nickName;
   private int vote;
   private int hp;
   private int coin;
@@ -20,7 +21,8 @@ public class DebateFinPlayerDto {
   private int exp;
   private int getExp;
 
-  public DebateFinPlayerDto(int vote, int hp) {
+  public DebateFinPlayerDto(String nickName, int vote, int hp) {
+    this.nickName = nickName;
     this.vote = vote;
     this.hp = hp;
   }
