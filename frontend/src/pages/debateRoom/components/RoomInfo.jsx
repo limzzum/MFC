@@ -31,7 +31,20 @@ function RoomInfo({
   const formatTime = (time) => {
     const minutes = Math.floor(time / 60);
     const seconds = time % 60;
-    return `${minutes}:${seconds < 10 ? `0${seconds}` : seconds}`;
+    // return `${minutes}:${seconds < 10 ? `0${seconds}` : seconds}`;
+
+    const hours = Math.floor(minutes / 60);
+    const remainingSeconds = seconds % 60;
+    const remainingMinutes = minutes % 60;
+    return `${hours}:${remainingMinutes}:${remainingSeconds}`;
+  };
+  const speechformatTime = (time) => {
+    const minutes = Math.floor(time / 60);
+    const seconds = time % 60;
+    // return `${minutes}:${seconds < 10 ? `0${seconds}` : seconds}`;
+    const remainingSeconds = seconds % 60;
+    const remainingMinutes = minutes % 60;
+    return `${remainingMinutes}:${remainingSeconds}`;
   };
 
   const [user1HP, setUser1HP] = useState(100);
@@ -159,7 +172,7 @@ function RoomInfo({
           <span>{debateRoomInfo.btopic}</span>
         </Col>
       </Row>
-      <Row>
+      <Row className={`m-0`}>
         <Col className={style.userInfo}>
           {playerA && playerA.nickName ? (
             <span>{playerA.nickName}&nbsp;</span>
@@ -245,7 +258,7 @@ function RoomInfo({
           </span>
         </Col>
       </Row>
-      <Row className={style.bottomBox}>
+      <Row className={`${style.bottomBox} p-0 m-0`}>
         <Col className={style.userStatus}>
           {status === "waiting" && playerStatus[0] && (
             <Button
@@ -269,7 +282,7 @@ function RoomInfo({
         <Col xs={1} className={`${style.speechTimer} mx-auto p-0`}>
           <FontAwesomeIcon icon={faMicrophone} className={`${style.micIcon}`} />
           &nbsp;
-          {formatTime(speechTime)}
+          {speechformatTime(speechTime)}
         </Col>
         <Col className={style.userStatus}>
           {status === "waiting" && playerStatus[1] && (

@@ -116,8 +116,8 @@ function DebateBtns({
       playerOutRef.current.send(
         `/to/player/out`, 
         JSON.stringify({
-          roomid: roomId,
-          userid: userId,
+          roomId: roomId,
+          userId: userId,
           isATopic: false,
           isReady: false,
         })
