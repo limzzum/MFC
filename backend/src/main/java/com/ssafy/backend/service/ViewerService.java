@@ -130,7 +130,7 @@ public class ViewerService {
     } else {
       if (participant.getRoleCode().getId() == 2L) {//나가려는 사람이 플레이어인 경우
         //플레이어 목록에서 ID 삭제 후 (토론이 끝나거나 새로 시작할 때 플레이어 정보는 초기화 되기때문에 ID만 삭제한다)
-        playerRepository.resetUserId(roomId, userId);
+        playerRepository.deleteByRoomIdAndUserId(roomId, userId);
       }
       //사용자의 롤을 퇴장자로 변경
       participant.setRoleCode(new RoleCode(1L, null));
@@ -165,7 +165,7 @@ public class ViewerService {
     } else {
       if (participant.getRoleCode().getId() == 2L) {//나가려는 사람이 플레이어인 경우
         //플레이어 목록에서 ID 삭제 후 (토론이 끝나거나 새로 시작할 때 플레이어 정보는 초기화 되기때문에 ID만 삭제한다)
-        playerRepository.resetUserId(roomId, userId);
+        playerRepository.deleteByRoomIdAndUserId(roomId, userId);
       }
       //사용자의 롤을 퇴장자로 변경
       participant.setRoleCode(new RoleCode(1L, null));
