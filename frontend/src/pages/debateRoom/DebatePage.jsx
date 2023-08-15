@@ -246,10 +246,34 @@ function DebatePage() {
     }
     // eslint-disable-next-line
   }, [session, myUserName]);
+  //_________________________________________________________________________________________
+  // const stompRef = useRef(null);
+  // useEffect(() => {
+  //   const sock = new SockJS(`${BASE_URL}`);
+  //   const stomp = Stomp.over(sock);
+
+  //   stompRef.current = stomp;
+
+  //   stomp.connect({}, function () {
+  //     stomp.subscribe(`/from/room/playerout/${roomId}`, (message) => {
+  //       const modalData = JSON.parse(message.body);
+  //       setResult(modalData);
+  //       handleStatusChange("waiting");
+  //     });
+  //   });
+  //   // eslint-disable-next-line
+  // }, [roomId]);
 
   const leaveSession = useCallback(() => {
     // Leave the session
     if (session) {
+      // if ((status === "ongoing") && (role === "participate")){
+      //   const stompMessage = { userId: userInfo.id, roomId: parseInt(roomId) };
+      //   stompRef.current.send(
+      //     `/to/room/playerout/${roomId}/${userInfo.id}`,
+      //   JSON.stringify(stompMessage)
+      // );}
+
       session.disconnect();
     }
 
@@ -261,6 +285,7 @@ function DebatePage() {
     setMyUserName(userInfo.nickname);
     // setMainStreamManager(undefined);
     setPublisher(undefined);
+    // eslint-disable-next-line
   }, [session, userInfo.nickname]);
 
   const deleteSubscriber = useCallback((streamManager) => {
@@ -535,7 +560,7 @@ function DebatePage() {
               ) : (
                 <p>무승부</p>
               )}
-              {!result.isSurrender ? (
+              {(!result.isSurrender || result.isExit) ? (
                 <>
                   <p>투표 결과</p>
                   <ProgressBar>

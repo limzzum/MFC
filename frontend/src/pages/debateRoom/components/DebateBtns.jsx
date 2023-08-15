@@ -188,7 +188,6 @@ function DebateBtns({
     stompRef.current = stomp;
 
     stomp.connect({}, function () {
-      // 이 부분 조금 수상 재참조하고, 구독하는 부분
       stomp.subscribe(`/from/room/surrender/${roomId}`, (message) => {
         const modalData = JSON.parse(message.body);
         setResult(modalData);
