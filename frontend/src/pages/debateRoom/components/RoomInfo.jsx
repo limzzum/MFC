@@ -3,6 +3,8 @@ import { Row, Col, Button, ProgressBar } from "react-bootstrap";
 import style from "../debatePage.module.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMicrophone } from "@fortawesome/free-solid-svg-icons";
+import { AXIOS_BASE_URL } from "../../../config";
+import axios from "axios";
 
 function RoomInfo({
   status,
@@ -13,7 +15,7 @@ function RoomInfo({
   debateRoomInfo,
   userReady,
   setUserReady,
-  userInfo,
+  players
 }) {
   const user1HP = 70;
   const user2HP = 100;
@@ -23,7 +25,8 @@ function RoomInfo({
 
   const [totalTime, setTotalTime] = useState(total);
   const [speechTime, setSpeechTime] = useState(talk);
-
+  const [playerA, setPlayerA] = useState(undefined);
+  const [playerB, setPlayerB] = useState(undefined);
   const formatTime = (time) => {
     const minutes = Math.floor(time / 60);
     const seconds = time % 60;
@@ -82,6 +85,30 @@ function RoomInfo({
       onStatusChange("ongoing");
     }
   }, [userReady, status, onStatusChange]);
+  
+  const playerGetHistory = async (userId) => {
+    try {
+      const response = await axios.get(`${AXIOS_BASE_URL}/record/${userId}`)
+      return response.data;
+    } catch (e) {
+      console.log(`사용자 전적 불러오기 API 오류: ${e}`);
+      return null;
+    }
+  }
+  // null 값 처리
+  useEffect( ()=> {
+    for(const player of players) {
+      if(player) {
+        if(player.topicTypeA) {
+          setPlayerA(playerGetHistory(player.viewerDto.userId));
+        }else {
+          setPlayerB(playerGetHistory(player.viewerDto.userId));
+        }
+      }
+      console.log(playerA);
+      console.log(playerB);
+    }
+  },[players]);
 
   return (
     <>

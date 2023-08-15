@@ -5,7 +5,7 @@ import { userInfoState } from "../../../recoil/userInfo";
 import style from "../debatePage.module.css";
 import { useRecoilValue } from "recoil";
 import { Form, InputGroup } from "react-bootstrap";
-import { BASE_URL } from "../../../config";
+import { SOCKET_BASE_URL } from "../../../config";
 
 function TextChatting({ roomId }) {
   const [inputText, setInputText] = useState("");
@@ -17,7 +17,7 @@ function TextChatting({ roomId }) {
   const stompRef = useRef(null);
 
   useEffect(() => {
-    var sock = new SockJS(`${BASE_URL}`);
+    var sock = new SockJS(`${SOCKET_BASE_URL}`);
     var stomp = Stomp.over(sock);
     stomp.connect({}, function () {
       // 이 부분 조금 수상 재참조하고, 구독하는 부분

@@ -24,4 +24,4 @@ yarn-error.log*
 
 # Ignore package lock files
 package-lock.json
-config.js
+# config.js
