@@ -337,9 +337,9 @@ ul button {
   margin-left: auto;
 } */
 
-.spectatorList div {
+/* .spectatorList div {
   /* margin: 0 var(--spacing-3); */
-}
+/* } */ 
 
 .spectator {
   background-color: var(--blue-200);
