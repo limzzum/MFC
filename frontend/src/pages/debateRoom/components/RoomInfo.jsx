@@ -89,7 +89,7 @@ function RoomInfo({
   const playerGetHistory = async (userId) => {
     try {
       const response = await axios.get(`${AXIOS_BASE_URL}/record/${userId}`)
-      return response.data;
+      return response.data.data;
     } catch (e) {
       console.log(`사용자 전적 불러오기 API 오류: ${e}`);
       return null;
@@ -100,13 +100,17 @@ function RoomInfo({
     for(const player of players) {
       if(player) {
         if(player.topicTypeA) {
-          setPlayerA(playerGetHistory(player.viewerDto.userId));
+          playerGetHistory(player.viewerDto.userId)
+          .then((promiseResult) => {
+            setPlayerA(promiseResult);
+          })
         }else {
-          setPlayerB(playerGetHistory(player.viewerDto.userId));
+          playerGetHistory(player.viewerDto.userId)
+          .then((promiseResult) => {
+            setPlayerB(promiseResult);
+          })
         }
       }
-      console.log(playerA);
-      console.log(playerB);
     }
   // eslint-disable-next-line
   },[players]);
@@ -126,13 +130,33 @@ function RoomInfo({
       </Row>
       <Row>
         <Col className={style.userInfo}>
-          <span>사용자1&nbsp;</span>
+        {playerA && playerA.nickName ? (
+        <span>{playerA.nickName}&nbsp;</span>
+        ) : (
+        <span>사용자1&nbsp;</span>
+        )}
           <span>
-            <strong>승</strong> 5&nbsp;
+          <strong>승</strong> {playerA && playerA.nickName ? (
+        <span>{playerA.winCount}&nbsp;</span>
+        ) : (
+        <span>&nbsp;</span>
+        )}
           </span>
-          <span>무 0&nbsp;</span>
-          <span>패 0&nbsp;</span>
-          <span>승률 100%</span>
+          <span>무&nbsp; {playerA && playerA.nickName ? (
+        <span>{playerA.drawCount}&nbsp;</span>
+        ) : (
+        <span>&nbsp;</span>
+        )}</span>
+          <span>패&nbsp; {playerA && playerA.nickName ? (
+        <span>{playerA.loseCount}&nbsp;</span>
+        ) : (
+        <span>&nbsp;</span>
+        )}</span>
+          <span>승률  {playerA && playerA.nickName ? (
+        <span>{playerA.winRate.toFixed(0)}%&nbsp;</span>
+        ) : (
+        <span>&nbsp;</span>
+        )}</span>
         </Col>
         <Col xs={1} className={`${style.debateTimer} mx-auto p-0 mt-1`}>
           <div>
@@ -141,13 +165,33 @@ function RoomInfo({
           </div>
         </Col>
         <Col className={style.userInfo}>
-          <span>사용자2&nbsp;</span>
+        {playerB && playerB.nickName ? (
+        <span>{playerB.nickName}&nbsp;</span>
+        ) : (
+        <span>사용자2&nbsp;</span>
+        )}
           <span>
-            <strong>승</strong> 5&nbsp;
+          <strong>승</strong> {playerB && playerB.nickName ? (
+        <span>{playerB.winCount}&nbsp;</span>
+        ) : (
+        <span>&nbsp;</span>
+        )}
           </span>
-          <span>무 1&nbsp;</span>
-          <span>패 0&nbsp;</span>
-          <span>승률 100%</span>
+          <span>무&nbsp; {playerB && playerB.nickName ? (
+        <span>{playerB.drawCount}&nbsp;</span>
+        ) : (
+        <span>&nbsp;</span>
+        )}</span>
+          <span>패&nbsp; {playerB && playerB.nickName ? (
+        <span>{playerB.loseCount}&nbsp;</span>
+        ) : (
+        <span>&nbsp;</span>
+        )}</span>
+          <span>승률  {playerB && playerB.nickName ? (
+        <span>{playerB.winRate.toFixed(0)}%&nbsp;</span>
+        ) : (
+        <span>&nbsp;</span>
+        )}</span>
         </Col>
       </Row>
       <Row className={style.bottomBox}>
