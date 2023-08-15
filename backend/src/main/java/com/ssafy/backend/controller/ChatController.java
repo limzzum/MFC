@@ -17,6 +17,8 @@ import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.time.LocalDateTime;
+
 @RestController
 @RequiredArgsConstructor
 //@CrossOrigin(origins = "*", allowedHeaders = "*")
@@ -40,12 +42,30 @@ public class ChatController {
     PenaltyCode penaltyCode = penaltyCodeService.findByCode(penaltyRequestDto.getPenaltyCodeId());
     User user = userService.findById(penaltyRequestDto.getUserId());
 
-    Penalty penalty = penaltyService.save(Penalty.builder().penaltyCode(penaltyCode).user(user).build());
-    PenaltyDto result = PenaltyDto.builder().id(penalty.getId()).penaltyTime(penalty.getPenaltyTime()).penaltyCode(penaltyCode.getId()).penaltyName(penaltyCode.getName()).points(penaltyCode.getPoints())
-            .userId(penaltyRequestDto.getUserId()).userName(user.getNickname()).build();
+    //사용자가 받은 페널티 저장
+    Penalty penalty = penaltyService.save(Penalty.builder()
+            .penaltyTime(LocalDateTime.now())
+            .penaltyCode(penaltyCode)
+            .user(user).build());
 
-    PlayerStatusDto playerStatusDto = playerService.updatePlayerHp(PlayerPlusHpDto.builder().roomId(roomId).userId(user.getId())
-            .isATopic(penaltyRequestDto.isATopic()).hp(penaltyCode.getPoints()).build());
+    //페널티 받은 사람의 결과와 정보를 뿌린다.
+    PenaltyDto result = PenaltyDto.builder()
+            .id(penalty.getId())
+            .penaltyTime(penalty.getPenaltyTime())
+            .penaltyCode(penaltyCode.getId())
+            .penaltyName(penaltyCode.getName())
+            .points(penaltyCode.getPoints())
+            .userId(penaltyRequestDto.getUserId())
+            .userName(user.getNickname()).build();
+
+    //플레이어의 상태를 HP를 업데이트 한다.
+    PlayerStatusDto playerStatusDto = playerService.updatePlayerHp(
+            PlayerPlusHpDto.builder()
+            .roomId(roomId)
+            .userId(user.getId())
+            .isATopic(penaltyRequestDto.isATopic())
+            .hp(penaltyCode.getPoints()).
+            build());
     messagingTemplate.convertAndSend("/from/player/status" + roomId, playerStatusDto);
     messagingTemplate.convertAndSend("/from/chat/penalty" + roomId, result);
   }
