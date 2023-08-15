@@ -1,10 +1,13 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { Row, Col, Button, ProgressBar } from "react-bootstrap";
 import style from "../debatePage.module.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMicrophone } from "@fortawesome/free-solid-svg-icons";
 import { AXIOS_BASE_URL } from "../../../config";
 import axios from "axios";
+import SockJS from "sockjs-client";
+import Stomp from "webstomp-client";
+import { SOCKET_BASE_URL } from "../../../config";
 
 function RoomInfo({
   status,
@@ -15,11 +18,9 @@ function RoomInfo({
   debateRoomInfo,
   userReady,
   setUserReady,
-  players
+  players,
+  roomId,
 }) {
-  const user1HP = 70;
-  const user2HP = 100;
-
   const total = debateRoomInfo.totalTime * 60;
   const talk = debateRoomInfo.talkTime * 60;
 
@@ -32,6 +33,11 @@ function RoomInfo({
     const seconds = time % 60;
     return `${minutes}:${seconds < 10 ? `0${seconds}` : seconds}`;
   };
+
+  const [user1HP, setUser1HP] = useState(100);
+  const [user2HP, setUser2HP] = useState(100);
+
+  const stompRef = useRef(null);
 
   useEffect(() => {
     if (status === "ongoing") {
@@ -85,35 +91,60 @@ function RoomInfo({
       onStatusChange("ongoing");
     }
   }, [userReady, status, onStatusChange]);
-  
+
   const playerGetHistory = async (userId) => {
     try {
-      const response = await axios.get(`${AXIOS_BASE_URL}/record/${userId}`)
+      const response = await axios.get(`${AXIOS_BASE_URL}/record/${userId}`);
       return response.data.data;
     } catch (e) {
       console.log(`사용자 전적 불러오기 API 오류: ${e}`);
       return null;
     }
-  }
+  };
   // null 값 처리
-  useEffect( ()=> {
-    for(const player of players) {
-      if(player) {
-        if(player.topicTypeA) {
-          playerGetHistory(player.viewerDto.userId)
-          .then((promiseResult) => {
+  useEffect(() => {
+    for (const player of players) {
+      if (player) {
+        if (player.topicTypeA) {
+          playerGetHistory(player.viewerDto.userId).then((promiseResult) => {
             setPlayerA(promiseResult);
-          })
-        }else {
-          playerGetHistory(player.viewerDto.userId)
-          .then((promiseResult) => {
+          });
+        } else {
+          playerGetHistory(player.viewerDto.userId).then((promiseResult) => {
             setPlayerB(promiseResult);
-          })
+          });
         }
       }
     }
-  // eslint-disable-next-line
-  },[players]);
+    // eslint-disable-next-line
+  }, [players]);
+
+  useEffect(() => {
+    var sock = new SockJS(`${SOCKET_BASE_URL}`);
+    var stomp = Stomp.over(sock);
+    stomp.connect({}, function () {
+      stompRef.current = stomp;
+      //Get HP
+      stomp.subscribe(`/from/player/status/${roomId}`, (message) => {
+        const content = JSON.parse(message.body);
+        console.log("@@@@");
+        console.log(content.isATopic);
+        console.log(content.hp);
+
+        if (content.isATopic) {
+          setUser1HP(content.hp);
+        } else {
+          setUser2HP(content.hp);
+        }
+      });
+    });
+
+    return () => {
+      if (stompRef.current) {
+        stompRef.current.disconnect();
+      }
+    };
+  }, [roomId]);
 
   return (
     <>
@@ -130,33 +161,43 @@ function RoomInfo({
       </Row>
       <Row>
         <Col className={style.userInfo}>
-        {playerA && playerA.nickName ? (
-        <span>{playerA.nickName}&nbsp;</span>
-        ) : (
-        <span>사용자1&nbsp;</span>
-        )}
+          {playerA && playerA.nickName ? (
+            <span>{playerA.nickName}&nbsp;</span>
+          ) : (
+            <span>사용자1&nbsp;</span>
+          )}
           <span>
-          <strong>승</strong> {playerA && playerA.nickName ? (
-        <span>{playerA.winCount}&nbsp;</span>
-        ) : (
-        <span>&nbsp;</span>
-        )}
+            <strong>승</strong>{" "}
+            {playerA && playerA.nickName ? (
+              <span>{playerA.winCount}&nbsp;</span>
+            ) : (
+              <span>&nbsp;</span>
+            )}
           </span>
-          <span>무&nbsp; {playerA && playerA.nickName ? (
-        <span>{playerA.drawCount}&nbsp;</span>
-        ) : (
-        <span>&nbsp;</span>
-        )}</span>
-          <span>패&nbsp; {playerA && playerA.nickName ? (
-        <span>{playerA.loseCount}&nbsp;</span>
-        ) : (
-        <span>&nbsp;</span>
-        )}</span>
-          <span>승률  {playerA && playerA.nickName ? (
-        <span>{playerA.winRate.toFixed(0)}%&nbsp;</span>
-        ) : (
-        <span>&nbsp;</span>
-        )}</span>
+          <span>
+            무&nbsp;{" "}
+            {playerA && playerA.nickName ? (
+              <span>{playerA.drawCount}&nbsp;</span>
+            ) : (
+              <span>&nbsp;</span>
+            )}
+          </span>
+          <span>
+            패&nbsp;{" "}
+            {playerA && playerA.nickName ? (
+              <span>{playerA.loseCount}&nbsp;</span>
+            ) : (
+              <span>&nbsp;</span>
+            )}
+          </span>
+          <span>
+            승률{" "}
+            {playerA && playerA.nickName ? (
+              <span>{playerA.winRate.toFixed(0)}%&nbsp;</span>
+            ) : (
+              <span>&nbsp;</span>
+            )}
+          </span>
         </Col>
         <Col xs={1} className={`${style.debateTimer} mx-auto p-0 mt-1`}>
           <div>
@@ -165,33 +206,43 @@ function RoomInfo({
           </div>
         </Col>
         <Col className={style.userInfo}>
-        {playerB && playerB.nickName ? (
-        <span>{playerB.nickName}&nbsp;</span>
-        ) : (
-        <span>사용자2&nbsp;</span>
-        )}
+          {playerB && playerB.nickName ? (
+            <span>{playerB.nickName}&nbsp;</span>
+          ) : (
+            <span>사용자2&nbsp;</span>
+          )}
           <span>
-          <strong>승</strong> {playerB && playerB.nickName ? (
-        <span>{playerB.winCount}&nbsp;</span>
-        ) : (
-        <span>&nbsp;</span>
-        )}
+            <strong>승</strong>{" "}
+            {playerB && playerB.nickName ? (
+              <span>{playerB.winCount}&nbsp;</span>
+            ) : (
+              <span>&nbsp;</span>
+            )}
           </span>
-          <span>무&nbsp; {playerB && playerB.nickName ? (
-        <span>{playerB.drawCount}&nbsp;</span>
-        ) : (
-        <span>&nbsp;</span>
-        )}</span>
-          <span>패&nbsp; {playerB && playerB.nickName ? (
-        <span>{playerB.loseCount}&nbsp;</span>
-        ) : (
-        <span>&nbsp;</span>
-        )}</span>
-          <span>승률  {playerB && playerB.nickName ? (
-        <span>{playerB.winRate.toFixed(0)}%&nbsp;</span>
-        ) : (
-        <span>&nbsp;</span>
-        )}</span>
+          <span>
+            무&nbsp;{" "}
+            {playerB && playerB.nickName ? (
+              <span>{playerB.drawCount}&nbsp;</span>
+            ) : (
+              <span>&nbsp;</span>
+            )}
+          </span>
+          <span>
+            패&nbsp;{" "}
+            {playerB && playerB.nickName ? (
+              <span>{playerB.loseCount}&nbsp;</span>
+            ) : (
+              <span>&nbsp;</span>
+            )}
+          </span>
+          <span>
+            승률{" "}
+            {playerB && playerB.nickName ? (
+              <span>{playerB.winRate.toFixed(0)}%&nbsp;</span>
+            ) : (
+              <span>&nbsp;</span>
+            )}
+          </span>
         </Col>
       </Row>
       <Row className={style.bottomBox}>
