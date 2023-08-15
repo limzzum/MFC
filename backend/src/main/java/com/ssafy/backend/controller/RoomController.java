@@ -3,6 +3,7 @@ import com.ssafy.backend.dto.Message;
 import com.ssafy.backend.dto.request.RoomInfoRuquestDto;
 import com.ssafy.backend.dto.response.RoomInfoResponseDto;
 import com.ssafy.backend.dto.response.RoomListDto;
+import com.ssafy.backend.dto.socket.response.RoomStatusDto;
 import com.ssafy.backend.entity.UploadFile;
 import com.ssafy.backend.file.FileStore;
 import com.ssafy.backend.service.HistoryService;
@@ -88,5 +89,14 @@ public class RoomController {
         }
         UploadFile uploadFile = fileStore.storeFile(image);
         return ResponseEntity.ok(new Message(HttpStatus.OK, "파일 업로드 성공", uploadFile.getFilePath()));
+    }
+
+    @GetMapping("/status/{roomId}")
+    public ResponseEntity<Message> getRoomStatus(@PathVariable Long roomId) {
+        RoomStatusDto roomStatus = roomService.getRoomStatus(roomId);
+        if(roomStatus == null){
+            return ResponseEntity.ok(new Message(HttpStatus.BAD_REQUEST, "존재하지 않는 room",null));
+        }
+        return ResponseEntity.ok(new Message(HttpStatus.OK, "룸 상태 정보 조회 성공",roomStatus));
     }
 }
