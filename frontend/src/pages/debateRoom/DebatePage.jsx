@@ -5,6 +5,11 @@ import { useParams } from "react-router-dom";
 import { useRecoilValue } from "recoil";
 import SockJS from "sockjs-client";
 import Stomp from "webstomp-client";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faCoins,
+  faFaceSmile
+} from "@fortawesome/free-solid-svg-icons";
 import {
   useStatus,
   useRole,
@@ -72,12 +77,14 @@ function DebatePage() {
     winner: "user1",
     winnerImg: "",
     playerA: {
+      nickName: "Kim",
       vote: 0,
       hp: 80,
       coin: 0,
       exp: 0,
     },
     playerB: {
+      nickName: "Lee",
       vote: 0,
       hp: 100,
       coin: 0,
@@ -448,7 +455,7 @@ function DebatePage() {
   }, [debateRoomInfo, setStatus]);
 
   useEffect(() => {
-    if (status === "waiting") {
+    if (status === "done") {
       setShowResultModal(true);
     } else {
       setShowResultModal(false);
@@ -568,6 +575,7 @@ function DebatePage() {
               ) : (
                 <p>무승부</p>
               )}
+              <hr />
               {(!result.isSurrender || result.isExit) ? (
                 <>
                   <p>투표 결과</p>
@@ -595,25 +603,33 @@ function DebatePage() {
                   </ProgressBar>
                 </>
               ) : null}
+              
               <p className={style.contentTitle}>잔여 HP</p>
               <ProgressBar>
-                {/* <ProgressBar
-                  variant="success"
-                  label={result.playerA.hp}
-                  now={(result.playerA.hp / 200) * 100}
-                  key={1}
-                /> */}
                 <ProgressBar
                   variant="danger"
-                  label={result.playerB.hp}
-                  // label={(result.playerA.nickname === result.winner) ? result.playerA.hp : result.playerB.hp }
-                  // now={ (result.playerA.nickname === result.winner) ? ((result.playerA.hp / 100) * 100) : ((result.playerB.hp / 100) * 100)}
-                  now={(result.playerB.hp / 100) * 100}
+                  label={result.playerA.hp}
+                  // label={(result.playerA.nickName === result.winner) ? result.playerA.hp : result.playerB.hp }
+                  // now={ (result.playerA.nickName === result.winner) ? ((result.playerA.hp / 100) * 100) : ((result.playerB.hp / 100) * 100)}
+                  now={(result.playerA.hp / 100) * 100}
                 />
               </ProgressBar>
               <hr />
-              <p>얻은 경험치: {result.playerA.exp} (+10)</p>
-              <p>얻은 코인: {result.playerA.coin} (+15)</p>
+              <div className={style.recordBox}>
+                <div className={style.recordAlone}>
+                  <p className={style.contentSubTitle}>얻은 경험치</p>
+                  <p className={style.contentSubContent}> 
+                  <FontAwesomeIcon icon={faFaceSmile} color="orange" />
+                    &nbsp; {result.playerA.exp} (+10)</p>
+                </div>
+                <div className={style.recordAlone}>
+                  <p className={style.contentSubTitle}>얻은 코인</p> 
+                  <p className={style.contentSubContent}>
+                    <FontAwesomeIcon icon={faCoins} color="orange" />
+                    &nbsp; {result.playerA.coin} (+15)
+                  </p>
+                </div>
+              </div>
             </div>
             <Modal.Footer>
               <Button variant="secondary" onClick={goToMainPage}>

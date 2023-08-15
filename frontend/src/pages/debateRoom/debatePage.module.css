@@ -517,3 +517,22 @@ ul button {
   height : 150px;
   margin: 10px auto;
 }
+.contentSubTitle {
+  font-weight: 5px;
+  margin-top: 3px;
+  font-size: 16px;
+  text-align: center;
+}
+.contentSubContent {
+  font-weight: bolder;
+  margin-top: 3px;
+  font-size: 18px;
+  text-align: center;
+}
+.recordBox {
+  display: flex;
+}
+
+.recordAlone {
+  margin : 0 auto;
+}

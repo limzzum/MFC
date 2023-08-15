@@ -108,6 +108,7 @@ function RoomInfo({
       console.log(playerA);
       console.log(playerB);
     }
+  // eslint-disable-next-line
   },[players]);
 
   return (
