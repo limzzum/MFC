@@ -44,13 +44,13 @@ function DebatePage() {
   // 토론방 상태 호출
   const debateRoomInfo = useRecoilValue(getDebateRoomState(roomId));
   
-const getVoteResult = useRecoilValue(getVoteResultState(roomId));
-const [voteResult, setVoteResult] = useState(getVoteResult.data);
+  const getVoteResult = useRecoilValue(getVoteResultState(roomId));
+  const [voteResult, setVoteResult] = useState(getVoteResult.data);
 
   // 참가자 참가여부
   const [playerStatus, setPlayerStatus] = useState([false, false]);
   // 참가자 준비여부
-  const [userReady, setUserReady] = useState(false);
+  const [userReady, setUserReady] = useState([false, false]);
   const [isModifyModalOpen, setIsModifyModalOpen] = useState(false);
   const [players, setPlayers] = useState([]);
 
