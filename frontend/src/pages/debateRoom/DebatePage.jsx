@@ -267,7 +267,7 @@ function DebatePage() {
   const leaveSession = useCallback(() => {
     // Leave the session
     if (session) {
-      // if ((status === "ongoing") && (role === "Participate")){
+      // if ((status === "ongoing") && (role === "participate")){
       //   const stompMessage = { userId: userInfo.id, roomId: parseInt(roomId) };
       //   stompRef.current.send(
       //     `/to/room/playerout/${roomId}/${userInfo.id}`,
