@@ -40,7 +40,7 @@ public class PlayerSocketController {
                 .profile(user.getProfile())
                 .colorItem(user.getColorItem())
                 .isReady(false)
-                .isTopicA(playerDto.isATopic())
+                .isATopic(playerDto.isATopic())
                 .isAllReady(false).build();
         messagingTemplate.convertAndSend("/from/player/" + roomId, playerInfoDto);
     }
@@ -51,7 +51,7 @@ public class PlayerSocketController {
         User user = userService.findById(playerDto.getUserId());
         playerService.deletePlayer(PlayerRegistDto.builder().roomId(roomId).userId(user.getId()).isATopic(playerDto.isATopic()).build());
         PlayerInfoDto playerInfoDto = PlayerInfoDto.builder().userId(null).nickname(null).profile(null)
-            .colorItem(null).isReady(false).isTopicA(playerDto.isATopic()).isAllReady(false).build();
+            .colorItem(null).isReady(false).isATopic(playerDto.isATopic()).isAllReady(false).build();
         messagingTemplate.convertAndSend("/from/player/" + roomId, playerInfoDto);
     }
 
@@ -67,7 +67,7 @@ public class PlayerSocketController {
             roomService.roomUpdateStatus(roomId, Status.ONGOING);
         }
         PlayerInfoDto playerInfoDto = PlayerInfoDto.builder().userId(user.getId()).nickname(user.getNickname()).profile(user.getProfile())
-                .colorItem(user.getColorItem()).isReady(playerDto.isReady()).isTopicA(playerDto.isATopic()).isAllReady(allReady).build();
+                .colorItem(user.getColorItem()).isReady(playerDto.isReady()).isATopic(playerDto.isATopic()).isAllReady(allReady).build();
         messagingTemplate.convertAndSend("/from/player/" + roomId, playerInfoDto);
     }
 
@@ -83,15 +83,15 @@ public class PlayerSocketController {
             if(playerDto.getItemCodeId() == 9){
                 PlayerPlusHpDto playerPlusHpDto = PlayerPlusHpDto.builder().roomId(roomId).userId(userId).isATopic(aTopic).hp(10).build();
                 PlayerStatusDto playerStatusDto = playerService.updatePlayerHp(playerPlusHpDto);
-                messagingTemplate.convertAndSend("/from/player/status" + roomId,playerStatusDto );
+                messagingTemplate.convertAndSend("/from/player/status/" + roomId,playerStatusDto );
             }
             PlayerItemInfoDto playerItemInfoDto = PlayerItemInfoDto.builder().userId(user.getId()).nickname(user.getNickname())
                 .isATopic(playerDto.isATopic()).itemCodeId(playerDto.getItemCodeId()).isUsed(true).message(usedItem).build();
-            messagingTemplate.convertAndSend("/from/player/item" + roomId,playerItemInfoDto );
+            messagingTemplate.convertAndSend("/from/player/item/" + roomId,playerItemInfoDto );
         }else {
             PlayerItemInfoDto playerItemInfoDto = PlayerItemInfoDto.builder().userId(user.getId()).nickname(user.getNickname())
                     .isATopic(playerDto.isATopic()).itemCodeId(playerDto.getItemCodeId()).isUsed(false).message(usedItem).build();
-            messagingTemplate.convertAndSend("/from/player/item" + roomId,playerItemInfoDto );
+            messagingTemplate.convertAndSend("/from/player/item/" + roomId,playerItemInfoDto );
         }
     }
 
@@ -110,11 +110,11 @@ public class PlayerSocketController {
             int remainOverTimeCnt = playerService.getRemainOverTimeCnt(new PlayerDto(roomId, userId));
             playerService.updatePlayerHp(PlayerPlusHpDto.builder().roomId(roomId).userId(userId).isATopic(aTopic).hp(-1).build());
             PlayerOverTalkResultDto result = PlayerOverTalkResultDto.builder().userId(userId).isATopic(aTopic).startTalkTime(startTalkTime).remainOverTime(remainOverTimeCnt).isUsed(true).build();
-            messagingTemplate.convertAndSend("/from/player/overTalk" + roomId,result);
+            messagingTemplate.convertAndSend("/from/player/overTalk/" + roomId,result);
             return;
         }
         PlayerOverTalkResultDto result = PlayerOverTalkResultDto.builder().userId(userId).isATopic(aTopic).startTalkTime(null).remainOverTime(0).isUsed(false).build();
-        messagingTemplate.convertAndSend("/from/player/overTalk" + roomId,result);
+        messagingTemplate.convertAndSend("/from/player/overTalk/" + roomId,result);
     }
 
     @MessageMapping("/player/changeTurn")
@@ -122,7 +122,7 @@ public class PlayerSocketController {
         Long roomId = playerTurnChangeDto.getRoomId();
         playerService.changePlayerTurn(playerTurnChangeDto);
         RoomStatusDto roomStatus = roomService.getRoomStatus(roomId);
-        messagingTemplate.convertAndSend("/from/room/status" + roomId,roomStatus);
+        messagingTemplate.convertAndSend("/from/room/status/" + roomId,roomStatus);
     }
 
 }

@@ -32,7 +32,7 @@ function TextChatting({ roomId }) {
       });
 
       //페널티 채팅
-      stomp.subscribe(`/from/chat/penalty${roomId}`, (message) => {
+      stomp.subscribe(`/from/chat/penalty/${roomId}`, (message) => {
         const content = JSON.parse(message.body);
         const penaltyResult = {
           nickName: content.userName,
@@ -71,6 +71,16 @@ function TextChatting({ roomId }) {
           message: inputText,
         })
       );
+      //heejeong : 패널티 소켓 테스트하려고 해놓은 것임.
+      // stompRef.current.send(
+      //   "/to/chat/penalty",
+      //   JSON.stringify({
+      //     roomId: `${roomId}`,
+      //     userId: 329,
+      //     isATopic: false,
+      //     penaltyCodeId: 2,
+      //   })
+      // );
       setInputText("");
     }
   };

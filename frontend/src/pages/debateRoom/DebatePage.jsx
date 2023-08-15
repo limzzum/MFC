@@ -239,7 +239,7 @@ function DebatePage() {
           let publisher = await OV.current.initPublisherAsync(undefined, {
             audioSource: undefined,
             videoSource: undefined,
-            publishAudio: true,
+            publishAudio: false,
             publishVideo: true,
             resolution: "640x480",
             frameRate: 30,
@@ -454,7 +454,7 @@ function DebatePage() {
     getParticipants();
 
     // eslint-disable-next-line
-  }, [subscribers]);
+  }, []);
 
   const updatePlayer = (playerInfo) => {
     console.log("토론 참가자 업데이트: ", playerInfo);

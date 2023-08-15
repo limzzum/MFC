@@ -64,9 +64,9 @@ public class ChatController {
             .roomId(roomId)
             .userId(user.getId())
             .isATopic(penaltyRequestDto.isATopic())
-            .hp(penaltyCode.getPoints()).
+            .hp(penaltyCode.getPoints() * -1).
             build());
-    messagingTemplate.convertAndSend("/from/player/status" + roomId, playerStatusDto);
-    messagingTemplate.convertAndSend("/from/chat/penalty" + roomId, result);
+    messagingTemplate.convertAndSend("/from/player/status/" + roomId, playerStatusDto);
+    messagingTemplate.convertAndSend("/from/chat/penalty/" + roomId, result);
   }
 }
