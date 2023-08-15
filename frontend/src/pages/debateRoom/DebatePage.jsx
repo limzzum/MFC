@@ -72,13 +72,13 @@ function DebatePage() {
     winnerImg: "",
     playerA: {
       vote: 0,
-      hp: 0,
+      hp: 80,
       coin: 0,
       exp: 0,
     },
     playerB: {
       vote: 0,
-      hp: 0,
+      hp: 100,
       coin: 0,
       exp: 0,
     },
@@ -544,18 +544,23 @@ function DebatePage() {
             />
           )}
           {/* 토론 결과 Modal*/}
-          <Modal
-            show={showResultModal}
-            onHide={() => setShowResultModal(false)}
-          >
-            <Modal.Header>
-              <Modal.Title>토론 결과</Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
+          <div className={`modal ${showResultModal ? "show d-block" : ""}`} tabIndex="-1" role="dialog">
+            <div className="modal-dialog" role="document">
+              <div className="modal-content">
+                <div className="modal-header">
+                  <h5 className="modal-title">토론 결과</h5>
+                </div>
+            <div className="modal-body">
               {result ? (
                 <>
-                  <p>{result.winner} 승리</p>
-                  <img src={result.userProfile ? `https://goldenteam.site/${result.userProfile}` : baseProfileImg } alt="승자 프로필" />
+                  <p className={style.contentTitle}>승리</p>
+                  <p className={style.contentTitleWinner}>{result.winner}</p>
+                  <div className={style.imgBox}> 
+                    <img src={result.userProfile ? `https://goldenteam.site/${result.userProfile}` : baseProfileImg } 
+                      className={style.contentTitleWinnerImg}
+                      alt="승자 프로필"
+                       />
+                  </div>
                 </>
               ) : (
                 <p>무승부</p>
@@ -587,31 +592,34 @@ function DebatePage() {
                   </ProgressBar>
                 </>
               ) : null}
-              <p>잔여 HP</p>
+              <p className={style.contentTitle}>잔여 HP</p>
               <ProgressBar>
-                <ProgressBar
+                {/* <ProgressBar
                   variant="success"
                   label={result.playerA.hp}
                   now={(result.playerA.hp / 200) * 100}
                   key={1}
-                />
+                /> */}
                 <ProgressBar
                   variant="danger"
                   label={result.playerB.hp}
-                  now={(result.playerB.hp / 200) * 100}
-                  key={2}
+                  // label={(result.playerA.nickname === result.winner) ? result.playerA.hp : result.playerB.hp }
+                  // now={ (result.playerA.nickname === result.winner) ? ((result.playerA.hp / 100) * 100) : ((result.playerB.hp / 100) * 100)}
+                  now={(result.playerB.hp / 100) * 100}
                 />
               </ProgressBar>
               <hr />
               <p>얻은 경험치: {result.playerA.exp} (+10)</p>
               <p>얻은 코인: {result.playerA.coin} (+15)</p>
-            </Modal.Body>
+            </div>
             <Modal.Footer>
               <Button variant="secondary" onClick={goToMainPage}>
                 메인 페이지로 이동
               </Button>
             </Modal.Footer>
-          </Modal>
+          </div>
+          </div>
+          </div>
         </>
       ) : null}
     </div>
