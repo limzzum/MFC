@@ -4,7 +4,7 @@ import { Button } from "react-bootstrap";
 import SockJS from "sockjs-client";
 import Stomp from "webstomp-client";
 import axios from "axios";
-import { BASE_URL } from "../../../config.js";
+import { SOCKET_BASE_URL } from "../../../config.js";
 
 function ScreenShare({ status, roomId, role }) {
   const [imgFileName, setImgFileName] = useState(null);
@@ -12,7 +12,7 @@ function ScreenShare({ status, roomId, role }) {
   const stompRef = useRef(null);
 
   useEffect(() => {
-    var sock = new SockJS(`${BASE_URL}`);
+    var sock = new SockJS(`${SOCKET_BASE_URL}`);
     var stomp = Stomp.over(sock);
 
     stompRef.current = stomp;
