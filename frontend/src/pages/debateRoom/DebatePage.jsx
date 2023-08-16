@@ -40,7 +40,6 @@ function DebatePage() {
 
   // 토론방 상태 호출
   const debateRoomInfo = useRecoilValue(getDebateRoomState(roomId));
-
   const getVoteResult = useRecoilValue(getVoteResultState(roomId));
   const [voteResult, setVoteResult] = useState(getVoteResult.data);
 
