@@ -20,6 +20,13 @@ export const valueState = atom({
   }
 });
 
+export const userReadyState = atom({
+  key: 'userReadyState',
+  default: [false, false], // 초기값 설정
+
+});
+
+
 // API 호출 결과를 Recoil selector로 관리
 export const getDebateRoomState = selectorFamily({
   key: "getDebateRoomState",

@@ -1,14 +1,14 @@
 @import url(../../colorSelector.css);
 
 .wrapper {
-  width: 1200px;
+  width: 1100px;
   margin: 50px auto;
   display: flex;
   font-family: inherit;
   text-align: center;
 }
 .nextBox {
-  width: 600px;
+  width: 550px;
 }
 .rankTitle {
   font-size: 16px;
@@ -32,7 +32,8 @@
 
 .currentPage {
   color: var(--blue-400);
-
+  line-height: 36px;
+  font-size: 16px;
   cursor: pointer;
 }
 .currentPage:hover {
@@ -43,5 +44,7 @@
 
 .PageNumber {
   color: var(--blue-800);
+  line-height: 36px;
   cursor: pointer;
+  font-size: 16px;
 }

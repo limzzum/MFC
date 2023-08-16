@@ -26,7 +26,7 @@ function RankingMyProfile({ myData, myWinRate }) {
       {/* <div className={`${styles.rankingMyprofileText} my-2`}>
         {myData.nickName}
       </div> */}
-      <div className={`${styles.historyBox} my-4`}>
+      <div className={`${styles.historyBox} my-4 mt-5`}>
         <div className={`${styles.historyItemBox}`}>
           <FontAwesomeIcon icon={faCrown} size="xl" color="#FFD700" />
           <span className={styles.historyTitleText}>&nbsp;경험치</span>

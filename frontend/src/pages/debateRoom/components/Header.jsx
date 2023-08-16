@@ -6,17 +6,22 @@ import logoImage from "../../../images/logo.png";
 import style from "../debatePage.module.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-  faGear,
+  // faGear,
   faArrowRightFromBracket,
 } from "@fortawesome/free-solid-svg-icons";
 
-function Header({ status, leaveSession, handleModifyModalOpen, handleOutRoom}) {
+function Header({
+  status,
+  leaveSession,
+  handleModifyModalOpen,
+  handleOutRoom,
+}) {
   return (
     <header className={style.header}>
       <img className={style.logo} src={logoImage} alt="logo" />
       <div>
         <ul>
-          {status === "waiting" && (
+          {/* {status === "waiting" && (
             <li>
               <button onClick={handleModifyModalOpen}>
                 <FontAwesomeIcon
@@ -27,7 +32,7 @@ function Header({ status, leaveSession, handleModifyModalOpen, handleOutRoom}) {
                 />
               </button>
             </li>
-          )}
+          )} */}
           <li>
             <Link to={"/"}>
               <FontAwesomeIcon

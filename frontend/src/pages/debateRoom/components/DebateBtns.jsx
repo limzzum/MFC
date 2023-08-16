@@ -116,7 +116,6 @@ function DebateBtns({
 
   const handlePlayerOut = () => {
     if(playerOutRef.current){
-      console.log("플레이어 관전자로 변경");
       playerOutRef.current.send(
         `/to/player/out`, 
         JSON.stringify({
