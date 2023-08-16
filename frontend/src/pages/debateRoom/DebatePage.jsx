@@ -167,8 +167,8 @@ function DebatePage() {
   };
 
   const [result, setResult] = useState({
+    userProfile:"",
     winner: "user1",
-    winnerImg: "",
     playerA: {
       nickName: "Kim",
       vote: 0,
@@ -727,7 +727,7 @@ function DebatePage() {
                         <img
                           src={
                             result.userProfile
-                              ? `https://goldenteam.site/${result.userProfile}`
+                              ? `https://goldenteam.site/profiles/${result.userProfile}`
                               : baseProfileImg
                           }
                           className={style.contentTitleWinnerImg}
