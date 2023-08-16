@@ -1,8 +1,8 @@
-import { useRef } from "react";
 import { Row, Col } from "react-bootstrap";
 import style from "../debatePage.module.css";
 import UserVideoComponent from "../Openvidu/UserVideoComponent";
-import AudioSegmentationComponent from "../AudioSegmentationComponent"
+import AudioSegmentationComponent from "../AudioSegmentationComponent";
+import { useStompClient } from "../../../SocketContext";
 
 function Participate({
   roomId,
@@ -21,14 +21,12 @@ function Participate({
   myStatus,
   setMyStatus,
 }) {
-  const stompRef = useRef(null);
-  console.log("userId", userId);
-  console.log("roomId", roomId);
+  const stompClient = useStompClient();
 
   const handlePostPlayer = (isTopicA) => {
-    if (stompRef.current) {
-      console.log("A주제인가?", isTopicA);
-      stompRef.current.send(
+    console.log("이거되니?");
+    if (stompClient) {
+      stompClient.send(
         `/to/player/enter`,
         JSON.stringify({
           roomId: roomId,
@@ -45,20 +43,22 @@ function Participate({
       <Row className={`m-0 p-0`}>
         <Col className={`m-0 p-0`}>
           <div className={`${style.Participant} mx-auto`}>
-            {playerA === undefined && playerStatus[0] === false && status === "waiting" && (
-              <button
-                className={`${style.button} btn`}
-                onClick={() => {
-                  onRoleChange("participant");
-                  setPlayerStatus((prevStatus) => [true, prevStatus[1]]);
-                  handlePlayerAVideoStream(publisher);
-                  handlePostPlayer(true);
-                  setMyStatus(true);
-                }}
-              >
-                참가하기
-              </button>
-            )}
+            {playerA === undefined &&
+              playerStatus[0] === false &&
+              status === "waiting" && (
+                <button
+                  className={`${style.button} btn`}
+                  onClick={() => {
+                    onRoleChange("participant");
+                    setPlayerStatus((prevStatus) => [true, prevStatus[1]]);
+                    handlePlayerAVideoStream(publisher);
+                    handlePostPlayer(true);
+                    setMyStatus(true);
+                  }}
+                >
+                  참가하기
+                </button>
+              )}
             {playerA !== undefined && (
               <UserVideoComponent
                 className="playerA"
@@ -71,26 +71,32 @@ function Participate({
           {/* <div className={`${style.rightCount} m-0 p-0 mx-auto`}>
             <span>남은 연장 횟수: </span>
           </div> */}
-          <AudioSegmentationComponent roomId={roomId} userId={userId} myStatus={myStatus}/>
+          <AudioSegmentationComponent
+            roomId={roomId}
+            userId={userId}
+            myStatus={myStatus}
+          />
         </Col>
         <Col xs={1} className={`m-0 p-0`}></Col>
         <Col className={`m-0 p-0`}>
           <div className={`${style.Participant} mx-auto`}>
-            { playerB === undefined && playerStatus[1] === false && status === "waiting" && (
-              <button
-                className={`${style.button} btn`}
-                onClick={() => {
-                  onRoleChange("participant");
-                  setPlayerStatus((prevStatus) => [prevStatus[0], true]);
-                  handlePlayerBVideoStream(publisher);
-                  handlePostPlayer(false);
-                  setMyStatus(false);
-                }}
-              >
-                참가하기
-              </button>
-            )}
-            { playerB !== undefined && (
+            {playerB === undefined &&
+              playerStatus[1] === false &&
+              status === "waiting" && (
+                <button
+                  className={`${style.button} btn`}
+                  onClick={() => {
+                    onRoleChange("participant");
+                    setPlayerStatus((prevStatus) => [prevStatus[0], true]);
+                    handlePlayerBVideoStream(publisher);
+                    handlePostPlayer(false);
+                    setMyStatus(false);
+                  }}
+                >
+                  참가하기
+                </button>
+              )}
+            {playerB !== undefined && (
               <UserVideoComponent
                 className="playerB"
                 streamManager={playerB}

@@ -1,11 +1,9 @@
 import React, { useState, useRef, useEffect } from "react";
-import SockJS from "sockjs-client";
-import Stomp from "webstomp-client";
 import { userInfoState } from "../../../recoil/userInfo";
 import style from "../debatePage.module.css";
 import { useRecoilValue } from "recoil";
 import { Form, InputGroup } from "react-bootstrap";
-import { SOCKET_BASE_URL } from "../../../config";
+import { useStompClient } from "../../../SocketContext";
 
 function TextChatting({ roomId }) {
   const [inputText, setInputText] = useState("");
@@ -14,25 +12,21 @@ function TextChatting({ roomId }) {
 
   // 이 부분 다시 보기 / 채팅을 재참조하는 부분
   const chatAreaRef = useRef();
-  const stompRef = useRef(null);
+
+  const stompClient = useStompClient();
 
   useEffect(() => {
-    var sock = new SockJS(`${SOCKET_BASE_URL}`);
-    var stomp = Stomp.over(sock);
-    stomp.connect({}, function () {
-      // 이 부분 조금 수상 재참조하고, 구독하는 부분
-      stompRef.current = stomp;
-      stomp.subscribe(`/from/chat/${roomId}`, (message) => {
+    if (stompClient) {
+      // 여기에서 stompClient를 사용하여 작업 수행
+      stompClient.subscribe(`/from/chat/${roomId}`, (message) => {
         const content = JSON.parse(message.body);
-        // 이전 메시들에 새로운 메시지를 추가해서 chatMessages를 업데이트
         setChatMessages((prevMessages) => [
           ...prevMessages,
           { sender: content.nickName, text: content.message },
         ]);
       });
 
-      //페널티 채팅
-      stomp.subscribe(`/from/chat/penalty/${roomId}`, (message) => {
+      stompClient.subscribe(`/from/chat/penalty/${roomId}`, (message) => {
         const content = JSON.parse(message.body);
         const penaltyResult = {
           nickName: content.userName,
@@ -46,14 +40,8 @@ function TextChatting({ roomId }) {
           { sender: "admin", text: penaltyResult },
         ]);
       });
-    });
-
-    return () => {
-      if (stompRef.current) {
-        stompRef.current.disconnect();
-      }
-    };
-  }, [roomId, userInfo.nickname]);
+    }
+  }, [stompClient, roomId]);
 
   useEffect(() => {
     chatAreaRef.current.scrollTop = chatAreaRef.current.scrollHeight;
@@ -64,8 +52,9 @@ function TextChatting({ roomId }) {
   };
 
   const handleSendMessage = () => {
-    if (stompRef.current && inputText.trim() !== "") {
-      stompRef.current.send(
+    if (stompClient && inputText.trim() !== "") {
+      // 여기에서 stompClient를 사용하여 작업 수행
+      stompClient.send(
         "/to/chat",
         JSON.stringify({
           roomId: `${roomId}`,
@@ -73,16 +62,16 @@ function TextChatting({ roomId }) {
           message: inputText,
         })
       );
-      //heejeong : 패널티 소켓 테스트하려고 해놓은 것임.
-      // stompRef.current.send(
-      //   "/to/chat/penalty",
-      //   JSON.stringify({
-      //     roomId: `${roomId}`,
-      //     userId: 329,
-      //     isATopic: false,
-      //     penaltyCodeId: 2,
-      //   })
-      // );
+      // heejeong : 패널티 소켓 테스트하려고 해놓은 것임.
+      stompClient.send(
+        "/to/chat/penalty",
+        JSON.stringify({
+          roomId: `${roomId}`,
+          userId: 329,
+          isATopic: true,
+          penaltyCodeId: 2,
+        })
+      );
       setInputText("");
     }
   };

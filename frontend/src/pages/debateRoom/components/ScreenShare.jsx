@@ -1,12 +1,25 @@
-import { useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 import style from "../debatePage.module.css";
 import axios from "axios";
 import { OverlayTrigger, Tooltip } from "react-bootstrap";
+import { useStompClient } from "../../../SocketContext";
 
-function ScreenShare({ status, roomId, role, imgFileName, stompRef }) {
+function ScreenShare({ status, roomId, role }) {
+  const stompClient = useStompClient();
+  const [imgFileName, setImgFileName] = useState(null);
   const imageInputRef = useRef();
 
-    const handleImageChange = async (event) => {
+  useEffect(() => {
+    if (stompClient) {
+      stompClient.subscribe(`/from/room/file/${roomId}`, (message) => {
+        const messageData = JSON.parse(message.body);
+        setImgFileName(messageData.filePath);
+      });
+      console.log(imgFileName);
+    }
+  }, [stompClient, imgFileName]);
+
+  const handleImageChange = async (event) => {
     const file = event.target.files[0];
     // 이미지 등록 서버 저장
     const config = {
@@ -27,10 +40,7 @@ function ScreenShare({ status, roomId, role, imgFileName, stompRef }) {
       console.log("이미지 업데이트 응답:", response.data);
       const filePath = response.data.data;
       const stompMessage = { filePath: `${filePath}` };
-      stompRef.current.send(
-        `/to/room/file/${roomId}`,
-        JSON.stringify(stompMessage)
-      );
+      stompClient.send(`/to/room/file/${roomId}`, JSON.stringify(stompMessage));
     } catch (error) {
       console.error("이미지 업데이트 오류:", error);
     }
@@ -38,10 +48,7 @@ function ScreenShare({ status, roomId, role, imgFileName, stompRef }) {
 
   const handleRemoveImage = () => {
     const stompMessage = { filePath: null };
-    stompRef.current.send(
-      `/to/room/file/${roomId}`,
-      JSON.stringify(stompMessage)
-    );
+    stompClient.send(`/to/room/file/${roomId}`, JSON.stringify(stompMessage));
   };
 
   console.log(imgFileName);

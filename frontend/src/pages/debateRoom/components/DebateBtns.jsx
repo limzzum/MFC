@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useRef } from "react";
-import {AXIOS_BASE_URL, SOCKET_BASE_URL } from "../../../config";
+import React, { useState, useEffect } from "react";
+import { AXIOS_BASE_URL, SOCKET_BASE_URL } from "../../../config";
 import {
   Row,
   Col,
@@ -25,8 +25,9 @@ import { FiCameraOff, FiCamera } from "react-icons/fi";
 import { AiOutlineAudioMuted, AiOutlineAudio } from "react-icons/ai";
 import { FaUsers, FaFlag } from "react-icons/fa";
 import { MdMoreTime } from "react-icons/md";
-import { useRecoilState } from 'recoil';
-import { userReadyState } from '../../../recoil/debateStateAtom'
+import { useRecoilState } from "recoil";
+import { userReadyState } from "../../../recoil/debateStateAtom";
+import { useStompClient } from "../../../SocketContext";
 
 function DebateBtns({
   status,
@@ -49,7 +50,7 @@ function DebateBtns({
   isAudioOn,
   setIsAudioOn,
   stompRef,
-  setMyStatus
+  setMyStatus,
 }) {
   const [showModal, setShowModal] = useState(false);
   const [selectedTopic, setSelectedTopics] = useState([]);
@@ -60,43 +61,37 @@ function DebateBtns({
 
   const [isVideoOn, setIsVideoOn] = useState(true);
   // const [isAudioOn, setIsAudioOn] = useState(false);  // 토론방 입장시 MIC OFF 상태임
+  const stompClient = useStompClient();
 
-  //----------------------------------------------------------------------------------------
-  const stompClient = useRef(null); // useRef를 사용하여 stompClient 선언
-
-  const sendItemRequest = (itemId) => {
-    const requestUrl = "/to/player/item";
-    const requestData = {
-      roomId: `${roomId}`,
-      // "userId": `${userId}`,
-      userId: 2,
-      // isTopicA: selectedTopic.includes('A'),
-      isTopicA: selectedTopic.includes("A"),
-      itemCodeId: itemId,
-    };
-    console.log("전송 데이터:", requestData);
-
-    if (stompClient.current && stompClient.current.connected) {
-      stompClient.current.send(requestUrl, JSON.stringify(requestData));
-      console.log("전송성공");
-    } else {
-      console.error("소켓 연결이 아직 활성화되지 않았습니다.");
-    }
-  };
-  //----------------------------------------------------------------------------------------
   const handlePlayerOut = () => {
-    if(stompRef.current){
-      stompRef.current.send(
-        `/to/player/out`, 
+    if (stompClient) {
+      stompClient.send(
+        `/to/player/out`,
         JSON.stringify({
           roomId: roomId,
           userId: userId,
           isATopic: false,
           isReady: false,
         })
-      )
+      );
     }
-  }
+  };
+
+  useEffect(() => {
+    if (stompClient) {
+      stompClient.subscribe(`/from/player/out/${roomId}`, (message) => {
+        const content = JSON.parse(message.body);
+        console.log("플레이어 관전자로 나갔을 때 받는 메세지:", content);
+        removePlayer(content);
+      });
+      stompClient.subscribe(`/from/room/surrender/${roomId}`, (message) => {
+        const modalData = JSON.parse(message.body);
+        setResult(modalData);
+        onStatusChange("done");
+      });
+    }
+    // eslint-disable-next-line
+  }, [stompClient]);
 
   //----------------------------------------------------------------------------------------
   const handleVote = async () => {
@@ -170,7 +165,7 @@ function DebateBtns({
   const handleSurrenderClick = () => {
     console.log(userId);
     const stompMessage = { userId: userId, roomId: parseInt(roomId) };
-    stompRef.current.send(
+    stompClient.send(
       `/to/room/surrender/${roomId}/${userId}`,
       JSON.stringify(stompMessage)
     );
@@ -182,14 +177,36 @@ function DebateBtns({
     // setUserReady(prevState => ([prevState[0], !prevState[1]]));
     if (playerA === stream) {
       setPlayerA(undefined);
-      setPlayerStatus(prevState => ([!prevState[0], prevState[1]]));
-      setUserReady(prevState => (![prevState[0], prevState[1]]));
+      setPlayerStatus((prevState) => [!prevState[0], prevState[1]]);
+      setUserReady((prevState) => ![prevState[0], prevState[1]]);
     }
     if (playerB === stream) {
       setPlayerB(undefined);
-      setPlayerStatus(prevState => ([prevState[0], !prevState[1]]));
-      setUserReady(prevState => ([prevState[0], !prevState[1]]));
+      setPlayerStatus((prevState) => [prevState[0], !prevState[1]]);
+      setUserReady((prevState) => [prevState[0], !prevState[1]]);
     }
+  };
+
+  //====================================================================
+
+  // 아이템 관련 메서드 수정 필요함
+  const sendItemRequest = (itemId) => {
+    // const requestUrl = "/to/player/item";
+    // const requestData = {
+    //   roomId: `${roomId}`,
+    //   // "userId": `${userId}`,
+    //   userId: 2,
+    //   // isTopicA: selectedTopic.includes('A'),
+    //   isTopicA: selectedTopic.includes("A"),
+    //   itemCodeId: itemId,
+    // };
+    // console.log("전송 데이터:", requestData);
+    // if (stompClient.current && stompClient.current.connected) {
+    //   stompClient.current.send(requestUrl, JSON.stringify(requestData));
+    //   console.log("전송성공");
+    // } else {
+    //   console.error("소켓 연결이 아직 활성화되지 않았습니다.");
+    // }
   };
 
   return (

@@ -9,13 +9,25 @@ import {
   // faGear,
   faArrowRightFromBracket,
 } from "@fortawesome/free-solid-svg-icons";
+import { useStompClient } from "../../../SocketContext";
 
 function Header({
   status,
   leaveSession,
   handleModifyModalOpen,
-  handleOutRoom,
+  roomId,
+  userId,
+  // handleOutRoom,
 }) {
+  const stompClient = useStompClient();
+
+  const handleOutRoom = () => {
+    if (stompClient) {
+      stompClient.send(`/to/room/out/${roomId}/${userId}`);
+      stompClient.send(`/to/room/playerout/${roomId}/${userId}`);
+    }
+  };
+
   return (
     <header className={style.header}>
       <img className={style.logo} src={logoImage} alt="logo" />
