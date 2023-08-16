@@ -22,7 +22,7 @@ import DebateBtns from "./components/DebateBtns";
 import Spectator from "./components/Spectator";
 import RoomInfo from "./components/RoomInfo";
 import { userInfoState } from "../../recoil/userInfo";
-import { SOCKET_BASE_URL } from "../../config";
+import { SOCKET_BASE_URL, AXIOS_BASE_URL } from "../../config";
 // import getParticipate from '../../api/getParticipateAPI'; // 참가자 생길 때마다 호출해서 갱신해야하나? 물어봐야함
 
 import style from "./debatePage.module.css";
@@ -50,6 +50,10 @@ function DebatePage() {
   const [userReady, setUserReady] = useState(false);
   const [isModifyModalOpen, setIsModifyModalOpen] = useState(false);
   const [players, setPlayers] = useState([]);
+  const [ongoingRoomInfo, setOngoingRoomInfo] = useState(null);
+  const [playerAInfo, setPlayerAInfo] = useState(null);
+  const [playerBInfo, setPlayerBInfo] = useState(null);
+  const [isAudioOn, setIsAudioOn] = useState(false); 
 
   // 토론방 입장 웹소켓 코드
   const enterStompRef = useRef(null);
@@ -62,6 +66,10 @@ function DebatePage() {
         const content = JSON.parse(message.body);
         console.log("입장 데이터: ", content);
       });
+      stomp.subscribe(`/from/room/status/${roomId}`, (message) => {
+        const content = JSON.parse(message.body);
+        setOngoingRoomInfo(content);
+      })
     });
     // eslint-disable-next-line
   }, []);
@@ -487,6 +495,66 @@ function DebatePage() {
     setStatus(newStatus);
   };
 
+  const debateStart = () => {
+    setIsAudioOn(isAudioOn);
+    publisher.publishAudio(isAudioOn);
+    if (enterStompRef.current) {
+      enterStompRef.current.send(`/to/player/changeTurn/${roomId}`,JSON.stringify({
+        roomId: `${roomId}`,
+        userId: `${userInfo.id}`,
+        isATurn: true,
+      }));
+    }
+  };
+
+  const turnChange = () => {
+    setIsAudioOn(!isAudioOn);
+    publisher.publishAudio(!isAudioOn);
+    if (enterStompRef.current) {
+      if(ongoingRoomInfo.isATurn) {
+        enterStompRef.current.send(`/to/player/changeTurn/${roomId}`,JSON.stringify({
+          roomId: `${roomId}`,
+          userId: `${playerBInfo.viewerDto.userId}`,
+          isATurn: false,
+        }));
+      }else if(!ongoingRoomInfo.isATurn) {
+        enterStompRef.current.send(`/to/player/changeTurn/${roomId}`,JSON.stringify({
+          roomId: `${roomId}`,
+          userId: `${playerAInfo.viewerDto.userId}`,
+          isATurn: true,
+        }));
+      }
+      
+      
+    }
+  }
+  useEffect(() => {
+    if (debateRoomInfo?.data?.status) {
+      setStatus(debateRoomInfo.data.status.toLowerCase());
+    }
+  }, [debateRoomInfo, setStatus]);
+  
+  const ongoingRoomStartInfo = async () => {
+    try{
+      // const base_url = `http://localhost:8081/api/debate/status/${roomId}`;
+      const base_url = `${AXIOS_BASE_URL}/debate/status/${roomId}`;
+      const response = await axios.get(base_url, null);
+      setOngoingRoomInfo(response.data.data);
+      if(ongoingRoomInfo.curUserId === userInfo.id){
+        setIsAudioOn(isAudioOn);
+        publisher.publishAudio(isAudioOn);
+      }
+    } catch (e) {
+      console.log("토론방 시작 정보 가져오기 실패:", e);
+    }
+  }
+
+  useEffect(() => {
+    if (debateRoomInfo?.data?.status === "ONGOING") {
+      ongoingRoomStartInfo();
+    }
+  });
+
   const handleRoleChange = (newRole) => {
     setRole(newRole);
   };
@@ -538,6 +606,12 @@ function DebatePage() {
                   userInfo={userInfo}
                   players={players}
                   roomId={roomId}
+                  playerAInfo={playerAInfo}
+                  setPlayerAInfo={setPlayerAInfo}
+                  setPlayerBInfo={setPlayerBInfo}
+                  debateStart={debateStart}
+                  ongoingRoomInfo={ongoingRoomInfo}
+                  turnChange={turnChange}
                 />
               </Row>
               <Row>
@@ -580,6 +654,8 @@ function DebatePage() {
                   userId={userInfo.id}
                   setResult={setResult}
                   removePlayer={removePlayer}
+                  isAudioOn={isAudioOn}
+                  setIsAudioOn={setIsAudioOn}
                 />
               </Row>
             </Col>
