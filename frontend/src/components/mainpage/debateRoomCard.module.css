@@ -2,7 +2,7 @@
 @import url(../../colorSelector.css);
 
 .card {
-  width: 280px;
+  width: 250px;
   /* min-height: 280px; */
   display: flex;
   flex-direction: column;
@@ -36,19 +36,19 @@
   flex: 1;
   display: flex;
   flex-direction: column;
-  font-size: 16px;
+  font-size: 12px;
 }
 
 .cardtitle {
   color: var(--blue-800);
-  font-size: 17px;
+  font-size: 14px;
   font-weight: bolder;
   margin-bottom: 10px;
   text-align: center;
 }
 
 .cardtext {
-  font-size: 14px;
+  font-size: 12px;
   text-align: center;
 }
 
