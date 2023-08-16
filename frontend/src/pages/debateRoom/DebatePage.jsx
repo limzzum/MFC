@@ -684,7 +684,7 @@ function DebatePage() {
             <Col xs={3}>
               <Stack gap={1}>
                 <ScreenShare roomId={roomId} role={role} status={status} imgFileName={imgFileName} stompRef={stompRef}/>
-                <TextChatting roomId={roomId} />
+                <TextChatting roomId={roomId} stompRef={stompRef} />
               </Stack>
             </Col>
           </Row>
