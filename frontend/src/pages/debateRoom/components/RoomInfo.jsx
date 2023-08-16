@@ -87,6 +87,7 @@ useEffect(() => {
       stompRef.current.disconnect();
     }
   };
+  // eslint-disable-next-line
 }, [roomId]);
 
 const handleReadyClick = (isATopic) => {
