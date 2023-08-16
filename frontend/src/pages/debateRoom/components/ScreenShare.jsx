@@ -17,7 +17,7 @@ function ScreenShare({ status, roomId, role }) {
       });
       console.log(imgFileName);
     }
-  }, [stompClient, imgFileName]);
+  }, [stompClient, imgFileName, roomId]);
 
   const handleImageChange = async (event) => {
     const file = event.target.files[0];
