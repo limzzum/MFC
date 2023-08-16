@@ -25,6 +25,8 @@ import { FiCameraOff, FiCamera } from "react-icons/fi";
 import { AiOutlineAudioMuted, AiOutlineAudio } from "react-icons/ai";
 import { FaUsers, FaFlag } from "react-icons/fa";
 import { MdMoreTime } from "react-icons/md";
+import { useRecoilState } from 'recoil';
+import { userReadyState } from '../../../recoil/debateStateAtom'
 
 function DebateBtns({
   status,
@@ -32,7 +34,7 @@ function DebateBtns({
   onRoleChange,
   debateRoomInfo,
   setPlayerStatus,
-  setUserReady,
+
   roomId, //추가
   userId,
   itemCodeId, // 추가
@@ -53,6 +55,7 @@ function DebateBtns({
   const [isVotingEnabled, setVotingEnabled] = useState(true);
   const votingCooldown = debateRoomInfo.talkTime * 120;
   const [remainingTime, setRemainingTime] = useState(votingCooldown);
+  const [, setUserReady] = useRecoilState(userReadyState);
 
   const [isVideoOn, setIsVideoOn] = useState(true);
   // const [isAudioOn, setIsAudioOn] = useState(false);  // 토론방 입장시 MIC OFF 상태임
@@ -175,13 +178,16 @@ function DebateBtns({
   //==========================================================================
   const handleRoleChangeToSpectator = (stream) => {
     onRoleChange("spectator");
-    setPlayerStatus([false, false]);
-    setUserReady(false);
+    // setUserReady(prevState => ([prevState[0], !prevState[1]]));
     if (playerA === stream) {
       setPlayerA(undefined);
+      setPlayerStatus(prevState => ([!prevState[0], prevState[1]]));
+      setUserReady(prevState => (![prevState[0], prevState[1]]));
     }
     if (playerB === stream) {
       setPlayerB(undefined);
+      setPlayerStatus(prevState => ([prevState[0], !prevState[1]]));
+      setUserReady(prevState => ([prevState[0], !prevState[1]]));
     }
   };
 
