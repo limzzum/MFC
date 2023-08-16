@@ -129,7 +129,7 @@ function DebatePage() {
       modifyStompRef.current = stomp;
       stomp.subscribe(`/from/room/update/${roomId}`, (message) => {
         const content = JSON.parse(message.body);
-        // console.log(content);
+        console.log(content);
       });
 
       const stompMessage = { roomId: roomId };
@@ -190,7 +190,7 @@ function DebatePage() {
         setPlayerB(undefined);
         setPlayerStatus((prevStatus) => [prevStatus[0], !prevStatus[1]]);
       }
-      // eslint-disable-next-line
+    // eslint-disable-next-line
     },
     [playerA, playerB]
   );
