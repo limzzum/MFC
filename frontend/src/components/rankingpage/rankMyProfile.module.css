@@ -2,10 +2,10 @@
 
 .boxProfile {
   /* line-height: 400px; */
-  width: 400px;
+  width: 350px;
   margin: 15% auto;
   height: 400px;
-  padding-top: 40px;
+  padding-top: 55px;
   /* background: #e9edf5ff; */
   background: var(--blue-800);
   border-radius: 20px;
