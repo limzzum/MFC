@@ -7,7 +7,7 @@ import Stomp from "webstomp-client";
 
 const API_KEY = 'AIzaSyCNTWbM6BWxnN44DljLSoBhwYWFND0Ua2Y'; // Perspective API Key
 
-const AudioSegmentationComponent = (roomId, userId) => {
+const AudioSegmentationComponent = (roomId, myStatus) => {
     const [audioStream, setAudioStream] = useState(null);
     const [toxicityDetected, setToxicityDetected] = useState(false); // New state to track if toxicity was detected
     const audioContextRef = useRef(null);
@@ -39,7 +39,7 @@ const AudioSegmentationComponent = (roomId, userId) => {
 
               if (toxicityScore >= 0.7 || severeToxicityScore >= 0.7) {
                 console.log(roomId);
-                const stompMessage = { userId: roomId.userId, roomId: parseInt(roomId.roomId), isATopic : true, penaltyCodeId : 1 };
+                const stompMessage = { userId: roomId.userId, roomId: parseInt(roomId.roomId), isATopic : {myStatus}, penaltyCodeId : 1 };
                 console.log(stompRef)
                 stompRef.current.send(
                   `/to/chat/penalty`,
