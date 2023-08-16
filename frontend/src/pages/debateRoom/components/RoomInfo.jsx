@@ -99,6 +99,7 @@ const handleReadyClick = (isATopic) => {
       isReady: userReady[isATopic ? 0 : 1]
     };
     stompRef.current.send("/to/player/ready", {}, JSON.stringify(payload));
+
   }
 }
 //===========================================================================
