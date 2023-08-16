@@ -77,8 +77,6 @@ const handleReadyClick = (isATopic) => {
 
   useEffect(() => {
     if (status === "ongoing") {
-    console.log("dddddddddddddddddddddddddddddddddddddddddddddddddddddd");
-    console.log(playerAInfo);
       // 총 토론시간 타이머
       const totalTimer = setInterval(() => {
         const currentTime = new Date();
