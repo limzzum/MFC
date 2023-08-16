@@ -3,8 +3,6 @@ import axios from "axios";
 import { OpenVidu } from "openvidu-browser";
 import { useParams } from "react-router-dom";
 import { useRecoilValue } from "recoil";
-import SockJS from "sockjs-client";
-import Stomp from "webstomp-client";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCoins, faFaceSmile } from "@fortawesome/free-solid-svg-icons";
 import {
@@ -22,7 +20,7 @@ import DebateBtns from "./components/DebateBtns";
 import Spectator from "./components/Spectator";
 import RoomInfo from "./components/RoomInfo";
 import { userInfoState } from "../../recoil/userInfo";
-import { SOCKET_BASE_URL, AXIOS_BASE_URL } from "../../config";
+import { AXIOS_BASE_URL } from "../../config";
 // import getParticipate from '../../api/getParticipateAPI'; // 참가자 생길 때마다 호출해서 갱신해야하나? 물어봐야함
 
 import style from "./debatePage.module.css";
@@ -31,7 +29,7 @@ import style from "./debatePage.module.css";
 import baseProfileImg from "../../images/baseProfile.png";
 import ModifyRoomModal from "./components/modifyRoomModal";
 
-import { SocketProvider, useStompClient } from "../../SocketContext";
+import { useStompClient } from "../../SocketContext";
 
 const APPLICATION_SERVER_URL = "https://goldenteam.site/";
 
@@ -63,9 +61,6 @@ function DebatePage() {
   const [user1HP, setUser1HP] = useState(100);
   const [user2HP, setUser2HP] = useState(100);
 
-  // ScreenShare
-  const [imgFileName, setImgFileName] = useState(null);
-
   // myStatus
   const [myStatus, setMyStatus] = useState(null);
 
@@ -93,27 +88,6 @@ function DebatePage() {
   //   stomp.connect({}, function () {
   //     stompRef.current = stomp;
 
-  //     stomp.subscribe(`/from/room/enter/${roomId}`, (message) => {
-  //       const content = JSON.parse(message.body);
-  //       console.log("입장 데이터: ", content);
-  //     });
-
-  //     stomp.subscribe(`/from/room/status/${roomId}`, (message) => {
-  //       const content = JSON.parse(message.body);
-  //       setOngoingRoomInfo(content);
-  //     });
-
-  //     // stomp.subscribe(`/from/room/out/${roomId}`, (message) => {
-  //     //   const content = JSON.parse(message.body);
-  //     //   console.log(`토론방 퇴장 메시지: ${content}`);
-  //     // });
-
-  //     // 토론방 수정 웹소켓 코드
-  //     stomp.subscribe(`/from/room/update/${roomId}`, (message) => {
-  //       const content = JSON.parse(message.body);
-  //       console.log(content);
-  //     });
-
   //     // RoomInfo Ready subscribe
   //     stomp.subscribe(`/from/player/ready/${roomId}`, (message) => {
   //       console.log(`RoomInfo Ready ${message.body}`);
@@ -127,20 +101,6 @@ function DebatePage() {
   //       // console.log(`여기는 모두 다 레디 ${content.isAllReady}`)
   //     });
 
-  //     // RoomInfo Player Status
-  //     stomp.subscribe(`/from/player/status/${roomId}`, (message) => {
-  //       const content = JSON.parse(message.body);
-  //       console.log("@@@@");
-  //       console.log(content.isATopic);
-  //       console.log(content.hp);
-
-  //       if (content.isATopic) {
-  //         setUser1HP(content.hp);
-  //       } else {
-  //         setUser2HP(content.hp);
-  //       }
-  //     });
-
   //     stomp.subscribe(`/from/player/enter/${roomId}`, (message) => {
   //       const content = JSON.parse(message.body);
   //       console.log("플레이어 등록 응답", content); // 데이터 파싱해서 프론트에 저장?
@@ -152,21 +112,10 @@ function DebatePage() {
   //       console.log("Item response received:", message);
   //     });
 
-  //     stomp.subscribe(`/from/player/out/${roomId}`, (message) => {
-  //       const content = JSON.parse(message.body);
-  //       console.log("플레이어 관전자로 나갔을 때 받는 메세지:", content);
-  //       removePlayer(content);
-  //     });
-
   //     stomp.subscribe(`/from/room/surrender/${roomId}`, (message) => {
   //       const modalData = JSON.parse(message.body);
   //       setResult(modalData);
   //       handleStatusChange("done");
-  //     });
-
-  //     stomp.subscribe(`/from/room/file/${roomId}`, (message) => {
-  //       const messageData = JSON.parse(message.body);
-  //       setImgFileName(messageData.filePath);
   //     });
 
   //     stomp.subscribe(`/from/vote/${roomId}`, (message) => {
@@ -177,23 +126,11 @@ function DebatePage() {
   //   // eslint-disable-next-line
   // }, [roomId, userInfo.id, playerStatus, imgFileName, userInfo.nickname]);
 
-  // const handleEnterRoom = () => {
-  //   if (stompRef.current) {
-  //     stompRef.current.send(`/to/room/enter/${roomId}/${userInfo.id}`);
-  //   }
-  // };
-
   const handleEnterRoom = () => {
     if (stompClient) {
       stompClient.send(`/to/room/enter/${roomId}/${userInfo.id}`);
     }
   };
-
-  // const handleOutRoom = () => {
-  //   if (stompRef.current) {
-  //     stompRef.current.send(`/to/room/out/${roomId}/${userInfo.id}`);
-  //   }
-  // };
 
   const [result, setResult] = useState({
     userProfile: "",
@@ -727,7 +664,6 @@ function DebatePage() {
                   roomId={roomId}
                   role={role}
                   status={status}
-                  imgFileName={imgFileName}
                   stompRef={stompRef}
                 />
                 <TextChatting roomId={roomId} stompRef={stompRef} />
