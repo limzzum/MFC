@@ -48,6 +48,10 @@ public class UserController {
         if (loginId == null) {
             return new Message(HttpStatus.OK, "일치하는 사용자가 없습니다.", null);
         }
+        User user = userService.findById(loginId);
+        if(user.isDeleted()){
+            return new Message(HttpStatus.OK, "일치하는 사용자가 없습니다.", null);
+        }
         String jwtToken = securityService.createJwtToken(String.valueOf(loginId));
         return new Message(HttpStatus.OK, "로그인 성공", new LoginResultDto(loginId, jwtToken));
     }

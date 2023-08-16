@@ -44,6 +44,8 @@ function DebateBtns({
   setResult,
   onStatusChange,
   removePlayer,
+  isAudioOn,
+  setIsAudioOn
 }) {
   const [showModal, setShowModal] = useState(false);
   const [selectedTopic, setSelectedTopics] = useState([]);
@@ -52,7 +54,7 @@ function DebateBtns({
   const [remainingTime, setRemainingTime] = useState(votingCooldown);
 
   const [isVideoOn, setIsVideoOn] = useState(true);
-  const [isAudioOn, setIsAudioOn] = useState(false);  // 토론방 입장시 MIC OFF 상태임
+  // const [isAudioOn, setIsAudioOn] = useState(false);  // 토론방 입장시 MIC OFF 상태임
 
   //----------------------------------------------------------------------------------------
   const stompClient = useRef(null); // useRef를 사용하여 stompClient 선언

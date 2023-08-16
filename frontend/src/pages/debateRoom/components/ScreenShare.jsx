@@ -1,10 +1,10 @@
 import { useState, useEffect, useRef } from "react";
 import style from "../debatePage.module.css";
-import { Button } from "react-bootstrap";
 import SockJS from "sockjs-client";
 import Stomp from "webstomp-client";
 import axios from "axios";
 import { SOCKET_BASE_URL } from "../../../config.js";
+import { OverlayTrigger, Tooltip } from "react-bootstrap";
 
 function ScreenShare({ status, roomId, role }) {
   const [imgFileName, setImgFileName] = useState(null);
@@ -76,17 +76,17 @@ function ScreenShare({ status, roomId, role }) {
     <div>
       <div className={style.screenShare}>
         {imgFileName ? (
-          <div className={style.uploadedContainer}>
+          <OverlayTrigger
+            placement="top"
+            overlay={<Tooltip>클릭 시, 사진 공유가 취소됩니다</Tooltip>}
+          >
             <img
               src={`https://goldenteam.site/profiles/${imgFileName}`}
               alt="Uploaded"
-              className={style.uploadedImage}
-              style={{ objectFit: "contain" }}
+              className={style.shareImg}
+              onClick={handleRemoveImage}
             />
-            <Button variant="danger" onClick={handleRemoveImage}>
-              이미지 제거
-            </Button>
-          </div>
+          </OverlayTrigger>
         ) : (
           <div>
             <input

@@ -20,14 +20,19 @@ function RoomInfo({
   setUserReady,
   players,
   roomId,
+  setPlayerAInfo,
+  setPlayerBInfo,
+  debateStart,
+  ongoingRoomInfo,
+  userInfo,
+  turnChange,
+  playerAInfo
 }) {
   const total = debateRoomInfo.totalTime * 60;
   const talk = debateRoomInfo.talkTime * 60;
 
   const [totalTime, setTotalTime] = useState(total);
   const [speechTime, setSpeechTime] = useState(talk);
-  const [playerA, setPlayerA] = useState(undefined);
-  const [playerB, setPlayerB] = useState(undefined);
   const formatTime = (time) => {
     const minutes = Math.floor(time / 60);
     const seconds = time % 60;
@@ -49,15 +54,19 @@ function RoomInfo({
 
   const [user1HP, setUser1HP] = useState(100);
   const [user2HP, setUser2HP] = useState(100);
+  const [playerAHistory,setPlayerAHistory] = useState(null);
+  const [playerBHistory,setPlayerBHistory] = useState(null);
 
   const stompRef = useRef(null);
 
   useEffect(() => {
     if (status === "ongoing") {
+    console.log("dddddddddddddddddddddddddddddddddddddddddddddddddddddd");
+    console.log(playerAInfo);
       // 총 토론시간 타이머
       const totalTimer = setInterval(() => {
         const currentTime = new Date();
-        const startTime = new Date(debateRoomInfo.startTime);
+        const startTime = new Date(debateRoomInfo?.startTime);
         const timeDifferenceInMillis = currentTime - startTime;
         const seconds = Math.floor(timeDifferenceInMillis / 1000);
         const minutes = Math.floor(seconds / 60);
@@ -74,20 +83,27 @@ function RoomInfo({
       }, 1000);
       // 1회 발언시간 타이머
       const speechTimer = setInterval(() => {
+        const currentTime1 = new Date();
+        const startTime1 = new Date(ongoingRoomInfo?.startTalkTime);
+        const timeDifferenceInMillis1 = currentTime1 - startTime1;
+        const seconds1 = Math.floor(timeDifferenceInMillis1 / 1000);
         if (speechTime > 0 && totalTime > 0) {
-          setSpeechTime((prevTime) => prevTime - 1);
+          setSpeechTime(talk-seconds1);
         }
       }, 1000);
 
       if (speechTime === 0 && totalTime > 0) {
-        setSpeechTime(talk);
+        // setSpeechTime(talk);
+        if(userInfo.id === ongoingRoomInfo?.curUserId) {
+          turnChange();
+        }
       }
 
       return () => {
         clearInterval(totalTimer);
         clearInterval(speechTimer);
       };
-    }
+    }// eslint-disable-next-line
   }, [
     status,
     onStatusChange,
@@ -102,7 +118,11 @@ function RoomInfo({
   useEffect(() => {
     if (status === "waiting" && userReady[0] && userReady[1]) {
       onStatusChange("ongoing");
+      if(userInfo.id === playerAInfo.viewerDto.userId) {
+        debateStart();
+      }
     }
+    // eslint-disable-next-line
   }, [userReady, status, onStatusChange]);
 
   const playerGetHistory = async (userId) => {
@@ -120,11 +140,13 @@ function RoomInfo({
       if (player) {
         if (player.topicTypeA) {
           playerGetHistory(player.viewerDto.userId).then((promiseResult) => {
-            setPlayerA(promiseResult);
+            setPlayerAInfo(player);
+            setPlayerAHistory(promiseResult);
           });
         } else {
           playerGetHistory(player.viewerDto.userId).then((promiseResult) => {
-            setPlayerB(promiseResult);
+            setPlayerBInfo(player);
+            setPlayerBHistory(promiseResult);
           });
         }
       }
@@ -174,39 +196,39 @@ function RoomInfo({
       </Row>
       <Row className={`m-0`}>
         <Col className={style.userInfo}>
-          {playerA && playerA.nickName ? (
-            <span>{playerA.nickName}&nbsp;</span>
+          {playerAHistory && playerAHistory.nickName ? (
+            <span>{playerAHistory.nickName}&nbsp;</span>
           ) : (
             <span>사용자1&nbsp;</span>
           )}
           <span>
             <strong>승</strong>{" "}
-            {playerA && playerA.nickName ? (
-              <span>{playerA.winCount}&nbsp;</span>
+            {playerAHistory && playerAHistory.nickName ? (
+              <span>{playerAHistory.winCount}&nbsp;</span>
             ) : (
               <span>&nbsp;</span>
             )}
           </span>
           <span>
             무&nbsp;{" "}
-            {playerA && playerA.nickName ? (
-              <span>{playerA.drawCount}&nbsp;</span>
+            {playerAHistory && playerAHistory.nickName ? (
+              <span>{playerAHistory.drawCount}&nbsp;</span>
             ) : (
               <span>&nbsp;</span>
             )}
           </span>
           <span>
             패&nbsp;{" "}
-            {playerA && playerA.nickName ? (
-              <span>{playerA.loseCount}&nbsp;</span>
+            {playerAHistory && playerAHistory.nickName ? (
+              <span>{playerAHistory.loseCount}&nbsp;</span>
             ) : (
               <span>&nbsp;</span>
             )}
           </span>
           <span>
             승률{" "}
-            {playerA && playerA.nickName ? (
-              <span>{playerA.winRate.toFixed(0)}%&nbsp;</span>
+            {playerAHistory && playerAHistory.nickName ? (
+              <span>{playerAHistory.winRate.toFixed(0)}%&nbsp;</span>
             ) : (
               <span>&nbsp;</span>
             )}
@@ -219,39 +241,39 @@ function RoomInfo({
           </div>
         </Col>
         <Col className={style.userInfo}>
-          {playerB && playerB.nickName ? (
-            <span>{playerB.nickName}&nbsp;</span>
+          {playerBHistory && playerBHistory.nickName ? (
+            <span>{playerBHistory.nickName}&nbsp;</span>
           ) : (
             <span>사용자2&nbsp;</span>
           )}
           <span>
             <strong>승</strong>{" "}
-            {playerB && playerB.nickName ? (
-              <span>{playerB.winCount}&nbsp;</span>
+            {playerBHistory && playerBHistory.nickName ? (
+              <span>{playerBHistory.winCount}&nbsp;</span>
             ) : (
               <span>&nbsp;</span>
             )}
           </span>
           <span>
             무&nbsp;{" "}
-            {playerB && playerB.nickName ? (
-              <span>{playerB.drawCount}&nbsp;</span>
+            {playerBHistory && playerBHistory.nickName ? (
+              <span>{playerBHistory.drawCount}&nbsp;</span>
             ) : (
               <span>&nbsp;</span>
             )}
           </span>
           <span>
             패&nbsp;{" "}
-            {playerB && playerB.nickName ? (
-              <span>{playerB.loseCount}&nbsp;</span>
+            {playerBHistory && playerBHistory.nickName ? (
+              <span>{playerBHistory.loseCount}&nbsp;</span>
             ) : (
               <span>&nbsp;</span>
             )}
           </span>
           <span>
             승률{" "}
-            {playerB && playerB.nickName ? (
-              <span>{playerB.winRate.toFixed(0)}%&nbsp;</span>
+            {playerBHistory && playerBHistory.nickName ? (
+              <span>{playerBHistory.winRate.toFixed(0)}%&nbsp;</span>
             ) : (
               <span>&nbsp;</span>
             )}
