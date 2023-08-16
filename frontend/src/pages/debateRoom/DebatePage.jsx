@@ -54,48 +54,115 @@ function DebatePage() {
   const [playerBInfo, setPlayerBInfo] = useState(null);
   const [isAudioOn, setIsAudioOn] = useState(false); 
   // 토론방 입장 웹소켓 코드
-  const enterStompRef = useRef(null);
+  const stompRef = useRef(null);
+
+  // roomInfo
+  const [user1HP, setUser1HP] = useState(100);
+  const [user2HP, setUser2HP] = useState(100);
+  
+  // ScreenShare
+  const [imgFileName, setImgFileName] = useState(null);
 
   useEffect(() => {
     var sock = new SockJS(`${SOCKET_BASE_URL}`);
     var stomp = Stomp.over(sock);
     stomp.connect({}, function () {
-      enterStompRef.current = stomp;
+      stompRef.current = stomp;
+      
       stomp.subscribe(`/from/room/enter/${roomId}`, (message) => {
         const content = JSON.parse(message.body);
         console.log("입장 데이터: ", content);
       });
+      
       stomp.subscribe(`/from/room/status/${roomId}`, (message) => {
         const content = JSON.parse(message.body);
         setOngoingRoomInfo(content);
       })
-    });
-    // eslint-disable-next-line
-  }, []);
-
-  const handleEnterRoom = () => {
-    if (enterStompRef.current) {
-      enterStompRef.current.send(`/to/room/enter/${roomId}/${userInfo.id}`);
-    }
-  };
-
-  // 토론방 퇴장 웹소켓 코드
-  const outStompRef = useRef(null);
-  useEffect(() => {
-    var sock = new SockJS(`${SOCKET_BASE_URL}`);
-    var stomp = Stomp.over(sock);
-    stomp.connect({}, function () {
-      outStompRef.current = stomp;
+      
       stomp.subscribe(`/from/room/out/${roomId}`, (message) => {
         const content = JSON.parse(message.body);
         console.log(`토론방 퇴장 메시지: ${content}`);
       });
+
+      // 토론방 수정 웹소켓 코드
+      stomp.subscribe(`/from/room/update/${roomId}`, (message) => {
+        const content = JSON.parse(message.body);
+        console.log(content);
+      });
+
+      // RoomInfo Ready subscribe
+      stomp.subscribe(`/from/player/ready/${roomId}`, (message) => {
+        console.log(`RoomInfo Ready ${message.body}`)      
+        // const content = JSON.parse(message.body);
+        // 여기서 받은 데이터를 처리할 수 있습니다.
+        // console.log(`여기는 ${content.isReady}`)  
+        // console.log(`여기는 유저 1번 ${userReady[0]}`)
+        // console.log(`여기는 유저 2번 ${userReady[1]}`)
+        // console.log(`여기는 유저 1번 ${userReady[0]}`)
+        // console.log(`여기는 유저 2번 ${userReady[1]}`)
+        // console.log(`여기는 모두 다 레디 ${content.isAllReady}`)     
+      });
+
+      // RoomInfo Player Status
+      stomp.subscribe(`/from/player/status/${roomId}`, (message) => {
+        const content = JSON.parse(message.body);
+        console.log("@@@@");
+        console.log(content.isATopic);
+        console.log(content.hp);
+
+        if (content.isATopic) {
+          setUser1HP(content.hp);
+        } else {
+          setUser2HP(content.hp);
+        }
+      });
+      
+      stomp.subscribe(`/from/player/enter/${roomId}`, (message) => {
+        const content = JSON.parse(message.body);
+        console.log("플레이어 등록 응답", content); // 데이터 파싱해서 프론트에 저장?
+        updatePlayer(content);
+      });
+
+      stomp.subscribe(`/from/player/${roomId}`, (response) => {
+        const message = JSON.parse(response.body);
+        console.log("Item response received:", message);
+      });
+      
+      stomp.subscribe(`/from/player/out/${roomId}`, (message) => {
+        const content = JSON.parse(message.body);
+        console.log("플레이어 관전자로 나갔을 때 받는 메세지:", content);
+        removePlayer(content);
+      })
+
+      stomp.subscribe(`/from/room/surrender/${roomId}`, (message) => {
+        const modalData = JSON.parse(message.body);
+        setResult(modalData);
+        handleStatusChange("done");
+      });
+
+      stomp.subscribe(`/from/room/file/${roomId}`, (message) => {
+        const messageData = JSON.parse(message.body);
+        setImgFileName(messageData.filePath);
+      });
+
+      stomp.subscribe(`/from/vote/${roomId}`, (message) => {
+        const voteResultMessage = JSON.parse(message.body);
+        setVoteResult(voteResultMessage);
+      });
+
     });
-  });
+    // eslint-disable-next-line
+  }, [roomId, userInfo.id, playerStatus, imgFileName, userInfo.nickname]);
+
+  const handleEnterRoom = () => {
+    if (stompRef.current) {
+      stompRef.current.send(`/to/room/enter/${roomId}/${userInfo.id}`);
+    }
+  };
 
   const handleOutRoom = () => {
-    if (outStompRef.current) {
-      outStompRef.current.send(`/to/room/out/${roomId}/${userInfo.id}`);
+    if (stompRef.current) {
+      stompRef.current.send(`/to/room/out/${roomId}/${userInfo.id}`);
     }
   };
 
@@ -119,28 +186,7 @@ function DebatePage() {
     isSurrender: true,
     isExit: false,
   });
-  // 토론방 수정 웹소켓 코드
-  const modifyStompRef = useRef(null);
-  useEffect(() => {
-    var sock = new SockJS(`${SOCKET_BASE_URL}`);
-    var stomp = Stomp.over(sock);
-    stomp.connect({}, function () {
-      modifyStompRef.current = stomp;
-      stomp.subscribe(`/from/room/update/${roomId}`, (message) => {
-        const content = JSON.parse(message.body);
-        console.log(content);
-      });
-
-      const stompMessage = { roomId: roomId };
-      console.log(stompMessage, "");
-    });
-    // return () => {
-    //   if (modifyStompRef.current) {
-    //     modifyStompRef.current.disconnect();
-    //   }
-    // };
-  });
-  // 코드 끝
+  
 
   const handleModifyModalOpen = () => {
     setIsModifyModalOpen((prev) => !prev);
@@ -283,7 +329,7 @@ function DebatePage() {
   //_________________________________________________________________________________________
   // const stompRef = useRef(null);
   // useEffect(() => {
-  //   const sock = new SockJS(`${BASE_URL}`);
+  //   const sock = new SockJS(`${SOCKET_BASE_URL}`);
   //   const stomp = Stomp.over(sock);
 
   //   stompRef.current = stomp;
@@ -383,31 +429,6 @@ function DebatePage() {
   console.log("debateRoomInfo: ", debateRoomInfo);
   console.log("voteResult: ", voteResult);
 
-  // const result = {
-  //   status: "OK",
-  //   message: "관전자에게 토론 결과 보내기 성공",
-  //   data: {
-  //     winner: "user1",
-  //     winnerImg: "",
-  //     a: {
-  //       vote: 3,
-  //       hp: 85,
-  //       coin: 302,
-  //       exp: 55,
-  //     },
-  //     b: {
-  //       vote: 7,
-  //       hp: 55,
-  //       coin: 200,
-  //       exp: 96,
-  //     },
-  //     isSurrender: false,
-  //     isExit: false,
-  //   },
-  // };
-
-  // const totalVote = result.data.a.vote + result.data.b.vote;
-
   // recoil 상태를 사용하는 훅
   const [status, setStatus] = useStatus();
   const [role, setRole] = useRole();
@@ -497,8 +518,8 @@ function DebatePage() {
   const debateStart = () => {
     setIsAudioOn(isAudioOn);
     publisher.publishAudio(isAudioOn);
-    if (enterStompRef.current) {
-      enterStompRef.current.send(`/to/player/changeTurn/${roomId}`,JSON.stringify({
+    if (stompRef.current) {
+      stompRef.current.send(`/to/player/changeTurn/${roomId}`,JSON.stringify({
         roomId: `${roomId}`,
         userId: `${userInfo.id}`,
         isATurn: true,
@@ -509,15 +530,15 @@ function DebatePage() {
   const turnChange = () => {
     setIsAudioOn(!isAudioOn);
     publisher.publishAudio(!isAudioOn);
-    if (enterStompRef.current) {
+    if (stompRef.current) {
       if(ongoingRoomInfo.isATurn) {
-        enterStompRef.current.send(`/to/player/changeTurn/${roomId}`,JSON.stringify({
+        stompRef.current.send(`/to/player/changeTurn/${roomId}`,JSON.stringify({
           roomId: `${roomId}`,
           userId: `${playerBInfo.viewerDto.userId}`,
           isATurn: false,
         }));
       }else if(!ongoingRoomInfo.isATurn) {
-        enterStompRef.current.send(`/to/player/changeTurn/${roomId}`,JSON.stringify({
+        stompRef.current.send(`/to/player/changeTurn/${roomId}`,JSON.stringify({
           roomId: `${roomId}`,
           userId: `${playerAInfo.viewerDto.userId}`,
           isATurn: true,
@@ -610,6 +631,9 @@ function DebatePage() {
                   debateStart={debateStart}
                   ongoingRoomInfo={ongoingRoomInfo}
                   turnChange={turnChange}
+                  stompRef={stompRef}
+                  user1HP={user1HP}
+                  user2HP={user2HP}
                 />
               </Row>
               <Row>
@@ -653,12 +677,13 @@ function DebatePage() {
                   removePlayer={removePlayer}
                   isAudioOn={isAudioOn}
                   setIsAudioOn={setIsAudioOn}
+                  stompRef={stompRef}
                 />
               </Row>
             </Col>
             <Col xs={3}>
               <Stack gap={1}>
-                <ScreenShare roomId={roomId} role={role} status={status} />
+                <ScreenShare roomId={roomId} role={role} status={status} imgFileName={imgFileName} stompRef={stompRef}/>
                 <TextChatting roomId={roomId} />
               </Stack>
             </Col>
@@ -677,7 +702,7 @@ function DebatePage() {
               roomId={roomId}
               isModifyModalOpen={isModifyModalOpen}
               handleModal={handleModifyModalOpen}
-              stompRef={modifyStompRef.current}
+              stompRef={stompRef.current}
             />
           )}
           {/* 토론 결과 Modal*/}

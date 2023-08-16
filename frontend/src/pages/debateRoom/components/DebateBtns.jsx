@@ -25,6 +25,8 @@ import { FiCameraOff, FiCamera } from "react-icons/fi";
 import { AiOutlineAudioMuted, AiOutlineAudio } from "react-icons/ai";
 import { FaUsers, FaFlag } from "react-icons/fa";
 import { MdMoreTime } from "react-icons/md";
+import { useRecoilState } from 'recoil';
+import { userReadyState } from '../../../recoil/debateStateAtom'
 
 function DebateBtns({
   status,
@@ -32,7 +34,7 @@ function DebateBtns({
   onRoleChange,
   debateRoomInfo,
   setPlayerStatus,
-  setUserReady,
+
   roomId, //추가
   userId,
   itemCodeId, // 추가
@@ -45,39 +47,21 @@ function DebateBtns({
   onStatusChange,
   removePlayer,
   isAudioOn,
-  setIsAudioOn
+  setIsAudioOn,
+  stompRef,
 }) {
   const [showModal, setShowModal] = useState(false);
   const [selectedTopic, setSelectedTopics] = useState([]);
   const [isVotingEnabled, setVotingEnabled] = useState(true);
   const votingCooldown = debateRoomInfo.talkTime * 120;
   const [remainingTime, setRemainingTime] = useState(votingCooldown);
+  const [, setUserReady] = useRecoilState(userReadyState);
 
   const [isVideoOn, setIsVideoOn] = useState(true);
   // const [isAudioOn, setIsAudioOn] = useState(false);  // 토론방 입장시 MIC OFF 상태임
 
   //----------------------------------------------------------------------------------------
   const stompClient = useRef(null); // useRef를 사용하여 stompClient 선언
-
-  useEffect(() => {
-    // const socket = new SockJS("");
-    const socket = new SockJS(`${SOCKET_BASE_URL}`);
-    stompClient.current = Stomp.over(socket);
-    console.log("소켓 연결 완료");
-    stompClient.current.connect({}, () => {
-      stompClient.current.subscribe(`/from/player/${roomId}`, (response) => {
-        const message = JSON.parse(response.body);
-        console.log("Item response received:", message);
-      });
-    });
-
-    return () => {
-      if (stompClient.current) {
-        stompClient.current.disconnect();
-      }
-    };
-    // eslint-disable-next-line
-  }, []);
 
   const sendItemRequest = (itemId) => {
     const requestUrl = "/to/player/item";
@@ -99,24 +83,9 @@ function DebateBtns({
     }
   };
   //----------------------------------------------------------------------------------------
-  const playerOutRef = useRef(null); 
-  useEffect(() => {
-    const socket = new SockJS(`${SOCKET_BASE_URL}`);
-    const stomp = Stomp.over(socket);
-    stomp.connect({}, function () {
-      playerOutRef.current = stomp;
-      stomp.subscribe(`/from/player/out/${roomId}`, (message) => {
-        const content = JSON.parse(message.body);
-        console.log("플레이어 관전자로 나갔을 때 받는 메세지:", content);
-        removePlayer(content);
-      })
-    })
-
-  });
-
   const handlePlayerOut = () => {
-    if(playerOutRef.current){
-      playerOutRef.current.send(
+    if(stompRef.current){
+      stompRef.current.send(
         `/to/player/out`, 
         JSON.stringify({
           roomId: roomId,
@@ -197,24 +166,6 @@ function DebateBtns({
 
   //--------------------------------------------------------------------------
   // 항복버튼 누르면?
-  const stompRef = useRef(null);
-
-  useEffect(() => {
-    const sock = new SockJS(`${SOCKET_BASE_URL}`);
-    const stomp = Stomp.over(sock);
-
-    stompRef.current = stomp;
-
-    stomp.connect({}, function () {
-      stomp.subscribe(`/from/room/surrender/${roomId}`, (message) => {
-        const modalData = JSON.parse(message.body);
-        setResult(modalData);
-        onStatusChange("done");
-      });
-    });
-    // eslint-disable-next-line
-  }, [roomId, userId]);
-
   const handleSurrenderClick = () => {
     console.log(userId);
     const stompMessage = { userId: userId, roomId: parseInt(roomId) };
@@ -227,13 +178,16 @@ function DebateBtns({
   //==========================================================================
   const handleRoleChangeToSpectator = (stream) => {
     onRoleChange("spectator");
-    setPlayerStatus([false, false]);
-    setUserReady(false);
+    // setUserReady(prevState => ([prevState[0], !prevState[1]]));
     if (playerA === stream) {
       setPlayerA(undefined);
+      setPlayerStatus(prevState => ([!prevState[0], prevState[1]]));
+      setUserReady(prevState => (![prevState[0], prevState[1]]));
     }
     if (playerB === stream) {
       setPlayerB(undefined);
+      setPlayerStatus(prevState => ([prevState[0], !prevState[1]]));
+      setUserReady(prevState => ([prevState[0], !prevState[1]]));
     }
   };
 

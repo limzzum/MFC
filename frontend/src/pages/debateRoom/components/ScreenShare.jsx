@@ -1,39 +1,12 @@
-import { useState, useEffect, useRef } from "react";
+import { useRef } from "react";
 import style from "../debatePage.module.css";
-import SockJS from "sockjs-client";
-import Stomp from "webstomp-client";
 import axios from "axios";
-import { SOCKET_BASE_URL } from "../../../config.js";
 import { OverlayTrigger, Tooltip } from "react-bootstrap";
 
-function ScreenShare({ status, roomId, role }) {
-  const [imgFileName, setImgFileName] = useState(null);
+function ScreenShare({ status, roomId, role, imgFileName, stompRef }) {
   const imageInputRef = useRef();
-  const stompRef = useRef(null);
 
-  useEffect(() => {
-    var sock = new SockJS(`${SOCKET_BASE_URL}`);
-    var stomp = Stomp.over(sock);
-
-    stompRef.current = stomp;
-
-    stomp.connect({}, function () {
-      // 이 부분 조금 수상 재참조하고, 구독하는 부분
-      stomp.subscribe(`/from/room/file/${roomId}`, (message) => {
-        const messageData = JSON.parse(message.body);
-        setImgFileName(messageData.filePath);
-      });
-      console.log(imgFileName);
-    });
-
-    return () => {
-      if (stompRef.current) {
-        stompRef.current.disconnect();
-      }
-    };
-  }, [roomId, imgFileName]);
-
-  const handleImageChange = async (event) => {
+    const handleImageChange = async (event) => {
     const file = event.target.files[0];
     // 이미지 등록 서버 저장
     const config = {

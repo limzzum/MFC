@@ -1,11 +1,11 @@
-import React, {useEffect} from "react";
+// import React, {useEffect} from "react";
 import { ProgressBar } from "react-bootstrap";
 import UserVideoComponent from "../Openvidu/UserVideoComponent";
 import { FaVoteYea } from "react-icons/fa";
 import style from "../debatePage.module.css";
-import { SOCKET_BASE_URL } from "../../../config";
-import SockJS from "sockjs-client";
-import Stomp from "webstomp-client";
+// import { SOCKET_BASE_URL } from "../../../config";
+// import SockJS from "sockjs-client";
+// import Stomp from "webstomp-client";
 // import { AiFillCaretLeft, AiFillCaretRight } from "react-icons/ai";
 
 // import { valueState} from '../../../recoil/debateStateAtom';
@@ -27,19 +27,19 @@ function Spectator({ voteResult, filteredSubscribers, setVoteResult,roomId }) {
   const ratio2 =
     value1 === 0 && value2 === 0 ? 50 : (value2 / totalValue) * 100;
   
-    useEffect(() => {
-      const sock = new SockJS(`${SOCKET_BASE_URL}`);
-      const stomp = Stomp.over(sock);
-      console.log(`roomId : ${roomId}`);
+    // useEffect(() => {
+    //   const sock = new SockJS(`${SOCKET_BASE_URL}`);
+    //   const stomp = Stomp.over(sock);
+    //   console.log(`roomId : ${roomId}`);
   
-      stomp.connect({}, function () {
-        stomp.subscribe(`/from/vote/${roomId}`, (message) => {
-          const voteResultMessage = JSON.parse(message.body);
-          setVoteResult(voteResultMessage);
-        });
-      });
-      // eslint-disable-next-line
-    });
+    //   stomp.connect({}, function () {
+    //     stomp.subscribe(`/from/vote/${roomId}`, (message) => {
+    //       const voteResultMessage = JSON.parse(message.body);
+    //       setVoteResult(voteResultMessage);
+    //     });
+    //   });
+    //   // eslint-disable-next-line
+    // });
   // const spectatorCnt = debateRoomInfo.maxPeople <= 2 ? 0 : debateRoomInfo.maxPeople - 2;
   return (
     <div className={style.Spectator}>
