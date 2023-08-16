@@ -39,6 +39,8 @@ function TextChatting({ roomId }) {
           penalty: content.penaltyName,
           point: content.points,
         };
+        console.log("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
+        console.log(content);
         setChatMessages((prevMessages) => [
           ...prevMessages,
           { sender: "admin", text: penaltyResult },
