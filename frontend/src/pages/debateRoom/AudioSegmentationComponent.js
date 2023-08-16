@@ -1,9 +1,9 @@
 import React, { useEffect, useRef, useState } from 'react';
 import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition';
 import axios from 'axios';
-// import { SOCKET_BASE_URL } from "../../config";
-// import SockJS from "sockjs-client";
-// import Stomp from "webstomp-client";
+import { SOCKET_BASE_URL } from "../../config";
+import SockJS from "sockjs-client";
+import Stomp from "webstomp-client";
 
 const API_KEY = 'AIzaSyCNTWbM6BWxnN44DljLSoBhwYWFND0Ua2Y'; // Perspective API Key
 
@@ -15,7 +15,9 @@ const AudioSegmentationComponent = (roomId, userId) => {
     const stompRef = useRef(null);
 
     useEffect(() => {  
-        console.log(transcript);
+      var sock = new SockJS(`${SOCKET_BASE_URL}`);
+      var stomp = Stomp.over(sock);
+      stompRef.current = stomp;
         if (transcript) {
             // Perspective API 요청
             axios.post(
@@ -32,9 +34,12 @@ const AudioSegmentationComponent = (roomId, userId) => {
               const toxicityScore = response.data.attributeScores.TOXICITY.summaryScore.value;
               const severeToxicityScore = response.data.attributeScores.SEVERE_TOXICITY.summaryScore.value;
               console.log(toxicityScore);
+              console.log(roomId);
+
               if (toxicityScore >= 0.7 || severeToxicityScore >= 0.7) {
-                console.log(userId);
-                const stompMessage = { userId: userId, roomId: parseInt(roomId), isATopic : true, penalty_code_id : 1 };
+                console.log(roomId);
+                const stompMessage = { userId: roomId.userId, roomId: parseInt(roomId.roomId), isATopic : true, penalty_code_id : 1 };
+                console.log(stompRef)
                 stompRef.current.send(
                   `/to/chat/penalty`,
                   JSON.stringify(stompMessage)
