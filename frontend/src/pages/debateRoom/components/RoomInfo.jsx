@@ -58,14 +58,14 @@ function RoomInfo({
   // const stompRef = useRef(null);
 
   const handleReadyClick = (isATopic) => {
-    if (stompRef.current) {
+    if (stompClient) {
       const payload = {
         roomId: roomId,
         userId: userId,
         isATopic: isATopic,
         isReady: userReady[isATopic ? 0 : 1],
       };
-      stompRef.current.send("/to/player/ready", JSON.stringify(payload));
+      stompClient.send("/to/player/ready", JSON.stringify(payload));
     }
   };
   //===========================================================================
@@ -178,6 +178,19 @@ function RoomInfo({
           setUser1HP(content.hp);
         } else {
           setUser2HP(content.hp);
+        }
+      });
+
+      stompClient.subscribe(`/from/player/ready/${roomId}`, (message) => {
+        const content = JSON.parse(message.body);
+        console.log("ready하고 결과 받는 곳임");
+        console.log(content);
+        // 여기서 받은 데이터를 처리할 수 있습니다.
+        console.log(`여기는 유저 1번 ${userReady[0]}`);
+        console.log(`여기는 유저 2번 ${userReady[1]}`);
+        console.log(`여기는 모두 다 레디 ${content.isAllReady}`);
+        if (content.isAllReady) {
+          onStatusChange("ongoing");
         }
       });
     }

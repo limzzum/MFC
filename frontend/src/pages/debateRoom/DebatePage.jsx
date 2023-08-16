@@ -88,40 +88,12 @@ function DebatePage() {
   //   stomp.connect({}, function () {
   //     stompRef.current = stomp;
 
-  //     // RoomInfo Ready subscribe
-  //     stomp.subscribe(`/from/player/ready/${roomId}`, (message) => {
-  //       console.log(`RoomInfo Ready ${message.body}`);
-  //       // const content = JSON.parse(message.body);
-  //       // 여기서 받은 데이터를 처리할 수 있습니다.
-  //       // console.log(`여기는 ${content.isReady}`)
-  //       // console.log(`여기는 유저 1번 ${userReady[0]}`)
-  //       // console.log(`여기는 유저 2번 ${userReady[1]}`)
-  //       // console.log(`여기는 유저 1번 ${userReady[0]}`)
-  //       // console.log(`여기는 유저 2번 ${userReady[1]}`)
-  //       // console.log(`여기는 모두 다 레디 ${content.isAllReady}`)
-  //     });
-
   //     stomp.subscribe(`/from/player/enter/${roomId}`, (message) => {
   //       const content = JSON.parse(message.body);
   //       console.log("플레이어 등록 응답", content); // 데이터 파싱해서 프론트에 저장?
   //       updatePlayer(content);
   //     });
 
-  //     stomp.subscribe(`/from/player/${roomId}`, (response) => {
-  //       const message = JSON.parse(response.body);
-  //       console.log("Item response received:", message);
-  //     });
-
-  //     stomp.subscribe(`/from/room/surrender/${roomId}`, (message) => {
-  //       const modalData = JSON.parse(message.body);
-  //       setResult(modalData);
-  //       handleStatusChange("done");
-  //     });
-
-  //     stomp.subscribe(`/from/vote/${roomId}`, (message) => {
-  //       const voteResultMessage = JSON.parse(message.body);
-  //       setVoteResult(voteResultMessage);
-  //     });
   //   });
   //   // eslint-disable-next-line
   // }, [roomId, userInfo.id, playerStatus, imgFileName, userInfo.nickname]);

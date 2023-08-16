@@ -84,6 +84,11 @@ function DebateBtns({
         console.log("플레이어 관전자로 나갔을 때 받는 메세지:", content);
         removePlayer(content);
       });
+      stompClient.subscribe(`/from/room/surrender/${roomId}`, (message) => {
+        const modalData = JSON.parse(message.body);
+        setResult(modalData);
+        onStatusChange("done");
+      });
     }
     // eslint-disable-next-line
   }, [stompClient]);

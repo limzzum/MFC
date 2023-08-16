@@ -24,6 +24,7 @@ function Header({
   const handleOutRoom = () => {
     if (stompClient) {
       stompClient.send(`/to/room/out/${roomId}/${userId}`);
+      stompClient.send(`/to/room/playerout/${roomId}/${userId}`);
     }
   };
 
