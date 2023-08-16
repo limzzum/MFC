@@ -2,7 +2,7 @@ import React, { useCallback, useRef, useEffect, useState } from "react";
 import axios from "axios";
 import { OpenVidu } from "openvidu-browser";
 import { useParams } from "react-router-dom";
-import { useRecoilValue } from "recoil";
+import { useRecoilState, useRecoilValue } from "recoil";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCoins, faFaceSmile } from "@fortawesome/free-solid-svg-icons";
 import {
@@ -40,7 +40,9 @@ function DebatePage() {
   const userInfo = useRecoilValue(userInfoState);
 
   // 토론방 상태 호출
-  const debateRoomInfo = useRecoilValue(getDebateRoomState(roomId));
+  const [debateRoomInfo, setDebateRoomInfo] = useRecoilState(
+    getDebateRoomState(roomId)
+  );
   const getVoteResult = useRecoilValue(getVoteResultState(roomId));
   const [voteResult, setVoteResult] = useState(getVoteResult.data);
 
@@ -63,6 +65,18 @@ function DebatePage() {
 
   // myStatus
   const [myStatus, setMyStatus] = useState(null);
+
+  useEffect(() => {
+    // 컴포넌트가 처음 마운트되었을 때 실행됨
+    if (!debateRoomInfo) {
+      // debateRoomInfo가 없을 경우에만 가져오도록 설정
+      const fetchDebateRoomInfo = async () => {
+        const data = await getDebateRoomState(roomId)();
+        setDebateRoomInfo(data);
+      };
+      fetchDebateRoomInfo();
+    }
+  });
 
   useEffect(() => {
     if (stompClient) {
@@ -513,11 +527,11 @@ function DebatePage() {
     }
   };
 
-  // useEffect(() => {
-  //   if (debateRoomInfo?.data?.status === "ONGOING") {
-  //     ongoingRoomStartInfo();
-  //   }
-  // });
+  useEffect(() => {
+    if (debateRoomInfo?.data?.status === "ONGOING") {
+      ongoingRoomStartInfo();
+    }
+  });
 
   const handleRoleChange = (newRole) => {
     setRole(newRole);

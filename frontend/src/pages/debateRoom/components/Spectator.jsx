@@ -1,9 +1,9 @@
-// import React, {useEffect} from "react";
+import React, { useEffect } from "react";
 import { ProgressBar } from "react-bootstrap";
 import UserVideoComponent from "../Openvidu/UserVideoComponent";
 import { FaVoteYea } from "react-icons/fa";
 import style from "../debatePage.module.css";
-import { useStompClient } from "../../SocketContext";
+import { useStompClient } from "../../../SocketContext";
 // import { SOCKET_BASE_URL } from "../../../config";
 // import SockJS from "sockjs-client";
 // import Stomp from "webstomp-client";

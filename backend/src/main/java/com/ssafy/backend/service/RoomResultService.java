@@ -116,7 +116,7 @@ public class RoomResultService {
       DebateFinPlayerDto playerBDto = new DebateFinPlayerDto(playerB.getUser().getNickname(),bVoteCount, playerB.getHeartPoint());
 
       if(isSurrender || isExit) {
-        if(playerA.getUser().getId() == userId) {
+        if(playerA.getUser().getId().equals(userId)) {
           if(isSurrender) {
             playerADto = playerHistoryGet(playerADto, playerA.getUser().getId(),"lose");
             playerHistoryUpdate(playerADto, playerA.getUser().getId(),"lose");
@@ -146,27 +146,27 @@ public class RoomResultService {
         if(isPlayerAStatus == "win") {
           playerADto = playerHistoryGet(playerADto, playerA.getUser().getId(),"win");
           playerBDto = playerHistoryGet(playerBDto, playerB.getUser().getId(),"lose");
-          if(playerA.getUser().getId() == userId) {
+          if(playerA.getUser().getId().equals(userId)) {
             playerHistoryUpdate(playerADto, playerA.getUser().getId(),"win");
-          }else if(playerB.getUser().getId() == userId){
+          }else if(playerB.getUser().getId().equals(userId)){
             playerHistoryUpdate(playerBDto, playerB.getUser().getId(),"lose");
           }
           debateFinInfoDto = new DebateFinInfoDto(playerA.getUser().getProfile(),playerA.getUser().getNickname(),playerADto,playerBDto,isSurrender,isExit);
         }else if(isPlayerAStatus == "draw") {
           playerADto = playerHistoryGet(playerADto, playerA.getUser().getId(),"draw");
           playerBDto = playerHistoryGet(playerBDto, playerB.getUser().getId(),"draw");
-          if(playerA.getUser().getId() == userId) {
+          if(playerA.getUser().getId().equals(userId)) {
             playerHistoryUpdate(playerADto, playerA.getUser().getId(),"draw");
-          }else if(playerB.getUser().getId() == userId){
+          }else if(playerB.getUser().getId().equals(userId)){
             playerHistoryUpdate(playerBDto, playerB.getUser().getId(),"draw");
           }
           debateFinInfoDto = new DebateFinInfoDto(playerADto,playerBDto,isSurrender,isExit);
         }else {
           playerADto = playerHistoryGet(playerADto, playerA.getUser().getId(),"lose");
           playerBDto = playerHistoryGet(playerBDto, playerB.getUser().getId(),"win");
-          if(playerA.getUser().getId() == userId) {
+          if(playerA.getUser().getId().equals(userId)) {
             playerHistoryUpdate(playerADto, playerA.getUser().getId(),"lose");
-          }else if(playerB.getUser().getId() == userId){
+          }else if(playerB.getUser().getId().equals(userId)){
             playerHistoryUpdate(playerBDto, playerB.getUser().getId(),"win");
           }
           debateFinInfoDto = new DebateFinInfoDto(playerB.getUser().getProfile(),playerB.getUser().getNickname(),playerADto,playerBDto,isSurrender,isExit);
