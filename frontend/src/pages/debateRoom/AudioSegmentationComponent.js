@@ -18,6 +18,7 @@ const AudioSegmentationComponent = (roomId, userId) => {
       var sock = new SockJS(`${SOCKET_BASE_URL}`);
       var stomp = Stomp.over(sock);
       stompRef.current = stomp;
+
         if (transcript) {
             // Perspective API 요청
             axios.post(
@@ -38,7 +39,7 @@ const AudioSegmentationComponent = (roomId, userId) => {
 
               if (toxicityScore >= 0.7 || severeToxicityScore >= 0.7) {
                 console.log(roomId);
-                const stompMessage = { userId: roomId.userId, roomId: parseInt(roomId.roomId), isATopic : true, penalty_code_id : 1 };
+                const stompMessage = { userId: roomId.userId, roomId: parseInt(roomId.roomId), isATopic : true, penaltyCodeId : 1 };
                 console.log(stompRef)
                 stompRef.current.send(
                   `/to/chat/penalty`,
