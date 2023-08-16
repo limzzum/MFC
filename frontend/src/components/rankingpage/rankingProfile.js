@@ -11,7 +11,7 @@ function RankingProfile({ rank, userData }) {
         </Col>
         <Col xs={5} className={styles.rankTitle}>
           <Row>
-            <Col xs={6} className="">
+            <Col xs={6} className={`mx-0 px-0 ${styles.profileImgBox}`}>
               <img
                 className={`${styles.radiusImg}`}
                 src={
@@ -22,8 +22,10 @@ function RankingProfile({ rank, userData }) {
                 alt="profileImage"
               />
             </Col>
-            <Col>
-              <p className={`${styles.nickalign} ${styles.rankProfileText}`}>
+            <Col className={`mx-0 p-0`}>
+              <p
+                className={`${styles.nickalign} ${styles.rankProfileText} m-0`}
+              >
                 {userData.nickName}
               </p>
             </Col>
