@@ -49,9 +49,8 @@ function RoomInfo({
   const speechformatTime = (time) => {
     const minutes = Math.floor(time / 60);
     const seconds = time % 60;
-    // return `${minutes}:${seconds < 10 ? `0${seconds}` : seconds}`;
-    const remainingSeconds = seconds % 60;
     const remainingMinutes = minutes % 60;
+    const remainingSeconds = seconds;
     return `${remainingMinutes}:${remainingSeconds}`;
   };
   //===========================================================================
@@ -98,8 +97,9 @@ function RoomInfo({
       // 1회 발언시간 타이머
       const speechTimer = setInterval(() => {
         const currentTime1 = new Date();
-        const startTime1 = new Date(ongoingRoomInfo?.startTalkTime);
-        const timeDifferenceInMillis1 = currentTime1 - startTime1;
+        // const startTime1 = new Date(ongoingRoomInfo?.startTalkTime);
+        // const timeDifferenceInMillis1 = currentTime1 - startTime1;
+        const timeDifferenceInMillis1 = 14000;
         const seconds1 = Math.floor(timeDifferenceInMillis1 / 1000);
         if (speechTime > 0 && totalTime > 0) {
           setSpeechTime(talk - seconds1);

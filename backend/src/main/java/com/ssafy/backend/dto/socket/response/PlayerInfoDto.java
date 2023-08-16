@@ -16,7 +16,7 @@ public class PlayerInfoDto {
     private Long userId;
     private String nickname;
     private String profile;
-    private ItemCode colorItem;
+    private String nickNameColorCode;
     @JsonProperty("isATopic")
     private boolean isATopic;
     @JsonProperty("isReady")

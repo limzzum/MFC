@@ -25,6 +25,26 @@ public class PlayerSocketController {
     private final RoomService roomService;
 
 
+//    @MessageMapping("/player/enter")
+//    public void setPlayer(PlayerRequestDto playerDto) {
+//        Long roomId = playerDto.getRoomId();
+//        User user = userService.findById(playerDto.getUserId());
+//        playerService.regist(PlayerRegistDto.builder()
+//                .roomId(roomId)
+//                .userId(user.getId())
+//                .isATopic(playerDto.isATopic())
+//                .build());
+//        PlayerInfoDto playerInfoDto = PlayerInfoDto.builder()
+//                .userId(user.getId())
+//                .nickname(user.getNickname())
+//                .profile(user.getProfile())
+//                .colorItem(user.getColorItem())
+//                .isReady(false)
+//                .isATopic(playerDto.isATopic())
+//                .isAllReady(false).build();
+//        messagingTemplate.convertAndSend("/from/player/enter/" + roomId, playerInfoDto);
+//    }
+
     @MessageMapping("/player/enter")
     public void setPlayer(PlayerRequestDto playerDto) {
         Long roomId = playerDto.getRoomId();
@@ -38,7 +58,7 @@ public class PlayerSocketController {
                 .userId(user.getId())
                 .nickname(user.getNickname())
                 .profile(user.getProfile())
-                .colorItem(user.getColorItem())
+                .nickNameColorCode(user.getColorItem().getRgb())
                 .isReady(false)
                 .isATopic(playerDto.isATopic())
                 .isAllReady(false).build();
@@ -55,12 +75,28 @@ public class PlayerSocketController {
                 .userId(user.getId())
                 .nickname(user.getNickname())
                 .profile(user.getProfile())
-                .colorItem(user.getColorItem())
+                .nickNameColorCode(user.getColorItem().getRgb())
                 .isReady(false)
                 .isATopic(playerDto.isATopic())
                 .isAllReady(false).build();
         messagingTemplate.convertAndSend("/from/player/out/" + roomId, playerInfoDto);
     }
+
+//    @MessageMapping("/player/ready")
+//    public void readyPlayer(PlayerRequestDto playerDto) {
+//        Long roomId = playerDto.getRoomId();
+//        User user = userService.findById(playerDto.getUserId());
+//        playerService.changeStatus(new PlayerDto(roomId,user.getId()), playerDto.isReady());
+//        boolean allReady = playerService.isAllReady(roomId);
+//
+//        if(allReady){
+//            roomService.setRoomStatus(roomId);
+//            roomService.roomUpdateStatus(roomId, Status.ONGOING);
+//        }
+//        PlayerInfoDto playerInfoDto = PlayerInfoDto.builder().userId(user.getId()).nickname(user.getNickname()).profile(user.getProfile())
+//                .colorItem(user.getColorItem()).isReady(playerDto.isReady()).isATopic(playerDto.isATopic()).isAllReady(allReady).build();
+//        messagingTemplate.convertAndSend("/from/player/ready/" + roomId, playerInfoDto);
+//    }
 
     @MessageMapping("/player/ready")
     public void readyPlayer(PlayerRequestDto playerDto) {
@@ -74,7 +110,7 @@ public class PlayerSocketController {
             roomService.roomUpdateStatus(roomId, Status.ONGOING);
         }
         PlayerInfoDto playerInfoDto = PlayerInfoDto.builder().userId(user.getId()).nickname(user.getNickname()).profile(user.getProfile())
-                .colorItem(user.getColorItem()).isReady(playerDto.isReady()).isATopic(playerDto.isATopic()).isAllReady(allReady).build();
+                .nickNameColorCode(user.getColorItem().getRgb()).isReady(playerDto.isReady()).isATopic(playerDto.isATopic()).isAllReady(allReady).build();
         messagingTemplate.convertAndSend("/from/player/ready/" + roomId, playerInfoDto);
     }
 
