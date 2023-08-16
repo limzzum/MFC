@@ -60,8 +60,8 @@ function DebatePage() {
   const stompRef = useRef(null);
 
   // roomInfo
-  const [user1HP, setUser1HP] = useState(100);
-  const [user2HP, setUser2HP] = useState(100);
+  // const [user1HP, setUser1HP] = useState(100);
+  // const [user2HP, setUser2HP] = useState(100);
 
   // myStatus
   const [myStatus, setMyStatus] = useState(null);
@@ -592,8 +592,8 @@ function DebatePage() {
                   ongoingRoomInfo={ongoingRoomInfo}
                   turnChange={turnChange}
                   stompRef={stompRef}
-                  user1HP={user1HP}
-                  user2HP={user2HP}
+                  // user1HP={user1HP}
+                  // user2HP={user2HP}
                 />
               </Row>
               <Row>

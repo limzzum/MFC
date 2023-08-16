@@ -1,4 +1,3 @@
-import { useRef } from "react";
 import { Row, Col } from "react-bootstrap";
 import style from "../debatePage.module.css";
 import UserVideoComponent from "../Openvidu/UserVideoComponent";

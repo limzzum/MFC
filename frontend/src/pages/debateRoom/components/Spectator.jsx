@@ -37,6 +37,7 @@ function Spectator({ voteResult, filteredSubscribers, setVoteResult, roomId }) {
         setVoteResult(voteResultMessage);
       });
     }
+    // eslint-disable-next-line
   }, [stompClient]);
 
   // const spectatorCnt = debateRoomInfo.maxPeople <= 2 ? 0 : debateRoomInfo.maxPeople - 2;
