@@ -18,6 +18,8 @@ function Participate({
   playerA,
   playerB,
   updatePlayer,
+  myStatus,
+  setMyStatus,
 }) {
   const stompRef = useRef(null);
   console.log("userId", userId);
@@ -51,6 +53,7 @@ function Participate({
                   setPlayerStatus((prevStatus) => [true, prevStatus[1]]);
                   handlePlayerAVideoStream(publisher);
                   handlePostPlayer(true);
+                  setMyStatus(true);
                 }}
               >
                 참가하기
@@ -68,7 +71,7 @@ function Participate({
           {/* <div className={`${style.rightCount} m-0 p-0 mx-auto`}>
             <span>남은 연장 횟수: </span>
           </div> */}
-          <AudioSegmentationComponent roomId={roomId} userId={userId} />
+          <AudioSegmentationComponent roomId={roomId} userId={userId} myStatus={myStatus}/>
         </Col>
         <Col xs={1} className={`m-0 p-0`}></Col>
         <Col className={`m-0 p-0`}>
@@ -81,6 +84,7 @@ function Participate({
                   setPlayerStatus((prevStatus) => [prevStatus[0], true]);
                   handlePlayerBVideoStream(publisher);
                   handlePostPlayer(false);
+                  setMyStatus(false);
                 }}
               >
                 참가하기

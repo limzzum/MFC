@@ -49,6 +49,7 @@ function DebateBtns({
   isAudioOn,
   setIsAudioOn,
   stompRef,
+  setMyStatus
 }) {
   const [showModal, setShowModal] = useState(false);
   const [selectedTopic, setSelectedTopics] = useState([]);
@@ -235,6 +236,7 @@ function DebateBtns({
               onClick={() => {
                 handlePlayerOut();
                 handleRoleChangeToSpectator(publisher);
+                setMyStatus(null);
               }}
             >
               <FaUsers />

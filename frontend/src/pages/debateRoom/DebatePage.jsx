@@ -63,6 +63,9 @@ function DebatePage() {
   // ScreenShare
   const [imgFileName, setImgFileName] = useState(null);
 
+  // myStatus
+  const [myStatus, setMyStatus] = useState(null)
+
   useEffect(() => {
     var sock = new SockJS(`${SOCKET_BASE_URL}`);
     var stomp = Stomp.over(sock);
@@ -149,7 +152,6 @@ function DebatePage() {
         const voteResultMessage = JSON.parse(message.body);
         setVoteResult(voteResultMessage);
       });
-
     });
     // eslint-disable-next-line
   }, [roomId, userInfo.id, playerStatus, imgFileName, userInfo.nickname]);
@@ -167,8 +169,8 @@ function DebatePage() {
   };
 
   const [result, setResult] = useState({
+    userProfile:"",
     winner: "user1",
-    winnerImg: "",
     playerA: {
       nickName: "Kim",
       vote: 0,
@@ -653,6 +655,8 @@ function DebatePage() {
                   roomId={roomId}
                   userId={userInfo.id}
                   updatePlayer={updatePlayer}
+                  myStatus={myStatus}
+                  setMyStatus={setMyStatus}
                 />
               </Row>
               <Row className={`m-0 p-0`}>
@@ -678,6 +682,7 @@ function DebatePage() {
                   isAudioOn={isAudioOn}
                   setIsAudioOn={setIsAudioOn}
                   stompRef={stompRef}
+                  setMyStatus={setMyStatus}
                 />
               </Row>
             </Col>
@@ -727,7 +732,7 @@ function DebatePage() {
                         <img
                           src={
                             result.userProfile
-                              ? `https://goldenteam.site/${result.userProfile}`
+                              ? `https://goldenteam.site/profiles/${result.userProfile}`
                               : baseProfileImg
                           }
                           className={style.contentTitleWinnerImg}
@@ -771,10 +776,10 @@ function DebatePage() {
                   <ProgressBar>
                     <ProgressBar
                       variant="danger"
-                      label={result.playerA.hp}
-                      // label={(result.playerA.nickName === result.winner) ? result.playerA.hp : result.playerB.hp }
-                      // now={ (result.playerA.nickName === result.winner) ? ((result.playerA.hp / 100) * 100) : ((result.playerB.hp / 100) * 100)}
-                      now={(result.playerA.hp / 100) * 100}
+                      // label={result.playerA.hp}
+                      label={(result.playerA.nickName === result.winner) ? result.playerA.hp : result.playerB.hp }
+                      now={ (result.playerA.nickName === result.winner) ? ((result.playerA.hp / 100) * 100) : ((result.playerB.hp / 100) * 100)}
+                      // now={(result.playerA.hp / 100) * 100}
                     />
                   </ProgressBar>
                   <hr />
