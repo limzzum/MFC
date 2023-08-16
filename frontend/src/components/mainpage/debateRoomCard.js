@@ -81,7 +81,7 @@ const DebateRoomCard = ({
               <Col className={`${style.cardtitle} p-0 m-0`}>{title2}</Col>
             </Row>
           </div>
-          <div className={`text-center`}>
+          <div className={`text-center mt-2`}>
             <BsStopwatch className={style.timeicon} />
             <span className={style.cardtext}>
               토론 시간&nbsp;:&nbsp; {debateTime}분
