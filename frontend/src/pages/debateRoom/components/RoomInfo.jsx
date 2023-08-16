@@ -5,9 +5,6 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMicrophone } from "@fortawesome/free-solid-svg-icons";
 import { AXIOS_BASE_URL } from "../../../config";
 import axios from "axios";
-import SockJS from "sockjs-client";
-import Stomp from "webstomp-client";
-import { SOCKET_BASE_URL } from "../../../config";
 import { useRecoilState } from 'recoil';
 import { userReadyState } from '../../../recoil/debateStateAtom'
 
@@ -29,7 +26,9 @@ function RoomInfo({
   userInfo,
   turnChange,
   playerAInfo,
-  userId
+  userId,
+  user1HP,
+  user2HP,
 }) {
   const total = debateRoomInfo.totalTime * 60;
   const talk = debateRoomInfo.talkTime * 60;
@@ -57,38 +56,6 @@ function RoomInfo({
   };
 //===========================================================================
 // const stompRef = useRef(null);
-useEffect(() => {
-  let sock = new SockJS(`${SOCKET_BASE_URL}`);
-  let stomp = Stomp.over(sock);
-
-  stomp.connect({}, function() {
-    stompRef.current = stomp;
-    // 구독하는 부분
-    stomp.subscribe(`/from/player/ready/${roomId}`, (message) => {
-      console.log(`여기는 메시지 ${message.body}`)      
-      
-      const content = JSON.parse(message.body);
-      // 여기서 받은 데이터를 처리할 수 있습니다.
-      
-
-      // console.log(`여기는 ${content.isReady}`)  
-      console.log(`여기는 유저 1번 ${userReady[0]}`)
-      console.log(`여기는 유저 2번 ${userReady[1]}`)
-
-      // console.log(`여기는 유저 1번 ${userReady[0]}`)
-      // console.log(`여기는 유저 2번 ${userReady[1]}`)
-
-      console.log(`여기는 모두 다 레디 ${content.isAllReady}`)     
-       
-    });
-  });
-  return () => {
-    if (stompRef.current) {
-      stompRef.current.disconnect();
-    }
-  };
-  // eslint-disable-next-line
-}, [roomId]);
 
 const handleReadyClick = (isATopic) => {
   if(stompRef.current) {
@@ -98,13 +65,11 @@ const handleReadyClick = (isATopic) => {
       isATopic: isATopic,
       isReady: userReady[isATopic ? 0 : 1]
     };
-    stompRef.current.send("/to/player/ready", {}, JSON.stringify(payload));
+    stompRef.current.send("/to/player/ready", JSON.stringify(payload));
   }
 }
 //===========================================================================
 
-  const [user1HP, setUser1HP] = useState(100);
-  const [user2HP, setUser2HP] = useState(100);
   const [playerAHistory,setPlayerAHistory] = useState(null);
   const [playerBHistory,setPlayerBHistory] = useState(null);
 
@@ -206,33 +171,6 @@ const handleReadyClick = (isATopic) => {
   },[players]);
   console.log(`여기는 유저 1번 ${userReady[0]}`)
   console.log(`여기는 유저 2번 ${userReady[1]}`)
-
-  useEffect(() => {
-    var sock = new SockJS(`${SOCKET_BASE_URL}`);
-    var stomp = Stomp.over(sock);
-    stomp.connect({}, function () {
-      stompRef.current = stomp;
-      //Get HP
-      stomp.subscribe(`/from/player/status/${roomId}`, (message) => {
-        const content = JSON.parse(message.body);
-        console.log("@@@@");
-        console.log(content.isATopic);
-        console.log(content.hp);
-
-        if (content.isATopic) {
-          setUser1HP(content.hp);
-        } else {
-          setUser2HP(content.hp);
-        }
-      });
-    });
-
-    return () => {
-      if (stompRef.current) {
-        stompRef.current.disconnect();
-      }
-    };
-  }, [roomId]);
 
   return (
     <>

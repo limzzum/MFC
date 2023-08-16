@@ -45,7 +45,8 @@ function DebateBtns({
   onStatusChange,
   removePlayer,
   isAudioOn,
-  setIsAudioOn
+  setIsAudioOn,
+  stompRef,
 }) {
   const [showModal, setShowModal] = useState(false);
   const [selectedTopic, setSelectedTopics] = useState([]);
@@ -58,26 +59,6 @@ function DebateBtns({
 
   //----------------------------------------------------------------------------------------
   const stompClient = useRef(null); // useRef를 사용하여 stompClient 선언
-
-  useEffect(() => {
-    // const socket = new SockJS("");
-    const socket = new SockJS(`${SOCKET_BASE_URL}`);
-    stompClient.current = Stomp.over(socket);
-    console.log("소켓 연결 완료");
-    stompClient.current.connect({}, () => {
-      stompClient.current.subscribe(`/from/player/${roomId}`, (response) => {
-        const message = JSON.parse(response.body);
-        console.log("Item response received:", message);
-      });
-    });
-
-    return () => {
-      if (stompClient.current) {
-        stompClient.current.disconnect();
-      }
-    };
-    // eslint-disable-next-line
-  }, []);
 
   const sendItemRequest = (itemId) => {
     const requestUrl = "/to/player/item";
@@ -99,24 +80,9 @@ function DebateBtns({
     }
   };
   //----------------------------------------------------------------------------------------
-  const playerOutRef = useRef(null); 
-  useEffect(() => {
-    const socket = new SockJS(`${SOCKET_BASE_URL}`);
-    const stomp = Stomp.over(socket);
-    stomp.connect({}, function () {
-      playerOutRef.current = stomp;
-      stomp.subscribe(`/from/player/out/${roomId}`, (message) => {
-        const content = JSON.parse(message.body);
-        console.log("플레이어 관전자로 나갔을 때 받는 메세지:", content);
-        removePlayer(content);
-      })
-    })
-
-  });
-
   const handlePlayerOut = () => {
-    if(playerOutRef.current){
-      playerOutRef.current.send(
+    if(stompRef.current){
+      stompRef.current.send(
         `/to/player/out`, 
         JSON.stringify({
           roomId: roomId,
@@ -197,24 +163,6 @@ function DebateBtns({
 
   //--------------------------------------------------------------------------
   // 항복버튼 누르면?
-  const stompRef = useRef(null);
-
-  useEffect(() => {
-    const sock = new SockJS(`${SOCKET_BASE_URL}`);
-    const stomp = Stomp.over(sock);
-
-    stompRef.current = stomp;
-
-    stomp.connect({}, function () {
-      stomp.subscribe(`/from/room/surrender/${roomId}`, (message) => {
-        const modalData = JSON.parse(message.body);
-        setResult(modalData);
-        onStatusChange("done");
-      });
-    });
-    // eslint-disable-next-line
-  }, [roomId, userId]);
-
   const handleSurrenderClick = () => {
     console.log(userId);
     const stompMessage = { userId: userId, roomId: parseInt(roomId) };
