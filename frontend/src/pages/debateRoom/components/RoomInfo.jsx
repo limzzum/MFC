@@ -8,6 +8,8 @@ import axios from "axios";
 import SockJS from "sockjs-client";
 import Stomp from "webstomp-client";
 import { SOCKET_BASE_URL } from "../../../config";
+import { useRecoilState } from 'recoil';
+import { userReadyState } from '../../../recoil/debateStateAtom'
 
 function RoomInfo({
   status,
@@ -16,8 +18,8 @@ function RoomInfo({
   onStatusChange,
   onRoleChange,
   debateRoomInfo,
-  userReady,
-  setUserReady,
+  // userReady,
+  // setUserReady,
   players,
   roomId,
   setPlayerAInfo,
@@ -26,10 +28,12 @@ function RoomInfo({
   ongoingRoomInfo,
   userInfo,
   turnChange,
-  playerAInfo
+  playerAInfo,
+  userId
 }) {
   const total = debateRoomInfo.totalTime * 60;
   const talk = debateRoomInfo.talkTime * 60;
+  const [userReady, setUserReady] = useRecoilState(userReadyState);
 
   const [totalTime, setTotalTime] = useState(total);
   const [speechTime, setSpeechTime] = useState(talk);
@@ -51,6 +55,52 @@ function RoomInfo({
     const remainingMinutes = minutes % 60;
     return `${remainingMinutes}:${remainingSeconds}`;
   };
+//===========================================================================
+// const stompRef = useRef(null);
+useEffect(() => {
+  let sock = new SockJS(`${SOCKET_BASE_URL}`);
+  let stomp = Stomp.over(sock);
+
+  stomp.connect({}, function() {
+    stompRef.current = stomp;
+    // 구독하는 부분
+    stomp.subscribe(`/from/player/ready/${roomId}`, (message) => {
+      console.log(`여기는 메시지 ${message.body}`)      
+      
+      const content = JSON.parse(message.body);
+      // 여기서 받은 데이터를 처리할 수 있습니다.
+      
+
+      // console.log(`여기는 ${content.isReady}`)  
+      console.log(`여기는 유저 1번 ${userReady[0]}`)
+      console.log(`여기는 유저 2번 ${userReady[1]}`)
+
+      // console.log(`여기는 유저 1번 ${userReady[0]}`)
+      // console.log(`여기는 유저 2번 ${userReady[1]}`)
+
+      console.log(`여기는 모두 다 레디 ${content.isAllReady}`)     
+       
+    });
+  });
+  return () => {
+    if (stompRef.current) {
+      stompRef.current.disconnect();
+    }
+  };
+}, [roomId]);
+
+const handleReadyClick = (isATopic) => {
+  if(stompRef.current) {
+    const payload = {
+      roomId: roomId,
+      userId: userId,
+      isATopic: isATopic,
+      isReady: userReady[isATopic ? 0 : 1]
+    };
+    stompRef.current.send("/to/player/ready", {}, JSON.stringify(payload));
+  }
+}
+//===========================================================================
 
   const [user1HP, setUser1HP] = useState(100);
   const [user2HP, setUser2HP] = useState(100);
@@ -151,8 +201,10 @@ function RoomInfo({
         }
       }
     }
-    // eslint-disable-next-line
-  }, [players]);
+  // eslint-disable-next-line
+  },[players]);
+  console.log(`여기는 유저 1번 ${userReady[0]}`)
+  console.log(`여기는 유저 2번 ${userReady[1]}`)
 
   useEffect(() => {
     var sock = new SockJS(`${SOCKET_BASE_URL}`);
@@ -285,11 +337,14 @@ function RoomInfo({
           {status === "waiting" && playerStatus[0] && (
             <Button
               className={
-                userReady ? `${style.completeButton}` : `${style.readyButton}`
+                userReady[0] ? `${style.completeButton}` : `${style.readyButton}`
               }
-              onClick={() => setUserReady((prevState) => !prevState)}
-            >
-              {userReady ? "준비 완료" : "준비"}
+              onClick={() => {
+                setUserReady(prevState => ([!prevState[0], prevState[1]]));
+                handleReadyClick(true); // 왼쪽 준비 버튼 클릭 시 isATopic이 true
+              }}
+              >
+              {userReady[0] ? "준비 완료" : "준비"}
             </Button>
           )}
           {status === "ongoing" && (
@@ -310,11 +365,14 @@ function RoomInfo({
           {status === "waiting" && playerStatus[1] && (
             <Button
               className={
-                userReady ? `${style.completeButton}` : `${style.readyButton}`
+                userReady[1] ? `${style.completeButton}` : `${style.readyButton}`
               }
-              onClick={() => setUserReady((prevState) => !prevState)}
+              onClick={() => {
+                setUserReady(prevState => ([prevState[0], !prevState[1]]));
+                handleReadyClick(false);
+              }}
             >
-              {userReady ? "준비 완료" : "준비"}
+              {userReady[1] ? "준비 완료" : "준비"}
             </Button>
           )}
           {status === "ongoing" && (
