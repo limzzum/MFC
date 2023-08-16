@@ -1,10 +1,7 @@
-import React, { useEffect, useRef } from "react";
-import SockJS from "sockjs-client";
-import Stomp from "webstomp-client";
+import  { useRef } from "react";
 import { Row, Col } from "react-bootstrap";
 import style from "../debatePage.module.css";
 import UserVideoComponent from "../Openvidu/UserVideoComponent";
-import { SOCKET_BASE_URL } from "../../../config";
 import AudioSegmentationComponent from "../AudioSegmentationComponent"
 
 function Participate({
@@ -25,25 +22,6 @@ function Participate({
   const stompRef = useRef(null);
   console.log("userId", userId);
   console.log("roomId", roomId);
-  useEffect(() => {
-    var sock = new SockJS(`${SOCKET_BASE_URL}`);
-    var stomp = Stomp.over(sock);
-    stomp.connect({}, function () {
-      console.log("요청이 가니??___________________________");
-      stompRef.current = stomp;
-      stomp.subscribe(`/from/player/enter/${roomId}`, (message) => {
-        const content = JSON.parse(message.body);
-        console.log("플레이어 등록 응답", content); // 데이터 파싱해서 프론트에 저장?
-        updatePlayer(content);
-      });
-    });
-    return () => {
-      if (stompRef.current) {
-        stompRef.current.disconnect();
-      }
-    };
-    // eslint-disable-next-line
-  }, [roomId, userId, playerStatus]);
 
   const handlePostPlayer = (isTopicA) => {
     if (stompRef.current) {
