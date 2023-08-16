@@ -124,17 +124,22 @@ public class PlayerService {
 
         PlayerStatusDto playerStatusDto;
         if(aTopic){
-            hpPointA += playerPlusHpDto.getHp();
+            hpPointA += playerPlusHpDto.getHp(); //getHp()는 감소할 페널티 점수임
             playerStatusDto = PlayerStatusDto.builder().userId(playerPlusHpDto.getUserId())
                     .isATopic(playerPlusHpDto.isATopic()).hp(hpPointA).build();
         }else{
-            hpPointB += playerPlusHpDto.getHp();
+            hpPointB += playerPlusHpDto.getHp(); //getHp()는 감소할 페널티 점수임
             playerStatusDto = PlayerStatusDto.builder().userId(playerPlusHpDto.getUserId())
                     .isATopic(playerPlusHpDto.isATopic()).hp(hpPointB).build();
         }
         redisUtil.setRoomStatusTemplate(String.valueOf(playerPlusHpDto.getRoomId()), RoomStatusDto.builder()
-                .curUserId(roomStatus.getCurUserId()).hpPointA(hpPointA).hpPointB(hpPointB).isATurn(roomStatus.isATurn()).roomImagePath(roomStatus.getRoomImagePath())
-                .startTalkTime(roomStatus.getStartTalkTime()).build(), room.getTotalTime());
+                .curUserId(roomStatus.getCurUserId())
+                .hpPointA(hpPointA)
+                .hpPointB(hpPointB)
+                .isATurn(roomStatus.isATurn())
+                .roomImagePath(roomStatus.getRoomImagePath())
+                .startTalkTime(roomStatus.getStartTalkTime()).build()
+                ,room.getTotalTime());
         return playerStatusDto;
     }
 

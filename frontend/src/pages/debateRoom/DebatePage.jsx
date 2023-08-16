@@ -6,10 +6,7 @@ import { useRecoilValue } from "recoil";
 import SockJS from "sockjs-client";
 import Stomp from "webstomp-client";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faCoins,
-  faFaceSmile
-} from "@fortawesome/free-solid-svg-icons";
+import { faCoins, faFaceSmile } from "@fortawesome/free-solid-svg-icons";
 import {
   useStatus,
   useRole,
@@ -25,7 +22,7 @@ import DebateBtns from "./components/DebateBtns";
 import Spectator from "./components/Spectator";
 import RoomInfo from "./components/RoomInfo";
 import { userInfoState } from "../../recoil/userInfo";
-import { SOCKET_BASE_URL } from "../../config";
+import { SOCKET_BASE_URL, AXIOS_BASE_URL } from "../../config";
 // import getParticipate from '../../api/getParticipateAPI'; // 참가자 생길 때마다 호출해서 갱신해야하나? 물어봐야함
 
 import style from "./debatePage.module.css";
@@ -43,7 +40,9 @@ function DebatePage() {
 
   // 토론방 상태 호출
   const debateRoomInfo = useRecoilValue(getDebateRoomState(roomId));
-  const voteResult = useRecoilValue(getVoteResultState(roomId));
+
+  const getVoteResult = useRecoilValue(getVoteResultState(roomId));
+  const [voteResult, setVoteResult] = useState(getVoteResult.data);
 
   // 참가자 참가여부
   const [playerStatus, setPlayerStatus] = useState([false, false]);
@@ -51,6 +50,10 @@ function DebatePage() {
 
   const [isModifyModalOpen, setIsModifyModalOpen] = useState(false);
   const [players, setPlayers] = useState([]);
+  const [ongoingRoomInfo, setOngoingRoomInfo] = useState(null);
+  const [playerAInfo, setPlayerAInfo] = useState(null);
+  const [playerBInfo, setPlayerBInfo] = useState(null);
+  const [isAudioOn, setIsAudioOn] = useState(false); 
   // 토론방 입장 웹소켓 코드
   const enterStompRef = useRef(null);
 
@@ -63,6 +66,10 @@ function DebatePage() {
         const content = JSON.parse(message.body);
         console.log("입장 데이터: ", content);
       });
+      stomp.subscribe(`/from/room/status/${roomId}`, (message) => {
+        const content = JSON.parse(message.body);
+        setOngoingRoomInfo(content);
+      })
     });
     // eslint-disable-next-line
   }, []);
@@ -73,25 +80,25 @@ function DebatePage() {
     }
   };
 
-  // 토론방 퇴장 웹소켓 코드 
+  // 토론방 퇴장 웹소켓 코드
   const outStompRef = useRef(null);
-  useEffect( () => {
+  useEffect(() => {
     var sock = new SockJS(`${SOCKET_BASE_URL}`);
     var stomp = Stomp.over(sock);
-    stomp.connect({}, function() {
+    stomp.connect({}, function () {
       outStompRef.current = stomp;
       stomp.subscribe(`/from/room/out/${roomId}`, (message) => {
         const content = JSON.parse(message.body);
         console.log(`토론방 퇴장 메시지: ${content}`);
-      })
-    })
-  })
+      });
+    });
+  });
 
   const handleOutRoom = () => {
-    if(outStompRef.current){
+    if (outStompRef.current) {
       outStompRef.current.send(`/to/room/out/${roomId}/${userInfo.id}`);
     }
-  }
+  };
 
   const [result, setResult] = useState({
     winner: "user1",
@@ -237,7 +244,7 @@ function DebatePage() {
           let publisher = await OV.current.initPublisherAsync(undefined, {
             audioSource: undefined,
             videoSource: undefined,
-            publishAudio: true,
+            publishAudio: false,
             publishVideo: true,
             resolution: "640x480",
             frameRate: 30,
@@ -408,7 +415,7 @@ function DebatePage() {
   // const [viewers, setViewers] = useState();
   // const [players, setPlayers] = useState([]);
 
-  // 참가자 목록 가져와서 
+  // 참가자 목록 가져와서
   useEffect(() => {
     const getParticipants = async () => {
       try {
@@ -441,6 +448,7 @@ function DebatePage() {
                 setPlayerB(subscriber);
                 setPlayerStatus((prev) => [prev[0], true]);
               }
+              break;
             }
           }
         }
@@ -456,23 +464,96 @@ function DebatePage() {
 
   const updatePlayer = (playerInfo) => {
     console.log("토론 참가자 업데이트: ", playerInfo);
-    for(const subscriber of subscribers || []){
-      const clientData = JSON.parse(subscriber.stream.connection.data).clientData;
-      if(clientData === playerInfo.nickname){
-        if(playerInfo.isATopic){
+    for (const subscriber of subscribers || []) {
+      const clientData = JSON.parse(
+        subscriber.stream.connection.data
+      ).clientData;
+      if (clientData === playerInfo.nickname) {
+        if (playerInfo.isATopic) {
           setPlayerA(subscriber);
           setPlayerStatus((prev) => [true, prev[1]]);
-        }else{
+        } else {
           setPlayerB(subscriber);
           setPlayerStatus((prev) => [prev[0], true]);
         }
       }
+    }
+  };
+
+  const removePlayer = (playerInfo) => {
+    console.log("토론 참가자 삭제: ", playerInfo);
+    if(playerInfo.isATopic){
+      setPlayerA(undefined);
+      setPlayerStatus((prev) => [false, prev[1]]);
+    } else{
+      setPlayerB(undefined);
+      setPlayerStatus((prev) => [prev[0], false]);
     }
   }
 
   const handleStatusChange = (newStatus) => {
     setStatus(newStatus);
   };
+
+  const debateStart = () => {
+    setIsAudioOn(isAudioOn);
+    publisher.publishAudio(isAudioOn);
+    if (enterStompRef.current) {
+      enterStompRef.current.send(`/to/player/changeTurn/${roomId}`,JSON.stringify({
+        roomId: `${roomId}`,
+        userId: `${userInfo.id}`,
+        isATurn: true,
+      }));
+    }
+  };
+
+  const turnChange = () => {
+    setIsAudioOn(!isAudioOn);
+    publisher.publishAudio(!isAudioOn);
+    if (enterStompRef.current) {
+      if(ongoingRoomInfo.isATurn) {
+        enterStompRef.current.send(`/to/player/changeTurn/${roomId}`,JSON.stringify({
+          roomId: `${roomId}`,
+          userId: `${playerBInfo.viewerDto.userId}`,
+          isATurn: false,
+        }));
+      }else if(!ongoingRoomInfo.isATurn) {
+        enterStompRef.current.send(`/to/player/changeTurn/${roomId}`,JSON.stringify({
+          roomId: `${roomId}`,
+          userId: `${playerAInfo.viewerDto.userId}`,
+          isATurn: true,
+        }));
+      }
+      
+      
+    }
+  }
+  useEffect(() => {
+    if (debateRoomInfo?.data?.status) {
+      setStatus(debateRoomInfo.data.status.toLowerCase());
+    }
+  }, [debateRoomInfo, setStatus]);
+  
+  const ongoingRoomStartInfo = async () => {
+    try{
+      // const base_url = `http://localhost:8081/api/debate/status/${roomId}`;
+      const base_url = `${AXIOS_BASE_URL}/debate/status/${roomId}`;
+      const response = await axios.get(base_url, null);
+      setOngoingRoomInfo(response.data.data);
+      if(ongoingRoomInfo.curUserId === userInfo.id){
+        setIsAudioOn(isAudioOn);
+        publisher.publishAudio(isAudioOn);
+      }
+    } catch (e) {
+      console.log("토론방 시작 정보 가져오기 실패:", e);
+    }
+  }
+
+  useEffect(() => {
+    if (debateRoomInfo?.data?.status === "ONGOING") {
+      ongoingRoomStartInfo();
+    }
+  });
 
   const handleRoleChange = (newRole) => {
     setRole(newRole);
@@ -524,6 +605,12 @@ function DebatePage() {
                   players={players}
                   roomId={roomId}
                   userId={userInfo.id}
+                  playerAInfo={playerAInfo}
+                  setPlayerAInfo={setPlayerAInfo}
+                  setPlayerBInfo={setPlayerBInfo}
+                  debateStart={debateStart}
+                  ongoingRoomInfo={ongoingRoomInfo}
+                  turnChange={turnChange}
                 />
               </Row>
               <Row>
@@ -553,7 +640,7 @@ function DebatePage() {
                   onRoleChange={handleRoleChange}
                   setPlayerStatus={setPlayerStatus}
                   debateRoomInfo={debateRoomInfo.data}
-                  voteResult={voteResult.data}
+                  voteResult={voteResult}
                   handlePlayerAVideoStream={handlePlayerAVideoStream}
                   handlePlayerBVideoStream={handlePlayerBVideoStream}
                   publisher={publisher}
@@ -564,7 +651,9 @@ function DebatePage() {
                   roomId={roomId}
                   userId={userInfo.id}
                   setResult={setResult}
-                  // isTopicA={}
+                  removePlayer={removePlayer}
+                  isAudioOn={isAudioOn}
+                  setIsAudioOn={setIsAudioOn}
                 />
               </Row>
             </Col>
@@ -577,8 +666,10 @@ function DebatePage() {
           </Row>
           <Row className={`m-0 p-0`}>
             <Spectator
-              voteResult={voteResult.data}
+              voteResult={voteResult}
               filteredSubscribers={filteredSubscribers}
+              setVoteResult={setVoteResult}
+              roomId={roomId}
             />
           </Row>
           {isModifyModalOpen && (
@@ -591,90 +682,102 @@ function DebatePage() {
             />
           )}
           {/* 토론 결과 Modal*/}
-          <div className={`modal ${showResultModal ? "show d-block" : ""}`} tabIndex="-1" role="dialog">
+          <div
+            className={`modal ${showResultModal ? "show d-block" : ""}`}
+            tabIndex="-1"
+            role="dialog"
+          >
             <div className="modal-dialog" role="document">
               <div className="modal-content">
                 <div className="modal-header">
                   <h5 className="modal-title">토론 결과</h5>
                 </div>
-            <div className="modal-body">
-              {result ? (
-                <>
-                  <p className={style.contentTitle}>승리</p>
-                  <p className={style.contentTitleWinner}>{result.winner}</p>
-                  <div className={style.imgBox}> 
-                    <img src={result.userProfile ? `https://goldenteam.site/${result.userProfile}` : baseProfileImg } 
-                      className={style.contentTitleWinnerImg}
-                      alt="승자 프로필"
-                       />
-                  </div>
-                </>
-              ) : (
-                <p>무승부</p>
-              )}
-              <hr />
-              {(!result.isSurrender || result.isExit) ? (
-                <>
-                  <p>투표 결과</p>
+                <div className="modal-body">
+                  {result ? (
+                    <>
+                      <p className={style.contentTitle}>승리</p>
+                      <p className={style.contentTitleWinner}>
+                        {result.winner}
+                      </p>
+                      <div className={style.imgBox}>
+                        <img
+                          src={
+                            result.userProfile
+                              ? `https://goldenteam.site/${result.userProfile}`
+                              : baseProfileImg
+                          }
+                          className={style.contentTitleWinnerImg}
+                          alt="승자 프로필"
+                        />
+                      </div>
+                    </>
+                  ) : (
+                    <p>무승부</p>
+                  )}
+                  <hr />
+                  {!result.isSurrender || result.isExit ? (
+                    <>
+                      <p>투표 결과</p>
+                      <ProgressBar>
+                        <ProgressBar
+                          variant="success"
+                          label={result.playerA.vote}
+                          now={
+                            (result.playerA.vote /
+                              (result.playerA.vote + result.b.vote)) *
+                            100
+                          }
+                          key={1}
+                        />
+                        <ProgressBar
+                          variant="danger"
+                          label={result.playerB.vote}
+                          now={
+                            (result.playerB.vote /
+                              (result.playerA.vote + result.playerB.vote)) *
+                            100
+                          }
+                          key={2}
+                        />
+                      </ProgressBar>
+                    </>
+                  ) : null}
+
+                  <p className={style.contentTitle}>잔여 HP</p>
                   <ProgressBar>
                     <ProgressBar
-                      variant="success"
-                      label={result.playerA.vote}
-                      now={
-                        (result.playerA.vote /
-                          (result.playerA.vote + result.b.vote)) *
-                        100
-                      }
-                      key={1}
-                    />
-                    <ProgressBar
                       variant="danger"
-                      label={result.playerB.vote}
-                      now={
-                        (result.playerB.vote /
-                          (result.playerA.vote + result.playerB.vote)) *
-                        100
-                      }
-                      key={2}
+                      label={result.playerA.hp}
+                      // label={(result.playerA.nickName === result.winner) ? result.playerA.hp : result.playerB.hp }
+                      // now={ (result.playerA.nickName === result.winner) ? ((result.playerA.hp / 100) * 100) : ((result.playerB.hp / 100) * 100)}
+                      now={(result.playerA.hp / 100) * 100}
                     />
                   </ProgressBar>
-                </>
-              ) : null}
-              
-              <p className={style.contentTitle}>잔여 HP</p>
-              <ProgressBar>
-                <ProgressBar
-                  variant="danger"
-                  label={result.playerA.hp}
-                  // label={(result.playerA.nickName === result.winner) ? result.playerA.hp : result.playerB.hp }
-                  // now={ (result.playerA.nickName === result.winner) ? ((result.playerA.hp / 100) * 100) : ((result.playerB.hp / 100) * 100)}
-                  now={(result.playerA.hp / 100) * 100}
-                />
-              </ProgressBar>
-              <hr />
-              <div className={style.recordBox}>
-                <div className={style.recordAlone}>
-                  <p className={style.contentSubTitle}>얻은 경험치</p>
-                  <p className={style.contentSubContent}> 
-                  <FontAwesomeIcon icon={faFaceSmile} color="orange" />
-                    &nbsp; {result.playerA.exp} (+10)</p>
+                  <hr />
+                  <div className={style.recordBox}>
+                    <div className={style.recordAlone}>
+                      <p className={style.contentSubTitle}>얻은 경험치</p>
+                      <p className={style.contentSubContent}>
+                        <FontAwesomeIcon icon={faFaceSmile} color="orange" />
+                        &nbsp; {result.playerA.exp} (+10)
+                      </p>
+                    </div>
+                    <div className={style.recordAlone}>
+                      <p className={style.contentSubTitle}>얻은 코인</p>
+                      <p className={style.contentSubContent}>
+                        <FontAwesomeIcon icon={faCoins} color="orange" />
+                        &nbsp; {result.playerA.coin} (+15)
+                      </p>
+                    </div>
+                  </div>
                 </div>
-                <div className={style.recordAlone}>
-                  <p className={style.contentSubTitle}>얻은 코인</p> 
-                  <p className={style.contentSubContent}>
-                    <FontAwesomeIcon icon={faCoins} color="orange" />
-                    &nbsp; {result.playerA.coin} (+15)
-                  </p>
-                </div>
+                <Modal.Footer>
+                  <Button variant="secondary" onClick={goToMainPage}>
+                    메인 페이지로 이동
+                  </Button>
+                </Modal.Footer>
               </div>
             </div>
-            <Modal.Footer>
-              <Button variant="secondary" onClick={goToMainPage}>
-                메인 페이지로 이동
-              </Button>
-            </Modal.Footer>
-          </div>
-          </div>
           </div>
         </>
       ) : null}

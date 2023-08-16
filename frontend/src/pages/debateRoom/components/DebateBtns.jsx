@@ -43,6 +43,9 @@ function DebateBtns({
   setPlayerB,
   setResult,
   onStatusChange,
+  removePlayer,
+  isAudioOn,
+  setIsAudioOn
 }) {
   const [showModal, setShowModal] = useState(false);
   const [selectedTopic, setSelectedTopics] = useState([]);
@@ -51,7 +54,7 @@ function DebateBtns({
   const [remainingTime, setRemainingTime] = useState(votingCooldown);
 
   const [isVideoOn, setIsVideoOn] = useState(true);
-  const [isAudioOn, setIsAudioOn] = useState(true);
+  // const [isAudioOn, setIsAudioOn] = useState(false);  // 토론방 입장시 MIC OFF 상태임
 
   //----------------------------------------------------------------------------------------
   const stompClient = useRef(null); // useRef를 사용하여 stompClient 선언
@@ -102,8 +105,10 @@ function DebateBtns({
     const stomp = Stomp.over(socket);
     stomp.connect({}, function () {
       playerOutRef.current = stomp;
-      stomp.subscribe(`/from/player/${roomId}`, (message) => {
+      stomp.subscribe(`/from/player/out/${roomId}`, (message) => {
         const content = JSON.parse(message.body);
+        console.log("플레이어 관전자로 나갔을 때 받는 메세지:", content);
+        removePlayer(content);
       })
     })
 
@@ -114,8 +119,8 @@ function DebateBtns({
       playerOutRef.current.send(
         `/to/player/out`, 
         JSON.stringify({
-          roomid: roomId,
-          userid: userId,
+          roomId: roomId,
+          userId: userId,
           isATopic: false,
           isReady: false,
         })
@@ -274,8 +279,8 @@ function DebateBtns({
             <button
               className={`${style.goSpectatorBtn} btn`}
               onClick={() => {
-                handleRoleChangeToSpectator(publisher);
                 handlePlayerOut();
+                handleRoleChangeToSpectator(publisher);
               }}
             >
               <FaUsers />

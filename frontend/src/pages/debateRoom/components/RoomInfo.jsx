@@ -1,15 +1,16 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { Row, Col, Button, ProgressBar } from "react-bootstrap";
 import style from "../debatePage.module.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMicrophone } from "@fortawesome/free-solid-svg-icons";
 import { AXIOS_BASE_URL } from "../../../config";
 import axios from "axios";
-import SockJS from 'sockjs-client';
-import { Stomp } from '@stomp/stompjs';
+import SockJS from "sockjs-client";
+import Stomp from "webstomp-client";
 import { SOCKET_BASE_URL } from "../../../config";
 import { useRecoilState } from 'recoil';
 import { userReadyState } from '../../../recoil/debateStateAtom'
+
 function RoomInfo({
   status,
   playerStatus,
@@ -17,28 +18,45 @@ function RoomInfo({
   onStatusChange,
   onRoleChange,
   debateRoomInfo,
+  // userReady,
+  // setUserReady,
   players,
   roomId,
+  setPlayerAInfo,
+  setPlayerBInfo,
+  debateStart,
+  ongoingRoomInfo,
+  userInfo,
+  turnChange,
+  playerAInfo,
   userId
 }) {
-  const user1HP = 70;
-  const user2HP = 100;
-
   const total = debateRoomInfo.totalTime * 60;
   const talk = debateRoomInfo.talkTime * 60;
   const [userReady, setUserReady] = useRecoilState(userReadyState);
 
   const [totalTime, setTotalTime] = useState(total);
   const [speechTime, setSpeechTime] = useState(talk);
-  const [playerA, setPlayerA] = useState(undefined);
-  const [playerB, setPlayerB] = useState(undefined);
   const formatTime = (time) => {
     const minutes = Math.floor(time / 60);
     const seconds = time % 60;
-    return `${minutes}:${seconds < 10 ? `0${seconds}` : seconds}`;
+    // return `${minutes}:${seconds < 10 ? `0${seconds}` : seconds}`;
+
+    const hours = Math.floor(minutes / 60);
+    const remainingSeconds = seconds % 60;
+    const remainingMinutes = minutes % 60;
+    return `${hours}:${remainingMinutes}:${remainingSeconds}`;
+  };
+  const speechformatTime = (time) => {
+    const minutes = Math.floor(time / 60);
+    const seconds = time % 60;
+    // return `${minutes}:${seconds < 10 ? `0${seconds}` : seconds}`;
+    const remainingSeconds = seconds % 60;
+    const remainingMinutes = minutes % 60;
+    return `${remainingMinutes}:${remainingSeconds}`;
   };
 //===========================================================================
-const stompRef = useRef(null);
+// const stompRef = useRef(null);
 useEffect(() => {
   let sock = new SockJS(`${SOCKET_BASE_URL}`);
   let stomp = Stomp.over(sock);
@@ -52,15 +70,7 @@ useEffect(() => {
       const content = JSON.parse(message.body);
       // 여기서 받은 데이터를 처리할 수 있습니다.
       
-      if (content.isATopic !== undefined && content.isReady === true) {
-        setUserReady(prevState => {
-          if (content.isATopic) {
-            return [content.isReady, prevState[0]];
-          } else {
-            return [prevState[1], content.isReady];
-          }
-        });
-      }
+
       // console.log(`여기는 ${content.isReady}`)  
       console.log(`여기는 유저 1번 ${userReady[0]}`)
       console.log(`여기는 유저 2번 ${userReady[1]}`)
@@ -92,12 +102,21 @@ const handleReadyClick = (isATopic) => {
 }
 //===========================================================================
 
+  const [user1HP, setUser1HP] = useState(100);
+  const [user2HP, setUser2HP] = useState(100);
+  const [playerAHistory,setPlayerAHistory] = useState(null);
+  const [playerBHistory,setPlayerBHistory] = useState(null);
+
+  const stompRef = useRef(null);
+
   useEffect(() => {
     if (status === "ongoing") {
+    console.log("dddddddddddddddddddddddddddddddddddddddddddddddddddddd");
+    console.log(playerAInfo);
       // 총 토론시간 타이머
       const totalTimer = setInterval(() => {
         const currentTime = new Date();
-        const startTime = new Date(debateRoomInfo.startTime);
+        const startTime = new Date(debateRoomInfo?.startTime);
         const timeDifferenceInMillis = currentTime - startTime;
         const seconds = Math.floor(timeDifferenceInMillis / 1000);
         const minutes = Math.floor(seconds / 60);
@@ -114,20 +133,27 @@ const handleReadyClick = (isATopic) => {
       }, 1000);
       // 1회 발언시간 타이머
       const speechTimer = setInterval(() => {
+        const currentTime1 = new Date();
+        const startTime1 = new Date(ongoingRoomInfo?.startTalkTime);
+        const timeDifferenceInMillis1 = currentTime1 - startTime1;
+        const seconds1 = Math.floor(timeDifferenceInMillis1 / 1000);
         if (speechTime > 0 && totalTime > 0) {
-          setSpeechTime((prevTime) => prevTime - 1);
+          setSpeechTime(talk-seconds1);
         }
       }, 1000);
 
       if (speechTime === 0 && totalTime > 0) {
-        setSpeechTime(talk);
+        // setSpeechTime(talk);
+        if(userInfo.id === ongoingRoomInfo?.curUserId) {
+          turnChange();
+        }
       }
 
       return () => {
         clearInterval(totalTimer);
         clearInterval(speechTimer);
       };
-    }
+    }// eslint-disable-next-line
   }, [
     status,
     onStatusChange,
@@ -142,32 +168,36 @@ const handleReadyClick = (isATopic) => {
   useEffect(() => {
     if (status === "waiting" && userReady[0] && userReady[1]) {
       onStatusChange("ongoing");
+      if(userInfo.id === playerAInfo.viewerDto.userId) {
+        debateStart();
+      }
     }
+    // eslint-disable-next-line
   }, [userReady, status, onStatusChange]);
-  
+
   const playerGetHistory = async (userId) => {
     try {
-      const response = await axios.get(`${AXIOS_BASE_URL}/record/${userId}`)
+      const response = await axios.get(`${AXIOS_BASE_URL}/record/${userId}`);
       return response.data.data;
     } catch (e) {
       console.log(`사용자 전적 불러오기 API 오류: ${e}`);
       return null;
     }
-  }
+  };
   // null 값 처리
-  useEffect( ()=> {
-    for(const player of players) {
-      if(player) {
-        if(player.topicTypeA) {
-          playerGetHistory(player.viewerDto.userId)
-          .then((promiseResult) => {
-            setPlayerA(promiseResult);
-          })
-        }else {
-          playerGetHistory(player.viewerDto.userId)
-          .then((promiseResult) => {
-            setPlayerB(promiseResult);
-          })
+  useEffect(() => {
+    for (const player of players) {
+      if (player) {
+        if (player.topicTypeA) {
+          playerGetHistory(player.viewerDto.userId).then((promiseResult) => {
+            setPlayerAInfo(player);
+            setPlayerAHistory(promiseResult);
+          });
+        } else {
+          playerGetHistory(player.viewerDto.userId).then((promiseResult) => {
+            setPlayerBInfo(player);
+            setPlayerBHistory(promiseResult);
+          });
         }
       }
     }
@@ -175,6 +205,34 @@ const handleReadyClick = (isATopic) => {
   },[players]);
   console.log(`여기는 유저 1번 ${userReady[0]}`)
   console.log(`여기는 유저 2번 ${userReady[1]}`)
+
+  useEffect(() => {
+    var sock = new SockJS(`${SOCKET_BASE_URL}`);
+    var stomp = Stomp.over(sock);
+    stomp.connect({}, function () {
+      stompRef.current = stomp;
+      //Get HP
+      stomp.subscribe(`/from/player/status/${roomId}`, (message) => {
+        const content = JSON.parse(message.body);
+        console.log("@@@@");
+        console.log(content.isATopic);
+        console.log(content.hp);
+
+        if (content.isATopic) {
+          setUser1HP(content.hp);
+        } else {
+          setUser2HP(content.hp);
+        }
+      });
+    });
+
+    return () => {
+      if (stompRef.current) {
+        stompRef.current.disconnect();
+      }
+    };
+  }, [roomId]);
+
   return (
     <>
       <Row className={`${style.roomInfo} m-0`}>
@@ -188,35 +246,45 @@ const handleReadyClick = (isATopic) => {
           <span>{debateRoomInfo.btopic}</span>
         </Col>
       </Row>
-      <Row>
+      <Row className={`m-0`}>
         <Col className={style.userInfo}>
-        {playerA && playerA.nickName ? (
-        <span>{playerA.nickName}&nbsp;</span>
-        ) : (
-        <span>사용자1&nbsp;</span>
-        )}
+          {playerAHistory && playerAHistory.nickName ? (
+            <span>{playerAHistory.nickName}&nbsp;</span>
+          ) : (
+            <span>사용자1&nbsp;</span>
+          )}
           <span>
-          <strong>승</strong> {playerA && playerA.nickName ? (
-        <span>{playerA.winCount}&nbsp;</span>
-        ) : (
-        <span>&nbsp;</span>
-        )}
+            <strong>승</strong>{" "}
+            {playerAHistory && playerAHistory.nickName ? (
+              <span>{playerAHistory.winCount}&nbsp;</span>
+            ) : (
+              <span>&nbsp;</span>
+            )}
           </span>
-          <span>무&nbsp; {playerA && playerA.nickName ? (
-        <span>{playerA.drawCount}&nbsp;</span>
-        ) : (
-        <span>&nbsp;</span>
-        )}</span>
-          <span>패&nbsp; {playerA && playerA.nickName ? (
-        <span>{playerA.loseCount}&nbsp;</span>
-        ) : (
-        <span>&nbsp;</span>
-        )}</span>
-          <span>승률  {playerA && playerA.nickName ? (
-        <span>{playerA.winRate.toFixed(0)}%&nbsp;</span>
-        ) : (
-        <span>&nbsp;</span>
-        )}</span>
+          <span>
+            무&nbsp;{" "}
+            {playerAHistory && playerAHistory.nickName ? (
+              <span>{playerAHistory.drawCount}&nbsp;</span>
+            ) : (
+              <span>&nbsp;</span>
+            )}
+          </span>
+          <span>
+            패&nbsp;{" "}
+            {playerAHistory && playerAHistory.nickName ? (
+              <span>{playerAHistory.loseCount}&nbsp;</span>
+            ) : (
+              <span>&nbsp;</span>
+            )}
+          </span>
+          <span>
+            승률{" "}
+            {playerAHistory && playerAHistory.nickName ? (
+              <span>{playerAHistory.winRate.toFixed(0)}%&nbsp;</span>
+            ) : (
+              <span>&nbsp;</span>
+            )}
+          </span>
         </Col>
         <Col xs={1} className={`${style.debateTimer} mx-auto p-0 mt-1`}>
           <div>
@@ -225,36 +293,46 @@ const handleReadyClick = (isATopic) => {
           </div>
         </Col>
         <Col className={style.userInfo}>
-        {playerB && playerB.nickName ? (
-        <span>{playerB.nickName}&nbsp;</span>
-        ) : (
-        <span>사용자2&nbsp;</span>
-        )}
+          {playerBHistory && playerBHistory.nickName ? (
+            <span>{playerBHistory.nickName}&nbsp;</span>
+          ) : (
+            <span>사용자2&nbsp;</span>
+          )}
           <span>
-          <strong>승</strong> {playerB && playerB.nickName ? (
-        <span>{playerB.winCount}&nbsp;</span>
-        ) : (
-        <span>&nbsp;</span>
-        )}
+            <strong>승</strong>{" "}
+            {playerBHistory && playerBHistory.nickName ? (
+              <span>{playerBHistory.winCount}&nbsp;</span>
+            ) : (
+              <span>&nbsp;</span>
+            )}
           </span>
-          <span>무&nbsp; {playerB && playerB.nickName ? (
-        <span>{playerB.drawCount}&nbsp;</span>
-        ) : (
-        <span>&nbsp;</span>
-        )}</span>
-          <span>패&nbsp; {playerB && playerB.nickName ? (
-        <span>{playerB.loseCount}&nbsp;</span>
-        ) : (
-        <span>&nbsp;</span>
-        )}</span>
-          <span>승률  {playerB && playerB.nickName ? (
-        <span>{playerB.winRate.toFixed(0)}%&nbsp;</span>
-        ) : (
-        <span>&nbsp;</span>
-        )}</span>
+          <span>
+            무&nbsp;{" "}
+            {playerBHistory && playerBHistory.nickName ? (
+              <span>{playerBHistory.drawCount}&nbsp;</span>
+            ) : (
+              <span>&nbsp;</span>
+            )}
+          </span>
+          <span>
+            패&nbsp;{" "}
+            {playerBHistory && playerBHistory.nickName ? (
+              <span>{playerBHistory.loseCount}&nbsp;</span>
+            ) : (
+              <span>&nbsp;</span>
+            )}
+          </span>
+          <span>
+            승률{" "}
+            {playerBHistory && playerBHistory.nickName ? (
+              <span>{playerBHistory.winRate.toFixed(0)}%&nbsp;</span>
+            ) : (
+              <span>&nbsp;</span>
+            )}
+          </span>
         </Col>
       </Row>
-      <Row className={style.bottomBox}>
+      <Row className={`${style.bottomBox} p-0 m-0`}>
         <Col className={style.userStatus}>
           {status === "waiting" && playerStatus[0] && (
             <Button
@@ -281,7 +359,7 @@ const handleReadyClick = (isATopic) => {
         <Col xs={1} className={`${style.speechTimer} mx-auto p-0`}>
           <FontAwesomeIcon icon={faMicrophone} className={`${style.micIcon}`} />
           &nbsp;
-          {formatTime(speechTime)}
+          {speechformatTime(speechTime)}
         </Col>
         <Col className={style.userStatus}>
           {status === "waiting" && playerStatus[1] && (

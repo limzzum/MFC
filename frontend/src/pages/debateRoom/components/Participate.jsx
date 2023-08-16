@@ -30,7 +30,7 @@ function Participate({
     stomp.connect({}, function () {
       console.log("요청이 가니??___________________________");
       stompRef.current = stomp;
-      stomp.subscribe(`/from/player/${roomId}`, (message) => {
+      stomp.subscribe(`/from/player/enter/${roomId}`, (message) => {
         const content = JSON.parse(message.body);
         console.log("플레이어 등록 응답", content); // 데이터 파싱해서 프론트에 저장?
         updatePlayer(content);
@@ -93,7 +93,7 @@ function Participate({
         <Col xs={1} className={`m-0 p-0`}></Col>
         <Col className={`m-0 p-0`}>
           <div className={`${style.Participant} mx-auto`}>
-            { playerA === undefined && playerStatus[1] === false && status === "waiting" && (
+            { playerB === undefined && playerStatus[1] === false && status === "waiting" && (
               <button
                 className={`${style.button} btn`}
                 onClick={() => {

@@ -21,12 +21,10 @@ function MainPage() {
   const [extensionCount, setExtensionCount] = useState("");
   const [ongoingDebateRooms, setOngoingDebateRooms] = useState([]);
   const [waitingDebateRooms, setWaitingDebateRooms] = useState([]);
-  const [minWaitingRoomId, setMinWaitingRoomId] = useState(null);
   const [userProfileImg1] = useState("");
   const [userProfileImg2] = useState("");
 
   const ongoingContainerRef = useRef(null);
-  const [isongoingLoading, setisongoingLoading] = useState(false);
   const userId = useRecoilValue(userIdState);
   const tokenis = useRecoilValue(userState);
   const navigate = useNavigate();
@@ -85,19 +83,15 @@ function MainPage() {
     closeModal();
   };
 
-  const [minRoomId, setMinRoomId] = useState(null);
-
   useEffect(() => {
     async function fetchData() {
       try {
         const apiUrl =
-          "https://goldenteam.site/api/debate/list/ongoing?minRoomId=10000&size=12";
+          "https://goldenteam.site/api/debate/list/ongoing?minRoomId=1000000&size=10000";
         const response = await axios.get(apiUrl);
         const data = response.data.data;
 
         if (data.length > 0) {
-          const newMinRoomId = Math.max(...data.map((room) => room.roomId));
-          setMinRoomId(newMinRoomId);
           setOngoingDebateRooms(data);
         }
       } catch (error) {
@@ -112,12 +106,10 @@ function MainPage() {
     async function fetchData() {
       try {
         const apiUrl =
-          "https://goldenteam.site/api/debate/list/waiting?minRoomId=10000&size=12";
+          "https://goldenteam.site/api/debate/list/waiting?minRoomId=10000&size=10000";
         const response = await axios.get(apiUrl);
         const data = response.data.data;
         if (data.length > 0) {
-          const newMinRoomId = Math.min(...data.map((room) => room.roomId));
-          setMinWaitingRoomId(newMinRoomId);
           setWaitingDebateRooms(data);
         }
       } catch (error) {
@@ -130,100 +122,6 @@ function MainPage() {
   }, []);
 
   const waitingContainerRef = useRef(null);
-  const [iswaitingLoading, setIsLoading] = useState(false);
-
-  // 무한크롤링 (WaitingRoom)
-  useEffect(() => {
-    if (waitingContainerRef.current) {
-      waitingContainerRef.current.addEventListener(
-        "scroll",
-        handleWaitingScroll
-      );
-    }
-    // eslint-disable-next-line
-  }, [minWaitingRoomId]);
-
-  const handleWaitingScroll = () => {
-    if (waitingContainerRef.current) {
-      const container = waitingContainerRef.current;
-      // 스크롤 컨테이너의 스크롤 위치와 컨테이너 내용의 높이를 비교하여 스크롤이 맨 아래로 내려갔는지 확인
-      if (
-        container.scrollHeight - container.scrollTop <= 405 &&
-        !iswaitingLoading
-      ) {
-        loadMoreWaitingDebateRooms();
-      }
-    }
-  };
-
-  const loadMoreWaitingDebateRooms = async () => {
-    setIsLoading(true);
-    console.log(minWaitingRoomId);
-    try {
-      const apiUrl = `https://goldenteam.site/api/debate/list/waiting?minRoomId=${minWaitingRoomId}&size=12`;
-
-      const response = await axios.get(apiUrl);
-      const newData = response.data.data;
-
-      if (newData.length > 0) {
-        const newMinRoomId = Math.min(...newData.map((room) => room.roomId));
-        setMinWaitingRoomId(newMinRoomId);
-        setWaitingDebateRooms((prevData) => [...prevData, ...newData]);
-      }
-    } catch (error) {
-      console.error("Error fetching more data:", error);
-    }
-    setIsLoading(false);
-  };
-
-  // 무한크롤링 (OngoingRoom)
-  useEffect(() => {
-    console.log(ongoingContainerRef);
-    if (ongoingContainerRef.current) {
-      ongoingContainerRef.current.addEventListener(
-        "scroll",
-        handleOngoingScroll
-      );
-    }
-    // eslint-disable-next-line
-  }, [minRoomId]);
-
-  const handleOngoingScroll = () => {
-    if (ongoingContainerRef.current) {
-      const container = ongoingContainerRef.current;
-
-      // 스크롤 컨테이너의 스크롤 위치와 컨테이너 내용의 높이를 비교하여 스크롤이 맨 아래로 내려갔는지 확인
-      if (
-        container.scrollHeight - container.scrollTop <= 405 &&
-        !isongoingLoading
-      ) {
-        loadMoreOngoingDebateRooms();
-      }
-    }
-  };
-
-  const loadMoreOngoingDebateRooms = async () => {
-    console.log("a");
-    console.log(minRoomId);
-
-    setisongoingLoading(true);
-    try {
-      const apiUrl = `https://goldenteam.site/api/debate/list/ongoing?minRoomId=${minRoomId}&size=12`;
-
-      const response = await axios.get(apiUrl);
-      const newData = response.data.data;
-
-      if (newData.length > 0) {
-        const newMinRoomId = Math.max(...newData.map((room) => room.roomId));
-        setMinRoomId(newMinRoomId);
-        setOngoingDebateRooms((prevData) => [...prevData, ...newData]);
-      }
-    } catch (error) {
-      console.error("Error fetching more data:", error);
-    }
-    setIsLoading(false);
-  };
-
   return (
     <Container fluid>
       <div className={style.wrapper}>
