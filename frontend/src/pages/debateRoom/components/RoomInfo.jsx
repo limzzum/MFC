@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { Row, Col, Button, ProgressBar } from "react-bootstrap";
 import style from "../debatePage.module.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -74,8 +74,6 @@ function RoomInfo({
   const [user2HP, setUser2HP] = useState(100);
   const [playerAHistory, setPlayerAHistory] = useState(null);
   const [playerBHistory, setPlayerBHistory] = useState(null);
-
-  const stompRef = useRef(null);
 
   useEffect(() => {
     if (status === "ongoing") {
@@ -194,7 +192,7 @@ function RoomInfo({
         }
       });
     }
-  }, [stompClient, roomId]);
+  }, [stompClient, roomId, onStatusChange, userReady]);
 
   // console.log(`여기는 유저 1번 ${userReady[0]}`)
   // console.log(`여기는 유저 2번 ${userReady[1]}`)
