@@ -174,11 +174,6 @@ function RoomInfo({
     if (stompClient) {
       stompClient.subscribe(`/from/player/status/${roomId}`, (message) => {
         const content = JSON.parse(message.body);
-        console.log("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
-        console.log("@@@@@@@####################@@@");
-        console.log(content.isATopic);
-        console.log(content.hp);
-
         if (content.isATopic) {
           setUser1HP(content.hp);
         } else {
