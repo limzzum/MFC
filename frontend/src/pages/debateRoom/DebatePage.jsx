@@ -31,12 +31,15 @@ import style from "./debatePage.module.css";
 import baseProfileImg from "../../images/baseProfile.png";
 import ModifyRoomModal from "./components/modifyRoomModal";
 
+import { SocketProvider, useStompClient } from "../../SocketContext";
+
 const APPLICATION_SERVER_URL = "https://goldenteam.site/";
 
 function DebatePage() {
+  const stompClient = useStompClient();
+
   const { roomId } = useParams();
   const userInfo = useRecoilValue(userInfoState);
-  console.log("userInfo: ", userInfo);
 
   // 토론방 상태 호출
   const debateRoomInfo = useRecoilValue(getDebateRoomState(roomId));
@@ -52,124 +55,148 @@ function DebatePage() {
   const [ongoingRoomInfo, setOngoingRoomInfo] = useState(null);
   const [playerAInfo, setPlayerAInfo] = useState(null);
   const [playerBInfo, setPlayerBInfo] = useState(null);
-  const [isAudioOn, setIsAudioOn] = useState(false); 
+  const [isAudioOn, setIsAudioOn] = useState(false);
   // 토론방 입장 웹소켓 코드
   const stompRef = useRef(null);
 
   // roomInfo
   const [user1HP, setUser1HP] = useState(100);
   const [user2HP, setUser2HP] = useState(100);
-  
+
   // ScreenShare
   const [imgFileName, setImgFileName] = useState(null);
 
   // myStatus
-  const [myStatus, setMyStatus] = useState(null)
+  const [myStatus, setMyStatus] = useState(null);
 
   useEffect(() => {
-    var sock = new SockJS(`${SOCKET_BASE_URL}`);
-    var stomp = Stomp.over(sock);
-    stomp.connect({}, function () {
-      stompRef.current = stomp;
-      
-      stomp.subscribe(`/from/room/enter/${roomId}`, (message) => {
+    if (stompClient) {
+      stompClient.subscribe(`/from/room/out/${roomId}`, (message) => {
+        const content = JSON.parse(message.body);
+        console.log("@@@@@@@@@@@@@@");
+        console.log(`토론방 퇴장 메시지: ${content}`);
+      });
+      stompClient.subscribe(`/from/room/enter/${roomId}`, (message) => {
         const content = JSON.parse(message.body);
         console.log("입장 데이터: ", content);
       });
-      
-      stomp.subscribe(`/from/room/status/${roomId}`, (message) => {
+      stompClient.subscribe(`/from/room/status/${roomId}`, (message) => {
         const content = JSON.parse(message.body);
         setOngoingRoomInfo(content);
-      })
-      
-      stomp.subscribe(`/from/room/out/${roomId}`, (message) => {
-        const content = JSON.parse(message.body);
-        console.log(`토론방 퇴장 메시지: ${content}`);
       });
+    }
+  }, [stompClient, roomId]);
 
-      // 토론방 수정 웹소켓 코드
-      stomp.subscribe(`/from/room/update/${roomId}`, (message) => {
-        const content = JSON.parse(message.body);
-        console.log(content);
-      });
+  // useEffect(() => {
+  //   var sock = new SockJS(`${SOCKET_BASE_URL}`);
+  //   var stomp = Stomp.over(sock);
+  //   stomp.connect({}, function () {
+  //     stompRef.current = stomp;
 
-      // RoomInfo Ready subscribe
-      stomp.subscribe(`/from/player/ready/${roomId}`, (message) => {
-        console.log(`RoomInfo Ready ${message.body}`)      
-        // const content = JSON.parse(message.body);
-        // 여기서 받은 데이터를 처리할 수 있습니다.
-        // console.log(`여기는 ${content.isReady}`)  
-        // console.log(`여기는 유저 1번 ${userReady[0]}`)
-        // console.log(`여기는 유저 2번 ${userReady[1]}`)
-        // console.log(`여기는 유저 1번 ${userReady[0]}`)
-        // console.log(`여기는 유저 2번 ${userReady[1]}`)
-        // console.log(`여기는 모두 다 레디 ${content.isAllReady}`)     
-      });
+  //     stomp.subscribe(`/from/room/enter/${roomId}`, (message) => {
+  //       const content = JSON.parse(message.body);
+  //       console.log("입장 데이터: ", content);
+  //     });
 
-      // RoomInfo Player Status
-      stomp.subscribe(`/from/player/status/${roomId}`, (message) => {
-        const content = JSON.parse(message.body);
-        console.log("@@@@");
-        console.log(content.isATopic);
-        console.log(content.hp);
+  //     stomp.subscribe(`/from/room/status/${roomId}`, (message) => {
+  //       const content = JSON.parse(message.body);
+  //       setOngoingRoomInfo(content);
+  //     });
 
-        if (content.isATopic) {
-          setUser1HP(content.hp);
-        } else {
-          setUser2HP(content.hp);
-        }
-      });
-      
-      stomp.subscribe(`/from/player/enter/${roomId}`, (message) => {
-        const content = JSON.parse(message.body);
-        console.log("플레이어 등록 응답", content); // 데이터 파싱해서 프론트에 저장?
-        updatePlayer(content);
-      });
+  //     // stomp.subscribe(`/from/room/out/${roomId}`, (message) => {
+  //     //   const content = JSON.parse(message.body);
+  //     //   console.log(`토론방 퇴장 메시지: ${content}`);
+  //     // });
 
-      stomp.subscribe(`/from/player/${roomId}`, (response) => {
-        const message = JSON.parse(response.body);
-        console.log("Item response received:", message);
-      });
-      
-      stomp.subscribe(`/from/player/out/${roomId}`, (message) => {
-        const content = JSON.parse(message.body);
-        console.log("플레이어 관전자로 나갔을 때 받는 메세지:", content);
-        removePlayer(content);
-      })
+  //     // 토론방 수정 웹소켓 코드
+  //     stomp.subscribe(`/from/room/update/${roomId}`, (message) => {
+  //       const content = JSON.parse(message.body);
+  //       console.log(content);
+  //     });
 
-      stomp.subscribe(`/from/room/surrender/${roomId}`, (message) => {
-        const modalData = JSON.parse(message.body);
-        setResult(modalData);
-        handleStatusChange("done");
-      });
+  //     // RoomInfo Ready subscribe
+  //     stomp.subscribe(`/from/player/ready/${roomId}`, (message) => {
+  //       console.log(`RoomInfo Ready ${message.body}`);
+  //       // const content = JSON.parse(message.body);
+  //       // 여기서 받은 데이터를 처리할 수 있습니다.
+  //       // console.log(`여기는 ${content.isReady}`)
+  //       // console.log(`여기는 유저 1번 ${userReady[0]}`)
+  //       // console.log(`여기는 유저 2번 ${userReady[1]}`)
+  //       // console.log(`여기는 유저 1번 ${userReady[0]}`)
+  //       // console.log(`여기는 유저 2번 ${userReady[1]}`)
+  //       // console.log(`여기는 모두 다 레디 ${content.isAllReady}`)
+  //     });
 
-      stomp.subscribe(`/from/room/file/${roomId}`, (message) => {
-        const messageData = JSON.parse(message.body);
-        setImgFileName(messageData.filePath);
-      });
+  //     // RoomInfo Player Status
+  //     stomp.subscribe(`/from/player/status/${roomId}`, (message) => {
+  //       const content = JSON.parse(message.body);
+  //       console.log("@@@@");
+  //       console.log(content.isATopic);
+  //       console.log(content.hp);
 
-      stomp.subscribe(`/from/vote/${roomId}`, (message) => {
-        const voteResultMessage = JSON.parse(message.body);
-        setVoteResult(voteResultMessage);
-      });
-    });
-    // eslint-disable-next-line
-  }, [roomId, userInfo.id, playerStatus, imgFileName, userInfo.nickname]);
+  //       if (content.isATopic) {
+  //         setUser1HP(content.hp);
+  //       } else {
+  //         setUser2HP(content.hp);
+  //       }
+  //     });
+
+  //     stomp.subscribe(`/from/player/enter/${roomId}`, (message) => {
+  //       const content = JSON.parse(message.body);
+  //       console.log("플레이어 등록 응답", content); // 데이터 파싱해서 프론트에 저장?
+  //       updatePlayer(content);
+  //     });
+
+  //     stomp.subscribe(`/from/player/${roomId}`, (response) => {
+  //       const message = JSON.parse(response.body);
+  //       console.log("Item response received:", message);
+  //     });
+
+  //     stomp.subscribe(`/from/player/out/${roomId}`, (message) => {
+  //       const content = JSON.parse(message.body);
+  //       console.log("플레이어 관전자로 나갔을 때 받는 메세지:", content);
+  //       removePlayer(content);
+  //     });
+
+  //     stomp.subscribe(`/from/room/surrender/${roomId}`, (message) => {
+  //       const modalData = JSON.parse(message.body);
+  //       setResult(modalData);
+  //       handleStatusChange("done");
+  //     });
+
+  //     stomp.subscribe(`/from/room/file/${roomId}`, (message) => {
+  //       const messageData = JSON.parse(message.body);
+  //       setImgFileName(messageData.filePath);
+  //     });
+
+  //     stomp.subscribe(`/from/vote/${roomId}`, (message) => {
+  //       const voteResultMessage = JSON.parse(message.body);
+  //       setVoteResult(voteResultMessage);
+  //     });
+  //   });
+  //   // eslint-disable-next-line
+  // }, [roomId, userInfo.id, playerStatus, imgFileName, userInfo.nickname]);
+
+  // const handleEnterRoom = () => {
+  //   if (stompRef.current) {
+  //     stompRef.current.send(`/to/room/enter/${roomId}/${userInfo.id}`);
+  //   }
+  // };
 
   const handleEnterRoom = () => {
-    if (stompRef.current) {
-      stompRef.current.send(`/to/room/enter/${roomId}/${userInfo.id}`);
+    if (stompClient) {
+      stompClient.send(`/to/room/enter/${roomId}/${userInfo.id}`);
     }
   };
 
-  const handleOutRoom = () => {
-    if (stompRef.current) {
-      stompRef.current.send(`/to/room/out/${roomId}/${userInfo.id}`);
-    }
-  };
+  // const handleOutRoom = () => {
+  //   if (stompRef.current) {
+  //     stompRef.current.send(`/to/room/out/${roomId}/${userInfo.id}`);
+  //   }
+  // };
 
   const [result, setResult] = useState({
-    userProfile:"",
+    userProfile: "",
     winner: "user1",
     playerA: {
       nickName: "Kim",
@@ -188,7 +215,6 @@ function DebatePage() {
     isSurrender: true,
     isExit: false,
   });
-  
 
   const handleModifyModalOpen = () => {
     setIsModifyModalOpen((prev) => !prev);
@@ -237,7 +263,7 @@ function DebatePage() {
         setPlayerB(undefined);
         setPlayerStatus((prevStatus) => [prevStatus[0], !prevStatus[1]]);
       }
-    // eslint-disable-next-line
+      // eslint-disable-next-line
     },
     [playerA, playerB]
   );
@@ -504,14 +530,14 @@ function DebatePage() {
 
   const removePlayer = (playerInfo) => {
     console.log("토론 참가자 삭제: ", playerInfo);
-    if(playerInfo.isATopic){
+    if (playerInfo.isATopic) {
       setPlayerA(undefined);
       setPlayerStatus((prev) => [false, prev[1]]);
-    } else{
+    } else {
       setPlayerB(undefined);
       setPlayerStatus((prev) => [prev[0], false]);
     }
-  }
+  };
 
   const handleStatusChange = (newStatus) => {
     setStatus(newStatus);
@@ -521,11 +547,14 @@ function DebatePage() {
     setIsAudioOn(isAudioOn);
     publisher.publishAudio(isAudioOn);
     if (stompRef.current) {
-      stompRef.current.send(`/to/player/changeTurn/${roomId}`,JSON.stringify({
-        roomId: `${roomId}`,
-        userId: `${userInfo.id}`,
-        isATurn: true,
-      }));
+      stompRef.current.send(
+        `/to/player/changeTurn/${roomId}`,
+        JSON.stringify({
+          roomId: `${roomId}`,
+          userId: `${userInfo.id}`,
+          isATurn: true,
+        })
+      );
     }
   };
 
@@ -533,49 +562,53 @@ function DebatePage() {
     setIsAudioOn(!isAudioOn);
     publisher.publishAudio(!isAudioOn);
     if (stompRef.current) {
-      if(ongoingRoomInfo.isATurn) {
-        stompRef.current.send(`/to/player/changeTurn/${roomId}`,JSON.stringify({
-          roomId: `${roomId}`,
-          userId: `${playerBInfo.viewerDto.userId}`,
-          isATurn: false,
-        }));
-      }else if(!ongoingRoomInfo.isATurn) {
-        stompRef.current.send(`/to/player/changeTurn/${roomId}`,JSON.stringify({
-          roomId: `${roomId}`,
-          userId: `${playerAInfo.viewerDto.userId}`,
-          isATurn: true,
-        }));
+      if (ongoingRoomInfo.isATurn) {
+        stompRef.current.send(
+          `/to/player/changeTurn/${roomId}`,
+          JSON.stringify({
+            roomId: `${roomId}`,
+            userId: `${playerBInfo.viewerDto.userId}`,
+            isATurn: false,
+          })
+        );
+      } else if (!ongoingRoomInfo.isATurn) {
+        stompRef.current.send(
+          `/to/player/changeTurn/${roomId}`,
+          JSON.stringify({
+            roomId: `${roomId}`,
+            userId: `${playerAInfo.viewerDto.userId}`,
+            isATurn: true,
+          })
+        );
       }
-      
-      
     }
-  }
+  };
   useEffect(() => {
     if (debateRoomInfo?.data?.status) {
       setStatus(debateRoomInfo.data.status.toLowerCase());
     }
   }, [debateRoomInfo, setStatus]);
-  
+
   const ongoingRoomStartInfo = async () => {
-    try{
+    try {
       // const base_url = `http://localhost:8081/api/debate/status/${roomId}`;
       const base_url = `${AXIOS_BASE_URL}/debate/status/${roomId}`;
       const response = await axios.get(base_url, null);
       setOngoingRoomInfo(response.data.data);
-      if(ongoingRoomInfo.curUserId === userInfo.id){
+      if (ongoingRoomInfo.curUserId === userInfo.id) {
         setIsAudioOn(isAudioOn);
         publisher.publishAudio(isAudioOn);
       }
     } catch (e) {
       console.log("토론방 시작 정보 가져오기 실패:", e);
     }
-  }
+  };
 
-  useEffect(() => {
-    if (debateRoomInfo?.data?.status === "ONGOING") {
-      ongoingRoomStartInfo();
-    }
-  });
+  // useEffect(() => {
+  //   if (debateRoomInfo?.data?.status === "ONGOING") {
+  //     ongoingRoomStartInfo();
+  //   }
+  // });
 
   const handleRoleChange = (newRole) => {
     setRole(newRole);
@@ -609,8 +642,10 @@ function DebatePage() {
             <Header
               status={status}
               leaveSession={leaveSession}
-              handleOutRoom={handleOutRoom}
+              // handleOutRoom={handleOutRoom}
               handleModifyModalOpen={handleModifyModalOpen}
+              roomId={roomId}
+              userId={userInfo.id}
             />
           </Row>
           <Row className={` m-0 p-0 my-3 `}>
@@ -688,7 +723,13 @@ function DebatePage() {
             </Col>
             <Col xs={3}>
               <Stack gap={1}>
-                <ScreenShare roomId={roomId} role={role} status={status} imgFileName={imgFileName} stompRef={stompRef}/>
+                <ScreenShare
+                  roomId={roomId}
+                  role={role}
+                  status={status}
+                  imgFileName={imgFileName}
+                  stompRef={stompRef}
+                />
                 <TextChatting roomId={roomId} stompRef={stompRef} />
               </Stack>
             </Col>
@@ -777,8 +818,16 @@ function DebatePage() {
                     <ProgressBar
                       variant="danger"
                       // label={result.playerA.hp}
-                      label={(result.playerA.nickName === result.winner) ? result.playerA.hp : result.playerB.hp }
-                      now={ (result.playerA.nickName === result.winner) ? ((result.playerA.hp / 100) * 100) : ((result.playerB.hp / 100) * 100)}
+                      label={
+                        result.playerA.nickName === result.winner
+                          ? result.playerA.hp
+                          : result.playerB.hp
+                      }
+                      now={
+                        result.playerA.nickName === result.winner
+                          ? (result.playerA.hp / 100) * 100
+                          : (result.playerB.hp / 100) * 100
+                      }
                       // now={(result.playerA.hp / 100) * 100}
                     />
                   </ProgressBar>
