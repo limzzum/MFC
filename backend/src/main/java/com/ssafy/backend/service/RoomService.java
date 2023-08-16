@@ -133,6 +133,7 @@ public class RoomService {
         .talkTime(roomInfoRuquestDto.getTalkTime())
         .maxPeople(roomInfoRuquestDto.getMaxPeople())
         .overTimeCount(roomInfoRuquestDto.getOverTimeCount())
+        .curPeople(1)
         .aTopic(roomInfoRuquestDto.getATopic())
         .bTopic(roomInfoRuquestDto.getBTopic())
         .status(Status.WAITING)

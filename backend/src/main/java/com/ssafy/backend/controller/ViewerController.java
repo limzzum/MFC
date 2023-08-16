@@ -4,6 +4,7 @@ package com.ssafy.backend.controller;
 import com.ssafy.backend.dto.Message;
 import com.ssafy.backend.dto.MethodResultDto;
 import com.ssafy.backend.dto.response.RoomInfoResponseDto;
+import com.ssafy.backend.dto.response.RoomInfoResponseDto.Status;
 import com.ssafy.backend.dto.response.RoomPeopleCountDto;
 import com.ssafy.backend.dto.response.ViewerDto;
 import com.ssafy.backend.entity.Participant;
@@ -35,7 +36,13 @@ public class ViewerController {
 
   @PostMapping("/{roomId}/{userId}")
   public ResponseEntity<Message> enterRoom(@PathVariable Long roomId, @PathVariable Long userId) {
+    boolean roomDoneStatus = roomService.getRoomInfoById(roomId).getStatus() == Status.DONE ? true : false;
     Message message = new Message(HttpStatus.OK, "테스트", null);
+    if(roomDoneStatus) {
+      message.setStatus(HttpStatus.BAD_REQUEST);
+      message.setMessage("해당 토론방은 종료되었습니다.");
+      return ResponseEntity.ok(message);
+    }
     ViewerDto viewerDto = null;
     if (viewerService.existsUser(userId, roomId)) {
       message.setMessage("재 입장 유저입니다.");
