@@ -98,13 +98,12 @@ function DebateBtns({
   //----------------------------------------------------------------------------------------
   const playerOutRef = useRef(null); 
   useEffect(() => {
-    const socket = new SockJS(`${BASE_URL}`);
+    const socket = new SockJS(`${SOCKET_BASE_URL}`);
     const stomp = Stomp.over(socket);
     stomp.connect({}, function () {
       playerOutRef.current = stomp;
       stomp.subscribe(`/from/player/${roomId}`, (message) => {
         const content = JSON.parse(message.body);
-        console.log("플레이어 관전자로 나갔을 때 받는 메세지:", content);
       })
     })
 
@@ -112,7 +111,6 @@ function DebateBtns({
 
   const handlePlayerOut = () => {
     if(playerOutRef.current){
-      console.log("플레이어 관전자로 변경");
       playerOutRef.current.send(
         `/to/player/out`, 
         JSON.stringify({

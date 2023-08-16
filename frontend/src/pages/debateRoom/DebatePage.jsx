@@ -48,12 +48,12 @@ function DebatePage() {
   // 참가자 참가여부
   const [playerStatus, setPlayerStatus] = useState([false, false]);
   // 참가자 준비여부
-  const [userReady, setUserReady] = useState(false);
+
   const [isModifyModalOpen, setIsModifyModalOpen] = useState(false);
   const [players, setPlayers] = useState([]);
-
   // 토론방 입장 웹소켓 코드
   const enterStompRef = useRef(null);
+
   useEffect(() => {
     var sock = new SockJS(`${SOCKET_BASE_URL}`);
     var stomp = Stomp.over(sock);
@@ -76,7 +76,7 @@ function DebatePage() {
   // 토론방 퇴장 웹소켓 코드 
   const outStompRef = useRef(null);
   useEffect( () => {
-    var sock = new SockJS(`${BASE_URL}`);
+    var sock = new SockJS(`${SOCKET_BASE_URL}`);
     var stomp = Stomp.over(sock);
     stomp.connect({}, function() {
       outStompRef.current = stomp;
@@ -122,7 +122,7 @@ function DebatePage() {
       modifyStompRef.current = stomp;
       stomp.subscribe(`/from/room/update/${roomId}`, (message) => {
         const content = JSON.parse(message.body);
-        console.log(content);
+        // console.log(content);
       });
 
       const stompMessage = { roomId: roomId };
@@ -518,12 +518,12 @@ function DebatePage() {
                   role={role}
                   playerStatus={playerStatus}
                   onStatusChange={handleStatusChange}
-                  userReady={userReady}
-                  setUserReady={setUserReady}
                   onRoleChange={handleRoleChange}
                   debateRoomInfo={debateRoomInfo.data}
                   userInfo={userInfo}
                   players={players}
+                  roomId={roomId}
+                  userId={userInfo.id}
                 />
               </Row>
               <Row>
@@ -552,7 +552,6 @@ function DebatePage() {
                   onStatusChange={handleStatusChange}
                   onRoleChange={handleRoleChange}
                   setPlayerStatus={setPlayerStatus}
-                  setUserReady={setUserReady}
                   debateRoomInfo={debateRoomInfo.data}
                   voteResult={voteResult.data}
                   handlePlayerAVideoStream={handlePlayerAVideoStream}
