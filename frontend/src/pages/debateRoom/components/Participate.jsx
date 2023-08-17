@@ -21,6 +21,7 @@ function Participate({
   updatePlayer,
   myStatus,
   setMyStatus,
+  playerReady,
 }) {
   const stompClient = useStompClient();
 
@@ -57,7 +58,9 @@ function Participate({
           <div className={`${style.Participant} mx-auto`}>
             {playerA === undefined &&
               playerStatus[0] === false &&
-              status === "waiting" && (
+              status === "waiting" && 
+              playerReady[1] === false &&  
+              (
                 <button
                   className={`${style.button} btn`}
                   onClick={() => {
@@ -94,7 +97,9 @@ function Participate({
           <div className={`${style.Participant} mx-auto`}>
             {playerB === undefined &&
               playerStatus[1] === false &&
-              status === "waiting" && (
+              status === "waiting" && 
+              playerReady[0] === false && 
+              (
                 <button
                   className={`${style.button} btn`}
                   onClick={() => {
