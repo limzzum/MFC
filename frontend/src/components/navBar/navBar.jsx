@@ -25,7 +25,7 @@ function NavBar() {
         console.log('로그아웃');
         setUserToken("");
         setUserId("");
-        localStorage.removeItem('token');
+        localStorage.removeItem('mfctoken');
         localStorage.removeItem('recoil-persist');
         localStorage.removeItem('userId');
         window.location.reload()

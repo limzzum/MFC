@@ -69,7 +69,7 @@ function Loginpage() {
       if (token) {
         setRecoilUserId({ userId });
         setUser({ token });
-        localStorage.setItem("token", token);
+        localStorage.setItem("mfctoken", token);
 
         const config = {
           headers: {

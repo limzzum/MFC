@@ -28,7 +28,7 @@ function NavBarWrapper() {
 }
 
 function App() {
-  const isLoggedIn = localStorage.getItem("token") ? true : false;
+  const isLoggedIn = localStorage.getItem("mfctoken") ? true : false;
   
   return (
     <BrowserRouter>
