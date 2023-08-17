@@ -42,6 +42,8 @@ function Spectator({
       stompClient.subscribe(`/from/vote/${roomId}`, (message) => {
         const voteResultMessage = JSON.parse(message.body);
         setVoteResult(voteResultMessage);
+        console.log("voteResult");
+        console.log(voteResultMessage);
       });
     }
     // eslint-disable-next-line
