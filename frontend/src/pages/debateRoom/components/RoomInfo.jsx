@@ -234,9 +234,11 @@ function RoomInfo({
   const debateRoomUpdateStatus = async () => {
     try {
       // const base_url = `http://localhost:8081/api/debate/${roomId}`;
-      const base_url = `${AXIOS_BASE_URL}/debate/status/${roomId}`;
+      const base_url = `${AXIOS_BASE_URL}/debate/${roomId}`;
       const response = await axios.get(base_url, null);
-      setDebateRoomInfo(response);
+      console.log("수정!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+      console.log(response.data.data);
+      setDebateRoomInfo(response.data);
     } catch (e) {
       // console.log("토론방 시작 정보 가져오기 실패:", e);
     }
