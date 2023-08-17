@@ -1,12 +1,13 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { Row, Col, Button, ProgressBar } from "react-bootstrap";
 import style from "../debatePage.module.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMicrophone } from "@fortawesome/free-solid-svg-icons";
 import { AXIOS_BASE_URL } from "../../../config";
 import axios from "axios";
-import { useRecoilState } from 'recoil';
-import { userReadyState } from '../../../recoil/debateStateAtom'
+import { useRecoilState } from "recoil";
+import { userReadyState } from "../../../recoil/debateStateAtom";
+import { useStompClient } from "../../../SocketContext";
 
 function RoomInfo({
   status,
@@ -27,9 +28,8 @@ function RoomInfo({
   turnChange,
   playerAInfo,
   userId,
-  user1HP,
-  user2HP,
 }) {
+  const stompClient = useStompClient();
   const total = debateRoomInfo.totalTime * 60;
   const talk = debateRoomInfo.talkTime * 60;
   const [userReady, setUserReady] = useRecoilState(userReadyState);
@@ -49,31 +49,30 @@ function RoomInfo({
   const speechformatTime = (time) => {
     const minutes = Math.floor(time / 60);
     const seconds = time % 60;
-    // return `${minutes}:${seconds < 10 ? `0${seconds}` : seconds}`;
-    const remainingSeconds = seconds % 60;
     const remainingMinutes = minutes % 60;
+    const remainingSeconds = seconds;
     return `${remainingMinutes}:${remainingSeconds}`;
   };
-//===========================================================================
-// const stompRef = useRef(null);
+  //===========================================================================
+  // const stompRef = useRef(null);
 
-const handleReadyClick = (isATopic) => {
-  if(stompRef.current) {
-    const payload = {
-      roomId: roomId,
-      userId: userId,
-      isATopic: isATopic,
-      isReady: userReady[isATopic ? 0 : 1]
-    };
-    stompRef.current.send("/to/player/ready", JSON.stringify(payload));
-  }
-}
-//===========================================================================
+  const handleReadyClick = (isATopic) => {
+    if (stompClient) {
+      const payload = {
+        roomId: roomId,
+        userId: userId,
+        isATopic: isATopic,
+        isReady: userReady[isATopic ? 0 : 1],
+      };
+      stompClient.send("/to/player/ready", JSON.stringify(payload));
+    }
+  };
+  //===========================================================================
 
-  const [playerAHistory,setPlayerAHistory] = useState(null);
-  const [playerBHistory,setPlayerBHistory] = useState(null);
-
-  const stompRef = useRef(null);
+  const [user1HP, setUser1HP] = useState(100);
+  const [user2HP, setUser2HP] = useState(100);
+  const [playerAHistory, setPlayerAHistory] = useState(null);
+  const [playerBHistory, setPlayerBHistory] = useState(null);
 
   useEffect(() => {
     if (status === "ongoing") {
@@ -98,17 +97,18 @@ const handleReadyClick = (isATopic) => {
       // 1회 발언시간 타이머
       const speechTimer = setInterval(() => {
         const currentTime1 = new Date();
-        const startTime1 = new Date(ongoingRoomInfo?.startTalkTime);
-        const timeDifferenceInMillis1 = currentTime1 - startTime1;
+        // const startTime1 = new Date(ongoingRoomInfo?.startTalkTime);
+        // const timeDifferenceInMillis1 = currentTime1 - startTime1;
+        const timeDifferenceInMillis1 = 14000;
         const seconds1 = Math.floor(timeDifferenceInMillis1 / 1000);
         if (speechTime > 0 && totalTime > 0) {
-          setSpeechTime(talk-seconds1);
+          setSpeechTime(talk - seconds1);
         }
       }, 1000);
 
       if (speechTime === 0 && totalTime > 0) {
         // setSpeechTime(talk);
-        if(userInfo.id === ongoingRoomInfo?.curUserId) {
+        if (userInfo.id === ongoingRoomInfo?.curUserId) {
           turnChange();
         }
       }
@@ -117,7 +117,7 @@ const handleReadyClick = (isATopic) => {
         clearInterval(totalTimer);
         clearInterval(speechTimer);
       };
-    }// eslint-disable-next-line
+    } // eslint-disable-next-line
   }, [
     status,
     onStatusChange,
@@ -132,7 +132,7 @@ const handleReadyClick = (isATopic) => {
   useEffect(() => {
     if (status === "waiting" && userReady[0] && userReady[1]) {
       onStatusChange("ongoing");
-      if(userInfo.id === playerAInfo.viewerDto.userId) {
+      if (userInfo.id === playerAInfo.viewerDto.userId) {
         debateStart();
       }
     }
@@ -165,10 +165,37 @@ const handleReadyClick = (isATopic) => {
         }
       }
     }
-  // eslint-disable-next-line
-  },[players]);
-  console.log(`여기는 유저 1번 ${userReady[0]}`)
-  console.log(`여기는 유저 2번 ${userReady[1]}`)
+    // eslint-disable-next-line
+  }, [players]);
+
+  useEffect(() => {
+    if (stompClient) {
+      stompClient.subscribe(`/from/player/status/${roomId}`, (message) => {
+        const content = JSON.parse(message.body);
+        if (content.isATopic) {
+          setUser1HP(content.hp);
+        } else {
+          setUser2HP(content.hp);
+        }
+      });
+
+      stompClient.subscribe(`/from/player/ready/${roomId}`, (message) => {
+        const content = JSON.parse(message.body);
+        console.log("ready하고 결과 받는 곳임");
+        console.log(content);
+        // 여기서 받은 데이터를 처리할 수 있습니다.
+        console.log(`여기는 유저 1번 ${userReady[0]}`);
+        console.log(`여기는 유저 2번 ${userReady[1]}`);
+        console.log(`여기는 모두 다 레디 ${content.isAllReady}`);
+        if (content.isAllReady) {
+          onStatusChange("ongoing");
+        }
+      });
+    }
+  }, [stompClient, roomId, onStatusChange, userReady]);
+
+  // console.log(`여기는 유저 1번 ${userReady[0]}`)
+  // console.log(`여기는 유저 2번 ${userReady[1]}`)
 
   return (
     <>
@@ -274,13 +301,15 @@ const handleReadyClick = (isATopic) => {
           {status === "waiting" && playerStatus[0] && (
             <Button
               className={
-                userReady[0] ? `${style.completeButton}` : `${style.readyButton}`
+                userReady[0]
+                  ? `${style.completeButton}`
+                  : `${style.readyButton}`
               }
               onClick={() => {
-                setUserReady(prevState => ([!prevState[0], prevState[1]]));
+                setUserReady((prevState) => [!prevState[0], prevState[1]]);
                 handleReadyClick(true); // 왼쪽 준비 버튼 클릭 시 isATopic이 true
               }}
-              >
+            >
               {userReady[0] ? "준비 완료" : "준비"}
             </Button>
           )}
@@ -302,10 +331,12 @@ const handleReadyClick = (isATopic) => {
           {status === "waiting" && playerStatus[1] && (
             <Button
               className={
-                userReady[1] ? `${style.completeButton}` : `${style.readyButton}`
+                userReady[1]
+                  ? `${style.completeButton}`
+                  : `${style.readyButton}`
               }
               onClick={() => {
-                setUserReady(prevState => ([prevState[0], !prevState[1]]));
+                setUserReady((prevState) => [prevState[0], !prevState[1]]);
                 handleReadyClick(false);
               }}
             >

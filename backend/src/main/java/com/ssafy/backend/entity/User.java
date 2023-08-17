@@ -43,7 +43,7 @@ public class User {
   @ColumnDefault("false")
   boolean isDeleted;
 
-  @ManyToOne
+  @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "item_code_id", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
   ItemCode colorItem;
 

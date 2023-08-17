@@ -18,6 +18,7 @@ import ItemPage from "./pages/item/itemPage";
 import Test from "./pages/debateRoom/Test";
 import { userState } from "./recoil/token";
 import { useRecoilValue } from "recoil";
+import { SocketProvider } from "./SocketContext";
 
 function NavBarWrapper() {
   const location = useLocation();
@@ -34,48 +35,52 @@ function App() {
 
   return (
     <BrowserRouter>
-      <div className="App">
-        <NavBarWrapper />
-        <Routes>
-          <Route
-            path="/login"
-            element={!isLoggedIn ? <LoginPage /> : <Navigate to="/" />}
-          />
-          <Route
-            path="/signup"
-            element={!isLoggedIn ? <SignupPage /> : <Navigate to="/" />}
-          />
-          <Route
-            path="/pwchange"
-            element={
-              isLoggedIn ? <PasswordChangePage /> : <Navigate to="/login" />
-            }
-          />
-          <Route
-            path="/"
-            element={isLoggedIn ? <MainPage /> : <Navigate to="/login" />}
-          />
-          <Route
-            path="/debateRoom"
-            element={isLoggedIn ? <DebatePage /> : <Navigate to="/login" />}
-          >
-            <Route path=":roomId" element={<DebatePage />} />
-          </Route>
-          <Route
-            path="/profile"
-            element={isLoggedIn ? <MyProfilePage /> : <Navigate to="/login" />}
-          />
-          <Route
-            path="/ranking"
-            element={isLoggedIn ? <RankingPage /> : <Navigate to="/login" />}
-          />
-          <Route
-            path="/item"
-            element={isLoggedIn ? <ItemPage /> : <Navigate to="/login" />}
-          />
+      <SocketProvider>
+        <div className="App">
+          <NavBarWrapper />
+          <Routes>
+            <Route
+              path="/login"
+              element={!isLoggedIn ? <LoginPage /> : <Navigate to="/" />}
+            />
+            <Route
+              path="/signup"
+              element={!isLoggedIn ? <SignupPage /> : <Navigate to="/" />}
+            />
+            <Route
+              path="/pwchange"
+              element={
+                isLoggedIn ? <PasswordChangePage /> : <Navigate to="/login" />
+              }
+            />
+            <Route
+              path="/"
+              element={isLoggedIn ? <MainPage /> : <Navigate to="/login" />}
+            />
+            <Route
+              path="/debateRoom"
+              element={isLoggedIn ? <DebatePage /> : <Navigate to="/login" />}
+            >
+              <Route path=":roomId" element={<DebatePage />} />
+            </Route>
+            <Route
+              path="/profile"
+              element={
+                isLoggedIn ? <MyProfilePage /> : <Navigate to="/login" />
+              }
+            />
+            <Route
+              path="/ranking"
+              element={isLoggedIn ? <RankingPage /> : <Navigate to="/login" />}
+            />
+            <Route
+              path="/item"
+              element={isLoggedIn ? <ItemPage /> : <Navigate to="/login" />}
+            />
             <Route path="/test" element={<Test />} />
           </Routes>
-      </div>
+        </div>
+      </SocketProvider>
     </BrowserRouter>
   );
 }

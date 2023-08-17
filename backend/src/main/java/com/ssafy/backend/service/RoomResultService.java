@@ -65,7 +65,7 @@ public class RoomResultService {
   // 3.1 이후 플레이어 상태 변경 api 프론트에서 서버로 전송하기
 
   // 시간초과나 생명게이지 감소로 API보내는 경우 플레이어가 아닌 관전자일 경우
-  public MethodResultDto roomResult(Boolean isSurrender, Boolean isExit, Long userId,Long roomId) {
+  public MethodResultDto roomResult(Boolean isSurrender, Boolean isExit, Long userId, Long roomId) {
     MethodResultDto methodResultDto = new MethodResultDto();
     DebateFinInfoDto debateFinInfoDto;
 
@@ -112,11 +112,15 @@ public class RoomResultService {
               .filter(p -> Boolean.TRUE.equals(p.getIsVoteTypeA()))
               .count();
 
+      System.out.println(playerA.getUser().getId());
+      System.out.println(playerA.getUser().getId().equals(userId));
+      System.out.println(playerB.getUser().getId());
       DebateFinPlayerDto playerADto = new DebateFinPlayerDto(playerA.getUser().getNickname(),aVoteCount, playerA.getHeartPoint());
       DebateFinPlayerDto playerBDto = new DebateFinPlayerDto(playerB.getUser().getNickname(),bVoteCount, playerB.getHeartPoint());
 
       if(isSurrender || isExit) {
-        if(playerA.getUser().getId() == userId) {
+        if(playerA.getUser().getId().equals(userId)) {
+          System.out.println("이게 찍혀야 하는데....?!");
           if(isSurrender) {
             playerADto = playerHistoryGet(playerADto, playerA.getUser().getId(),"lose");
             playerHistoryUpdate(playerADto, playerA.getUser().getId(),"lose");
@@ -126,8 +130,11 @@ public class RoomResultService {
           }
           playerBDto = playerHistoryGet(playerBDto, playerB.getUser().getId(),"win");
           playerHistoryUpdate(playerBDto, playerB.getUser().getId(),"win");
+
+          System.out.println(playerB.getUser().getNickname());
           debateFinInfoDto = new DebateFinInfoDto(playerB.getUser().getProfile(),playerB.getUser().getNickname(),playerADto,playerBDto,isSurrender,isExit);
         }else  {
+          System.out.println("이게 찍혀야 하는데....?");
           if(isSurrender) {
             playerBDto = playerHistoryGet(playerBDto, playerB.getUser().getId(),"lose");
             playerHistoryUpdate(playerBDto, playerB.getUser().getId(),"lose");
@@ -146,27 +153,27 @@ public class RoomResultService {
         if(isPlayerAStatus == "win") {
           playerADto = playerHistoryGet(playerADto, playerA.getUser().getId(),"win");
           playerBDto = playerHistoryGet(playerBDto, playerB.getUser().getId(),"lose");
-          if(playerA.getUser().getId() == userId) {
+          if(playerA.getUser().getId().equals(userId)) {
             playerHistoryUpdate(playerADto, playerA.getUser().getId(),"win");
-          }else if(playerB.getUser().getId() == userId){
+          }else if(playerB.getUser().getId().equals(userId)){
             playerHistoryUpdate(playerBDto, playerB.getUser().getId(),"lose");
           }
           debateFinInfoDto = new DebateFinInfoDto(playerA.getUser().getProfile(),playerA.getUser().getNickname(),playerADto,playerBDto,isSurrender,isExit);
         }else if(isPlayerAStatus == "draw") {
           playerADto = playerHistoryGet(playerADto, playerA.getUser().getId(),"draw");
           playerBDto = playerHistoryGet(playerBDto, playerB.getUser().getId(),"draw");
-          if(playerA.getUser().getId() == userId) {
+          if(playerA.getUser().getId().equals(userId)) {
             playerHistoryUpdate(playerADto, playerA.getUser().getId(),"draw");
-          }else if(playerB.getUser().getId() == userId){
+          }else if(playerB.getUser().getId().equals(userId)){
             playerHistoryUpdate(playerBDto, playerB.getUser().getId(),"draw");
           }
           debateFinInfoDto = new DebateFinInfoDto(playerADto,playerBDto,isSurrender,isExit);
         }else {
           playerADto = playerHistoryGet(playerADto, playerA.getUser().getId(),"lose");
           playerBDto = playerHistoryGet(playerBDto, playerB.getUser().getId(),"win");
-          if(playerA.getUser().getId() == userId) {
+          if(playerA.getUser().getId().equals(userId)) {
             playerHistoryUpdate(playerADto, playerA.getUser().getId(),"lose");
-          }else if(playerB.getUser().getId() == userId){
+          }else if(playerB.getUser().getId().equals(userId)){
             playerHistoryUpdate(playerBDto, playerB.getUser().getId(),"win");
           }
           debateFinInfoDto = new DebateFinInfoDto(playerB.getUser().getProfile(),playerB.getUser().getNickname(),playerADto,playerBDto,isSurrender,isExit);
