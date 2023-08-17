@@ -46,6 +46,7 @@ public class PlayerService {
         Player existPlayer = playerRepository.findTopByRoomIdAndUserId(playerRegistDto.getRoomId(), playerRegistDto.getUserId()).orElse(null);
         if(existPlayer != null){
             existPlayer.changeTopic(playerRegistDto.isATopic());
+            System.out.println(existPlayer.getId());
             playerRepository.save(existPlayer);
             return existPlayer.getId();
         }
@@ -72,7 +73,6 @@ public class PlayerService {
             return;
         }
         player.updateInfo(playerUpdateDto);
-        playerRepository.save(player);
     }
 
     public void deletePlayer(PlayerRegistDto playerRegistDto){
@@ -88,7 +88,6 @@ public class PlayerService {
 
         boolean result = player.removeOverTimeCnt();
         if(result){
-            playerRepository.save(player);
             return true;
         }
         return false;

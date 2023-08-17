@@ -12,10 +12,12 @@ import org.springframework.messaging.handler.annotation.*;
 import org.springframework.messaging.simp.*;
 import org.springframework.web.bind.annotation.*;
 
+import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 
 @RestController
 @RequiredArgsConstructor
+@Transactional
 public class PlayerSocketController {
 
     private final SimpMessagingTemplate messagingTemplate;
@@ -49,6 +51,7 @@ public class PlayerSocketController {
     public void setPlayer(PlayerRequestDto playerDto) {
         Long roomId = playerDto.getRoomId();
         User user = userService.findById(playerDto.getUserId());
+        System.out.println(user.getColorItem().getRgb());
         playerService.regist(PlayerRegistDto.builder()
                 .roomId(roomId)
                 .userId(user.getId())
