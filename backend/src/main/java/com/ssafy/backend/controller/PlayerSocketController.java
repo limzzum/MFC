@@ -105,8 +105,7 @@ public class PlayerSocketController {
     public void readyPlayer(PlayerRequestDto playerDto) {
         Long roomId = playerDto.getRoomId();
         User user = userService.findById(playerDto.getUserId());
-        playerService.changeStatus(new PlayerDto(roomId,user.getId()), playerDto.isReady());
-        boolean allReady = playerService.isAllReady(roomId);
+        boolean allReady = playerService.changeStatus(new PlayerDto(roomId,user.getId()), playerDto.isReady());
 
         if(allReady){
             roomService.setRoomStatus(roomId);

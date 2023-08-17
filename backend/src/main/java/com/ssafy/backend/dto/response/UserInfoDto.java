@@ -12,6 +12,6 @@ public class UserInfoDto {
     private String email;
     private String nickname;
     private String profile;
-    private ItemCode colorItem;
+    private String nickNameColorCode;
 
 }

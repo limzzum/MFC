@@ -188,6 +188,7 @@ public class RoomService {
       return;
     }
     room.updateStatus(status);
+    roomRepository.save(room);
   }
 
   public int incrementRoomCurrentCount(Long roomId) {
