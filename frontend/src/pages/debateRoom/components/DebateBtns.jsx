@@ -385,7 +385,7 @@ function DebateBtns({
       </Row>
       <Modal show={showModal} onHide={() => setShowModal(false)}>
         <Modal.Header closeButton>
-          <Modal.Title>Vote for Topics</Modal.Title>
+          <Modal.Title>투표하기</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Form>

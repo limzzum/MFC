@@ -61,7 +61,8 @@ function CreateRoomModal({
             </div>
             <hr />
             <div className="row">
-              <div className="col-md-6">
+              <div>
+                {/* <div className="col-md-6"> */}
                 <div className={`my-2`}>
                   <label className={style.contentTitle}>토론시간 (분)</label>
                   <input
@@ -73,7 +74,7 @@ function CreateRoomModal({
                   />
                 </div>
               </div>
-              <div className="col-md-6">
+              {/* <div className="col-md-6">
                 <div className={`my-2`}>
                   <label className={style.contentTitle}>발언 시간</label>
                   <select
@@ -88,9 +89,9 @@ function CreateRoomModal({
                     <option value="5">5분</option>
                   </select>
                 </div>
-              </div>
+              </div> */}
             </div>
-            <div className="row">
+            {/* <div className="row">
               <div className="col-md-6">
                 <div className={`my-2`}>
                   <label className={style.contentTitle}>관전자 수</label>
@@ -123,7 +124,7 @@ function CreateRoomModal({
                   </select>
                 </div>
               </div>
-            </div>
+            </div> */}
           </div>
           <div className="modal-footer">
             <button

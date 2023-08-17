@@ -4,7 +4,7 @@ import { useRecoilValue } from "recoil";
 import { userIdState } from "../../recoil/userId";
 import { userInfoState } from "../../recoil/userInfo";
 import { BsStopwatch } from "react-icons/bs";
-import { RiSpeakLine } from "react-icons/ri";
+// import { RiSpeakLine } from "react-icons/ri";
 import personImage from "../../images/person.png";
 import baseProfile from "../../images/baseProfile.png";
 import style from "./debateRoomCard.module.css";
@@ -81,18 +81,18 @@ const DebateRoomCard = ({
               <Col className={`${style.cardtitle} p-0 m-0`}>{title2}</Col>
             </Row>
           </div>
-          <div className={`text-center mt-2`}>
+          <div className={`text-center mt-2 mb-3`}>
             <BsStopwatch className={style.timeicon} />
             <span className={style.cardtext}>
               토론 시간&nbsp;:&nbsp; {debateTime}분
             </span>
           </div>
-          <div className={`my-1 text-center mb-3`}>
+          {/* <div className={`my-1 text-center mb-3`}>
             <RiSpeakLine className={style.timeicon} />
             <span className={style.cardtext}>
               발언 제한 시간&nbsp;:&nbsp; {speechTime}분
             </span>
-          </div>
+          </div> */}
         </div>
         {/* <div className={style.cardbody}>
           <div className={`${style.joinbuttoncontainer} mx-1 mb-2`}>
