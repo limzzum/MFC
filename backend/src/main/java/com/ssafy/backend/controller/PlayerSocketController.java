@@ -4,8 +4,10 @@ import com.ssafy.backend.dto.request.*;
 import com.ssafy.backend.dto.socket.request.PlayerItemDto;
 import com.ssafy.backend.dto.socket.request.PlayerRequestDto;
 import com.ssafy.backend.dto.socket.response.*;
+import com.ssafy.backend.entity.Player;
 import com.ssafy.backend.entity.Status;
 import com.ssafy.backend.entity.User;
+import com.ssafy.backend.repository.PlayerRepository;
 import com.ssafy.backend.service.*;
 import lombok.*;
 import org.springframework.messaging.handler.annotation.*;
@@ -25,6 +27,7 @@ public class PlayerSocketController {
     private final UserService userService;
     private final ItemService itemService;
     private final RoomService roomService;
+    private final PlayerRepository playerRepository;
 
 
 //    @MessageMapping("/player/enter")
@@ -70,18 +73,21 @@ public class PlayerSocketController {
 
     @MessageMapping("/player/out")
     public void playerOut(PlayerRequestDto playerDto) {
+        Player player = playerRepository.findTopByRoomIdAndUserId(playerDto.getRoomId(), playerDto.getUserId()).orElse(null);
         Long roomId = playerDto.getRoomId();
-        User user = userService.findById(playerDto.getUserId());
-        playerService.deletePlayer(PlayerRegistDto.builder().roomId(roomId).userId(user.getId()).isATopic(playerDto.isATopic()).build());
+        playerService.deletePlayer(PlayerRegistDto.builder().roomId(roomId).userId(player.getUser().getId()).isATopic(player.isTopicTypeA()).build());
 
         PlayerInfoDto playerInfoDto = PlayerInfoDto.builder()
-                .userId(user.getId())
-                .nickname(user.getNickname())
-                .profile(user.getProfile())
-                .nickNameColorCode(user.getColorItem().getRgb())
+                .userId(player.getUser().getId())
+                .nickname(player.getUser().getNickname())
+                .profile(player.getUser().getProfile())
+                .nickNameColorCode(player.getUser().getColorItem().getRgb())
                 .isReady(false)
-                .isATopic(playerDto.isATopic())
+                .isATopic(player.isTopicTypeA())
                 .isAllReady(false).build();
+
+        System.out.println(playerDto.isATopic());
+        System.out.println(playerInfoDto.isATopic());
         messagingTemplate.convertAndSend("/from/player/out/" + roomId, playerInfoDto);
     }
 
