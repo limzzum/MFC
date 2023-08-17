@@ -43,6 +43,8 @@ public class ParticipantService {
   public void changeRole(PlayerRegistDto playerRegistDto, RoleCode roleCode){
     Participant participant = participantRepository.findAllByUserIdAndRoomId(playerRegistDto.getUserId(), playerRegistDto.getRoomId());
     participant.changeRole(roleCode);
+    System.out.println(roleCode.getRole());
+    System.out.println(participant.getNickName());
     participantRepository.save(participant);
   }
 }
