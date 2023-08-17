@@ -96,7 +96,7 @@ public class UserService {
                                         .email(user.getEmail())
                                         .nickname(user.getNickname())
                                         .profile(user.getProfile())
-                                        .colorItem(user.getColorItem()).build();
+                                        .nickNameColorCode(user.getColorItem().getRgb()).build();
         return userInfoDto;
     }
 
