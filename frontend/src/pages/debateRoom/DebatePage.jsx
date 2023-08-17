@@ -661,6 +661,7 @@ function DebatePage() {
               roomId={roomId}
               userId={userInfo.id}
               role={role}
+              onRoleChange={handleRoleChange}
             />
           </Row>
           <Row className={` m-0 p-0 my-3 `}>
