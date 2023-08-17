@@ -444,6 +444,15 @@ ul button {
   color: var(--blue-500);
   font-size: 16px;
 }
+.readyComplete {
+  color: white;
+  font-weight: 800px !important;
+  /* font-size: 20px; */
+  background-color: var(--red-600);
+  opacity: 0.8;
+  padding: 10px;
+  border-radius: 10px;
+}
 
 .videoButton {
   width: 45px;

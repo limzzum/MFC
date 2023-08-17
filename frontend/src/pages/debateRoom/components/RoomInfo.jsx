@@ -28,6 +28,10 @@ function RoomInfo({
   userId,
   playerReady,
   setPlayerReady,
+  setIsTopicAReady,
+  setIsTopicBReady,
+  isTopicAReady,
+  isTopicBReady,
 }) {
   const stompClient = useStompClient();
   const total = debateRoomInfo.totalTime * 60;
@@ -131,15 +135,16 @@ function RoomInfo({
   ]);
 
   //두 참가자가 모두 준비가 되면 토론 시작
-  useEffect(() => {
-    if (status === "waiting" && playerReady[0] && playerReady[1]) {
-      onStatusChange("ongoing");
-      if (userInfo.id === playerAIdInfo) {
-        debateStart();
-      }
-    }
-    // eslint-disable-next-line
-  }, [playerReady, status]);
+  //0817 heejeong 이미 ongoing 되는 코드 있어서 주석처리한다.
+  // useEffect(() => {
+  //   if (status === "waiting" && playerReady[0] && playerReady[1]) {
+  //     onStatusChange("ongoing");
+  //     if (userInfo.id === playerAIdInfo) {
+  //       debateStart();
+  //     }
+  //   }
+  //   // eslint-disable-next-line
+  // }, [playerReady, status]);
 
   const playerGetHistory = async (userId) => {
     try {
@@ -206,10 +211,18 @@ function RoomInfo({
       stompClient.subscribe(`/from/player/ready/${roomId}`, (message) => {
         const content = JSON.parse(message.body);
         console.log("ready하고 결과 받는 곳임");
+        if (content.isATopic) {
+          setIsTopicAReady(content.isReady);
+        } else {
+          setIsTopicBReady(content.isReady);
+        }
         console.log(content.isATopic);
         console.log(content.isReady);
         if (content.isAllReady) {
           onStatusChange("ongoing");
+          if (userInfo.id === playerAIdInfo) {
+            debateStart();
+          }
         }
       });
     }
@@ -237,23 +250,16 @@ function RoomInfo({
                 <p>{playerAHistory.nickName}&nbsp;</p>
               </div>
               <div className={style.infoBOx}>
-                <span>승&nbsp;{playerAHistory.winCount}&nbsp;</span>
+                <span>{playerAHistory.winCount}승&nbsp;</span>
+                <span>{playerAHistory.drawCount}무&nbsp;</span>
+                <span>{playerAHistory.loseCount}패&nbsp;</span>
                 <span>
-                  무&nbsp;
-                  {playerAHistory.drawCount}&nbsp;
-                </span>
-                <span>
-                  패&nbsp;
-                  {playerAHistory.loseCount}&nbsp;
-                </span>
-                <span>
-                  승률&nbsp;
-                  <strong>{playerAHistory.winRate.toFixed(0)}%</strong>&nbsp;
+                  /&nbsp;승률&nbsp;{playerAHistory.winRate.toFixed(0)}%
                 </span>
               </div>
             </div>
           ) : (
-            <span>플레이어 대기 중</span>
+            <span>플레이어 대기 중...</span>
           )}
         </Col>
         <Col xs={1} className={`${style.debateTimer} mx-auto p-0 mt-1`}>
@@ -278,7 +284,7 @@ function RoomInfo({
               </div>
             </div>
           ) : (
-            <span>플레이어 대기 중</span>
+            <span>플레이어 대기 중...</span>
           )}
         </Col>
       </Row>
@@ -300,6 +306,9 @@ function RoomInfo({
             >
               {playerReady[0] ? "준비 완료" : "준비"}
             </Button>
+          )}
+          {status === "waiting" && role === "spectator" && isTopicAReady && (
+            <span className={style.readyComplete}>플레이어 준비 완료</span>
           )}
           {status === "ongoing" && (
             <ProgressBar
@@ -332,6 +341,9 @@ function RoomInfo({
             >
               {playerReady[1] ? "준비 완료" : "준비"}
             </Button>
+          )}
+          {status === "waiting" && role === "spectator" && isTopicBReady && (
+            <span className={style.readyComplete}>플레이어 준비 완료</span>
           )}
           {status === "ongoing" && (
             <ProgressBar
