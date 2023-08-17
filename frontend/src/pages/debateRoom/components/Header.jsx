@@ -17,6 +17,7 @@ function Header({
   handleModifyModalOpen,
   roomId,
   userId,
+  onRoleChange,
   // handleOutRoom,
 }) {
   const stompClient = useStompClient();
@@ -53,6 +54,7 @@ function Header({
                 size="2x"
                 onClick={() => {
                   leaveSession();
+                  onRoleChange("spectator")
                   handleOutRoom();
                 }}
                 className={style.exit}
