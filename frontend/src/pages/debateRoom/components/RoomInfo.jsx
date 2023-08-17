@@ -325,13 +325,10 @@ function RoomInfo({
                   : `${style.readyButton}`
               }
               onClick={() => {
-                console.log("@!@#!#$!@#$$@#%@#%%%");
-                console.log(playerReady[0]);
-                console.log(playerReady[1]);
-                setPlayerReady([!playerReady[0], playerReady[1]]);
-                console.log(playerReady[0]);
-                console.log(playerReady[1]);
-                handleReadyClick(true); // 왼쪽 준비 버튼 클릭 시 isATopic이 true
+                if (userInfo.id === playerAIdInfo) {
+                  setPlayerReady([!playerReady[0], playerReady[1]]);
+                  handleReadyClick(true); // 왼쪽 준비 버튼 클릭 시 isATopic이 true
+                }
               }}
             >
               {playerReady[0] ? "준비 완료" : "준비"}
@@ -360,13 +357,10 @@ function RoomInfo({
                   : `${style.readyButton}`
               }
               onClick={() => {
-                console.log("@!@#!#$!@#$$@#%@#%%%");
-                console.log(playerReady[0]);
-                console.log(playerReady[1]);
-                setPlayerReady([playerReady[0], !playerReady[1]]);
-                console.log(playerReady[0]);
-                console.log(playerReady[1]);
-                handleReadyClick(false);
+                if (userInfo.id === playerBIdInfo) {
+                  setPlayerReady([playerReady[0], !playerReady[1]]);
+                  handleReadyClick(false);
+                }
               }}
             >
               {playerReady[1] ? "준비 완료" : "준비"}
