@@ -93,7 +93,9 @@ function DebateBtns({
       });
       stompClient.subscribe(`/from/room/surrender/${roomId}`, (message) => {
         const modalData = JSON.parse(message.body);
+        console.log(modalData);
         setResult(modalData);
+
         onStatusChange("done");
       });
     }

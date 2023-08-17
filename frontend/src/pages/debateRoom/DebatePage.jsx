@@ -3,15 +3,15 @@ import axios from "axios";
 import { OpenVidu } from "openvidu-browser";
 import { useParams, useNavigate } from "react-router-dom";
 import { useRecoilState, useRecoilValue } from "recoil";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCoins, faFaceSmile } from "@fortawesome/free-solid-svg-icons";
+// import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+// import { faCoins, faFaceSmile } from "@fortawesome/free-solid-svg-icons";
 import {
   useStatus,
   useRole,
   getDebateRoomState,
   getVoteResultState,
 } from "../../recoil/debateStateAtom";
-import { Row, Col, Stack, Modal, Button, ProgressBar } from "react-bootstrap";
+import { Row, Col, Stack, Modal, Button } from "react-bootstrap";
 import Header from "./components/Header";
 import ScreenShare from "./components/ScreenShare";
 import Participate from "./components/Participate";
@@ -783,19 +783,21 @@ function DebatePage() {
           )}
           {/* 토론 결과 Modal*/}
           <div
-            className={`modal ${showResultModal ? "show d-block" : ""}`}
+            className={`modal ${showResultModal ? "show d-block" : "show"} ${
+              style.modalBackground
+            }`}
             tabIndex="-1"
             role="dialog"
           >
-            <div className="modal-dialog" role="document">
+            <div className={`modal-dialog ${style.modalBox}`} role="document">
               <div className="modal-content">
                 <div className="modal-header">
-                  <h5 className="modal-title">토론 결과</h5>
+                  <h5 className="modal-title">승리</h5>
                 </div>
                 <div className="modal-body">
                   {result ? (
                     <>
-                      <p className={style.contentTitle}>승리</p>
+                      {/* <p className={style.contentTitle}>승리</p> */}
                       <p className={style.contentTitleWinner}>
                         {result.winner}
                       </p>
@@ -814,7 +816,7 @@ function DebatePage() {
                   ) : (
                     <p>무승부</p>
                   )}
-                  <hr />
+                  {/* <hr />
                   {!result.isSurrender || result.isExit ? (
                     <>
                       <p>투표 결과</p>
@@ -841,20 +843,20 @@ function DebatePage() {
                         />
                       </ProgressBar>
                     </>
-                  ) : null}
+                  ) : null} */}
 
-                  <p className={style.contentTitle}>잔여 HP</p>
+                  {/* <p className={style.contentTitle}>잔여 HP</p>
                   <ProgressBar>
                     <ProgressBar
                       variant="danger"
                       // label={result.playerA.hp}
                       label={
-                        result.playerA.nickName === result.winner
+                        (result.playerA.nickName === result.winner)
                           ? result.playerA.hp
                           : result.playerB.hp
                       }
                       now={
-                        result.playerA.nickName === result.winner
+                        (result.playerA.nickName === result.winner)
                           ? (result.playerA.hp / 100) * 100
                           : (result.playerB.hp / 100) * 100
                       }
@@ -877,7 +879,7 @@ function DebatePage() {
                         &nbsp; {result.playerA.coin} (+15)
                       </p>
                     </div>
-                  </div>
+                  </div> */}
                 </div>
                 <Modal.Footer>
                   <Button variant="secondary" onClick={goToMainPage}>

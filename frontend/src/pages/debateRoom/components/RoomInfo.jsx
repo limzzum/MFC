@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { Row, Col, Button, ProgressBar } from "react-bootstrap";
 import style from "../debatePage.module.css";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faMicrophone } from "@fortawesome/free-solid-svg-icons";
+// import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+// import { faMicrophone } from "@fortawesome/free-solid-svg-icons";
 import { AXIOS_BASE_URL } from "../../../config";
 import axios from "axios";
 import { useStompClient } from "../../../SocketContext";
@@ -49,13 +49,13 @@ function RoomInfo({
     const remainingMinutes = minutes % 60;
     return `${hours}:${remainingMinutes}:${remainingSeconds}`;
   };
-  const speechformatTime = (time) => {
-    const minutes = Math.floor(time / 60);
-    const seconds = time % 60;
-    const remainingMinutes = minutes % 60;
-    const remainingSeconds = seconds;
-    return `${remainingMinutes}:${remainingSeconds}`;
-  };
+  // const speechformatTime = (time) => {
+  //   const minutes = Math.floor(time / 60);
+  //   const seconds = time % 60;
+  //   const remainingMinutes = minutes % 60;
+  //   const remainingSeconds = seconds;
+  //   return `${remainingMinutes}:${remainingSeconds}`;
+  // };
   //===========================================================================
   // const stompRef = useRef(null);
 
@@ -320,9 +320,9 @@ function RoomInfo({
           )}
         </Col>
         <Col xs={1} className={`${style.speechTimer} mx-auto p-0`}>
-          <FontAwesomeIcon icon={faMicrophone} className={`${style.micIcon}`} />
+          {/* <FontAwesomeIcon icon={faMicrophone} className={`${style.micIcon}`} />
           &nbsp;
-          {speechformatTime(speechTime)}
+          {speechformatTime(speechTime)} */}
         </Col>
         <Col className={style.userStatus}>
           {status === "waiting" && playerStatus[1] && (

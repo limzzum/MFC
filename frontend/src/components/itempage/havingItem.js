@@ -5,7 +5,7 @@ import {
   faCoins,
   faCross,
   faHeartCirclePlus,
-  faUserClock,
+  // faUserClock,
   faVolumeXmark,
   faHand,
   faXmark,
@@ -15,8 +15,8 @@ function HavingItem({ userItems, userCoin }) {
   const potionItem = userItems.find((item) => item.name === "포션");
   const potionCount = potionItem ? potionItem.count : 0;
 
-  const speechItem = userItems.find((item) => item.name === "발언 연장권");
-  const speechCount = speechItem ? speechItem.count : 0;
+  // const speechItem = userItems.find((item) => item.name === "발언 연장권");
+  // const speechCount = speechItem ? speechItem.count : 0;
 
   const muteItem = userItems.find((item) => item.name === "상대 음소거");
   const muteCount = muteItem ? muteItem.count : 0;
@@ -46,14 +46,14 @@ function HavingItem({ userItems, userCoin }) {
             &nbsp;{potionCount}
           </p>
         </div>
-        <div className={`${styles.itemBox} mx-auto`}>
+        {/* <div className={`${styles.itemBox} mx-auto`}>
           <FontAwesomeIcon icon={faUserClock} size="3x" />
           <p className="pt-4">발언 연장권</p>
           <p className={styles.count}>
             <FontAwesomeIcon icon={faXmark} />
             &nbsp;{speechCount}
           </p>
-        </div>
+        </div> */}
         <div className={`${styles.itemBox} mx-auto`}>
           <FontAwesomeIcon icon={faVolumeXmark} size="3x" />
           <p className="pt-4">음소거</p>
