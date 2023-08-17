@@ -5,8 +5,6 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMicrophone } from "@fortawesome/free-solid-svg-icons";
 import { AXIOS_BASE_URL } from "../../../config";
 import axios from "axios";
-import { useRecoilState } from "recoil";
-import { userReadyState } from "../../../recoil/debateStateAtom";
 import { useStompClient } from "../../../SocketContext";
 
 function RoomInfo({
@@ -16,8 +14,6 @@ function RoomInfo({
   onStatusChange,
   onRoleChange,
   debateRoomInfo,
-  // userReady,
-  // setUserReady,
   players,
   roomId,
   playerAIdInfo,
@@ -30,11 +26,12 @@ function RoomInfo({
   turnChange,
   playerAInfo,
   userId,
+  playerReady,
+  setPlayerReady,
 }) {
   const stompClient = useStompClient();
   const total = debateRoomInfo.totalTime * 60;
   const talk = debateRoomInfo.talkTime * 60;
-  const [userReady, setUserReady] = useRecoilState(userReadyState);
 
   const [totalTime, setTotalTime] = useState(total);
   const [speechTime, setSpeechTime] = useState(talk);
@@ -59,12 +56,15 @@ function RoomInfo({
   // const stompRef = useRef(null);
 
   const handleReadyClick = (isATopic) => {
+    console.log("@@@@@@@@@@@@@@@@@@@@@@TQTQTQTQTQTQ");
+    console.log(playerReady[0]);
+    console.log(playerReady[1]);
     if (stompClient) {
       const payload = {
         roomId: roomId,
         userId: userId,
         isATopic: isATopic,
-        isReady: userReady[isATopic ? 0 : 1],
+        isReady: !playerReady[isATopic ? 0 : 1],
       };
       stompClient.send("/to/player/ready", JSON.stringify(payload));
     }
@@ -132,14 +132,14 @@ function RoomInfo({
 
   //두 참가자가 모두 준비가 되면 토론 시작
   useEffect(() => {
-    if (status === "waiting" && userReady[0] && userReady[1]) {
+    if (status === "waiting" && playerReady[0] && playerReady[1]) {
       onStatusChange("ongoing");
       if (userInfo.id === playerAIdInfo) {
         debateStart();
       }
     }
     // eslint-disable-next-line
-  }, [userReady, status, onStatusChange]);
+  }, [playerReady, status]);
 
   const playerGetHistory = async (userId) => {
     try {
@@ -151,10 +151,6 @@ function RoomInfo({
     }
   };
   useEffect(() => {
-    // console.log(playerAIdInfo);
-    console.log(
-      "ddddddddddddddddddddddddddddddddddddddddddddddddddd :" + playerAIdInfo
-    );
     if (playerAIdInfo === null) {
       setPlayerAHistory(null);
     } else {
@@ -210,20 +206,15 @@ function RoomInfo({
       stompClient.subscribe(`/from/player/ready/${roomId}`, (message) => {
         const content = JSON.parse(message.body);
         console.log("ready하고 결과 받는 곳임");
-        console.log(content);
-        // 여기서 받은 데이터를 처리할 수 있습니다.
-        console.log(`여기는 유저 1번 ${userReady[0]}`);
-        console.log(`여기는 유저 2번 ${userReady[1]}`);
-        console.log(`여기는 모두 다 레디 ${content.isAllReady}`);
+        console.log(content.isATopic);
+        console.log(content.isReady);
         if (content.isAllReady) {
           onStatusChange("ongoing");
         }
       });
     }
-  }, [stompClient, roomId, onStatusChange, userReady]);
-
-  // console.log(`여기는 유저 1번 ${userReady[0]}`)
-  // console.log(`여기는 유저 2번 ${userReady[1]}`)
+    // eslint-disable-next-line
+  }, [stompClient]);
 
   return (
     <>
@@ -329,16 +320,21 @@ function RoomInfo({
           {status === "waiting" && playerStatus[0] && (
             <Button
               className={
-                userReady[0]
+                playerReady[0]
                   ? `${style.completeButton}`
                   : `${style.readyButton}`
               }
               onClick={() => {
-                setUserReady((prevState) => [!prevState[0], prevState[1]]);
+                console.log("@!@#!#$!@#$$@#%@#%%%");
+                console.log(playerReady[0]);
+                console.log(playerReady[1]);
+                setPlayerReady([!playerReady[0], playerReady[1]]);
+                console.log(playerReady[0]);
+                console.log(playerReady[1]);
                 handleReadyClick(true); // 왼쪽 준비 버튼 클릭 시 isATopic이 true
               }}
             >
-              {userReady[0] ? "준비 완료" : "준비"}
+              {playerReady[0] ? "준비 완료" : "준비"}
             </Button>
           )}
           {status === "ongoing" && (
@@ -359,16 +355,21 @@ function RoomInfo({
           {status === "waiting" && playerStatus[1] && (
             <Button
               className={
-                userReady[1]
+                playerReady[1]
                   ? `${style.completeButton}`
                   : `${style.readyButton}`
               }
               onClick={() => {
-                setUserReady((prevState) => [prevState[0], !prevState[1]]);
+                console.log("@!@#!#$!@#$$@#%@#%%%");
+                console.log(playerReady[0]);
+                console.log(playerReady[1]);
+                setPlayerReady([playerReady[0], !playerReady[1]]);
+                console.log(playerReady[0]);
+                console.log(playerReady[1]);
                 handleReadyClick(false);
               }}
             >
-              {userReady[1] ? "준비 완료" : "준비"}
+              {playerReady[1] ? "준비 완료" : "준비"}
             </Button>
           )}
           {status === "ongoing" && (

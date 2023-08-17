@@ -49,6 +49,7 @@ function DebatePage() {
   // 참가자 참가여부
   const [playerStatus, setPlayerStatus] = useState([false, false]);
   // 참가자 준비여부
+  const [playerReady, setPlayerReady] = useState([false, false]);
 
   const [isModifyModalOpen, setIsModifyModalOpen] = useState(false);
   const [players, setPlayers] = useState([]);
@@ -666,6 +667,8 @@ function DebatePage() {
                   ongoingRoomInfo={ongoingRoomInfo}
                   turnChange={turnChange}
                   stompRef={stompRef}
+                  playerReady={playerReady}
+                  setPlayerReady={setPlayerReady}
                   // user1HP={user1HP}
                   // user2HP={user2HP}
                 />

@@ -20,6 +20,10 @@ export function SocketProvider({ children }) {
       if (stompClient) {
         stompClient.disconnect();
       }
+      if (socket.readyState === 1) {
+        // <-- This is important
+        socket.close();
+      }
     };
     // eslint-disable-next-line
   }, []);
