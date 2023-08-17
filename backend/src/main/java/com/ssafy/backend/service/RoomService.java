@@ -8,7 +8,9 @@ import com.ssafy.backend.dto.socket.response.RoomStatusDto;
 import com.ssafy.backend.entity.*;
 import com.ssafy.backend.repository.*;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
+import java.time.Month;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -187,7 +189,13 @@ public class RoomService {
     if (room == null) {
       return;
     }
-    room.setStartTime(LocalDateTime.now());
+    LocalDateTime startTime = LocalDateTime.of(2023, Month.AUGUST, 17, 20, 46, 38);
+    // 원하는 날짜와 시간 정보
+    LocalDateTime desiredDateTime = LocalDateTime.of(2023, Month.AUGUST, 18, 5, 46, 38);
+    // 두 시간의 차이 계산
+    Duration duration = Duration.between(startTime, desiredDateTime);
+    // 계산된 차이를 현재 시간에 더해서 원하는 시간 계산
+    room.setStartTime(LocalDateTime.now().plus(duration));
     room.updateStatus(status);
     roomRepository.save(room);
   }
