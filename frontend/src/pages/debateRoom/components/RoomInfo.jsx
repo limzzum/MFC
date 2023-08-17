@@ -155,7 +155,7 @@ function RoomInfo({
     console.log(
       "ddddddddddddddddddddddddddddddddddddddddddddddddddd :" + playerAIdInfo
     );
-    if (playerAIdInfo == null) {
+    if (playerAIdInfo === null) {
       setPlayerAHistory(null);
     } else {
       playerGetHistory(playerAIdInfo).then((promiseResult) => {
@@ -166,7 +166,7 @@ function RoomInfo({
   }, [playerAIdInfo]);
 
   useEffect(() => {
-    if (playerBIdInfo == null) {
+    if (playerBIdInfo === null) {
       setPlayerBHistory(null);
     } else {
       playerGetHistory(playerBIdInfo).then((promiseResult) => {
