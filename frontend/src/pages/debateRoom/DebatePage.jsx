@@ -506,7 +506,7 @@ function DebatePage() {
       const clientData = JSON.parse(
         subscriber.stream.connection.data
       ).clientData;
-      if (clientData === playerInfo.nickName) {
+      if (clientData === playerInfo.nickname) {
         if (playerInfo.isATopic) {
           setPlayerStatus((prev) => [true, prev[1]]);
           setPlayerA(subscriber);
