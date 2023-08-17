@@ -643,6 +643,7 @@ function DebatePage() {
               handleModifyModalOpen={handleModifyModalOpen}
               roomId={roomId}
               userId={userInfo.id}
+              onRoleChange={handleRoleChange}
             />
           </Row>
           <Row className={` m-0 p-0 my-3 `}>
