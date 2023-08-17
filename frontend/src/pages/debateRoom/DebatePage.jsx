@@ -2,7 +2,7 @@ import React, { useCallback, useRef, useEffect, useState } from "react";
 import axios from "axios";
 import { OpenVidu } from "openvidu-browser";
 import { useParams, useNavigate } from "react-router-dom";
-import { useRecoilState, useRecoilValue } from "recoil";
+import { useRecoilValue } from "recoil";
 // import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 // import { faCoins, faFaceSmile } from "@fortawesome/free-solid-svg-icons";
 import {
@@ -38,11 +38,9 @@ function DebatePage() {
 
   const { roomId } = useParams();
   const userInfo = useRecoilValue(userInfoState);
-
+  const getDebateRoomInfo = useRecoilValue(getDebateRoomState(roomId));
   // 토론방 상태 호출
-  const [debateRoomInfo, setDebateRoomInfo] = useRecoilState(
-    getDebateRoomState(roomId)
-  );
+  const [debateRoomInfo, setDebateRoomInfo] = useState(getDebateRoomInfo);
   const getVoteResult = useRecoilValue(getVoteResultState(roomId));
   const [voteResult, setVoteResult] = useState(getVoteResult.data);
 
@@ -72,7 +70,7 @@ function DebatePage() {
     if (!debateRoomInfo) {
       // debateRoomInfo가 없을 경우에만 가져오도록 설정
       const fetchDebateRoomInfo = async () => {
-        const data = await getDebateRoomState(roomId)();
+        const data = await getDebateRoomState(roomId);
         setDebateRoomInfo(data);
       };
       fetchDebateRoomInfo();
