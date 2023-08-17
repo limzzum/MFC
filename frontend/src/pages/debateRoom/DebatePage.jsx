@@ -83,8 +83,15 @@ function DebatePage() {
     if (stompClient) {
       stompClient.subscribe(`/from/room/out/${roomId}`, (message) => {
         const content = JSON.parse(message.body);
-        console.log("@@@@@@@@@@@@@@");
-        console.log(`토론방 퇴장 메시지: ${content}`);
+        if (playerAIdInfo === null) {
+          setIsTopicAReady(false);
+        }
+        if (playerBIdInfo === null) {
+          setIsTopicBReady(false);
+        }
+        console.log(`토론방 퇴장 메시지: ${content.userId}`);
+
+        ///여기서 나간사람이 플레이어면 레디 초기화시키기!!!!
       });
       stompClient.subscribe(`/from/room/enter/${roomId}`, (message) => {
         const content = JSON.parse(message.body);
@@ -94,7 +101,14 @@ function DebatePage() {
         const content = JSON.parse(message.body);
         setOngoingRoomInfo(content);
       });
+      stompClient.subscribe(`/from/room/playerout/${roomId}`, (message) => {
+        console.log("@@@@@@@@@@@@@@@@@@@@@@@@@플레이어아웃!!!!");
+        const content = JSON.parse(message.body);
+        console.log(content);
+        // setOngoingRoomInfo(content);
+      });
     }
+    // eslint-disable-next-line
   }, [stompClient, roomId]);
 
   const handleEnterRoom = () => {
@@ -141,6 +155,9 @@ function DebatePage() {
   const [, setCurrentVideoDevice] = useState(null);
 
   const OV = useRef(new OpenVidu());
+
+  const [isTopicAReady, setIsTopicAReady] = useState(false);
+  const [isTopicBReady, setIsTopicBReady] = useState(false);
 
   const handlePlayerAVideoStream = useCallback(
     async (stream) => {
@@ -643,6 +660,7 @@ function DebatePage() {
               handleModifyModalOpen={handleModifyModalOpen}
               roomId={roomId}
               userId={userInfo.id}
+              role={role}
               onRoleChange={handleRoleChange}
             />
           </Row>
@@ -670,6 +688,10 @@ function DebatePage() {
                   stompRef={stompRef}
                   playerReady={playerReady}
                   setPlayerReady={setPlayerReady}
+                  isTopicAReady={isTopicAReady}
+                  setIsTopicAReady={setIsTopicAReady}
+                  isTopicBReady={isTopicBReady}
+                  setIsTopicBReady={setIsTopicBReady}
                   // user1HP={user1HP}
                   // user2HP={user2HP}
                 />
@@ -719,6 +741,8 @@ function DebatePage() {
                   setIsAudioOn={setIsAudioOn}
                   stompRef={stompRef}
                   setMyStatus={setMyStatus}
+                  setIsTopicBReady={setIsTopicBReady}
+                  setIsTopicAReady={setIsTopicAReady}
                 />
               </Row>
             </Col>

@@ -51,6 +51,8 @@ function DebateBtns({
   setIsAudioOn,
   // stompRef,
   setMyStatus,
+  setIsTopicAReady,
+  setIsTopicBReady,
 }) {
   const [showModal, setShowModal] = useState(false);
   const [selectedTopic, setSelectedTopics] = useState([]);
@@ -83,6 +85,11 @@ function DebateBtns({
         const content = JSON.parse(message.body);
         console.log("플레이어 관전자로 나갔을 때 받는 메세지:", content);
         removePlayer(content);
+        if (content.isATopic) {
+          setIsTopicAReady(false);
+        } else if (!content.isATopic) {
+          setIsTopicBReady(false);
+        }
       });
       stompClient.subscribe(`/from/room/surrender/${roomId}`, (message) => {
         const modalData = JSON.parse(message.body);

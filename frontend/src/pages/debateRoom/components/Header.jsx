@@ -13,6 +13,7 @@ import { useStompClient } from "../../../SocketContext";
 
 function Header({
   status,
+  role,
   leaveSession,
   handleModifyModalOpen,
   roomId,
@@ -24,8 +25,10 @@ function Header({
 
   const handleOutRoom = () => {
     if (stompClient) {
+      if (status === "ongoing" && role === "participant") {
+        stompClient.send(`/to/room/playerout/${roomId}/${userId}`);
+      }
       stompClient.send(`/to/room/out/${roomId}/${userId}`);
-      stompClient.send(`/to/room/playerout/${roomId}/${userId}`);
     }
   };
 
