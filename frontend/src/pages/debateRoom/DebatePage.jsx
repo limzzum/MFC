@@ -764,6 +764,8 @@ function DebatePage() {
               filteredSubscribers={filteredSubscribers}
               setVoteResult={setVoteResult}
               roomId={roomId}
+              aTopic={debateRoomInfo.data.atopic}
+              bTopic={debateRoomInfo.data.btopic}
             />
           </Row>
           {isModifyModalOpen && (

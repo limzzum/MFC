@@ -504,17 +504,7 @@ ul button {
   /* line-height: 30px; */
   vertical-align: middle;
   font-size: 20px;
-  margin-top: 7px;
-  /* width: 95%; */
-  /* width: 400px; */
-}
-
-.voteBar {
-  height: 35px;
-  /* line-height: 30px; */
-  vertical-align: middle;
-  font-size: 20px;
-  /* border: solid 1px var(--blue-800); */
+  /* margin-top: 7px; */
   /* width: 95%; */
   /* width: 400px; */
 }
@@ -522,16 +512,9 @@ ul button {
 .voteBarA {
   background-color: var(--blue-400);
 }
-.voteBarA:hover {
-  background-color: var(--blue-600);
-}
 
 .voteBarB {
   background-color: var(--blue-800);
-  /* background-color: white; */
-}
-.voteBarB:hover {
-  background-color: var(--blue-600);
   /* background-color: white; */
 }
 

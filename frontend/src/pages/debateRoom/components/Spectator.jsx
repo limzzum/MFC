@@ -15,7 +15,14 @@ import { useStompClient } from "../../../SocketContext";
 // import leftVector from "../../../images/leftVector.png";
 // import rightVector from "../../../images/rightVector.png";
 
-function Spectator({ voteResult, filteredSubscribers, setVoteResult, roomId }) {
+function Spectator({
+  voteResult,
+  filteredSubscribers,
+  setVoteResult,
+  roomId,
+  aTopic,
+  bTopic,
+}) {
   const stompClient = useStompClient();
 
   // const values = useRecoilValue(valueState); 리코일 값을 가져옴
@@ -51,13 +58,13 @@ function Spectator({ voteResult, filteredSubscribers, setVoteResult, roomId }) {
         <ProgressBar className={`${style.voteBar}`}>
           <ProgressBar
             className={`${style.voteBarA}`}
-            label={`여기에 주제를 적었으면 좋겠다. ${value1}`}
+            label={`${aTopic} ${value1}`}
             now={ratio1}
             key={1}
           />
           <ProgressBar
             className={`${style.voteBarB}`}
-            label={`여기도 ${value2}`}
+            label={`${bTopic}  ${value2}`}
             now={ratio2}
             key={2}
           />
