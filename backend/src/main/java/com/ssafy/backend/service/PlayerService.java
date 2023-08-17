@@ -102,6 +102,9 @@ public class PlayerService {
     }
     public boolean isAllReady(Long roomId){
         List<Player> allByRoomId = playerRepository.findAllByRoomId(roomId);
+        if(allByRoomId.size() == 1){
+            return false;
+        }
         for (Player player : allByRoomId) {
             if(!player.isReady()){
                 return false;
