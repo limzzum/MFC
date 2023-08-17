@@ -25,9 +25,10 @@ function NavBar() {
         console.log('로그아웃');
         setUserToken("");
         setUserId("");
-        localStorage.removeItem('token');
+        localStorage.removeItem('mfctoken');
         localStorage.removeItem('recoil-persist');
         localStorage.removeItem('userId');
+        window.location.reload()
     };
     // 검색 결과를 저장할 상태
     const [searchResults, setSearchResults] = useState([]);

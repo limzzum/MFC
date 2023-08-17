@@ -16,8 +16,6 @@ import MyProfilePage from "./pages/myprofile/myProfile";
 import RankingPage from "./pages/ranking/ranking";
 import ItemPage from "./pages/item/itemPage";
 import Test from "./pages/debateRoom/Test";
-import { userState } from "./recoil/token";
-import { useRecoilValue } from "recoil";
 import { SocketProvider } from "./SocketContext";
 
 function NavBarWrapper() {
@@ -30,9 +28,8 @@ function NavBarWrapper() {
 }
 
 function App() {
-  const user = useRecoilValue(userState);
-  const isLoggedIn = user.token !== undefined;
-
+  const isLoggedIn = localStorage.getItem("mfctoken") ? true : false;
+  
   return (
     <BrowserRouter>
       <SocketProvider>

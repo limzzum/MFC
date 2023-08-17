@@ -69,7 +69,7 @@ function Loginpage() {
       if (token) {
         setRecoilUserId({ userId });
         setUser({ token });
-        localStorage.setItem("token", token);
+        localStorage.setItem("mfctoken", token);
 
         const config = {
           headers: {
@@ -84,6 +84,7 @@ function Loginpage() {
         );
         setUserInfo(userInfoResponse.data.data);
         navigate("/");
+        window.location.reload()
       } else {
         // alert("로그인에 실패하였습니다.");
         toast.error("로그인에 실패하였습니다.");
