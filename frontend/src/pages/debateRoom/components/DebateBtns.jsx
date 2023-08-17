@@ -38,7 +38,7 @@ function DebateBtns({
 
   roomId, //추가
   userId,
-  itemCodeId, // 추가
+  // itemCodeId,
   publisher,
   playerA,
   playerB,
@@ -49,7 +49,7 @@ function DebateBtns({
   removePlayer,
   isAudioOn,
   setIsAudioOn,
-  stompRef,
+  // stompRef,
   setMyStatus,
 }) {
   const [showModal, setShowModal] = useState(false);
@@ -174,16 +174,13 @@ function DebateBtns({
   //==========================================================================
   const handleRoleChangeToSpectator = (stream) => {
     onRoleChange("spectator");
-    // setUserReady(prevState => ([prevState[0], !prevState[1]]));
+    setPlayerStatus([false, false]);
+    setUserReady(false);
     if (playerA === stream) {
       setPlayerA(undefined);
-      setPlayerStatus((prevState) => [!prevState[0], prevState[1]]);
-      setUserReady((prevState) => ![prevState[0], prevState[1]]);
     }
     if (playerB === stream) {
       setPlayerB(undefined);
-      setPlayerStatus((prevState) => [prevState[0], !prevState[1]]);
-      setUserReady((prevState) => [prevState[0], !prevState[1]]);
     }
   };
 
