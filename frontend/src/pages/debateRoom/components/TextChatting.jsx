@@ -62,16 +62,7 @@ function TextChatting({ roomId }) {
           message: inputText,
         })
       );
-      // heejeong : 패널티 소켓 테스트하려고 해놓은 것임.
-      stompClient.send(
-        "/to/chat/penalty",
-        JSON.stringify({
-          roomId: `${roomId}`,
-          userId: 329,
-          isATopic: true,
-          penaltyCodeId: 2,
-        })
-      );
+      
       setInputText("");
     }
   };
