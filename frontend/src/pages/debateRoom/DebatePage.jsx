@@ -1,7 +1,7 @@
 import React, { useCallback, useRef, useEffect, useState } from "react";
 import axios from "axios";
 import { OpenVidu } from "openvidu-browser";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { useRecoilState, useRecoilValue } from "recoil";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCoins, faFaceSmile } from "@fortawesome/free-solid-svg-icons";
@@ -629,9 +629,12 @@ function DebatePage() {
   };
 
   const [showResultModal, setShowResultModal] = useState(false);
+  const navigate = useNavigate();
+
   const goToMainPage = () => {
     setShowResultModal(false);
     console.log("go to main page");
+    navigate('/');
   };
 
   useEffect(() => {
@@ -715,6 +718,7 @@ function DebatePage() {
                   updatePlayer={updatePlayer}
                   myStatus={myStatus}
                   setMyStatus={setMyStatus}
+                  playerReady={playerReady}
                 />
               </Row>
               <Row className={`m-0 p-0`}>
