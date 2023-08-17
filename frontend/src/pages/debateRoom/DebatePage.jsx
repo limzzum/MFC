@@ -467,8 +467,8 @@ function DebatePage() {
                 setPlayerStatus((prev) => [true, prev[1]]);
                 setPlayerA(subscriber);
               } else {
-                setPlayerB(subscriber);
                 setPlayerStatus((prev) => [prev[0], true]);
+                setPlayerB(subscriber);
               }
               break;
             }
