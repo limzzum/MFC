@@ -20,8 +20,10 @@ function RoomInfo({
   // setUserReady,
   players,
   roomId,
-  setPlayerAInfo,
-  setPlayerBInfo,
+  playerAIdInfo,
+  playerBIdInfo,
+  setPlayerAIdInfo,
+  setPlayerBIdInfo,
   debateStart,
   ongoingRoomInfo,
   userInfo,
@@ -96,7 +98,7 @@ function RoomInfo({
       }, 1000);
       // 1회 발언시간 타이머
       const speechTimer = setInterval(() => {
-        const currentTime1 = new Date();
+        // const currentTime1 = new Date();
         // const startTime1 = new Date(ongoingRoomInfo?.startTalkTime);
         // const timeDifferenceInMillis1 = currentTime1 - startTime1;
         const timeDifferenceInMillis1 = 14000;
@@ -132,7 +134,7 @@ function RoomInfo({
   useEffect(() => {
     if (status === "waiting" && userReady[0] && userReady[1]) {
       onStatusChange("ongoing");
-      if (userInfo.id === playerAInfo.viewerDto.userId) {
+      if (userInfo.id === playerAIdInfo) {
         debateStart();
       }
     }
@@ -148,25 +150,51 @@ function RoomInfo({
       return null;
     }
   };
+  useEffect(() => {
+    // console.log(playerAIdInfo);
+    console.log(
+      "ddddddddddddddddddddddddddddddddddddddddddddddddddd :" + playerAIdInfo
+    );
+    if (playerAIdInfo == null) {
+      setPlayerAHistory(null);
+    } else {
+      playerGetHistory(playerAIdInfo).then((promiseResult) => {
+        setPlayerAHistory(promiseResult);
+      });
+    }
+    // eslint-disable-next-line
+  }, [playerAIdInfo]);
+
+  useEffect(() => {
+    if (!playerBIdInfo == null) {
+      setPlayerBHistory(null);
+    } else {
+      playerGetHistory(playerBIdInfo).then((promiseResult) => {
+        setPlayerBHistory(promiseResult);
+      });
+    }
+    // eslint-disable-next-line
+  }, [playerBIdInfo]);
+
   // null 값 처리
   useEffect(() => {
     for (const player of players) {
       if (player) {
         if (player.topicTypeA) {
           playerGetHistory(player.viewerDto.userId).then((promiseResult) => {
-            setPlayerAInfo(player);
+            setPlayerAIdInfo(player.viewerDto.userId);
             setPlayerAHistory(promiseResult);
           });
         } else {
           playerGetHistory(player.viewerDto.userId).then((promiseResult) => {
-            setPlayerBInfo(player);
+            setPlayerBIdInfo(player.viewerDto.userId);
             setPlayerBHistory(promiseResult);
           });
         }
       }
     }
     // eslint-disable-next-line
-  }, [players]);
+  }, []);
 
   useEffect(() => {
     if (stompClient) {

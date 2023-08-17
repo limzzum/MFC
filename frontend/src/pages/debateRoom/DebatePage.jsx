@@ -53,8 +53,8 @@ function DebatePage() {
   const [isModifyModalOpen, setIsModifyModalOpen] = useState(false);
   const [players, setPlayers] = useState([]);
   const [ongoingRoomInfo, setOngoingRoomInfo] = useState(null);
-  const [playerAInfo, setPlayerAInfo] = useState(null);
-  const [playerBInfo, setPlayerBInfo] = useState(null);
+  const [playerAIdInfo, setPlayerAIdInfo] = useState(null);
+  const [playerBIdInfo, setPlayerBIdInfo] = useState(null);
   const [isAudioOn, setIsAudioOn] = useState(false);
   // 토론방 입장 웹소켓 코드
   const stompRef = useRef(null);
@@ -370,7 +370,73 @@ function DebatePage() {
   // const [viewers, setViewers] = useState();
   // const [players, setPlayers] = useState([]);
 
+  //============================================================================================================
   // 참가자 목록 가져와서
+  // useEffect(() => {
+  //   const getParticipants = async () => {
+  //     try {
+  //       const response = await axios.get(
+  //         `${APPLICATION_SERVER_URL}api/viewer/list/${roomId}`
+  //       );
+  //       const data = response.data;
+  //       // const dataViewers = data.data.viewers;
+  //       const dataPlayers = data.data.players;
+  //       setPlayers(dataPlayers);
+  //       console.log("data: ", data.data);
+  //       for (const player of dataPlayers || []) {
+  //         for (const subscriber of subscribers || []) {
+  //           const clientData = JSON.parse(
+  //             subscriber.stream.connection.data
+  //           ).clientData;
+  //           if (clientData === player.viewerDto.nickName) {
+  //             if (player.topicTypeA) {
+  //               setPlayerA(subscriber);
+  //               setPlayerStatus((prev) => [true, prev[1]]);
+  //             } else {
+  //               setPlayerB(subscriber);
+  //               setPlayerStatus((prev) => [prev[0], true]);
+  //             }
+  //             break;
+  //           }
+  //         }
+  //       }
+  //     } catch (error) {
+  //       console.log("getParticipants 에러 ", error);
+  //     }
+  //   };
+  //   getParticipants();
+  //   // eslint-disable-next-line
+  // }, [subscribers]);
+
+  // const updatePlayer = (playerInfo) => {
+  //   console.log("토론 참가자 업데이트: ", playerInfo);
+  //   for (const subscriber of subscribers || []) {
+  //     const clientData = JSON.parse(
+  //       subscriber.stream.connection.data
+  //     ).clientData;
+  //     if (clientData === playerInfo.nickname) {
+  //       if (playerInfo.isATopic) {
+  //         setPlayerA(subscriber);
+  //         setPlayerStatus((prev) => [true, prev[1]]);
+  //       } else {
+  //         setPlayerB(subscriber);
+  //         setPlayerStatus((prev) => [prev[0], true]);
+  //       }
+  //     }
+  //   }
+  // };
+
+  // const removePlayer = (playerInfo) => {
+  //   console.log("토론 참가자 삭제: ", playerInfo);
+  //   if (playerInfo.isATopic) {
+  //     setPlayerA(undefined);
+  //     setPlayerStatus((prev) => [false, prev[1]]);
+  //   } else {
+  //     setPlayerB(undefined);
+  //     setPlayerStatus((prev) => [prev[0], false]);
+  //   }
+  // };
+  //============================================================================================================
   useEffect(() => {
     const getParticipants = async () => {
       try {
@@ -395,6 +461,7 @@ function DebatePage() {
             // console.log("clientData: ", clientData);
             // console.log(`문자열 테스트: ${clientData}, ${player.viewerDto.nickName}`, clientData === player.viewerDto.nickName)
             if (clientData === player.viewerDto.nickName) {
+              console.log(player);
               // console.log("겹치는 닉네임: ", clientData);
               if (player.topicTypeA) {
                 setPlayerA(subscriber);
@@ -418,12 +485,28 @@ function DebatePage() {
   }, [subscribers]);
 
   const updatePlayer = (playerInfo) => {
+    console.log(playerInfo.userId);
+    console.log(playerBIdInfo);
+    console.log(playerAIdInfo);
+    // 옆으로 넘어갈 때 처리해줘야함
+    if (playerInfo.isATopic) {
+      if (playerBIdInfo === playerInfo.userId) {
+        setPlayerBIdInfo(null);
+      }
+      setPlayerAIdInfo(playerInfo.userId);
+    } else {
+      if (playerAIdInfo === playerInfo.userId) {
+        console.log("ddddddddddddddddddddddddddddddddddddddddddddd");
+        setPlayerAIdInfo(null);
+      }
+      setPlayerBIdInfo(playerInfo.userId);
+    }
     console.log("토론 참가자 업데이트: ", playerInfo);
     for (const subscriber of subscribers || []) {
       const clientData = JSON.parse(
         subscriber.stream.connection.data
       ).clientData;
-      if (clientData === playerInfo.nickname) {
+      if (clientData === playerInfo.nickName) {
         if (playerInfo.isATopic) {
           setPlayerA(subscriber);
           setPlayerStatus((prev) => [true, prev[1]]);
@@ -436,6 +519,11 @@ function DebatePage() {
   };
 
   const removePlayer = (playerInfo) => {
+    if (playerInfo.isATopic) {
+      setPlayerAIdInfo(null);
+    } else {
+      setPlayerBIdInfo(null);
+    }
     console.log("토론 참가자 삭제: ", playerInfo);
     if (playerInfo.isATopic) {
       setPlayerA(undefined);
@@ -446,6 +534,7 @@ function DebatePage() {
     }
   };
 
+  //============================================================================================================
   const handleStatusChange = (newStatus) => {
     setStatus(newStatus);
   };
@@ -474,7 +563,7 @@ function DebatePage() {
           `/to/player/changeTurn/${roomId}`,
           JSON.stringify({
             roomId: `${roomId}`,
-            userId: `${playerBInfo.viewerDto.userId}`,
+            userId: `${playerBIdInfo}`,
             isATurn: false,
           })
         );
@@ -483,7 +572,7 @@ function DebatePage() {
           `/to/player/changeTurn/${roomId}`,
           JSON.stringify({
             roomId: `${roomId}`,
-            userId: `${playerAInfo.viewerDto.userId}`,
+            userId: `${playerAIdInfo}`,
             isATurn: true,
           })
         );
@@ -569,9 +658,10 @@ function DebatePage() {
                   players={players}
                   roomId={roomId}
                   userId={userInfo.id}
-                  playerAInfo={playerAInfo}
-                  setPlayerAInfo={setPlayerAInfo}
-                  setPlayerBInfo={setPlayerBInfo}
+                  playerAIdInfo={playerAIdInfo}
+                  playerBIdInfo={playerBIdInfo}
+                  setPlayerAIdInfo={setPlayerAIdInfo}
+                  setPlayerBIdInfo={setPlayerBIdInfo}
                   debateStart={debateStart}
                   ongoingRoomInfo={ongoingRoomInfo}
                   turnChange={turnChange}
