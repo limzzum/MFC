@@ -96,22 +96,6 @@ function DebatePage() {
     }
   }, [stompClient, roomId]);
 
-  // useEffect(() => {
-  //   var sock = new SockJS(`${SOCKET_BASE_URL}`);
-  //   var stomp = Stomp.over(sock);
-  //   stomp.connect({}, function () {
-  //     stompRef.current = stomp;
-
-  //     stomp.subscribe(`/from/player/enter/${roomId}`, (message) => {
-  //       const content = JSON.parse(message.body);
-  //       console.log("플레이어 등록 응답", content); // 데이터 파싱해서 프론트에 저장?
-  //       updatePlayer(content);
-  //     });
-
-  //   });
-  //   // eslint-disable-next-line
-  // }, [roomId, userInfo.id, playerStatus, imgFileName, userInfo.nickname]);
-
   const handleEnterRoom = () => {
     if (stompClient) {
       stompClient.send(`/to/room/enter/${roomId}/${userInfo.id}`);
