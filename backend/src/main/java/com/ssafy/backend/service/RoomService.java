@@ -189,7 +189,7 @@ public class RoomService {
     if (room == null) {
       return;
     }
-    LocalDateTime startTime = LocalDateTime.of(2023, Month.AUGUST, 17, 20, 46, 38);
+    LocalDateTime startTime = LocalDateTime.of(2023, Month.AUGUST, 17, 20, 47, 38);
     // 원하는 날짜와 시간 정보
     LocalDateTime desiredDateTime = LocalDateTime.of(2023, Month.AUGUST, 18, 5, 46, 38);
     // 두 시간의 차이 계산
