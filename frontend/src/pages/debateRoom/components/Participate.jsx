@@ -1,5 +1,6 @@
 import { Row, Col } from "react-bootstrap";
 import style from "../debatePage.module.css";
+import React, { useEffect } from "react";
 import UserVideoComponent from "../Openvidu/UserVideoComponent";
 import AudioSegmentationComponent from "../AudioSegmentationComponent";
 import { useStompClient } from "../../../SocketContext";
@@ -20,8 +21,20 @@ function Participate({
   updatePlayer,
   myStatus,
   setMyStatus,
+  playerReady,
 }) {
   const stompClient = useStompClient();
+
+  useEffect(() => {
+    if (stompClient) {
+      stompClient.subscribe(`/from/player/enter/${roomId}`, (message) => {
+        const content = JSON.parse(message.body);
+        console.log("플레이어 등록 응답", content); // 데이터 파싱해서 프론트에 저장?
+        updatePlayer(content);
+      });
+    }
+    // eslint-disable-next-line
+  }, [roomId, userId, playerStatus]);
 
   const handlePostPlayer = (isTopicA) => {
     console.log("이거되니?");
@@ -45,7 +58,9 @@ function Participate({
           <div className={`${style.Participant} mx-auto`}>
             {playerA === undefined &&
               playerStatus[0] === false &&
-              status === "waiting" && (
+              status === "waiting" && 
+              playerReady[1] === false &&  
+              (
                 <button
                   className={`${style.button} btn`}
                   onClick={() => {
@@ -82,7 +97,9 @@ function Participate({
           <div className={`${style.Participant} mx-auto`}>
             {playerB === undefined &&
               playerStatus[1] === false &&
-              status === "waiting" && (
+              status === "waiting" && 
+              playerReady[0] === false && 
+              (
                 <button
                   className={`${style.button} btn`}
                   onClick={() => {

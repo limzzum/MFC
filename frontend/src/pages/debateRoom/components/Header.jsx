@@ -13,18 +13,22 @@ import { useStompClient } from "../../../SocketContext";
 
 function Header({
   status,
+  role,
   leaveSession,
   handleModifyModalOpen,
   roomId,
   userId,
+  onRoleChange,
   // handleOutRoom,
 }) {
   const stompClient = useStompClient();
 
   const handleOutRoom = () => {
     if (stompClient) {
+      if (status === "ongoing" && role === "participant") {
+        stompClient.send(`/to/room/playerout/${roomId}/${userId}`);
+      }
       stompClient.send(`/to/room/out/${roomId}/${userId}`);
-      stompClient.send(`/to/room/playerout/${roomId}/${userId}`);
     }
   };
 
@@ -53,6 +57,7 @@ function Header({
                 size="2x"
                 onClick={() => {
                   leaveSession();
+                  onRoleChange("spectator")
                   handleOutRoom();
                 }}
                 className={style.exit}

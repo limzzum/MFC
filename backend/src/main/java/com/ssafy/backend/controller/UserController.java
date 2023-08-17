@@ -122,7 +122,6 @@ public class UserController {
         if (userService.isUsedEmail(email)) {
             return ResponseEntity.ok(new Message(HttpStatus.BAD_REQUEST, "이미 사용중인 이메일입니다.", null));
         }
-
         Random r = new Random();
         int checkNum = r.nextInt(888888) + 111111;
         emailService.saveEmailNum(email, checkNum);

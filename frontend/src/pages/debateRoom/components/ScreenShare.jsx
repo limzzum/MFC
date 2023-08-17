@@ -64,7 +64,9 @@ function ScreenShare({ status, roomId, role }) {
               src={`https://goldenteam.site/profiles/${imgFileName}`}
               alt="Uploaded"
               className={style.shareImg}
-              onClick={handleRemoveImage}
+              onClick={() => {
+                if (role === "participant") handleRemoveImage();
+              }}
             />
           </OverlayTrigger>
         ) : (
@@ -76,12 +78,16 @@ function ScreenShare({ status, roomId, role }) {
               style={{ display: "none" }}
               onChange={handleImageChange}
             />
-            <button
-              className={`${style.button} btn`}
-              onClick={() => imageInputRef.current.click()}
-            >
-              이미지 올리기
-            </button>
+            {role === "participant" && (
+              <button
+                className={`${style.button} btn`}
+                onClick={() => {
+                  imageInputRef.current.click();
+                }}
+              >
+                이미지 올리기
+              </button>
+            )}
           </div>
         )}
       </div>

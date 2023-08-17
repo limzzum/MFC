@@ -19,9 +19,11 @@ import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.*;
 
+import javax.transaction.Transactional;
+
 @RestController
 @RequiredArgsConstructor
-//@CrossOrigin(origins = "*", allowedHeaders = "*")
+@Transactional
 public class DebateSocketController {
 
     private final SimpMessagingTemplate messagingTemplate;

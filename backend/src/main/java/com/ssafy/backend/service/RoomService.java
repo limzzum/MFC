@@ -187,7 +187,9 @@ public class RoomService {
     if (room == null) {
       return;
     }
+    room.setStartTime(LocalDateTime.now());
     room.updateStatus(status);
+    roomRepository.save(room);
   }
 
   public int incrementRoomCurrentCount(Long roomId) {

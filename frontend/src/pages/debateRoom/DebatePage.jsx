@@ -1,17 +1,17 @@
 import React, { useCallback, useRef, useEffect, useState } from "react";
 import axios from "axios";
 import { OpenVidu } from "openvidu-browser";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { useRecoilState, useRecoilValue } from "recoil";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCoins, faFaceSmile } from "@fortawesome/free-solid-svg-icons";
+// import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+// import { faCoins, faFaceSmile } from "@fortawesome/free-solid-svg-icons";
 import {
   useStatus,
   useRole,
   getDebateRoomState,
   getVoteResultState,
 } from "../../recoil/debateStateAtom";
-import { Row, Col, Stack, Modal, Button, ProgressBar } from "react-bootstrap";
+import { Row, Col, Stack, Modal, Button } from "react-bootstrap";
 import Header from "./components/Header";
 import ScreenShare from "./components/ScreenShare";
 import Participate from "./components/Participate";
@@ -49,12 +49,13 @@ function DebatePage() {
   // 참가자 참가여부
   const [playerStatus, setPlayerStatus] = useState([false, false]);
   // 참가자 준비여부
+  const [playerReady, setPlayerReady] = useState([false, false]);
 
   const [isModifyModalOpen, setIsModifyModalOpen] = useState(false);
   const [players, setPlayers] = useState([]);
   const [ongoingRoomInfo, setOngoingRoomInfo] = useState(null);
-  const [playerAInfo, setPlayerAInfo] = useState(null);
-  const [playerBInfo, setPlayerBInfo] = useState(null);
+  const [playerAIdInfo, setPlayerAIdInfo] = useState(null);
+  const [playerBIdInfo, setPlayerBIdInfo] = useState(null);
   const [isAudioOn, setIsAudioOn] = useState(false);
   // 토론방 입장 웹소켓 코드
   const stompRef = useRef(null);
@@ -76,14 +77,22 @@ function DebatePage() {
       };
       fetchDebateRoomInfo();
     }
-  });
+    //eslint-disable-next-line
+  }, []);
 
   useEffect(() => {
     if (stompClient) {
       stompClient.subscribe(`/from/room/out/${roomId}`, (message) => {
         const content = JSON.parse(message.body);
-        console.log("@@@@@@@@@@@@@@");
-        console.log(`토론방 퇴장 메시지: ${content}`);
+        if (playerAIdInfo === null) {
+          setIsTopicAReady(false);
+        }
+        if (playerBIdInfo === null) {
+          setIsTopicBReady(false);
+        }
+        console.log(`토론방 퇴장 메시지: ${content.userId}`);
+
+        ///여기서 나간사람이 플레이어면 레디 초기화시키기!!!!
       });
       stompClient.subscribe(`/from/room/enter/${roomId}`, (message) => {
         const content = JSON.parse(message.body);
@@ -93,24 +102,15 @@ function DebatePage() {
         const content = JSON.parse(message.body);
         setOngoingRoomInfo(content);
       });
+      stompClient.subscribe(`/from/room/playerout/${roomId}`, (message) => {
+        console.log("@@@@@@@@@@@@@@@@@@@@@@@@@플레이어아웃!!!!");
+        const content = JSON.parse(message.body);
+        console.log(content);
+        // setOngoingRoomInfo(content);
+      });
     }
+    // eslint-disable-next-line
   }, [stompClient, roomId]);
-
-  // useEffect(() => {
-  //   var sock = new SockJS(`${SOCKET_BASE_URL}`);
-  //   var stomp = Stomp.over(sock);
-  //   stomp.connect({}, function () {
-  //     stompRef.current = stomp;
-
-  //     stomp.subscribe(`/from/player/enter/${roomId}`, (message) => {
-  //       const content = JSON.parse(message.body);
-  //       console.log("플레이어 등록 응답", content); // 데이터 파싱해서 프론트에 저장?
-  //       updatePlayer(content);
-  //     });
-
-  //   });
-  //   // eslint-disable-next-line
-  // }, [roomId, userInfo.id, playerStatus, imgFileName, userInfo.nickname]);
 
   const handleEnterRoom = () => {
     if (stompClient) {
@@ -156,6 +156,9 @@ function DebatePage() {
   const [, setCurrentVideoDevice] = useState(null);
 
   const OV = useRef(new OpenVidu());
+
+  const [isTopicAReady, setIsTopicAReady] = useState(false);
+  const [isTopicBReady, setIsTopicBReady] = useState(false);
 
   const handlePlayerAVideoStream = useCallback(
     async (stream) => {
@@ -386,7 +389,73 @@ function DebatePage() {
   // const [viewers, setViewers] = useState();
   // const [players, setPlayers] = useState([]);
 
+  //============================================================================================================
   // 참가자 목록 가져와서
+  // useEffect(() => {
+  //   const getParticipants = async () => {
+  //     try {
+  //       const response = await axios.get(
+  //         `${APPLICATION_SERVER_URL}api/viewer/list/${roomId}`
+  //       );
+  //       const data = response.data;
+  //       // const dataViewers = data.data.viewers;
+  //       const dataPlayers = data.data.players;
+  //       setPlayers(dataPlayers);
+  //       console.log("data: ", data.data);
+  //       for (const player of dataPlayers || []) {
+  //         for (const subscriber of subscribers || []) {
+  //           const clientData = JSON.parse(
+  //             subscriber.stream.connection.data
+  //           ).clientData;
+  //           if (clientData === player.viewerDto.nickName) {
+  //             if (player.topicTypeA) {
+  //               setPlayerA(subscriber);
+  //               setPlayerStatus((prev) => [true, prev[1]]);
+  //             } else {
+  //               setPlayerB(subscriber);
+  //               setPlayerStatus((prev) => [prev[0], true]);
+  //             }
+  //             break;
+  //           }
+  //         }
+  //       }
+  //     } catch (error) {
+  //       console.log("getParticipants 에러 ", error);
+  //     }
+  //   };
+  //   getParticipants();
+  //   // eslint-disable-next-line
+  // }, [subscribers]);
+
+  // const updatePlayer = (playerInfo) => {
+  //   console.log("토론 참가자 업데이트: ", playerInfo);
+  //   for (const subscriber of subscribers || []) {
+  //     const clientData = JSON.parse(
+  //       subscriber.stream.connection.data
+  //     ).clientData;
+  //     if (clientData === playerInfo.nickname) {
+  //       if (playerInfo.isATopic) {
+  //         setPlayerA(subscriber);
+  //         setPlayerStatus((prev) => [true, prev[1]]);
+  //       } else {
+  //         setPlayerB(subscriber);
+  //         setPlayerStatus((prev) => [prev[0], true]);
+  //       }
+  //     }
+  //   }
+  // };
+
+  // const removePlayer = (playerInfo) => {
+  //   console.log("토론 참가자 삭제: ", playerInfo);
+  //   if (playerInfo.isATopic) {
+  //     setPlayerA(undefined);
+  //     setPlayerStatus((prev) => [false, prev[1]]);
+  //   } else {
+  //     setPlayerB(undefined);
+  //     setPlayerStatus((prev) => [prev[0], false]);
+  //   }
+  // };
+  //============================================================================================================
   useEffect(() => {
     const getParticipants = async () => {
       try {
@@ -411,13 +480,14 @@ function DebatePage() {
             // console.log("clientData: ", clientData);
             // console.log(`문자열 테스트: ${clientData}, ${player.viewerDto.nickName}`, clientData === player.viewerDto.nickName)
             if (clientData === player.viewerDto.nickName) {
+              console.log(player);
               // console.log("겹치는 닉네임: ", clientData);
               if (player.topicTypeA) {
-                setPlayerA(subscriber);
                 setPlayerStatus((prev) => [true, prev[1]]);
+                setPlayerA(subscriber);
               } else {
-                setPlayerB(subscriber);
                 setPlayerStatus((prev) => [prev[0], true]);
+                setPlayerB(subscriber);
               }
               break;
             }
@@ -434,6 +504,21 @@ function DebatePage() {
   }, [subscribers]);
 
   const updatePlayer = (playerInfo) => {
+    console.log(playerInfo.userId);
+    console.log(playerBIdInfo);
+    console.log(playerAIdInfo);
+    // 옆으로 넘어갈 때 처리해줘야함
+    if (playerInfo.isATopic) {
+      if (playerBIdInfo === playerInfo.userId) {
+        setPlayerBIdInfo(null);
+      }
+      setPlayerAIdInfo(playerInfo.userId);
+    } else {
+      if (playerAIdInfo === playerInfo.userId) {
+        setPlayerAIdInfo(null);
+      }
+      setPlayerBIdInfo(playerInfo.userId);
+    }
     console.log("토론 참가자 업데이트: ", playerInfo);
     for (const subscriber of subscribers || []) {
       const clientData = JSON.parse(
@@ -441,17 +526,22 @@ function DebatePage() {
       ).clientData;
       if (clientData === playerInfo.nickname) {
         if (playerInfo.isATopic) {
-          setPlayerA(subscriber);
           setPlayerStatus((prev) => [true, prev[1]]);
+          setPlayerA(subscriber);
         } else {
-          setPlayerB(subscriber);
           setPlayerStatus((prev) => [prev[0], true]);
+          setPlayerB(subscriber);
         }
       }
     }
   };
 
   const removePlayer = (playerInfo) => {
+    if (playerInfo.isATopic) {
+      setPlayerAIdInfo(null);
+    } else {
+      setPlayerBIdInfo(null);
+    }
     console.log("토론 참가자 삭제: ", playerInfo);
     if (playerInfo.isATopic) {
       setPlayerA(undefined);
@@ -462,50 +552,51 @@ function DebatePage() {
     }
   };
 
+  //============================================================================================================
   const handleStatusChange = (newStatus) => {
     setStatus(newStatus);
   };
 
-  const debateStart = () => {
-    setIsAudioOn(isAudioOn);
-    publisher.publishAudio(isAudioOn);
-    if (stompRef.current) {
-      stompRef.current.send(
-        `/to/player/changeTurn/${roomId}`,
-        JSON.stringify({
-          roomId: `${roomId}`,
-          userId: `${userInfo.id}`,
-          isATurn: true,
-        })
-      );
-    }
-  };
+  // const debateStart = () => {
+  //   setIsAudioOn(isAudioOn);
+  //   publisher.publishAudio(isAudioOn);
+  //   if (stompRef.current) {
+  //     stompRef.current.send(
+  //       `/to/player/changeTurn/${roomId}`,
+  //       JSON.stringify({
+  //         roomId: `${roomId}`,
+  //         userId: `${userInfo.id}`,
+  //         isATurn: true,
+  //       })
+  //     );
+  //   }
+  // };
 
-  const turnChange = () => {
-    setIsAudioOn(!isAudioOn);
-    publisher.publishAudio(!isAudioOn);
-    if (stompRef.current) {
-      if (ongoingRoomInfo.isATurn) {
-        stompRef.current.send(
-          `/to/player/changeTurn/${roomId}`,
-          JSON.stringify({
-            roomId: `${roomId}`,
-            userId: `${playerBInfo.viewerDto.userId}`,
-            isATurn: false,
-          })
-        );
-      } else if (!ongoingRoomInfo.isATurn) {
-        stompRef.current.send(
-          `/to/player/changeTurn/${roomId}`,
-          JSON.stringify({
-            roomId: `${roomId}`,
-            userId: `${playerAInfo.viewerDto.userId}`,
-            isATurn: true,
-          })
-        );
-      }
-    }
-  };
+  // const turnChange = () => {
+  //   setIsAudioOn(!isAudioOn);
+  //   publisher.publishAudio(!isAudioOn);
+  //   if (stompRef.current) {
+  //     if (ongoingRoomInfo.isATurn) {
+  //       stompRef.current.send(
+  //         `/to/player/changeTurn/${roomId}`,
+  //         JSON.stringify({
+  //           roomId: `${roomId}`,
+  //           userId: `${playerBIdInfo}`,
+  //           isATurn: false,
+  //         })
+  //       );
+  //     } else if (!ongoingRoomInfo.isATurn) {
+  //       stompRef.current.send(
+  //         `/to/player/changeTurn/${roomId}`,
+  //         JSON.stringify({
+  //           roomId: `${roomId}`,
+  //           userId: `${playerAIdInfo}`,
+  //           isATurn: true,
+  //         })
+  //       );
+  //     }
+  //   }
+  // };
   useEffect(() => {
     if (debateRoomInfo?.data?.status) {
       setStatus(debateRoomInfo.data.status.toLowerCase());
@@ -518,10 +609,10 @@ function DebatePage() {
       const base_url = `${AXIOS_BASE_URL}/debate/status/${roomId}`;
       const response = await axios.get(base_url, null);
       setOngoingRoomInfo(response.data.data);
-      if (ongoingRoomInfo.curUserId === userInfo.id) {
-        setIsAudioOn(isAudioOn);
-        publisher.publishAudio(isAudioOn);
-      }
+      // if (ongoingRoomInfo.curUserId === userInfo.id) {
+      //   setIsAudioOn(true);
+      //   publisher.publishAudio(isAudioOn);
+      // }
     } catch (e) {
       console.log("토론방 시작 정보 가져오기 실패:", e);
     }
@@ -531,16 +622,20 @@ function DebatePage() {
     if (debateRoomInfo?.data?.status === "ONGOING") {
       ongoingRoomStartInfo();
     }
-  });
+    // eslint-disable-next-line
+  }, [debateRoomInfo]);
 
   const handleRoleChange = (newRole) => {
     setRole(newRole);
   };
 
   const [showResultModal, setShowResultModal] = useState(false);
+  const navigate = useNavigate();
+
   const goToMainPage = () => {
     setShowResultModal(false);
     console.log("go to main page");
+    navigate("/");
   };
 
   useEffect(() => {
@@ -569,6 +664,8 @@ function DebatePage() {
               handleModifyModalOpen={handleModifyModalOpen}
               roomId={roomId}
               userId={userInfo.id}
+              role={role}
+              onRoleChange={handleRoleChange}
             />
           </Row>
           <Row className={` m-0 p-0 my-3 `}>
@@ -585,13 +682,19 @@ function DebatePage() {
                   players={players}
                   roomId={roomId}
                   userId={userInfo.id}
-                  playerAInfo={playerAInfo}
-                  setPlayerAInfo={setPlayerAInfo}
-                  setPlayerBInfo={setPlayerBInfo}
-                  debateStart={debateStart}
+                  playerAIdInfo={playerAIdInfo}
+                  playerBIdInfo={playerBIdInfo}
+                  setPlayerAIdInfo={setPlayerAIdInfo}
+                  setPlayerBIdInfo={setPlayerBIdInfo}
                   ongoingRoomInfo={ongoingRoomInfo}
-                  turnChange={turnChange}
                   stompRef={stompRef}
+                  playerReady={playerReady}
+                  setPlayerReady={setPlayerReady}
+                  isTopicAReady={isTopicAReady}
+                  setIsTopicAReady={setIsTopicAReady}
+                  isTopicBReady={isTopicBReady}
+                  setIsTopicBReady={setIsTopicBReady}
+                  setDebateRoomInfo={setDebateRoomInfo}
                   // user1HP={user1HP}
                   // user2HP={user2HP}
                 />
@@ -615,6 +718,7 @@ function DebatePage() {
                   updatePlayer={updatePlayer}
                   myStatus={myStatus}
                   setMyStatus={setMyStatus}
+                  playerReady={playerReady}
                 />
               </Row>
               <Row className={`m-0 p-0`}>
@@ -641,6 +745,8 @@ function DebatePage() {
                   setIsAudioOn={setIsAudioOn}
                   stompRef={stompRef}
                   setMyStatus={setMyStatus}
+                  setIsTopicBReady={setIsTopicBReady}
+                  setIsTopicAReady={setIsTopicAReady}
                 />
               </Row>
             </Col>
@@ -662,6 +768,8 @@ function DebatePage() {
               filteredSubscribers={filteredSubscribers}
               setVoteResult={setVoteResult}
               roomId={roomId}
+              aTopic={debateRoomInfo.data.atopic}
+              bTopic={debateRoomInfo.data.btopic}
             />
           </Row>
           {isModifyModalOpen && (
@@ -675,19 +783,21 @@ function DebatePage() {
           )}
           {/* 토론 결과 Modal*/}
           <div
-            className={`modal ${showResultModal ? "show d-block" : ""}`}
+            className={`modal ${showResultModal ? "show d-block" : "show"} ${
+              style.modalBackground
+            }`}
             tabIndex="-1"
             role="dialog"
           >
-            <div className="modal-dialog" role="document">
+            <div className={`modal-dialog ${style.modalBox}`} role="document">
               <div className="modal-content">
                 <div className="modal-header">
-                  <h5 className="modal-title">토론 결과</h5>
+                  <h5 className="modal-title">승리</h5>
                 </div>
                 <div className="modal-body">
                   {result ? (
                     <>
-                      <p className={style.contentTitle}>승리</p>
+                      {/* <p className={style.contentTitle}>승리</p> */}
                       <p className={style.contentTitleWinner}>
                         {result.winner}
                       </p>
@@ -706,7 +816,7 @@ function DebatePage() {
                   ) : (
                     <p>무승부</p>
                   )}
-                  <hr />
+                  {/* <hr />
                   {!result.isSurrender || result.isExit ? (
                     <>
                       <p>투표 결과</p>
@@ -733,20 +843,20 @@ function DebatePage() {
                         />
                       </ProgressBar>
                     </>
-                  ) : null}
+                  ) : null} */}
 
-                  <p className={style.contentTitle}>잔여 HP</p>
+                  {/* <p className={style.contentTitle}>잔여 HP</p>
                   <ProgressBar>
                     <ProgressBar
                       variant="danger"
                       // label={result.playerA.hp}
                       label={
-                        result.playerA.nickName === result.winner
+                        (result.playerA.nickName === result.winner)
                           ? result.playerA.hp
                           : result.playerB.hp
                       }
                       now={
-                        result.playerA.nickName === result.winner
+                        (result.playerA.nickName === result.winner)
                           ? (result.playerA.hp / 100) * 100
                           : (result.playerB.hp / 100) * 100
                       }
@@ -769,7 +879,7 @@ function DebatePage() {
                         &nbsp; {result.playerA.coin} (+15)
                       </p>
                     </div>
-                  </div>
+                  </div> */}
                 </div>
                 <Modal.Footer>
                   <Button variant="secondary" onClick={goToMainPage}>

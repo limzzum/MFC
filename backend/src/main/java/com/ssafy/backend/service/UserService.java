@@ -76,6 +76,7 @@ public class UserService {
         }
         ItemCode itemCode = new ItemCode(itemCodeId);
         findUser.updateInfo(userUpdateDto,itemCode);
+        repository.save(findUser);
     }
 
     public Long delete(Long id) {
@@ -84,6 +85,7 @@ public class UserService {
             return null;
         }
         findUser.signout();
+        repository.save(findUser);
         return id;
     }
 
@@ -94,7 +96,7 @@ public class UserService {
                                         .email(user.getEmail())
                                         .nickname(user.getNickname())
                                         .profile(user.getProfile())
-                                        .colorItem(user.getColorItem()).build();
+                                        .nickNameColorCode(user.getColorItem().getRgb()).build();
         return userInfoDto;
     }
 

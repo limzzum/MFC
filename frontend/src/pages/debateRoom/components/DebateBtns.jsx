@@ -38,7 +38,7 @@ function DebateBtns({
 
   roomId, //추가
   userId,
-  itemCodeId, // 추가
+  // itemCodeId,
   publisher,
   playerA,
   playerB,
@@ -49,8 +49,10 @@ function DebateBtns({
   removePlayer,
   isAudioOn,
   setIsAudioOn,
-  stompRef,
+  // stompRef,
   setMyStatus,
+  setIsTopicAReady,
+  setIsTopicBReady,
 }) {
   const [showModal, setShowModal] = useState(false);
   const [selectedTopic, setSelectedTopics] = useState([]);
@@ -83,10 +85,17 @@ function DebateBtns({
         const content = JSON.parse(message.body);
         console.log("플레이어 관전자로 나갔을 때 받는 메세지:", content);
         removePlayer(content);
+        if (content.isATopic) {
+          setIsTopicAReady(false);
+        } else if (!content.isATopic) {
+          setIsTopicBReady(false);
+        }
       });
       stompClient.subscribe(`/from/room/surrender/${roomId}`, (message) => {
         const modalData = JSON.parse(message.body);
+        console.log(modalData);
         setResult(modalData);
+
         onStatusChange("done");
       });
     }
@@ -174,16 +183,13 @@ function DebateBtns({
   //==========================================================================
   const handleRoleChangeToSpectator = (stream) => {
     onRoleChange("spectator");
-    // setUserReady(prevState => ([prevState[0], !prevState[1]]));
+    setPlayerStatus([false, false]);
+    setUserReady(false);
     if (playerA === stream) {
       setPlayerA(undefined);
-      setPlayerStatus((prevState) => [!prevState[0], prevState[1]]);
-      setUserReady((prevState) => ![prevState[0], prevState[1]]);
     }
     if (playerB === stream) {
       setPlayerB(undefined);
-      setPlayerStatus((prevState) => [prevState[0], !prevState[1]]);
-      setUserReady((prevState) => [prevState[0], !prevState[1]]);
     }
   };
 
@@ -365,21 +371,21 @@ function DebateBtns({
             className={`${style.videoButton} btn `}
             onClick={handleVideoToggle}
           >
-            {isVideoOn ? <FiCameraOff /> : <FiCamera />}
+            {isVideoOn ? <FiCamera /> : <FiCameraOff />}
           </button>
           {role === "participant" && (
             <button
               className={`${style.videoButton} btn`}
               onClick={handleAudioToggle}
             >
-              {isAudioOn ? <AiOutlineAudioMuted /> : <AiOutlineAudio />}
+              {isAudioOn ? <AiOutlineAudio /> : <AiOutlineAudioMuted />}
             </button>
           )}
         </Col>
       </Row>
       <Modal show={showModal} onHide={() => setShowModal(false)}>
         <Modal.Header closeButton>
-          <Modal.Title>Vote for Topics</Modal.Title>
+          <Modal.Title>투표하기</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Form>

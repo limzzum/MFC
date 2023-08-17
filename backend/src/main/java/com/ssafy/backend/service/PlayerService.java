@@ -1,7 +1,6 @@
 package com.ssafy.backend.service;
 
 import com.ssafy.backend.dto.request.*;
-import com.ssafy.backend.dto.socket.request.*;
 import com.ssafy.backend.dto.socket.response.PlayerStatusDto;
 import com.ssafy.backend.dto.socket.response.RoomStatusDto;
 import com.ssafy.backend.entity.*;
@@ -15,7 +14,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @Transactional
@@ -48,6 +46,8 @@ public class PlayerService {
         Player existPlayer = playerRepository.findTopByRoomIdAndUserId(playerRegistDto.getRoomId(), playerRegistDto.getUserId()).orElse(null);
         if(existPlayer != null){
             existPlayer.changeTopic(playerRegistDto.isATopic());
+            System.out.println(existPlayer.getId());
+            playerRepository.save(existPlayer);
             return existPlayer.getId();
         }
         Player player = Player.builder().room(room).user(user).remainOverTimeCount(room.getOverTimeCount()).isTopicTypeA(playerRegistDto.isATopic()).build();
@@ -59,14 +59,9 @@ public class PlayerService {
     public boolean changeStatus(PlayerDto playerDto, boolean status){
         Player player = playerRepository.findTopByRoomIdAndUserId(playerDto.getRoomId(), playerDto.getUserId()).orElse(null);
         player.changeStatus(status);
+        playerRepository.save(player);
         if(status){
-            List<Player> allByRoomId = playerRepository.findAllByRoomId(playerDto.getRoomId());
-            for (Player roomPlayer : allByRoomId) {
-                if(!roomPlayer.isReady()){
-                    return false;
-                }
-            }
-            return true;
+            return isAllReady(playerDto.getRoomId());
         }
         return false;
 
@@ -107,6 +102,9 @@ public class PlayerService {
     }
     public boolean isAllReady(Long roomId){
         List<Player> allByRoomId = playerRepository.findAllByRoomId(roomId);
+        if(allByRoomId.size() == 1){
+            return false;
+        }
         for (Player player : allByRoomId) {
             if(!player.isReady()){
                 return false;

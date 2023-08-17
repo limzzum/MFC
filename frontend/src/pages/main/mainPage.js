@@ -13,16 +13,16 @@ import { Container, Row, Col } from "react-bootstrap";
 
 function MainPage() {
   const [showModal, setShowModal] = useState(false);
-  const [title1, setTitle1] = useState("");
-  const [title2, setTitle2] = useState("");
-  const [debateTime, setDebateTime] = useState("");
-  const [speechTime, setSpeechTime] = useState("");
-  const [spectatorCount, setSpectatorCount] = useState("");
-  const [extensionCount, setExtensionCount] = useState("");
+  const [title1, setTitle1] = useState();
+  const [title2, setTitle2] = useState();
+  const [debateTime, setDebateTime] = useState();
+  const [speechTime, setSpeechTime] = useState(1);
+  const [spectatorCount, setSpectatorCount] = useState();
+  const [extensionCount, setExtensionCount] = useState();
   const [ongoingDebateRooms, setOngoingDebateRooms] = useState([]);
   const [waitingDebateRooms, setWaitingDebateRooms] = useState([]);
-  const [userProfileImg1] = useState("");
-  const [userProfileImg2] = useState("");
+  const [userProfileImg1] = useState();
+  const [userProfileImg2] = useState();
 
   const ongoingContainerRef = useRef(null);
   const userId = useRecoilValue(userIdState);
