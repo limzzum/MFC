@@ -146,7 +146,7 @@ function RoomInfo({
       const response = await axios.get(`${AXIOS_BASE_URL}/record/${userId}`);
       return response.data.data;
     } catch (e) {
-      console.log(`사용자 전적 불러오기 API 오류: ${e}`);
+      // console.log(`사용자 전적 불러오기 API 오류: ${e}`);
       return null;
     }
   };
@@ -155,7 +155,7 @@ function RoomInfo({
     console.log(
       "ddddddddddddddddddddddddddddddddddddddddddddddddddd :" + playerAIdInfo
     );
-    if (playerAIdInfo == null) {
+    if (playerAIdInfo === null) {
       setPlayerAHistory(null);
     } else {
       playerGetHistory(playerAIdInfo).then((promiseResult) => {
@@ -166,7 +166,7 @@ function RoomInfo({
   }, [playerAIdInfo]);
 
   useEffect(() => {
-    if (!playerBIdInfo == null) {
+    if (playerBIdInfo === null) {
       setPlayerBHistory(null);
     } else {
       playerGetHistory(playerBIdInfo).then((promiseResult) => {
@@ -194,7 +194,7 @@ function RoomInfo({
       }
     }
     // eslint-disable-next-line
-  }, []);
+  }, [players]);
 
   useEffect(() => {
     if (stompClient) {
