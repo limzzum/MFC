@@ -464,11 +464,11 @@ function DebatePage() {
               console.log(player);
               // console.log("겹치는 닉네임: ", clientData);
               if (player.topicTypeA) {
-                setPlayerA(subscriber);
                 setPlayerStatus((prev) => [true, prev[1]]);
+                setPlayerA(subscriber);
               } else {
-                setPlayerB(subscriber);
                 setPlayerStatus((prev) => [prev[0], true]);
+                setPlayerB(subscriber);
               }
               break;
             }
@@ -506,13 +506,13 @@ function DebatePage() {
       const clientData = JSON.parse(
         subscriber.stream.connection.data
       ).clientData;
-      if (clientData === playerInfo.nickName) {
+      if (clientData === playerInfo.nickname) {
         if (playerInfo.isATopic) {
-          setPlayerA(subscriber);
           setPlayerStatus((prev) => [true, prev[1]]);
+          setPlayerA(subscriber);
         } else {
-          setPlayerB(subscriber);
           setPlayerStatus((prev) => [prev[0], true]);
+          setPlayerB(subscriber);
         }
       }
     }
