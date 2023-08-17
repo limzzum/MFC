@@ -1,69 +1,65 @@
-
-# MFC: Mouth Fighting Championship
-
-#### 온라인 화상 토론 플랫폼
-#### SSFAY 9기 공통 프로젝트
-
-    
-
-## 👨‍👩‍👧‍👦팀원 소개
-**최지원** : backend / Leader
-
-**김상연** : frontend
-
-**김의준** : frontend
-
-**신석철** : frontend
-
-**이희정** : backend / frontend
-
-**임정현** : backend / dev-ops  
+## 1. gitlab 소스 클론 이후 빌드 및 배포할 수 있는 작업문서
 
 
-## 📆 프로젝트 소개
+1. 사용한 JVM, 웹서버 버전, 설정
+- AWS: EC2
+- OS: Ubuntu 20.04 LTS
+- JVM: 17버전
+- 웹서버: Spring Boot 2.7 내장 톰켓 서버
+- 서비스 포트번호: 443
+- Mysql: 8.0.33
+- node.js: 18.16.1
 
-**Frontend**
+#### IDE
+- IntelliJ 2023.1.2
+- VSCode 1.81.1
+
+2. 빌드 시 사용되는 환경 변수 등의 주요 내용 상세 기재
+- application.yml 파일
+
+3. 배포 시 특이사항 기재
+- 서버는 letsencrypt를 사용하여 ssl 설정
+- Backend 포트는 8081
+- Frontend 포트는 3000
+- letsencrypt certonly --standalone -d [도메인명] 명령어로 얻은 keyfile을 ~/apps/narang/certificates/live/[도메인명] 에 복사
+- 로컬 프로젝트의 back 폴더에서 터미널 실행하여 gradle clean build 명령어 실행
+- aws ubuntu 접속
+- ~/apps/narang/libs 에 jar 파일 저장
+- ~/apps/narang에 docker-compose.yml 파일과 .env 파일 작성
+- ~/apps/narang/db 에 init.sql 파일 작성
+- docker-compose up -d 명령어로 컨테이너 다중 실행
+
+4. 데이터베이스 접속 정보 등 프로젝트에 활용되는 주요 계정 및 프로퍼티가 정의된 파일 목록
+- init.sql
+    - db 초기화 파일
+
+- .env
+    - openvidu 환경변수 파일
+
+- goldentime.conf
+    - nginx 프록시 설정 파일
+
+- application.yml
+    - spring boot 프로젝트의 DB 등의 설정값을 관리하는 파일
+======================================
+- Dockerfile
+    - jar 파일을 컨테이너로 실행할 때 필요한 설정 파일
+
+- docker-compose.yml
+    - 도커 다중 컨테이너 실행을 위한 설정 파일
 
 
-**Backend**
-
-**Server**
-
-**webRTC**
-
-**Cooperation & Communication**
-
-- **진행 기간**: 2023.07.04 ~ 2023.08.18
-
-  
-## 🙌 주요 기능
-
-- 서비스 설명: 온라인 화상 토론 서비스 플랫폼
-- 주요 기능 : 
-    - 메인 페이지 - 토론방 생성 및 진행 중인 토론방 참가
-    - 토론 페이지 - WebRTC를 통한 화상 토론 게임
-    - 랭킹 페이지 - 전체 유저 랭킹 출력
-    - 아이템 페이지 - 토론방 내에서 사용할 수 있는 아이템 구매 및 보유 아이템 확인
-    - 마이 페이지 - 내 정보(이메일, 별명) 확인 가능, 별명 변경 기능
-
-- 방 생성
-    - 방 제목, 토론 시간에 대한 설정이 가능합니다. 
-
-- 토론방 
-    - 토론 참가자 / 관전자에 따른 비디오 스트림 관리
-    - 웹소켓을 사용한Text Chatting
-    - 웹소켓을 사용한 이미지 공유
-    
 
 
-# 💁개발 방식 및 결과
-## 🧱 서비스 아키텍처
-
-## 🎩 화면 설계서
-
-
-## 🎨 DB ERD
+## 2. 프로젝트에서 사용하는 외부 서비스 정보 문서
+- 비속어 인식을 위한 Perspective API 사용(https://perspectiveapi.com/)
+- 모션 인식을 위한 MediaPipe(https://developers.google.com/mediapipe)
 
 
-## 📬 API 명세서
 
+
+## 3. DB 덤프파일
+- mfcdump.sql
+
+## 4. 시연 시나리오
+- MFC_시연_시나리오.docx
