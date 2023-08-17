@@ -303,23 +303,25 @@ function RoomInfo({
       </Row>
       <Row className={`${style.bottomBox} p-0 m-0`}>
         <Col className={style.userStatus}>
-          {status === "waiting" && playerStatus[0] && (
-            <Button
-              className={
-                playerReady[0]
-                  ? `${style.completeButton}`
-                  : `${style.readyButton}`
-              }
-              onClick={() => {
-                if (userInfo.id === playerAIdInfo) {
-                  setPlayerReady([!playerReady[0], playerReady[1]]);
-                  handleReadyClick(true); // 왼쪽 준비 버튼 클릭 시 isATopic이 true
+          {status === "waiting" &&
+            playerStatus[0] &&
+            role === "participant" && (
+              <Button
+                className={
+                  playerReady[0]
+                    ? `${style.completeButton}`
+                    : `${style.readyButton}`
                 }
-              }}
-            >
-              {playerReady[0] ? "준비 완료" : "준비"}
-            </Button>
-          )}
+                onClick={() => {
+                  if (userInfo.id === playerAIdInfo) {
+                    setPlayerReady([!playerReady[0], playerReady[1]]);
+                    handleReadyClick(true); // 왼쪽 준비 버튼 클릭 시 isATopic이 true
+                  }
+                }}
+              >
+                {playerReady[0] ? "준비 완료" : "준비"}
+              </Button>
+            )}
           {status === "waiting" && role === "spectator" && isTopicAReady && (
             <span className={style.readyComplete}>플레이어 준비 완료</span>
           )}
@@ -338,23 +340,25 @@ function RoomInfo({
           {speechformatTime(speechTime)} */}
         </Col>
         <Col className={style.userStatus}>
-          {status === "waiting" && playerStatus[1] && (
-            <Button
-              className={
-                playerReady[1]
-                  ? `${style.completeButton}`
-                  : `${style.readyButton}`
-              }
-              onClick={() => {
-                if (userInfo.id === playerBIdInfo) {
-                  setPlayerReady([playerReady[0], !playerReady[1]]);
-                  handleReadyClick(false);
+          {status === "waiting" &&
+            playerStatus[1] &&
+            role === "participant" && (
+              <Button
+                className={
+                  playerReady[1]
+                    ? `${style.completeButton}`
+                    : `${style.readyButton}`
                 }
-              }}
-            >
-              {playerReady[1] ? "준비 완료" : "준비"}
-            </Button>
-          )}
+                onClick={() => {
+                  if (userInfo.id === playerBIdInfo) {
+                    setPlayerReady([playerReady[0], !playerReady[1]]);
+                    handleReadyClick(false);
+                  }
+                }}
+              >
+                {playerReady[1] ? "준비 완료" : "준비"}
+              </Button>
+            )}
           {status === "waiting" && role === "spectator" && isTopicBReady && (
             <span className={style.readyComplete}>플레이어 준비 완료</span>
           )}
