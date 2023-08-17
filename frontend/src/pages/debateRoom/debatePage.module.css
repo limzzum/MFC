@@ -91,7 +91,23 @@ ul button {
 .userInfo {
   text-align: center;
   line-height: 60px;
-  font-size: 16px;
+  /* font-size: 16px; */
+  /* font-weight: bold; */
+}
+
+.nickBOx {
+  text-align: center;
+  line-height: 30px;
+  font-size: 18px !important;
+  font-weight: bold;
+  padding-bottom: 0px;
+  margin-bottom: 0px;
+}
+
+.infoBOx {
+  text-align: center;
+  line-height: 30px;
+  font-size: 14px;
   /* font-weight: bold; */
 }
 
@@ -430,14 +446,15 @@ ul button {
 }
 
 .videoButton {
-  width: 40px;
-  height: 40px;
+  width: 45px;
+  height: 45px;
   /* color: var(--blue-800); */
   color: white;
   background-color: var(--blue-800);
-  font-size: 14px;
+  font-size: 20px;
   border: solid 1px var(--blue-800);
   border-radius: 50%;
+  padding-top: 2px;
 }
 .videoButton:hover {
   color: var(--blue-800);

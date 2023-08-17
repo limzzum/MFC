@@ -232,42 +232,29 @@ function RoomInfo({
       <Row className={`m-0`}>
         <Col className={style.userInfo}>
           {playerAHistory && playerAHistory.nickName ? (
-            <span>{playerAHistory.nickName}&nbsp;</span>
+            <div>
+              <div className={style.nickBOx}>
+                <p>{playerAHistory.nickName}&nbsp;</p>
+              </div>
+              <div className={style.infoBOx}>
+                <span>승&nbsp;{playerAHistory.winCount}&nbsp;</span>
+                <span>
+                  무&nbsp;
+                  {playerAHistory.drawCount}&nbsp;
+                </span>
+                <span>
+                  패&nbsp;
+                  {playerAHistory.loseCount}&nbsp;
+                </span>
+                <span>
+                  승률&nbsp;
+                  <strong>{playerAHistory.winRate.toFixed(0)}%</strong>&nbsp;
+                </span>
+              </div>
+            </div>
           ) : (
-            <span>사용자1&nbsp;</span>
+            <span>플레이어 대기 중</span>
           )}
-          <span>
-            <strong>승</strong>{" "}
-            {playerAHistory && playerAHistory.nickName ? (
-              <span>{playerAHistory.winCount}&nbsp;</span>
-            ) : (
-              <span>&nbsp;</span>
-            )}
-          </span>
-          <span>
-            무&nbsp;{" "}
-            {playerAHistory && playerAHistory.nickName ? (
-              <span>{playerAHistory.drawCount}&nbsp;</span>
-            ) : (
-              <span>&nbsp;</span>
-            )}
-          </span>
-          <span>
-            패&nbsp;{" "}
-            {playerAHistory && playerAHistory.nickName ? (
-              <span>{playerAHistory.loseCount}&nbsp;</span>
-            ) : (
-              <span>&nbsp;</span>
-            )}
-          </span>
-          <span>
-            승률{" "}
-            {playerAHistory && playerAHistory.nickName ? (
-              <span>{playerAHistory.winRate.toFixed(0)}%&nbsp;</span>
-            ) : (
-              <span>&nbsp;</span>
-            )}
-          </span>
         </Col>
         <Col xs={1} className={`${style.debateTimer} mx-auto p-0 mt-1`}>
           <div>
@@ -277,42 +264,22 @@ function RoomInfo({
         </Col>
         <Col className={style.userInfo}>
           {playerBHistory && playerBHistory.nickName ? (
-            <span>{playerBHistory.nickName}&nbsp;</span>
+            <div>
+              <div className={style.nickBOx}>
+                <p>{playerBHistory.nickName}&nbsp;</p>
+              </div>
+              <div className={style.infoBOx}>
+                <span>{playerBHistory.winCount}승&nbsp;</span>
+                <span>{playerBHistory.drawCount}무&nbsp;</span>
+                <span>{playerBHistory.loseCount}패&nbsp;</span>
+                <span>
+                  /&nbsp;승률&nbsp;{playerBHistory.winRate.toFixed(0)}%
+                </span>
+              </div>
+            </div>
           ) : (
-            <span>사용자2&nbsp;</span>
+            <span>플레이어 대기 중</span>
           )}
-          <span>
-            <strong>승</strong>{" "}
-            {playerBHistory && playerBHistory.nickName ? (
-              <span>{playerBHistory.winCount}&nbsp;</span>
-            ) : (
-              <span>&nbsp;</span>
-            )}
-          </span>
-          <span>
-            무&nbsp;{" "}
-            {playerBHistory && playerBHistory.nickName ? (
-              <span>{playerBHistory.drawCount}&nbsp;</span>
-            ) : (
-              <span>&nbsp;</span>
-            )}
-          </span>
-          <span>
-            패&nbsp;{" "}
-            {playerBHistory && playerBHistory.nickName ? (
-              <span>{playerBHistory.loseCount}&nbsp;</span>
-            ) : (
-              <span>&nbsp;</span>
-            )}
-          </span>
-          <span>
-            승률{" "}
-            {playerBHistory && playerBHistory.nickName ? (
-              <span>{playerBHistory.winRate.toFixed(0)}%&nbsp;</span>
-            ) : (
-              <span>&nbsp;</span>
-            )}
-          </span>
         </Col>
       </Row>
       <Row className={`${style.bottomBox} p-0 m-0`}>

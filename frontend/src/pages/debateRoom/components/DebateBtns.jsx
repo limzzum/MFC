@@ -362,14 +362,14 @@ function DebateBtns({
             className={`${style.videoButton} btn `}
             onClick={handleVideoToggle}
           >
-            {isVideoOn ? <FiCameraOff /> : <FiCamera />}
+            {isVideoOn ? <FiCamera /> : <FiCameraOff />}
           </button>
           {role === "participant" && (
             <button
               className={`${style.videoButton} btn`}
               onClick={handleAudioToggle}
             >
-              {isAudioOn ? <AiOutlineAudioMuted /> : <AiOutlineAudio />}
+              {isAudioOn ? <AiOutlineAudio /> : <AiOutlineAudioMuted />}
             </button>
           )}
         </Col>
