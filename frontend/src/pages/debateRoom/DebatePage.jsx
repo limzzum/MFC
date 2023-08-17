@@ -77,7 +77,8 @@ function DebatePage() {
       };
       fetchDebateRoomInfo();
     }
-  });
+    //eslint-disable-next-line
+  }, []);
 
   useEffect(() => {
     if (stompClient) {
@@ -514,7 +515,6 @@ function DebatePage() {
       setPlayerAIdInfo(playerInfo.userId);
     } else {
       if (playerAIdInfo === playerInfo.userId) {
-        console.log("ddddddddddddddddddddddddddddddddddddddddddddd");
         setPlayerAIdInfo(null);
       }
       setPlayerBIdInfo(playerInfo.userId);
@@ -557,46 +557,46 @@ function DebatePage() {
     setStatus(newStatus);
   };
 
-  const debateStart = () => {
-    setIsAudioOn(isAudioOn);
-    publisher.publishAudio(isAudioOn);
-    if (stompRef.current) {
-      stompRef.current.send(
-        `/to/player/changeTurn/${roomId}`,
-        JSON.stringify({
-          roomId: `${roomId}`,
-          userId: `${userInfo.id}`,
-          isATurn: true,
-        })
-      );
-    }
-  };
+  // const debateStart = () => {
+  //   setIsAudioOn(isAudioOn);
+  //   publisher.publishAudio(isAudioOn);
+  //   if (stompRef.current) {
+  //     stompRef.current.send(
+  //       `/to/player/changeTurn/${roomId}`,
+  //       JSON.stringify({
+  //         roomId: `${roomId}`,
+  //         userId: `${userInfo.id}`,
+  //         isATurn: true,
+  //       })
+  //     );
+  //   }
+  // };
 
-  const turnChange = () => {
-    setIsAudioOn(!isAudioOn);
-    publisher.publishAudio(!isAudioOn);
-    if (stompRef.current) {
-      if (ongoingRoomInfo.isATurn) {
-        stompRef.current.send(
-          `/to/player/changeTurn/${roomId}`,
-          JSON.stringify({
-            roomId: `${roomId}`,
-            userId: `${playerBIdInfo}`,
-            isATurn: false,
-          })
-        );
-      } else if (!ongoingRoomInfo.isATurn) {
-        stompRef.current.send(
-          `/to/player/changeTurn/${roomId}`,
-          JSON.stringify({
-            roomId: `${roomId}`,
-            userId: `${playerAIdInfo}`,
-            isATurn: true,
-          })
-        );
-      }
-    }
-  };
+  // const turnChange = () => {
+  //   setIsAudioOn(!isAudioOn);
+  //   publisher.publishAudio(!isAudioOn);
+  //   if (stompRef.current) {
+  //     if (ongoingRoomInfo.isATurn) {
+  //       stompRef.current.send(
+  //         `/to/player/changeTurn/${roomId}`,
+  //         JSON.stringify({
+  //           roomId: `${roomId}`,
+  //           userId: `${playerBIdInfo}`,
+  //           isATurn: false,
+  //         })
+  //       );
+  //     } else if (!ongoingRoomInfo.isATurn) {
+  //       stompRef.current.send(
+  //         `/to/player/changeTurn/${roomId}`,
+  //         JSON.stringify({
+  //           roomId: `${roomId}`,
+  //           userId: `${playerAIdInfo}`,
+  //           isATurn: true,
+  //         })
+  //       );
+  //     }
+  //   }
+  // };
   useEffect(() => {
     if (debateRoomInfo?.data?.status) {
       setStatus(debateRoomInfo.data.status.toLowerCase());
@@ -609,10 +609,10 @@ function DebatePage() {
       const base_url = `${AXIOS_BASE_URL}/debate/status/${roomId}`;
       const response = await axios.get(base_url, null);
       setOngoingRoomInfo(response.data.data);
-      if (ongoingRoomInfo.curUserId === userInfo.id) {
-        setIsAudioOn(isAudioOn);
-        publisher.publishAudio(isAudioOn);
-      }
+      // if (ongoingRoomInfo.curUserId === userInfo.id) {
+      //   setIsAudioOn(true);
+      //   publisher.publishAudio(isAudioOn);
+      // }
     } catch (e) {
       console.log("토론방 시작 정보 가져오기 실패:", e);
     }
@@ -622,7 +622,8 @@ function DebatePage() {
     if (debateRoomInfo?.data?.status === "ONGOING") {
       ongoingRoomStartInfo();
     }
-  });
+    // eslint-disable-next-line
+  }, [debateRoomInfo]);
 
   const handleRoleChange = (newRole) => {
     setRole(newRole);
@@ -634,7 +635,7 @@ function DebatePage() {
   const goToMainPage = () => {
     setShowResultModal(false);
     console.log("go to main page");
-    navigate('/');
+    navigate("/");
   };
 
   useEffect(() => {
@@ -685,9 +686,7 @@ function DebatePage() {
                   playerBIdInfo={playerBIdInfo}
                   setPlayerAIdInfo={setPlayerAIdInfo}
                   setPlayerBIdInfo={setPlayerBIdInfo}
-                  debateStart={debateStart}
                   ongoingRoomInfo={ongoingRoomInfo}
-                  turnChange={turnChange}
                   stompRef={stompRef}
                   playerReady={playerReady}
                   setPlayerReady={setPlayerReady}
@@ -695,6 +694,7 @@ function DebatePage() {
                   setIsTopicAReady={setIsTopicAReady}
                   isTopicBReady={isTopicBReady}
                   setIsTopicBReady={setIsTopicBReady}
+                  setDebateRoomInfo={setDebateRoomInfo}
                   // user1HP={user1HP}
                   // user2HP={user2HP}
                 />

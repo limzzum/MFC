@@ -32,6 +32,7 @@ function RoomInfo({
   setIsTopicBReady,
   isTopicAReady,
   isTopicBReady,
+  setDebateRoomInfo,
 }) {
   const stompClient = useStompClient();
   const total = debateRoomInfo.totalTime * 60;
@@ -90,7 +91,7 @@ function RoomInfo({
         const seconds = Math.floor(timeDifferenceInMillis / 1000);
         const minutes = Math.floor(seconds / 60);
         if (minutes >= debateRoomInfo.totalTime) {
-          // onStatusChange('done');
+          // onStatusChange("done");
         } else {
           // const hours = Math.floor(minutes / 60);
           // const remainingSeconds = seconds % 60;
@@ -112,12 +113,12 @@ function RoomInfo({
         }
       }, 1000);
 
-      if (speechTime === 0 && totalTime > 0) {
-        // setSpeechTime(talk);
-        if (userInfo.id === ongoingRoomInfo?.curUserId) {
-          turnChange();
-        }
-      }
+      // if (speechTime === 0 && totalTime > 0) {
+      //   // setSpeechTime(talk);
+      //   if (userInfo.id === ongoingRoomInfo?.curUserId) {
+      //     turnChange();
+      //   }
+      // }
 
       return () => {
         clearInterval(totalTimer);
@@ -220,6 +221,7 @@ function RoomInfo({
         console.log(content.isReady);
         if (content.isAllReady) {
           onStatusChange("ongoing");
+          debateRoomUpdateStatus();
           if (userInfo.id === playerAIdInfo) {
             debateStart();
           }
@@ -228,6 +230,17 @@ function RoomInfo({
     }
     // eslint-disable-next-line
   }, [stompClient]);
+
+  const debateRoomUpdateStatus = async () => {
+    try {
+      // const base_url = `http://localhost:8081/api/debate/${roomId}`;
+      const base_url = `${AXIOS_BASE_URL}/debate/status/${roomId}`;
+      const response = await axios.get(base_url, null);
+      setDebateRoomInfo(response);
+    } catch (e) {
+      // console.log("토론방 시작 정보 가져오기 실패:", e);
+    }
+  };
 
   return (
     <>
