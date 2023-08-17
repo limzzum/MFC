@@ -48,6 +48,7 @@ public class PlayerService {
         Player existPlayer = playerRepository.findTopByRoomIdAndUserId(playerRegistDto.getRoomId(), playerRegistDto.getUserId()).orElse(null);
         if(existPlayer != null){
             existPlayer.changeTopic(playerRegistDto.isATopic());
+            System.out.println(existPlayer.getId());
             return existPlayer.getId();
         }
         Player player = Player.builder().room(room).user(user).remainOverTimeCount(room.getOverTimeCount()).isTopicTypeA(playerRegistDto.isATopic()).build();
