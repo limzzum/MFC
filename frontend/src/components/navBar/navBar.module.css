@@ -1,0 +1,99 @@
+@import url(../../colorSelector.css);
+
+.navbar {
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 10px;
+  margin-top: 10px;
+  padding-bottom: 0.5rem;
+  /* box-shadow: 0px 5px 5px -2px rgb(156, 154, 154); */
+  height: 90px;
+  border-bottom: 2px solid var(--blue-600);
+  /* width: 100%; */
+  /* min-width: 995px; */
+}
+
+.navbarMenu {
+  /* margin: var(--spacing-4); */
+  text-decoration: none;
+  color: var(--black);
+  background-color: white;
+  /* background-color: red; */
+  font-size: 16px !important;
+}
+
+.navbarMenu:hover {
+  color: rgb(30, 30, 129) !important;
+  font-weight: 600;
+}
+
+.logo {
+  width: 120px;
+  height: 50px;
+  /* margin: 10px; */
+}
+
+.searchIcon {
+  width: 20px;
+  height: 20px;
+  /* margin-left: 5px; */
+}
+
+.btn {
+  background-color: var(--blue-800) !important;
+  /* width: fit-content; */
+  /* height: fit-content; */
+  padding: var(--spacing-2);
+
+  /* border-radius: var(--radius-md); */
+  /* color: var(--white)!important; */
+  border: 0 !important;
+  font-size: var(--text-size-sm) !important;
+}
+
+input {
+  height: 40px;
+  border-radius: var(--radius-md);
+}
+
+.navbarcollapse {
+  flex-basis: 100%;
+  flex-grow: 1;
+  align-items: center;
+}
+
+.logoutbtn {
+  background-color: var(--blue-800);
+  border: 0px;
+  font-size: 16px;
+}
+
+.logoutbtn:hover {
+  color: white;
+  background-color: var(--blue-400);
+}
+
+.customModalWidth {
+  width: 80vw !important; /* or whatever value you prefer */
+}
+
+.debateRoomContainer {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between; /* 이것은 카드 사이에 동일한 간격을 주기 위함 */
+}
+
+.debateRoomContainer > * {
+  width: 48%; /* 카드의 너비 */
+  margin: 1%; /* 카드 사이의 여백 */
+}
+
+
+.modal-open {
+    overflow: visible;
+    overflow-x: hidden;
+    overflow-y: hidden;
+}

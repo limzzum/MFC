@@ -1,0 +1,89 @@
+/* signupPage.module.css */
+
+.SignupPageWrapper {
+  width: 500px;
+  margin: auto;
+  height: 100vh;
+  position: relative;
+}
+
+.Signupform {
+  top: 45%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  position: absolute;
+  width: 100%;
+  margin: 0 auto;
+}
+
+.SignupBtn{
+  color: white;
+  background-color:var(--blue-800) !important;
+  font-size: 16px;
+}
+
+.SignupBtn:hover{
+  color: white;
+  background-color:var(--blue-600) !important;
+  font-size: 16px;
+}
+
+.SingupTitle{
+  color: var(--blue-800);
+  font-family: inherit;
+  font-size: 25px;
+  margin-top: 1rem;
+  margin-bottom: 2rem;
+  font-weight: 600;
+  /* text-align: left; */
+}
+.SignupPageInnerContent {
+  width: 350px;
+  margin: auto;
+  font-family: inherit;
+  text-align: center;
+}
+
+.SignupPageContentWrap {
+  width: 100%;
+}
+
+.SignupPageLogoImage {
+  height: 50px;
+  width: 150px;
+}
+.SignupPageMFC {
+  color: var(--blue-400);
+  margin-top: 10px;
+  font-family: inherit;
+  font-size: 14px;
+  letter-spacing: 1px;
+  /* padding-bottom: 25px; */
+}
+.SignupPageInput {
+  border-color: var(--blue-200);
+  font-size: "10px";
+}
+
+.SignupPageInputTitle {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--blue-600);
+  text-align: left !important;
+}
+.SignupPageInputWrap {
+  width: 100%;
+  /* display: flex; */
+  align-items: left;
+}
+.SignupPageBottomBtn {
+  /* text-align: left; */
+  margin-top: 20px;
+  /* width: 100%; */
+}
+
+.ErrorText{
+  color: red;
+  font-size: 12px;
+  text-align: left;
+}

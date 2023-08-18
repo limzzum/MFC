@@ -1,0 +1,72 @@
+@import url(../../colorSelector.css);
+
+.horizontalLine {
+  height: 1.5px;
+  background-color: black;
+}
+
+.title {
+  font-size: larger;
+  align-items: center;
+}
+
+.titleBox {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.createRoomButtonContainer {
+  display: flex;
+  align-items: center;
+}
+
+.createRoomButton {
+  font-size: 16px;
+  width: 18rem;
+  margin-left: auto;
+}
+
+.createRoomButtonIcon {
+  font-size: 28px;
+  color: var(--blue-900);
+}
+
+.contentTitle {
+  font-weight: bolder;
+  margin-top: 3px;
+  margin-bottom: 3px;
+  font-size: 16px;
+}
+
+.debateRoomContainer {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  gap: 20px;
+}
+
+.debateRoomCard {
+  width: calc((100% - 60px) / 4);
+}
+
+.modalBackground {
+  background-color: rgba(110, 106, 106, 0.6);
+  height: 100vh;
+}
+
+.modalBox {
+  top: 15%;
+  transform: translate(-50%, -50%);
+  margin: 0 auto;
+}
+
+.createBtn {
+  background-color: var(--blue-800);
+  color: white;
+}
+
+.createBtn:hover {
+  background-color: var(--blue-600);
+  color: white;
+}

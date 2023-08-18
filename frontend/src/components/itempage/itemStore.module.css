@@ -1,0 +1,61 @@
+.title {
+  color: var(--blue-800);
+  font-size: 20px !important;
+  font-weight: 900;
+  font-size: 16px;
+  /* margin: auto; */
+  margin-top: 60px;
+  width: 100%;
+}
+
+p {
+  font-family: inherit;
+  font-size: 16px;
+  color: var(--blue-900);
+}
+
+.flexBox {
+  display: flex;
+  width: 100%;
+  margin: auto;
+}
+
+.buyBtn {
+  background-color: var(--blue-800);
+  color: white;
+  font-size: 14px;
+  margin-bottom: 30px;
+  padding: 1;
+  border-radius: 20%;
+  padding-top: 5px;
+  padding-bottom: 5px;
+}
+
+.buyBtn:hover {
+  background-color: var(--blue-600);
+  color: white;
+}
+
+.itemName {
+  font-weight: 600;
+  color: var(--blue-800);
+}
+
+.coin {
+  font-size: 16px;
+  color: var(--blue-950);
+}
+
+.itemBox {
+  width: 180px;
+  text-align: center;
+  margin-top: 10px;
+  margin-bottom: 15px;
+  font-size: 16px;
+  /* background-color: red; */
+}
+
+.title {
+  font-size: 16px;
+  width: 800px;
+}

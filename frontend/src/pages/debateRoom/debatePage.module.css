@@ -1,0 +1,594 @@
+/* debatePage.css */
+@import "../../colorSelector.css";
+
+/* Debage Page */
+.debatePage {
+  padding: 0 var(--spacing-3);
+  box-sizing: border-box;
+  margin: 0px;
+  padding-top: 20px;
+  padding-left: 30px;
+  padding-right: 45px;
+  font-size: 16px;
+  /* font-family: inherit; */
+  /* background-color: red; */
+  /* background-color: skyblue; */
+}
+
+ul {
+  list-style: none;
+}
+
+ul button {
+  border: none;
+  background-color: transparent;
+}
+
+/* 헤더 CSS */
+.header {
+  height: 70px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 2px solid var(--blue-600);
+  padding-left: 20px;
+  padding-right: 20px;
+}
+
+.logo {
+  width: 100px;
+  margin-bottom: 10px;
+}
+
+.header ul {
+  display: flex;
+  list-style: none;
+  margin: 0px;
+  margin-bottom: 10px;
+}
+
+.header ul li {
+  margin-left: 15px;
+}
+
+.setting:hover {
+  color: var(--blue-500);
+}
+
+.exit:hover {
+  color: var(--blue-500);
+}
+
+/* Room CSS */
+.roomInfo {
+  height: 40px;
+  line-height: 40px;
+}
+
+.infoText {
+  color: var(--white);
+  /* color: var(--blue-800); */
+  font-size: 19px;
+  font-weight: 600;
+  text-align: center;
+  border-radius: 10px;
+}
+.vs {
+  color: var(--blue-800);
+  text-align: center;
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.opinion1 {
+  background-color: var(--blue-800);
+}
+
+.opinion2 {
+  background-color: var(--blue-800);
+}
+
+.userInfo {
+  text-align: center;
+  line-height: 60px;
+  /* font-size: 16px; */
+  /* font-weight: bold; */
+}
+
+.nickBOx {
+  text-align: center;
+  line-height: 30px;
+  font-size: 18px !important;
+  font-weight: bold;
+  padding-bottom: 0px;
+  margin-bottom: 0px;
+}
+
+.infoBOx {
+  text-align: center;
+  line-height: 30px;
+  font-size: 14px;
+  /* font-weight: bold; */
+}
+
+.debateTimer {
+  font-size: 24px;
+  color: var(--blue-800);
+  font-weight: bolder;
+  text-align: center;
+  border-bottom: dashed 1px var(--blue-800);
+}
+
+.speechTimer {
+  font-size: 20px;
+  color: var(--blue-800);
+  text-align: center;
+  justify-content: center;
+  align-items: center;
+  font-weight: bolder;
+  vertical-align: middle;
+}
+
+.micIcon {
+  color: var(--blue-500);
+}
+
+.userStatus {
+  text-align: center;
+  vertical-align: middle;
+  font-size: 16px;
+}
+
+.user1HP {
+  direction: rtl;
+}
+
+.hpBar {
+  height: 25px;
+  line-height: 30px;
+  vertical-align: middle;
+  font-size: 20px;
+  margin-top: 7px;
+  width: 95%;
+  /* width: 400px; */
+}
+
+.progress-bar {
+  background-color: #4aa69f;
+}
+.readyBtn {
+  background-color: var(--blue-800);
+}
+
+.readyButton {
+  background-color: var(--red-600);
+  border: 0;
+  color: white;
+}
+
+.readyButton:hover {
+  background-color: var(--red-400);
+  border: 0;
+  color: white;
+}
+
+.completeButton {
+  background-color: var(--blue-600);
+  border: 0;
+  color: white;
+}
+
+.completeButton:hover {
+  background-color: var(--blue-400);
+  border: 0;
+  color: white;
+}
+
+.bottomBox {
+  line-height: 40px;
+  height: 40px;
+
+  margin-bottom: 5px;
+}
+
+/*  */
+
+.screenShare {
+  background-color: var(--blue-200);
+  width: auto;
+  height: 220px;
+  /* min-height: 220px; */
+  /* max-height: 300px; */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  border: dashed 1px var(--blue-200);
+  overflow: auto;
+}
+
+.shareVideo {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.shareImg {
+  overflow: auto;
+  /* width: auto; */
+  /* height: 220px; */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  object-fit: cover;
+}
+
+/* 플레이어 화면 */
+
+.Participant {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  aspect-ratio: 4/3;
+  border: 1px dashed var(--blue-400);
+  border-radius: 10px;
+}
+
+.rightParticipant {
+  float: right;
+
+  /* background-color: var(--blue-200); */
+  /* border: 1px solid var(--blue-200); */
+}
+
+.rightCount {
+  /* clear: both; */
+  float: left;
+  /* width: 400px; */
+}
+
+.ChatArea {
+  background-color: var(--blue-200);
+  width: auto;
+  height: 100%;
+  overflow-y: hidden;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+  /* display: flexbox; */
+}
+
+.chatMessages {
+  min-height: 300px;
+  max-height: 350px;
+  overflow-y: auto;
+  scroll-behavior: smooth;
+}
+
+.chatInput {
+  display: flex;
+}
+
+.chatMessages::-webkit-scrollbar {
+  width: 6px;
+}
+
+.chatMessages::-webkit-scrollbar-track {
+  background-color: var(--blue-200);
+}
+
+.chatMessages::-webkit-scrollbar-thumb {
+  background-color: var(--blue-500);
+  border-radius: var(--radius-md);
+}
+
+.messageContainer {
+  /* display: flex; */
+  align-items: center;
+  margin-top: var(--spacing-2);
+  margin-bottom: var(--spacing-2);
+  width: 90%;
+  border-radius: var(--radius-md);
+  padding-top: 3px;
+}
+
+.sender {
+  font-size: 14px;
+  font-weight: 600;
+  margin-left: var(--spacing-2);
+}
+
+.messageBubble {
+  padding: var(--spacing-2);
+  border-radius: var(--radius-md);
+  max-width: 100%;
+  /* overflow-y: hidden; */
+  /* text-overflow: auto; */
+  font-size: 15px;
+  word-break: break-all;
+}
+
+.userMessage {
+  background-color: var(--blue-50);
+  justify-content: flex-end;
+  margin-left: auto;
+  margin-right: 5px;
+}
+
+.otherMessage {
+  background-color: var(--blue-400);
+  justify-content: flex-start;
+  margin-right: auto;
+  margin-left: 5px;
+}
+
+.buttonsBox {
+  /* border: 1px solid black; */
+  margin-top: 20px;
+}
+
+.items {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  /* border: dashed 1px var(--blue-600); */
+  padding: 0;
+  border-radius: 10px;
+  background-color: var(--blue-50);
+}
+
+.items button {
+  margin: var(--spacing-1) var(--spacing-2);
+  /* margin: 0; */
+  padding: 0;
+}
+
+.onOff {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  /* background-color: brown; */
+}
+
+.onOff button {
+  margin: var(--spacing-1) var(--spacing-2);
+}
+
+.spectatorList {
+  display: flex;
+  align-items: center;
+  text-align: center;
+  width: 100%;
+  /* background-color: red; */
+}
+/* 
+.spectatorList > button {
+  margin-right: auto;
+  margin-left: auto;
+} */
+
+/* .spectatorList div {
+  /* margin: 0 var(--spacing-3); */
+/* } */
+
+.spectator {
+  background-color: var(--blue-200);
+  /* border: 1px solid var(--black); */
+  width: 200px;
+  /* height: 150px; */
+  aspect-ratio: 4/3;
+  margin: var(--spacing-2);
+}
+
+.button {
+  background-color: var(--blue-500);
+  color: var(--white);
+  padding: var(--spacing-2);
+  font-size: 16px;
+}
+.button:hover {
+  background-color: var(--blue-600);
+  color: var(--white);
+  padding: var(--spacing-2);
+  font-size: 16px;
+}
+
+.inputBtn {
+  background-color: var(--blue-500);
+  color: var(--white);
+  padding: var(--spacing-2);
+  font-size: 16px;
+  border-top-right-radius: 0px;
+}
+.inputBtn:hover {
+  background-color: var(--blue-600);
+  color: var(--white);
+  padding: var(--spacing-2);
+  font-size: 16px;
+}
+
+.inputChat {
+  width: 100%;
+  height: 50px;
+  border-radius: var(--radius-md);
+}
+
+.uploadedContainer {
+  overflow: scroll;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* overflow: auto; */
+  /* width: 300px; */
+  /* height: 300px; */
+}
+
+.zoomableImageWrapper {
+  overflow: scroll;
+  width: 100%; /* You can adjust this value */
+  height: 100%; /* You can adjust this value */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.itemButton {
+  /* background-color: var(--blue-500); */
+  color: var(--blue-800);
+  /* color:  */
+  /* padding: var(--spacing-2); */
+  font-size: 13px;
+}
+.itemButton:hover {
+  color: var(--blue-500);
+  font-size: 16px;
+}
+.readyComplete {
+  color: white;
+  font-weight: 800px !important;
+  /* font-size: 20px; */
+  background-color: var(--red-600);
+  opacity: 0.8;
+  padding: 10px;
+  border-radius: 10px;
+}
+
+.videoButton {
+  width: 45px;
+  height: 45px;
+  /* color: var(--blue-800); */
+  color: white;
+  background-color: var(--blue-800);
+  font-size: 20px;
+  border: solid 1px var(--blue-800);
+  border-radius: 50%;
+  padding-top: 2px;
+}
+.videoButton:hover {
+  color: var(--blue-800);
+  /* font-size: 13px; */
+  border: solid 1px var(--blue-800);
+  border-radius: 50%;
+}
+
+.return {
+  text-align: center;
+  line-height: 50px;
+}
+
+.goSpectatorBtn {
+  color: var(--blue-400);
+  border: solid 1px var(--blue-400);
+  border-radius: 10px;
+  text-align: center;
+}
+
+.goSpectatorBtn:hover {
+  color: var(--blue-600);
+  border: solid 1px var(--blue-600);
+  border-radius: 10px;
+}
+
+.testt {
+  /* background-color: red; */
+  line-height: 50px;
+  /* top: -50%; */
+  /* position: absolute; */
+  /* float: left; */
+  /* margin-right: auto; */
+}
+
+.voteBar {
+  height: 35px;
+  /* line-height: 30px; */
+  vertical-align: middle;
+  font-size: 20px;
+  /* margin-top: 7px; */
+  /* width: 95%; */
+  /* width: 400px; */
+}
+
+.voteBarA {
+  background-color: var(--blue-400);
+}
+
+.voteBarB {
+  background-color: var(--blue-800);
+  /* background-color: white; */
+}
+
+.voteTitle {
+  color: var(--blue-800);
+  text-align: center;
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.leftButton {
+  margin-right: auto;
+}
+
+.rightButton {
+  margin-left: auto;
+}
+
+.contentTitle {
+  font-weight: bolder;
+  margin-top: 3px;
+  font-size: 16px;
+  text-align: center;
+}
+.contentTitleWinner {
+  font-weight: bolder;
+  margin-top: 3px;
+  font-size: 20px;
+  text-align: center;
+}
+.contentTitleWinnerImg {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  border: 0.5px solid var(--gray-300);
+}
+.imgBox {
+  width: 150px;
+  height: 150px;
+  margin: 10px auto;
+}
+.contentSubTitle {
+  font-weight: 5px;
+  margin-top: 3px;
+  font-size: 16px;
+  text-align: center;
+}
+.contentSubContent {
+  font-weight: bolder;
+  margin-top: 3px;
+  font-size: 18px;
+  text-align: center;
+}
+.recordBox {
+  display: flex;
+}
+
+.recordAlone {
+  margin: 0 auto;
+}
+
+.penaltyChat {
+  text-align: center;
+  color: var(--blue-600);
+  font-size: 15px;
+}
+
+.modalBackground {
+  background-color: rgba(110, 106, 106, 0.6);
+  height: 100vh;
+}
+
+.modalBox {
+  top: 20%;
+  transform: translate(-50%, -50%);
+  margin: 0 auto;
+}

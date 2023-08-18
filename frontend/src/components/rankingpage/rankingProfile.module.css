@@ -1,0 +1,38 @@
+.profileBox {
+  font-family: inherit;
+  width: 100%;
+  margin: 3px auto;
+  padding: 3px 0;
+  /* background: #e9edf5ff; */
+  border-radius: 15px;
+}
+.radiusImg {
+  border-radius: 50%;
+  height: 2.5rem;
+  width: 2.5rem;
+}
+
+.profileImgBox {
+  line-height: 50px;
+}
+
+.rankProfileText {
+  text-align: center;
+  vertical-align: middle;
+  line-height: 50px;
+  width: 100%;
+  margin: auto;
+  font-size: 16px;
+  font-weight: 400;
+}
+
+.nickalign {
+  text-align: left;
+}
+
+.hrStyle {
+  margin-top: 6px;
+  margin-bottom: 3px;
+  color: var(--blue-600);
+  width: 95%;
+}

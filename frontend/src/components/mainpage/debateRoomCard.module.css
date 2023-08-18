@@ -1,0 +1,81 @@
+/* mainPage.module.css */
+@import url(../../colorSelector.css);
+
+.card {
+  width: 250px;
+  /* min-height: 280px; */
+  display: flex;
+  flex-direction: column;
+  /* justify-content: space-between; */
+  border-radius: 10px; /* 박스의 모서리를 둥글게 만드는 속성 */
+  border: solid 1px var(--blue-100);
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.card:hover {
+  border: solid 3px var(--blue-200);
+}
+
+.imgbox {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  border-right: dashed 1px var(--blue-200);
+  border-bottom: dashed 1px var(--blue-200);
+}
+
+.fullWidthImage {
+  width: 100%;
+  /* height: 100%; */
+  aspect-ratio: 1;
+  object-fit: cover;
+}
+
+.cardbody {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  font-size: 12px;
+}
+
+.cardtitle {
+  color: var(--blue-800);
+  font-size: 14px;
+  font-weight: bolder;
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+.cardtext {
+  font-size: 12px;
+  text-align: center;
+}
+
+.timeicon {
+  font-size: 22px;
+  margin-right: 10px;
+}
+
+.joinbutton {
+  width: 95%;
+  /* height: 40px; */
+  background-color: var(--blue-800);
+  border-radius: 10px;
+  color: white;
+  font-size: 16px;
+}
+
+.joinbutton:hover {
+  background-color: var(--blue-600);
+  color: white;
+  font-size: 16px;
+}
+
+/* 추가한 스타일 */
+.joinbuttoncontainer {
+  text-align: center;
+  /* display: flex; */
+
+  /* justify-content: center; */
+}

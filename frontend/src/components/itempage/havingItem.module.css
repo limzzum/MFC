@@ -1,0 +1,47 @@
+@import url(../../colorSelector.css);
+
+.titleBox {
+  font-size: 16px;
+  display: flex;
+  margin: auto;
+  height: 60px;
+  line-height: 60px;
+}
+
+.title {
+  color: var(--blue-800);
+  width: 100%;
+  font-size: 20px;
+  font-weight: 900;
+}
+
+.textCoin {
+  text-align: right;
+  width: 100%;
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--blue-800);
+}
+
+.flexBox {
+  display: flex;
+  margin: auto;
+}
+
+.itemBox {
+  width: 120px;
+  text-align: center;
+  font-size: 16px;
+}
+
+p {
+  font-family: inherit;
+  font-size: 16px;
+  color: var(--blue-900);
+}
+
+.count {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--blue-950);
+}
