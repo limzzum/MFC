@@ -18,16 +18,35 @@
 - application.yml 파일
 
 3. 배포 시 특이사항 기재
+3. 배포 시 특이사항 기재
+
 - 서버는 letsencrypt를 사용하여 ssl 설정
 - Backend 포트는 8081
 - Frontend 포트는 3000
-- letsencrypt certonly --standalone -d [도메인명] 명령어로 얻은 keyfile을 ~/apps/narang/certificates/live/[도메인명] 에 복사
-- 로컬 프로젝트의 back 폴더에서 터미널 실행하여 gradle clean build 명령어 실행
-- aws ubuntu 접속
-- ~/apps/narang/libs 에 jar 파일 저장
-- ~/apps/narang에 docker-compose.yml 파일과 .env 파일 작성
-- ~/apps/narang/db 에 init.sql 파일 작성
-- docker-compose up -d 명령어로 컨테이너 다중 실행
+
+-----------------------------------------------------
+docker run -it --rm --name certbot -v "/etc/letsencrypt:/etc/letsencrypt" -v "/var/lib/letsencrypt:/var/lib/letsencrypt" certbot/certbot certonly --standalone -d goldenteam.site -d www.goldenteam.site  명령어로 얻은 keyfile을 /etc/letsencrypt/live/goldenteam.site 에 복사
+
+빌드(back)
+로컬 프로젝트의 backend 폴더에서 터미널 실행하여 ./gradlew clean build 명령어 실행 
+
+빌드(front)
+로컬 프로젝트의 frontend 폴더에서 터미널 실행하여 npm i && npm run build 명령어 실행 
+
+
+도커 이미지 빌드 (back)
+docker build -t [이미지이름] ./  ==> backend에 있는 Dockerfile로 이미지 빌드
+
+도커 이미지 빌드 (front)
+docker build -t [이미지이름] ./  ==> frontend에 있는 Dockerfile로 이미지 빌드
+
+이미지 도커허브로 푸시 후 서버에서 pull 하여 사용.
+
+도커 이미지 실행 (back)
+docker run -d -p 8081:8081 —name backend -v "/var/www/profiles:/var/www/profiles" -v "/var/www/room-files:/var/www/room-files" [이미지 이름]
+
+도커 이미지 실행 (front)
+docker run -d -p 3000:3000 —name frontend [이미지 이름]
 
 4. 데이터베이스 접속 정보 등 프로젝트에 활용되는 주요 계정 및 프로퍼티가 정의된 파일 목록
 - init.sql
@@ -50,6 +69,8 @@
 ## 2. 프로젝트에서 사용하는 외부 서비스 정보 문서
 - 비속어 인식을 위한 Perspective API 사용(https://perspectiveapi.com/)
 - 모션 인식을 위한 MediaPipe(https://developers.google.com/mediapipe)
+-  회원가입 시 이메일 인증을 위한 네이버 SMTP 사용, 네이버 메일 발송
+- 서비스 포트 465 아웃바운드 추가
 
 
 
